@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9D74B5F7-7F3D-4FB8-9E1A-6B5DE2D3D01B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Sys_Hes_Anb.Program</StartupObject>
+    <RootNamespace>
+    </RootNamespace>
+    <AssemblyName>Sys_Hes_Anb</AssemblyName>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <StartupWithErrorHandler>False</StartupWithErrorHandler>
+    <Prefer32Bit>true</Prefer32Bit>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG,TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.118.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.vb" />
+    <Compile Include="Program.vb" />
+    <Compile Include="Data\AesDbService.vb" />
+    <Compile Include="Data\Db.vb" />
+    <Compile Include="Data\DbBootstrap.vb" />
+    <Compile Include="Data\Sql.vb" />
+    <Compile Include="Business\PermissionKeys.vb" />
+    <Compile Include="Business\PasswordHasher.vb" />
+    <Compile Include="Business\SessionContext.vb" />
+    <Compile Include="Business\AppIconHelper.vb" />
+    <Compile Include="Business\SecurityService.vb" />
+    <Compile Include="Business\UserService.vb" />
+    <Compile Include="Business\CatalogService.vb" />
+    <Compile Include="Business\ActivityLogService.vb" />
+    <Compile Include="Business\PersianDateHelper.vb" />
+    <Compile Include="Business\CompanyFiscalYearService.vb" />
+    <Compile Include="Business\InventoryService.vb" />
+    <Compile Include="Business\AccountingService.vb" />
+    <Compile Include="Business\AccountingEntryLine.vb" />
+    <Compile Include="Business\BankReconciliationService.vb" />
+    <Compile Include="Business\AttachmentService.vb" />
+    <Compile Include="Business\NoteService.vb" />
+    <Compile Include="Business\UserNotebookService.vb" />
+    <Compile Include="Business\CalendarNoteService.vb" />
+    <Compile Include="Business\ShenavarService.vb" />
+    <Compile Include="Business\SettingsService.vb" />
+    <Compile Include="Business\BackupRestoreService.vb" />
+    <Compile Include="Business\InvoiceService.vb" />
+    <Compile Include="Models\UserAccount.vb" />
+    <Compile Include="Models\ProductItem.vb" />
+    <Compile Include="Models\WarehouseItem.vb" />
+    <Compile Include="Models\InventoryRecord.vb" />
+    <Compile Include="Models\AccountingAccount.vb" />
+    <Compile Include="Models\AccountingEntry.vb" />
+    <Compile Include="Forms\HasteAsly\Karbaran\LoginForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\LoginForm.Designer.vb">
+      <DependentUpon>LoginForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\ChangeProfileForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\ChangeProfileForm.Designer.vb">
+      <DependentUpon>ChangeProfileForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\SelectReleaseUserForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\SelectReleaseUserForm.Designer.vb">
+      <DependentUpon>SelectReleaseUserForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryForm.Designer.vb">
+      <DependentUpon>AnbardaryForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\F1KharidForoshFormBase.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\F1KharidForoshFormBase.Designer.vb">
+      <DependentUpon>F1KharidForoshFormBase.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\UserManagementForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\UserManagementForm.Designer.vb">
+      <DependentUpon>UserManagementForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\UserManagementUsersForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\UserManagementUsersForm.Designer.vb">
+      <DependentUpon>UserManagementUsersForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\UserManagementPermissionsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\UserManagementPermissionsForm.Designer.vb">
+      <DependentUpon>UserManagementPermissionsForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\AppLockForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\Karbaran\AppLockForm.Designer.vb">
+      <DependentUpon>AppLockForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\NamKalaForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\NamKalaForm.Designer.vb">
+      <DependentUpon>NamKalaForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\NamAnbarForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\NamAnbarForm.Designer.vb">
+      <DependentUpon>NamAnbarForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\F2KharidForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\F2KharidForm.Designer.vb">
+      <DependentUpon>F2KharidForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\F2ForoshForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\F2ForoshForm.Designer.vb">
+      <DependentUpon>F2ForoshForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\MojodyAnbarFormRep.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\MojodyAnbarFormRep.Designer.vb">
+      <DependentUpon>MojodyAnbarFormRep.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryForm.Designer.vb">
+      <DependentUpon>HesabdaryForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryCodingForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryCodingForm.Designer.vb">
+      <DependentUpon>HesabdaryCodingForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\ShenavarCodingForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\ShenavarCodingForm.Designer.vb">
+      <DependentUpon>ShenavarCodingForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\BankReconciliationForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\BankReconciliationForm.Designer.vb">
+      <DependentUpon>BankReconciliationForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\SelectAccountsRangeForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdarySanad2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdarySanad2Form.Designer.vb">
+      <DependentUpon>HesabdarySanad2Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryPrintForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryPrintForm.Designer.vb">
+      <DependentUpon>HesabdaryPrintForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\PersianCalendarForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdarySanad1Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdarySanad1Form.Designer.vb">
+      <DependentUpon>HesabdarySanad1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\PrintRangeDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\PrintRangeDialog.Designer.vb">
+      <DependentUpon>PrintRangeDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryRooznamePrintForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryRooznamePrintForm.Designer.vb">
+      <DependentUpon>HesabdaryRooznamePrintForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryTarazForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryTarazForm.Designer.vb">
+      <DependentUpon>HesabdaryTarazForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryTarazPrintForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryTarazPrintForm.Designer.vb">
+      <DependentUpon>HesabdaryTarazPrintForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryDaftarForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryDaftarForm.Designer.vb">
+      <DependentUpon>HesabdaryDaftarForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryDaftarPrintForm.vb" />
+    <Compile Include="Forms\Hesabdary\HesabdaryDaftarPrintForm.Designer.vb">
+      <DependentUpon>HesabdaryDaftarPrintForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\MergeSanadsForm.vb" />
+    <Compile Include="Forms\Hesabdary\MergeSanadsForm.Designer.vb">
+      <DependentUpon>MergeSanadsForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\SplitSanadForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\SplitSanadForm.Designer.vb">
+      <DependentUpon>SplitSanadForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\SettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\SettingsForm.Designer.vb">
+      <DependentUpon>SettingsForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\ReportCenterForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\ReportCenterForm.Designer.vb">
+      <DependentUpon>ReportCenterForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\CompanyFiscalYearForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\CompanyFiscalYearForm.Designer.vb">
+      <DependentUpon>CompanyFiscalYearForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\ActivityLogForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\ActivityLogForm.Designer.vb">
+      <DependentUpon>ActivityLogForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\InfoWindowForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\InfoWindowForm.Designer.vb">
+      <DependentUpon>InfoWindowForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\SetupInstallerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\SetupInstallerForm.Designer.vb">
+      <DependentUpon>SetupInstallerForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\UpdateInstallerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\UpdateInstallerForm.Designer.vb">
+      <DependentUpon>UpdateInstallerForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\BackupRestoreForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\BackupRestoreForm.Designer.vb">
+      <DependentUpon>BackupRestoreForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\ProgressForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\UserNotebookForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\UserNotebookDetailForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\PersianCalendarViewForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <Content Include="app.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Database\CreateSchema.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Database\Migrations\v001_ensure_schema_updates.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Database\Migrations\v002_add_account_nature.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="My Project\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\HasteAsly\MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryCodingForm.resx">
+      <DependentUpon>HesabdaryCodingForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryRooznamePrintForm.resx">
+      <DependentUpon>HesabdaryRooznamePrintForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdarySanad2Form.resx">
+      <DependentUpon>HesabdarySanad2Form.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryForm.resx">
+      <DependentUpon>HesabdaryForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HasteAsly\Karbaran\UserManagementForm.resx">
+      <DependentUpon>UserManagementForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryDaftarForm.resx">
+      <DependentUpon>HesabdaryDaftarForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryPrintForm.resx">
+      <DependentUpon>HesabdaryPrintForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryTarazForm.resx">
+      <DependentUpon>HesabdaryTarazForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\ShenavarCodingForm.resx">
+      <DependentUpon>ShenavarCodingForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Moshtarak\CompanyFiscalYearForm.resx">
+      <DependentUpon>CompanyFiscalYearForm.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net45\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net45\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+</Project>

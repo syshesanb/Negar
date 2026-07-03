@@ -1,0 +1,47 @@
+## Visual Studio / VB.NET .gitignore
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Xx]64/
+[Xx]86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.assets.json
+NuGet.Config
+
+# Build scripts (optional - remove if needed)
+# *.ps1
+
+# Temporary / Lock files
+~$*
+*.tmp
+*.temp
+
+# Debug output files
+debugSanad2.txt
+debug_main.txt
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store

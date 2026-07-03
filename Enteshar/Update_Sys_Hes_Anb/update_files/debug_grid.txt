@@ -1,0 +1,15 @@
+=== RefreshGrid Debug ===
+displayList count: 2
+dgvAccounts columns count: 10
+Col Name: colToggle, Header: , Type: DataGridViewTextBoxColumn, Visible: True
+Col Name: colBtnSelect, Header: انتخاب, Type: DataGridViewButtonColumn, Visible: False
+Col Name: colBtnEdit, Header: ویرایش, Type: DataGridViewButtonColumn, Visible: True
+Col Name: colBtnDelete, Header: حذف, Type: DataGridViewButtonColumn, Visible: True
+Col Name: colAccountID, Header: , Type: DataGridViewTextBoxColumn, Visible: False
+Col Name: colParentAccountID, Header: , Type: DataGridViewTextBoxColumn, Visible: False
+Col Name: colAccountType, Header: , Type: DataGridViewTextBoxColumn, Visible: False
+Col Name: colAccountCode, Header: کد حساب, Type: DataGridViewTextBoxColumn, Visible: True
+Col Name: colAccountName, Header: نام حساب, Type: DataGridViewTextBoxColumn, Visible: True
+Col Name: colIsActive, Header: فعال, Type: DataGridViewCheckBoxColumn, Visible: True
+ID: 16, Code: 01, Name: دارایی, Level: 0, Expanded: False, HasChildren: True
+ID: 20, Code: 02, Name: بدهی, Level: 0, Expanded: False, HasChildren: True

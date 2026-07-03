@@ -1,0 +1,73 @@
+Option Strict Off
+Option Explicit On
+
+Imports System
+Imports System.IO
+Imports System.Windows.Forms
+
+Namespace Sys_Hes_Anb
+    Public Module Program
+        <STAThread()>
+        Public Sub Main()
+            Try
+                System.IO.File.WriteAllText("C:\Sys_Hes_Anb\debug_main.txt", "Main started with args: " & String.Join(", ", Environment.GetCommandLineArgs()))
+            Catch ex As Exception
+                Try
+                    System.IO.File.WriteAllText("C:\Sys_Hes_Anb\debug_main_error.txt", ex.ToString())
+                Catch
+                End Try
+            End Try
+            Application.EnableVisualStyles()
+            Application.SetCompatibleTextRenderingDefault(False)
+
+            Dim exeName As String = Path.GetFileName(Application.ExecutablePath)
+            If exeName.StartsWith("Setup", StringComparison.OrdinalIgnoreCase) Then
+                Application.Run(New Forms.SetupInstallerForm())
+                Return
+            ElseIf exeName.StartsWith("Update", StringComparison.OrdinalIgnoreCase) Then
+                Application.Run(New Forms.UpdateInstallerForm())
+                Return
+            End If
+
+            Dim dbFolder = Path.Combine(Application.StartupPath, "Database")
+            Directory.CreateDirectory(dbFolder)
+            AppDomain.CurrentDomain.SetData("DataDirectory", dbFolder)
+
+            AddHandler Application.ApplicationExit, Sub(sender, e) Data.AesDbService.SyncAndLockDatabase()
+            AddHandler AppDomain.CurrentDomain.ProcessExit, Sub(sender, e) Data.AesDbService.SyncAndLockDatabase()
+
+            Try
+                Data.DbBootstrap.EnsureSeedData()
+                Business.MigrationService.ApplyPendingMigrations()
+            Catch ex As Exception
+                MessageBox.Show("Database initialization warning:" & Environment.NewLine & ex.Message,
+                                "Sys_Hes_Anb",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning)
+            End Try
+
+            Dim args As String() = Environment.GetCommandLineArgs()
+            If args.Length > 1 AndAlso args(1) = "test" Then
+                Business.SessionContext.CurrentCompanyID = 5
+                Business.SessionContext.CurrentFiscalYearID = 5
+                
+                Dim form As New Forms.HesabdaryCodingForm()
+                Dim t As New Timer()
+                t.Interval = 2000
+                AddHandler t.Tick, Sub(snd, ev)
+                    t.Stop()
+                    form.Close()
+                End Sub
+                t.Start()
+                Application.Run(form)
+                Return
+            End If
+
+            Using login As New Forms.LoginForm()
+                If login.ShowDialog() = DialogResult.OK Then
+                    Application.Run(New Forms.MainForm(login.AuthenticatedUser))
+                End If
+            End Using
+        End Sub
+    End Module
+End Namespace
