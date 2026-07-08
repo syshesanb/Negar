@@ -357,7 +357,7 @@ Namespace Sys_Hes_Anb.Forms
                     LoadEntries()
 
                     If returnToLedger Then
-                        Dim parentForm = TryCast(Me.FindForm(), HesabdaryForm)
+                        Dim parentForm = TryCast(Application.OpenForms("HesabdaryForm"), HesabdaryForm)
                         If parentForm IsNot Nothing Then
                             parentForm.SwitchToLedgerTabAndRefresh()
                         End If

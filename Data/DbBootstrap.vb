@@ -34,6 +34,8 @@ Namespace Sys_Hes_Anb.Data
                 Log("bootstrap:calendarnotes-ok")
                 BackgroundImageService.EnsureDatabaseTableAndSeed()
                 Log("bootstrap:background-images-ok")
+                EnsureSoBankTables()
+                Log("bootstrap:sobank-tables-ok")
             Catch ex As Exception
                 Log("bootstrap-error: " & ex.Message & Environment.NewLine & ex.StackTrace)
                 Throw
@@ -420,6 +422,40 @@ Namespace Sys_Hes_Anb.Data
                 End Using
             Catch ex As Exception
                 Log("AddColumnIfMissing error (" & tableName & "." & columnName & "): " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureSoBankTables()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS SoBank_1 (" &
+                    "BankID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CompanyID INTEGER NOT NULL, " &
+                    "BankName TEXT, " &
+                    "BranchName TEXT, " &
+                    "BranchCode TEXT, " &
+                    "BranchAddress TEXT, " &
+                    "AccountType TEXT, " &
+                    "AccountNumber TEXT, " &
+                    "AccountID INTEGER);")
+
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS SoBank_2 (" &
+                    "TxID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "BankID INTEGER NOT NULL, " &
+                    "TxDate TEXT NOT NULL, " &
+                    "RefNo TEXT, " &
+                    "Debit DECIMAL, " &
+                    "Credit DECIMAL, " &
+                    "Description TEXT, " &
+                    "Payee TEXT, " &
+                    "ImportDate DATETIME DEFAULT CURRENT_TIMESTAMP, " &
+                    "FOREIGN KEY(BankID) REFERENCES SoBank_1(BankID) ON DELETE CASCADE);")
+
+                AddColumnIfMissing("SoBank_2", "Payee", "TEXT")
+                AddColumnIfMissing("SoBank_2", "MatchedDetailID", "INTEGER")
+            Catch ex As Exception
+                Log("EnsureSoBankTables error: " & ex.Message)
             End Try
         End Sub
 

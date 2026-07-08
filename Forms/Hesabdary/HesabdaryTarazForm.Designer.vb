@@ -62,6 +62,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlTop = New System.Windows.Forms.Panel()
             Me.btnRefresh = New System.Windows.Forms.Button()
             Me.btnPrintTaraz = New System.Windows.Forms.Button()
+            Me.btnExportExcel = New System.Windows.Forms.Button()
             Me.lblExpand = New System.Windows.Forms.Label()
             Me.cmbExpandToLevel = New System.Windows.Forms.ComboBox()
             Me.chkOnlyWithData = New System.Windows.Forms.CheckBox()
@@ -136,6 +137,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlTop.BackColor = System.Drawing.Color.FromArgb(CType(CType(235, Byte), Integer), CType(CType(243, Byte), Integer), CType(CType(255, Byte), Integer))
             Me.pnlTop.Controls.Add(Me.btnRefresh)
             Me.pnlTop.Controls.Add(Me.btnPrintTaraz)
+            Me.pnlTop.Controls.Add(Me.btnExportExcel)
             Me.pnlTop.Controls.Add(Me.lblExpand)
             Me.pnlTop.Controls.Add(Me.cmbExpandToLevel)
             Me.pnlTop.Controls.Add(Me.chkOnlyWithData)
@@ -167,6 +169,19 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnPrintTaraz.TabIndex = 6
             Me.btnPrintTaraz.Text = "چاپ تراز آزمایشی"
             Me.btnPrintTaraz.UseVisualStyleBackColor = False
+            '
+            'btnExportExcel
+            '
+            Me.btnExportExcel.BackColor = System.Drawing.Color.FromArgb(CType(CType(39, Byte), Integer), CType(CType(174, Byte), Integer), CType(CType(96, Byte), Integer))
+            Me.btnExportExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+            Me.btnExportExcel.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
+            Me.btnExportExcel.ForeColor = System.Drawing.Color.White
+            Me.btnExportExcel.Location = New System.Drawing.Point(1120, 8)
+            Me.btnExportExcel.Name = "btnExportExcel"
+            Me.btnExportExcel.Size = New System.Drawing.Size(130, 28)
+            Me.btnExportExcel.TabIndex = 7
+            Me.btnExportExcel.Text = "خروجی اکسل"
+            Me.btnExportExcel.UseVisualStyleBackColor = False
             '
             'lblExpand
             '
@@ -819,5 +834,6 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents txtSearchCreditTotal As TextBox
         Friend WithEvents txtSearchDebitEnd As TextBox
         Friend WithEvents txtSearchCreditEnd As TextBox
+        Friend WithEvents btnExportExcel As Button
     End Class
 End Namespace

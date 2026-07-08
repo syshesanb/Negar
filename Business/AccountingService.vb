@@ -454,7 +454,7 @@ Namespace Sys_Hes_Anb.Business
             ' تلاش اول: با تمام ستون‌های اختیاری
             Try
                 Return Sql.ExecuteTable(
-                    "SELECT d.AccountID, a.AccountCode, a.AccountName, d.DebitAmount, d.CreditAmount, " &
+                    "SELECT d.DetailID, d.AccountID, a.AccountCode, a.AccountName, d.DebitAmount, d.CreditAmount, " &
                     "d.LineNumber, d.ShenavarID, d.SharhRadif, d.TransactionNumber, d.TransactionDate " &
                     "FROM AccountingEntryDetails AS d LEFT JOIN ChartOfAccounts AS a ON d.AccountID = a.AccountID " &
                     "WHERE d.EntryID = ? ORDER BY d.LineNumber", entryId)
@@ -464,7 +464,7 @@ Namespace Sys_Hes_Anb.Business
             ' تلاش دوم: بدون SharhRadif و تاریخ تراکنش (ساختار قدیمی‌تر جدول)
             Try
                 Return Sql.ExecuteTable(
-                    "SELECT d.AccountID, a.AccountCode, a.AccountName, d.DebitAmount, d.CreditAmount, " &
+                    "SELECT d.DetailID, d.AccountID, a.AccountCode, a.AccountName, d.DebitAmount, d.CreditAmount, " &
                     "d.LineNumber, d.ShenavarID " &
                     "FROM AccountingEntryDetails AS d LEFT JOIN ChartOfAccounts AS a ON d.AccountID = a.AccountID " &
                     "WHERE d.EntryID = ? ORDER BY d.LineNumber", entryId)

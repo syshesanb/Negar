@@ -78,7 +78,7 @@ Namespace Sys_Hes_Anb.Forms
                 End If
 
                 If tabs.TabPages.Contains(tabBankReconciliation) Then
-                    Dim bankRecForm As New BankReconciliationForm()
+                    Dim bankRecForm As New HesabdaryMogBankForm()
                     HostForm(tabBankReconciliation, bankRecForm)
                 End If
                 progress.UpdateProgress(70, "بارگذاری فرم تراز آزمایشی...")

@@ -82,7 +82,18 @@ Namespace Sys_Hes_Anb.Data
 
             If File.Exists(encFile) Then
                 Try
-                    DecryptFile(encFile, dbFile)
+                    Dim shouldDecrypt = True
+                    If File.Exists(dbFile) Then
+                        Dim dbTime = File.GetLastWriteTime(dbFile)
+                        Dim encTime = File.GetLastWriteTime(encFile)
+                        If dbTime > encTime Then
+                            shouldDecrypt = False
+                        End If
+                    End If
+
+                    If shouldDecrypt Then
+                        DecryptFile(encFile, dbFile)
+                    End If
                 Catch ex As Exception
                 End Try
             End If

@@ -192,11 +192,17 @@
     <Compile Include="Forms\Hesabdary\ShenavarCodingForm.Designer.vb">
       <DependentUpon>ShenavarCodingForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Hesabdary\BankReconciliationForm.vb">
+    <Compile Include="Forms\Hesabdary\HesabdaryMogBankForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Hesabdary\BankReconciliationForm.Designer.vb">
-      <DependentUpon>BankReconciliationForm.vb</DependentUpon>
+    <Compile Include="Forms\Hesabdary\HesabdaryMogBankForm.Designer.vb">
+      <DependentUpon>HesabdaryMogBankForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\BankTransactionEditForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\BankTransactionEditForm.Designer.vb">
+      <DependentUpon>BankTransactionEditForm.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\Hesabdary\SelectAccountsRangeForm.vb">
       <SubType>Form</SubType>
@@ -351,6 +357,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Hesabdary\HesabdaryCodingForm.resx">
       <DependentUpon>HesabdaryCodingForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryMogBankForm.resx">
+      <DependentUpon>HesabdaryMogBankForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Hesabdary\HesabdaryRooznamePrintForm.resx">
       <DependentUpon>HesabdaryRooznamePrintForm.vb</DependentUpon>

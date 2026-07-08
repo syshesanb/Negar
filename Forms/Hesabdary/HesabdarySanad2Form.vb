@@ -41,6 +41,8 @@ Namespace Sys_Hes_Anb.Forms
             End Set
         End Property
 
+        Public Property HighlightDetailID As Integer? = Nothing
+
         Private Const TotalPreloadedRows As Integer = 100
 
         ' حالت سند جدید
@@ -94,11 +96,35 @@ Namespace Sys_Hes_Anb.Forms
                                                   Try
                                                       dgvEntryLines.CurrentCell = dgvEntryLines.Rows(targetIndex).Cells("colSharhRadif")
                                                       dgvEntryLines.FirstDisplayedScrollingRowIndex = targetIndex
+                                                      dgvEntryLines.Focus()
+                                                      dgvEntryLines.BeginEdit(True)
                                                   Catch
                                                   End Try
                                               End Sub))
                 End If
             End If
+
+            If HighlightDetailID.HasValue AndAlso HighlightDetailID.Value > 0 Then
+                Me.BeginInvoke(New Action(Sub()
+                                              Try
+                                                  Dim table = TryCast(dgvEntryLines.DataSource, DataTable)
+                                                  If table IsNot Nothing Then
+                                                      For rowIndex As Integer = 0 To table.Rows.Count - 1
+                                                          Dim row = table.Rows(rowIndex)
+                                                          If Not row.IsNull("DetailID") AndAlso Convert.ToInt32(row("DetailID")) = HighlightDetailID.Value Then
+                                                              dgvEntryLines.CurrentCell = dgvEntryLines.Rows(rowIndex).Cells("colTransNo")
+                                                              dgvEntryLines.FirstDisplayedScrollingRowIndex = rowIndex
+                                                              dgvEntryLines.Focus()
+                                                              dgvEntryLines.BeginEdit(True)
+                                                              Exit For
+                                                          End If
+                                                      Next
+                                                  End If
+                                              Catch
+                                              End Try
+                                          End Sub))
+            End If
+
             _isLoading = False
             _isDirty = False
             _suppressCloseConfirmation = False
@@ -124,10 +150,11 @@ Namespace Sys_Hes_Anb.Forms
             table.Columns.Add("CreditAmount", GetType(Decimal))
             table.Columns.Add("TransactionNumber", GetType(String))
             table.Columns.Add("TransactionDate", GetType(String))
+            table.Columns.Add("DetailID", GetType(Integer))
 
             ' ۱۰۰ ردیف خالی از پیش بارگذاری شده
             For i = 1 To TotalPreloadedRows
-                table.Rows.Add(i, 0, "", "", 0, "", "", 0D, 0D, "", "")
+                table.Rows.Add(i, 0, "", "", 0, "", "", 0D, 0D, "", "", 0)
             Next
 
             AddHandler table.ColumnChanged, Sub(s, ea)
@@ -402,6 +429,9 @@ Namespace Sys_Hes_Anb.Forms
                 End If
                 If details.Columns.Contains("TransactionDate") Then
                     targetRow("TransactionDate") = Convert.ToString(If(dr("TransactionDate") Is DBNull.Value, "", dr("TransactionDate")))
+                End If
+                If details.Columns.Contains("DetailID") Then
+                    targetRow("DetailID") = Convert.ToInt32(If(dr("DetailID") Is DBNull.Value, 0, dr("DetailID")))
                 End If
             Next
             UpdateJamLabels()

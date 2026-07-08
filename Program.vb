@@ -29,7 +29,13 @@ Namespace Sys_Hes_Anb
                 Return
             End If
 
-            Dim dbFolder = Path.Combine(Application.StartupPath, "Database")
+            Dim dbFolder As String
+            Dim devDbFolder = Path.Combine(Application.StartupPath, "..", "..", "Database")
+            If Directory.Exists(devDbFolder) AndAlso File.Exists(Path.Combine(Application.StartupPath, "..", "..", "Sys_Hes_Anb.vbproj")) Then
+                dbFolder = Path.GetFullPath(devDbFolder)
+            Else
+                dbFolder = Path.Combine(Application.StartupPath, "Database")
+            End If
             Directory.CreateDirectory(dbFolder)
             AppDomain.CurrentDomain.SetData("DataDirectory", dbFolder)
 

@@ -891,6 +891,55 @@ Namespace Sys_Hes_Anb.Forms
             Next
             Return True
         End Function
+
+        Private Sub btnExportExcel_Click(sender As Object, e As EventArgs) Handles btnExportExcel.Click
+            ExportGridToExcel(dgvTrial, "Trial_Balance")
+        End Sub
+
+        Private Sub ExportGridToExcel(dgv As DataGridView, defaultFileName As String)
+            Using sfd As New SaveFileDialog()
+                sfd.Filter = "Excel CSV (*.csv)|*.csv|All Files (*.*)|*.*"
+                sfd.Title = "خروجی اکسل"
+                sfd.FileName = defaultFileName & "_" & DateTime.Now.ToString("yyyyMMdd_HHmmss")
+                If sfd.ShowDialog() = DialogResult.OK Then
+                    Try
+                        Dim sb As New System.Text.StringBuilder()
+                        
+                        ' Write headers
+                        Dim headers As New List(Of String)()
+                        For Each col As DataGridViewColumn In dgv.Columns
+                            If col.Visible AndAlso Not TypeOf col Is DataGridViewButtonColumn AndAlso col.Name <> "colToggle" Then
+                                headers.Add(col.HeaderText)
+                            End If
+                        Next
+                        sb.AppendLine(String.Join(",", headers))
+                        
+                        ' Write rows
+                        For Each row As DataGridViewRow In dgv.Rows
+                            If row.IsNewRow Then Continue For
+                            
+                            Dim cells As New List(Of String)()
+                            For Each col As DataGridViewColumn In dgv.Columns
+                                If col.Visible AndAlso Not TypeOf col Is DataGridViewButtonColumn AndAlso col.Name <> "colToggle" Then
+                                    Dim val = Convert.ToString(row.Cells(col.Index).Value)
+                                    ' Escape double quotes and wrap in double quotes if it contains commas or quotes
+                                    If val.Contains(",") OrElse val.Contains("""") OrElse val.Contains(Microsoft.VisualBasic.ControlChars.CrLf) OrElse val.Contains(Microsoft.VisualBasic.ControlChars.Lf) Then
+                                        val = """" & val.Replace("""", """""") & """"
+                                    End If
+                                    cells.Add(val)
+                                End If
+                            Next
+                            sb.AppendLine(String.Join(",", cells))
+                        Next
+                        
+                        System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), System.Text.Encoding.UTF8)
+                        MessageBox.Show("خروجی اکسل با موفقیت ذخیره شد.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Catch ex As Exception
+                        MessageBox.Show("خطا در ذخیره فایل خروجی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Try
+                End If
+            End Using
+        End Sub
     End Class
 End Namespace
 

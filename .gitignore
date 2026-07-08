@@ -45,3 +45,6 @@ debug_main.txt
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Temporary Excel/CSV reports
+*.csv

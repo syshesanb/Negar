@@ -25,6 +25,8 @@ Namespace Sys_Hes_Anb.Forms
         Private _fullDataTable As DataTable
         Private _priorSums As Tuple(Of Decimal, Decimal)
         Private _selectedRangeAccounts As New List(Of Tuple(Of Integer, String, String))()
+        Private _returnTargetEntryID As Integer? = Nothing
+        Private _returnTargetLineNumber As Integer? = Nothing
 
         Public Sub New()
             InitializeComponent()
@@ -451,6 +453,38 @@ Namespace Sys_Hes_Anb.Forms
 
             dgvLedger.ResumeLayout()
             AlignJamLabels()
+
+            If _returnTargetEntryID.HasValue Then
+                Dim targetEntryId = _returnTargetEntryID.Value
+                Dim targetLineNo = _returnTargetLineNumber
+                Dim matchedRowIndex As Integer = -1
+
+                For rowIndex As Integer = 0 To dgvLedger.Rows.Count - 1
+                    Dim gr = dgvLedger.Rows(rowIndex)
+                    Dim tag = TryCast(gr.Tag, RowTagInfo)
+                    If tag IsNot Nothing Then
+                        If tag.EntryID = targetEntryId Then
+                            matchedRowIndex = rowIndex
+                            If targetLineNo.HasValue AndAlso tag.LineNumber.HasValue AndAlso tag.LineNumber.Value = targetLineNo.Value Then
+                                ' Exact match found
+                                Exit For
+                            End If
+                        End If
+                    End If
+                Next
+
+                If matchedRowIndex >= 0 Then
+                    Try
+                        dgvLedger.CurrentCell = dgvLedger.Rows(matchedRowIndex).Cells("colGoToDoc")
+                        dgvLedger.FirstDisplayedScrollingRowIndex = Math.Max(0, matchedRowIndex - 2)
+                        dgvLedger.Focus()
+                    Catch
+                    End Try
+                End If
+
+                _returnTargetEntryID = Nothing
+                _returnTargetLineNumber = Nothing
+            End If
         End Sub
 
         Private Sub BtnSelectAccountsPopup_Click(sender As Object, e As EventArgs) Handles btnSelectAccountsPopup.Click
@@ -826,6 +860,8 @@ Namespace Sys_Hes_Anb.Forms
 
                     Dim tag = TryCast(dgvLedger.Rows(e.RowIndex).Tag, RowTagInfo)
                     If tag IsNot Nothing Then
+                        _returnTargetEntryID = tag.EntryID
+                        _returnTargetLineNumber = tag.LineNumber
                         RaiseEvent EditDocumentRequested(tag.EntryID, tag.LineNumber)
                     End If
                 End If
@@ -1325,5 +1361,54 @@ Namespace Sys_Hes_Anb.Forms
                 Me.PriorSums = priorSums
             End Sub
         End Class
+
+        Private Sub btnExportExcel_Click(sender As Object, e As EventArgs) Handles btnExportExcel.Click
+            ExportGridToExcel(dgvLedger, "Ledger_Book")
+        End Sub
+
+        Private Sub ExportGridToExcel(dgv As DataGridView, defaultFileName As String)
+            Using sfd As New SaveFileDialog()
+                sfd.Filter = "Excel CSV (*.csv)|*.csv|All Files (*.*)|*.*"
+                sfd.Title = "خروجی اکسل"
+                sfd.FileName = defaultFileName & "_" & DateTime.Now.ToString("yyyyMMdd_HHmmss")
+                If sfd.ShowDialog() = DialogResult.OK Then
+                    Try
+                        Dim sb As New System.Text.StringBuilder()
+                        
+                        ' Write headers
+                        Dim headers As New List(Of String)()
+                        For Each col As DataGridViewColumn In dgv.Columns
+                            If col.Visible AndAlso Not TypeOf col Is DataGridViewButtonColumn Then
+                                headers.Add(col.HeaderText)
+                            End If
+                        Next
+                        sb.AppendLine(String.Join(",", headers))
+                        
+                        ' Write rows
+                        For Each row As DataGridViewRow In dgv.Rows
+                            If row.IsNewRow Then Continue For
+                            
+                            Dim cells As New List(Of String)()
+                            For Each col As DataGridViewColumn In dgv.Columns
+                                If col.Visible AndAlso Not TypeOf col Is DataGridViewButtonColumn Then
+                                    Dim val = Convert.ToString(row.Cells(col.Index).Value)
+                                    ' Escape double quotes and wrap in double quotes if it contains commas or quotes
+                                    If val.Contains(",") OrElse val.Contains("""") OrElse val.Contains(Microsoft.VisualBasic.ControlChars.CrLf) OrElse val.Contains(Microsoft.VisualBasic.ControlChars.Lf) Then
+                                        val = """" & val.Replace("""", """""") & """"
+                                    End If
+                                    cells.Add(val)
+                                End If
+                            Next
+                            sb.AppendLine(String.Join(",", cells))
+                        Next
+                        
+                        System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), System.Text.Encoding.UTF8)
+                        MessageBox.Show("خروجی اکسل با موفقیت ذخیره شد.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Catch ex As Exception
+                        MessageBox.Show("خطا در ذخیره فایل خروجی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Try
+                End If
+            End Using
+        End Sub
     End Class
 End Namespace

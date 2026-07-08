@@ -69,6 +69,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.cmbDescType = New System.Windows.Forms.ComboBox()
             Me.btnRefresh = New System.Windows.Forms.Button()
             Me.btnPrintDaftar = New System.Windows.Forms.Button()
+            Me.btnExportExcel = New System.Windows.Forms.Button()
             Me.lblDescType = New System.Windows.Forms.Label()
             Me.chkAggregate = New System.Windows.Forms.CheckBox()
             Me.chkRecalculateBalance = New System.Windows.Forms.CheckBox()
@@ -126,6 +127,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.pnlHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(235, Byte), Integer), CType(CType(243, Byte), Integer), CType(CType(255, Byte), Integer))
             Me.pnlHeader.Controls.Add(Me.lblAccountTitle)
+            Me.pnlHeader.Controls.Add(Me.btnExportExcel)
             Me.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top
             Me.pnlHeader.Location = New System.Drawing.Point(0, 0)
             Me.pnlHeader.Name = "pnlHeader"
@@ -262,6 +264,20 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnClearSearch.TabIndex = 8
             Me.btnClearSearch.Text = "پاک کردن جستجوها"
             Me.btnClearSearch.UseVisualStyleBackColor = False
+            '
+            'btnExportExcel
+            '
+            Me.btnExportExcel.BackColor = System.Drawing.Color.FromArgb(CType(CType(39, Byte), Integer), CType(CType(174, Byte), Integer), CType(CType(96, Byte), Integer))
+            Me.btnExportExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+            Me.btnExportExcel.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
+            Me.btnExportExcel.ForeColor = System.Drawing.Color.White
+            Me.btnExportExcel.Location = New System.Drawing.Point(1180, 8)
+            Me.btnExportExcel.Name = "btnExportExcel"
+            Me.btnExportExcel.Size = New System.Drawing.Size(130, 28)
+            Me.btnExportExcel.TabIndex = 5
+            Me.btnExportExcel.Text = "خروجی اکسل"
+            Me.btnExportExcel.UseVisualStyleBackColor = False
+            Me.btnExportExcel.BringToFront()
             '
             'pnlSerch
             '
@@ -695,5 +711,6 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents txtSrcTash As TextBox
         Friend WithEvents txtSrcBalance As TextBox
         Friend WithEvents btnClearSearch As Button
+        Friend WithEvents btnExportExcel As Button
     End Class
 End Namespace
