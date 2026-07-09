@@ -9,7 +9,7 @@ Imports Microsoft.VisualBasic.CompilerServices
 
 Namespace Sys_Hes_Anb.Forms
     <DesignerGenerated()>
-    Partial Class HesabdaryDaftarForm
+    Partial Class HesabdaryDaftarShenavarForm
         Inherits Form
 
         Private components As IContainer
@@ -49,6 +49,31 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents cmbDescType As ComboBox
         Friend WithEvents btnRefresh As Button
         Friend WithEvents btnPrintDaftar As Button
+        Friend WithEvents btnExportExcel As Button
+        Friend WithEvents pnlSerch As Panel
+        Friend WithEvents txtSrcRefNo As TextBox
+        Friend WithEvents txtSrcLineNo As TextBox
+        Friend WithEvents txtSrcDate As TextBox
+        Friend WithEvents txtSrcSharh As TextBox
+        Friend WithEvents txtSrcAccountCode As TextBox
+        Friend WithEvents txtSrcAccountName As TextBox
+        Friend WithEvents txtSrcDebit As TextBox
+        Friend WithEvents txtSrcCredit As TextBox
+        Friend WithEvents txtSrcTash As TextBox
+        Friend WithEvents txtSrcBalance As TextBox
+
+        Friend WithEvents colGoToDoc As DataGridViewButtonColumn
+        Friend WithEvents colRefNo As DataGridViewTextBoxColumn
+        Friend WithEvents colLineNo As DataGridViewTextBoxColumn
+        Friend WithEvents colDate As DataGridViewTextBoxColumn
+        Friend WithEvents colSharh As DataGridViewTextBoxColumn
+        Friend WithEvents colAccountCode As DataGridViewTextBoxColumn
+        Friend WithEvents colAccountName As DataGridViewTextBoxColumn
+        Friend WithEvents colDebit As DataGridViewTextBoxColumn
+        Friend WithEvents colCredit As DataGridViewTextBoxColumn
+        Friend WithEvents colTash As DataGridViewTextBoxColumn
+        Friend WithEvents colBalance As DataGridViewTextBoxColumn
+        Friend WithEvents btnClearSearch As Button
 
         <DebuggerStepThrough()>
         Private Sub InitializeComponent()
@@ -61,6 +86,7 @@ Namespace Sys_Hes_Anb.Forms
             Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
             Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
             Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+            Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
             Me.pnlHeader = New System.Windows.Forms.Panel()
             Me.lblAccountTitle = New System.Windows.Forms.Label()
             Me.btnExportExcel = New System.Windows.Forms.Button()
@@ -80,6 +106,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.txtSrcLineNo = New System.Windows.Forms.TextBox()
             Me.txtSrcDate = New System.Windows.Forms.TextBox()
             Me.txtSrcSharh = New System.Windows.Forms.TextBox()
+            Me.txtSrcAccountCode = New System.Windows.Forms.TextBox()
+            Me.txtSrcAccountName = New System.Windows.Forms.TextBox()
             Me.txtSrcDebit = New System.Windows.Forms.TextBox()
             Me.txtSrcCredit = New System.Windows.Forms.TextBox()
             Me.txtSrcTash = New System.Windows.Forms.TextBox()
@@ -90,6 +118,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.colLineNo = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colDate = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colSharh = New System.Windows.Forms.DataGridViewTextBoxColumn()
+            Me.colAccountCode = New System.Windows.Forms.DataGridViewTextBoxColumn()
+            Me.colAccountName = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colDebit = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colCredit = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colTash = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -126,8 +156,8 @@ Namespace Sys_Hes_Anb.Forms
             'pnlHeader
             '
             Me.pnlHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(235, Byte), Integer), CType(CType(243, Byte), Integer), CType(CType(255, Byte), Integer))
-            Me.pnlHeader.Controls.Add(Me.btnExportExcel)
             Me.pnlHeader.Controls.Add(Me.lblAccountTitle)
+            Me.pnlHeader.Controls.Add(Me.btnExportExcel)
             Me.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top
             Me.pnlHeader.Location = New System.Drawing.Point(0, 0)
             Me.pnlHeader.Name = "pnlHeader"
@@ -143,7 +173,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblAccountTitle.Name = "lblAccountTitle"
             Me.lblAccountTitle.Size = New System.Drawing.Size(1320, 44)
             Me.lblAccountTitle.TabIndex = 4
-            Me.lblAccountTitle.Text = "دفتر حساب"
+            Me.lblAccountTitle.Text = "دفتر تفصیلی شناور"
             Me.lblAccountTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
             '
             'btnExportExcel
@@ -152,12 +182,13 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnExportExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnExportExcel.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnExportExcel.ForeColor = System.Drawing.Color.White
-            Me.btnExportExcel.Location = New System.Drawing.Point(6, 8)
+            Me.btnExportExcel.Location = New System.Drawing.Point(1180, 8)
             Me.btnExportExcel.Name = "btnExportExcel"
             Me.btnExportExcel.Size = New System.Drawing.Size(130, 28)
             Me.btnExportExcel.TabIndex = 5
             Me.btnExportExcel.Text = "خروجی اکسل"
             Me.btnExportExcel.UseVisualStyleBackColor = False
+            Me.btnExportExcel.BringToFront()
             '
             'pnlTanzim
             '
@@ -196,7 +227,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnSelectAccountsPopup.Name = "btnSelectAccountsPopup"
             Me.btnSelectAccountsPopup.Size = New System.Drawing.Size(110, 28)
             Me.btnSelectAccountsPopup.TabIndex = 10
-            Me.btnSelectAccountsPopup.Text = "انتخاب سرفصل"
+            Me.btnSelectAccountsPopup.Text = "انتخاب شناور"
             Me.btnSelectAccountsPopup.UseVisualStyleBackColor = False
             '
             'cmbSelectedAccounts
@@ -285,6 +316,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlSerch.Controls.Add(Me.txtSrcLineNo)
             Me.pnlSerch.Controls.Add(Me.txtSrcDate)
             Me.pnlSerch.Controls.Add(Me.txtSrcSharh)
+            Me.pnlSerch.Controls.Add(Me.txtSrcAccountCode)
+            Me.pnlSerch.Controls.Add(Me.txtSrcAccountName)
             Me.pnlSerch.Controls.Add(Me.txtSrcDebit)
             Me.pnlSerch.Controls.Add(Me.txtSrcCredit)
             Me.pnlSerch.Controls.Add(Me.txtSrcTash)
@@ -323,33 +356,47 @@ Namespace Sys_Hes_Anb.Forms
             Me.txtSrcSharh.Size = New System.Drawing.Size(80, 22)
             Me.txtSrcSharh.TabIndex = 3
             '
+            'txtSrcAccountCode
+            '
+            Me.txtSrcAccountCode.Location = New System.Drawing.Point(0, 4)
+            Me.txtSrcAccountCode.Name = "txtSrcAccountCode"
+            Me.txtSrcAccountCode.Size = New System.Drawing.Size(80, 22)
+            Me.txtSrcAccountCode.TabIndex = 4
+            '
+            'txtSrcAccountName
+            '
+            Me.txtSrcAccountName.Location = New System.Drawing.Point(0, 4)
+            Me.txtSrcAccountName.Name = "txtSrcAccountName"
+            Me.txtSrcAccountName.Size = New System.Drawing.Size(80, 22)
+            Me.txtSrcAccountName.TabIndex = 5
+            '
             'txtSrcDebit
             '
             Me.txtSrcDebit.Location = New System.Drawing.Point(0, 4)
             Me.txtSrcDebit.Name = "txtSrcDebit"
             Me.txtSrcDebit.Size = New System.Drawing.Size(80, 22)
-            Me.txtSrcDebit.TabIndex = 4
+            Me.txtSrcDebit.TabIndex = 6
             '
             'txtSrcCredit
             '
             Me.txtSrcCredit.Location = New System.Drawing.Point(0, 4)
             Me.txtSrcCredit.Name = "txtSrcCredit"
             Me.txtSrcCredit.Size = New System.Drawing.Size(80, 22)
-            Me.txtSrcCredit.TabIndex = 5
+            Me.txtSrcCredit.TabIndex = 7
             '
             'txtSrcTash
             '
             Me.txtSrcTash.Location = New System.Drawing.Point(0, 4)
             Me.txtSrcTash.Name = "txtSrcTash"
             Me.txtSrcTash.Size = New System.Drawing.Size(80, 22)
-            Me.txtSrcTash.TabIndex = 6
+            Me.txtSrcTash.TabIndex = 8
             '
             'txtSrcBalance
             '
             Me.txtSrcBalance.Location = New System.Drawing.Point(0, 4)
             Me.txtSrcBalance.Name = "txtSrcBalance"
             Me.txtSrcBalance.Size = New System.Drawing.Size(80, 22)
-            Me.txtSrcBalance.TabIndex = 7
+            Me.txtSrcBalance.TabIndex = 9
             '
             'dgvLedger
             '
@@ -368,7 +415,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.dgvLedger.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
             Me.dgvLedger.ColumnHeadersHeight = 30
             Me.dgvLedger.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-            Me.dgvLedger.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colGoToDoc, Me.colRefNo, Me.colLineNo, Me.colDate, Me.colSharh, Me.colDebit, Me.colCredit, Me.colTash, Me.colBalance})
+            Me.dgvLedger.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colGoToDoc, Me.colRefNo, Me.colLineNo, Me.colDate, Me.colSharh, Me.colAccountCode, Me.colAccountName, Me.colDebit, Me.colCredit, Me.colTash, Me.colBalance})
             Me.dgvLedger.Dock = System.Windows.Forms.DockStyle.Fill
             Me.dgvLedger.EnableHeadersVisualStyles = False
             Me.dgvLedger.GridColor = System.Drawing.Color.LightSteelBlue
@@ -403,18 +450,19 @@ Namespace Sys_Hes_Anb.Forms
             '
             DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
             Me.colLineNo.DefaultCellStyle = DataGridViewCellStyle3
-            Me.colLineNo.HeaderText = "شماره ردیف"
+            Me.colLineNo.HeaderText = "ردیف"
             Me.colLineNo.Name = "colLineNo"
             Me.colLineNo.ReadOnly = True
-            Me.colLineNo.Width = 70
+            Me.colLineNo.Width = 50
             '
             'colDate
             '
             DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
             Me.colDate.DefaultCellStyle = DataGridViewCellStyle4
-            Me.colDate.HeaderText = "تاریخ سند"
+            Me.colDate.HeaderText = "تاریخ"
             Me.colDate.Name = "colDate"
             Me.colDate.ReadOnly = True
+            Me.colDate.Width = 85
             '
             'colSharh
             '
@@ -422,51 +470,66 @@ Namespace Sys_Hes_Anb.Forms
             DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
             DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
             Me.colSharh.DefaultCellStyle = DataGridViewCellStyle5
-            Me.colSharh.HeaderText = "شرح ردیف"
+            Me.colSharh.HeaderText = "شرح تراکنش"
             Me.colSharh.Name = "colSharh"
             Me.colSharh.ReadOnly = True
             '
+            'colAccountCode
+            '
+            DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+            Me.colAccountCode.DefaultCellStyle = DataGridViewCellStyle6
+            Me.colAccountCode.HeaderText = "کد حساب"
+            Me.colAccountCode.Name = "colAccountCode"
+            Me.colAccountCode.ReadOnly = True
+            Me.colAccountCode.Width = 100
+            '
+            'colAccountName
+            '
+            DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+            Me.colAccountName.DefaultCellStyle = DataGridViewCellStyle7
+            Me.colAccountName.HeaderText = "حسابداری متقابل"
+            Me.colAccountName.Name = "colAccountName"
+            Me.colAccountName.ReadOnly = True
+            Me.colAccountName.Width = 180
+            '
             'colDebit
             '
-            DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-            Me.colDebit.DefaultCellStyle = DataGridViewCellStyle6
-            Me.colDebit.HeaderText = "بدهکار"
+            DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+            Me.colDebit.DefaultCellStyle = DataGridViewCellStyle8
+            Me.colDebit.HeaderText = "بدهکار (واریز)"
             Me.colDebit.Name = "colDebit"
             Me.colDebit.ReadOnly = True
-            Me.colDebit.Width = 120
+            Me.colDebit.Width = 115
             '
             'colCredit
             '
-            DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-            Me.colCredit.DefaultCellStyle = DataGridViewCellStyle7
-            Me.colCredit.HeaderText = "بستانکار"
+            DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+            Me.colCredit.DefaultCellStyle = DataGridViewCellStyle9
+            Me.colCredit.HeaderText = "بستانکار (برداشت)"
             Me.colCredit.Name = "colCredit"
             Me.colCredit.ReadOnly = True
-            Me.colCredit.Width = 120
+            Me.colCredit.Width = 115
             '
             'colTash
             '
-            DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-            DataGridViewCellStyle8.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold)
-            Me.colTash.DefaultCellStyle = DataGridViewCellStyle8
-            Me.colTash.HeaderText = "تشخیص"
+            DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+            Me.colTash.DefaultCellStyle = DataGridViewCellStyle10
+            Me.colTash.HeaderText = "تش"
             Me.colTash.Name = "colTash"
             Me.colTash.ReadOnly = True
-            Me.colTash.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
-            Me.colTash.Width = 80
+            Me.colTash.Width = 40
             '
             'colBalance
             '
-            DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-            Me.colBalance.DefaultCellStyle = DataGridViewCellStyle9
-            Me.colBalance.HeaderText = "مانده حساب"
+            Me.colBalance.DefaultCellStyle = DataGridViewCellStyle8
+            Me.colBalance.HeaderText = "مانده"
             Me.colBalance.Name = "colBalance"
             Me.colBalance.ReadOnly = True
-            Me.colBalance.Width = 130
+            Me.colBalance.Width = 125
             '
             'pnlJamDaftar
             '
-            Me.pnlJamDaftar.BackColor = System.Drawing.Color.FromArgb(CType(CType(235, Byte), Integer), CType(CType(243, Byte), Integer), CType(CType(255, Byte), Integer))
+            Me.pnlJamDaftar.BackColor = System.Drawing.Color.FromArgb(CType(CType(215, Byte), Integer), CType(CType(228, Byte), Integer), CType(CType(245, Byte), Integer))
             Me.pnlJamDaftar.Controls.Add(Me.lblJamTitle)
             Me.pnlJamDaftar.Controls.Add(Me.lblSumDebit)
             Me.pnlJamDaftar.Controls.Add(Me.lblSumCredit)
@@ -478,38 +541,38 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlJamDaftar.Location = New System.Drawing.Point(0, 714)
             Me.pnlJamDaftar.Name = "pnlJamDaftar"
             Me.pnlJamDaftar.Size = New System.Drawing.Size(1320, 35)
-            Me.pnlJamDaftar.TabIndex = 2
+            Me.pnlJamDaftar.TabIndex = 3
             '
             'lblJamTitle
             '
             Me.lblJamTitle.Location = New System.Drawing.Point(0, 8)
             Me.lblJamTitle.Name = "lblJamTitle"
-            Me.lblJamTitle.Size = New System.Drawing.Size(100, 20)
+            Me.lblJamTitle.Size = New System.Drawing.Size(100, 18)
             Me.lblJamTitle.TabIndex = 0
-            Me.lblJamTitle.Text = "جمع:"
+            Me.lblJamTitle.Text = "جمع کل :"
             Me.lblJamTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight
             '
             'lblSumDebit
             '
             Me.lblSumDebit.Location = New System.Drawing.Point(0, 8)
             Me.lblSumDebit.Name = "lblSumDebit"
-            Me.lblSumDebit.Size = New System.Drawing.Size(100, 20)
+            Me.lblSumDebit.Size = New System.Drawing.Size(115, 18)
             Me.lblSumDebit.TabIndex = 1
-            Me.lblSumDebit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            Me.lblSumDebit.TextAlign = System.Drawing.ContentAlignment.MiddleRight
             '
             'lblSumCredit
             '
             Me.lblSumCredit.Location = New System.Drawing.Point(0, 8)
             Me.lblSumCredit.Name = "lblSumCredit"
-            Me.lblSumCredit.Size = New System.Drawing.Size(100, 20)
+            Me.lblSumCredit.Size = New System.Drawing.Size(115, 18)
             Me.lblSumCredit.TabIndex = 2
-            Me.lblSumCredit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            Me.lblSumCredit.TextAlign = System.Drawing.ContentAlignment.MiddleRight
             '
             'lblTash
             '
             Me.lblTash.Location = New System.Drawing.Point(0, 8)
             Me.lblTash.Name = "lblTash"
-            Me.lblTash.Size = New System.Drawing.Size(100, 20)
+            Me.lblTash.Size = New System.Drawing.Size(40, 18)
             Me.lblTash.TabIndex = 3
             Me.lblTash.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
             '
@@ -517,9 +580,9 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.lblSumBalance.Location = New System.Drawing.Point(0, 8)
             Me.lblSumBalance.Name = "lblSumBalance"
-            Me.lblSumBalance.Size = New System.Drawing.Size(100, 20)
+            Me.lblSumBalance.Size = New System.Drawing.Size(125, 18)
             Me.lblSumBalance.TabIndex = 4
-            Me.lblSumBalance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            Me.lblSumBalance.TextAlign = System.Drawing.ContentAlignment.MiddleRight
             '
             'pnlFilters
             '
@@ -547,7 +610,7 @@ Namespace Sys_Hes_Anb.Forms
             'txtFromDoc
             '
             Me.txtFromDoc.Enabled = False
-            Me.txtFromDoc.Location = New System.Drawing.Point(694, 9)
+            Me.txtFromDoc.Location = New System.Drawing.Point(766, 9)
             Me.txtFromDoc.Name = "txtFromDoc"
             Me.txtFromDoc.Size = New System.Drawing.Size(70, 22)
             Me.txtFromDoc.TabIndex = 9
@@ -555,14 +618,14 @@ Namespace Sys_Hes_Anb.Forms
             'txtToDoc
             '
             Me.txtToDoc.Enabled = False
-            Me.txtToDoc.Location = New System.Drawing.Point(564, 9)
+            Me.txtToDoc.Location = New System.Drawing.Point(668, 9)
             Me.txtToDoc.Name = "txtToDoc"
             Me.txtToDoc.Size = New System.Drawing.Size(70, 22)
             Me.txtToDoc.TabIndex = 11
             '
             'chkFilterByDate
             '
-            Me.chkFilterByDate.Location = New System.Drawing.Point(379, 9)
+            Me.chkFilterByDate.Location = New System.Drawing.Point(480, 9)
             Me.chkFilterByDate.Name = "chkFilterByDate"
             Me.chkFilterByDate.Size = New System.Drawing.Size(125, 21)
             Me.chkFilterByDate.TabIndex = 0
@@ -570,7 +633,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             'lblFromDate
             '
-            Me.lblFromDate.Location = New System.Drawing.Point(320, 12)
+            Me.lblFromDate.Location = New System.Drawing.Point(421, 12)
             Me.lblFromDate.Name = "lblFromDate"
             Me.lblFromDate.Size = New System.Drawing.Size(48, 14)
             Me.lblFromDate.TabIndex = 1
@@ -579,7 +642,7 @@ Namespace Sys_Hes_Anb.Forms
             'txtFromDate
             '
             Me.txtFromDate.Enabled = False
-            Me.txtFromDate.Location = New System.Drawing.Point(202, 9)
+            Me.txtFromDate.Location = New System.Drawing.Point(303, 9)
             Me.txtFromDate.Mask = "0000/00/00"
             Me.txtFromDate.Name = "txtFromDate"
             Me.txtFromDate.Size = New System.Drawing.Size(80, 22)
@@ -588,7 +651,7 @@ Namespace Sys_Hes_Anb.Forms
             'btnFromDate
             '
             Me.btnFromDate.Enabled = False
-            Me.btnFromDate.Location = New System.Drawing.Point(287, 9)
+            Me.btnFromDate.Location = New System.Drawing.Point(388, 9)
             Me.btnFromDate.Name = "btnFromDate"
             Me.btnFromDate.Size = New System.Drawing.Size(28, 22)
             Me.btnFromDate.TabIndex = 3
@@ -596,7 +659,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             'lblToDate
             '
-            Me.lblToDate.Location = New System.Drawing.Point(149, 12)
+            Me.lblToDate.Location = New System.Drawing.Point(250, 12)
             Me.lblToDate.Name = "lblToDate"
             Me.lblToDate.Size = New System.Drawing.Size(48, 14)
             Me.lblToDate.TabIndex = 4
@@ -605,7 +668,7 @@ Namespace Sys_Hes_Anb.Forms
             'txtToDate
             '
             Me.txtToDate.Enabled = False
-            Me.txtToDate.Location = New System.Drawing.Point(32, 9)
+            Me.txtToDate.Location = New System.Drawing.Point(133, 9)
             Me.txtToDate.Mask = "0000/00/00"
             Me.txtToDate.Name = "txtToDate"
             Me.txtToDate.Size = New System.Drawing.Size(80, 22)
@@ -614,7 +677,7 @@ Namespace Sys_Hes_Anb.Forms
             'btnToDate
             '
             Me.btnToDate.Enabled = False
-            Me.btnToDate.Location = New System.Drawing.Point(117, 9)
+            Me.btnToDate.Location = New System.Drawing.Point(218, 9)
             Me.btnToDate.Name = "btnToDate"
             Me.btnToDate.Size = New System.Drawing.Size(28, 22)
             Me.btnToDate.TabIndex = 6
@@ -622,7 +685,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             'chkFilterByDoc
             '
-            Me.chkFilterByDoc.Location = New System.Drawing.Point(820, 9)
+            Me.chkFilterByDoc.Location = New System.Drawing.Point(861, 9)
             Me.chkFilterByDoc.Name = "chkFilterByDoc"
             Me.chkFilterByDoc.Size = New System.Drawing.Size(140, 21)
             Me.chkFilterByDoc.TabIndex = 7
@@ -630,23 +693,23 @@ Namespace Sys_Hes_Anb.Forms
             '
             'lblFromDoc
             '
-            Me.lblFromDoc.Location = New System.Drawing.Point(767, 12)
+            Me.lblFromDoc.Location = New System.Drawing.Point(808, 12)
             Me.lblFromDoc.Name = "lblFromDoc"
-            Me.lblFromDoc.Size = New System.Drawing.Size(48, 14)
+            Me.lblFromDoc.Size = New System.Drawing.Size(50, 14)
             Me.lblFromDoc.TabIndex = 8
-            Me.lblFromDoc.Text = "از سند:"
+            Me.lblFromDoc.Text = "از شماره:"
             '
             'lblToDoc
             '
-            Me.lblToDoc.Location = New System.Drawing.Point(637, 12)
+            Me.lblToDoc.Location = New System.Drawing.Point(709, 12)
             Me.lblToDoc.Name = "lblToDoc"
-            Me.lblToDoc.Size = New System.Drawing.Size(48, 14)
+            Me.lblToDoc.Size = New System.Drawing.Size(50, 14)
             Me.lblToDoc.TabIndex = 10
-            Me.lblToDoc.Text = "تا سند:"
+            Me.lblToDoc.Text = "تا شماره:"
             '
             'chkFilterByStatus
             '
-            Me.chkFilterByStatus.Location = New System.Drawing.Point(1159, 9)
+            Me.chkFilterByStatus.Location = New System.Drawing.Point(1193, 9)
             Me.chkFilterByStatus.Name = "chkFilterByStatus"
             Me.chkFilterByStatus.Size = New System.Drawing.Size(115, 21)
             Me.chkFilterByStatus.TabIndex = 12
@@ -657,12 +720,12 @@ Namespace Sys_Hes_Anb.Forms
             Me.cmbStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
             Me.cmbStatus.Enabled = False
             Me.cmbStatus.Items.AddRange(New Object() {"موقت", "دائم"})
-            Me.cmbStatus.Location = New System.Drawing.Point(1052, 9)
+            Me.cmbStatus.Location = New System.Drawing.Point(1086, 9)
             Me.cmbStatus.Name = "cmbStatus"
             Me.cmbStatus.Size = New System.Drawing.Size(100, 22)
             Me.cmbStatus.TabIndex = 13
             '
-            'HesabdaryDaftarForm
+            'HesabdaryDaftarShenavarForm
             '
             Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 14.0!)
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -674,11 +737,11 @@ Namespace Sys_Hes_Anb.Forms
             Me.Controls.Add(Me.pnlTanzim)
             Me.Controls.Add(Me.pnlHeader)
             Me.Font = New System.Drawing.Font("Tahoma", 9.0!)
-            Me.Name = "HesabdaryDaftarForm"
+            Me.Name = "HesabdaryDaftarShenavarForm"
             Me.RightToLeft = System.Windows.Forms.RightToLeft.Yes
             Me.RightToLeftLayout = True
             Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-            Me.Text = "دفتر حساب"
+            Me.Text = "دفتر شناور"
             Me.pnlHeader.ResumeLayout(False)
             Me.pnlTanzim.ResumeLayout(False)
             Me.pnlSerch.ResumeLayout(False)
@@ -690,26 +753,5 @@ Namespace Sys_Hes_Anb.Forms
             Me.ResumeLayout(False)
 
         End Sub
-
-        Friend WithEvents colGoToDoc As DataGridViewButtonColumn
-        Friend WithEvents colRefNo As DataGridViewTextBoxColumn
-        Friend WithEvents colLineNo As DataGridViewTextBoxColumn
-        Friend WithEvents colDate As DataGridViewTextBoxColumn
-        Friend WithEvents colSharh As DataGridViewTextBoxColumn
-        Friend WithEvents colDebit As DataGridViewTextBoxColumn
-        Friend WithEvents colCredit As DataGridViewTextBoxColumn
-        Friend WithEvents colTash As DataGridViewTextBoxColumn
-        Friend WithEvents colBalance As DataGridViewTextBoxColumn
-        Friend WithEvents pnlSerch As Panel
-        Friend WithEvents txtSrcRefNo As TextBox
-        Friend WithEvents txtSrcLineNo As TextBox
-        Friend WithEvents txtSrcDate As TextBox
-        Friend WithEvents txtSrcSharh As TextBox
-        Friend WithEvents txtSrcDebit As TextBox
-        Friend WithEvents txtSrcCredit As TextBox
-        Friend WithEvents txtSrcTash As TextBox
-        Friend WithEvents txtSrcBalance As TextBox
-        Friend WithEvents btnClearSearch As Button
-        Friend WithEvents btnExportExcel As Button
     End Class
 End Namespace

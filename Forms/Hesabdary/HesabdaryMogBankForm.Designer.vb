@@ -1221,7 +1221,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnRunReconciliation.ForeColor = System.Drawing.Color.White
             Me.btnRunReconciliation.Location = New System.Drawing.Point(16, 20)
             Me.btnRunReconciliation.Name = "btnRunReconciliation"
-            Me.btnRunReconciliation.Size = New System.Drawing.Size(150, 50)
+            Me.btnRunReconciliation.Size = New System.Drawing.Size(134, 50)
             Me.btnRunReconciliation.TabIndex = 3
             Me.btnRunReconciliation.Text = "تهیه مغایرت بانکی"
             Me.btnRunReconciliation.UseVisualStyleBackColor = False
@@ -1236,9 +1236,9 @@ Namespace Sys_Hes_Anb.Forms
             Me.grpDateOptions.Controls.Add(Me.rbCurrentYear)
             Me.grpDateOptions.Controls.Add(Me.rbAllYears)
             Me.grpDateOptions.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
-            Me.grpDateOptions.Location = New System.Drawing.Point(210, 5)
+            Me.grpDateOptions.Location = New System.Drawing.Point(169, 6)
             Me.grpDateOptions.Name = "grpDateOptions"
-            Me.grpDateOptions.Size = New System.Drawing.Size(580, 75)
+            Me.grpDateOptions.Size = New System.Drawing.Size(621, 75)
             Me.grpDateOptions.TabIndex = 2
             Me.grpDateOptions.TabStop = False
             Me.grpDateOptions.Text = "بازه تاریخ مغایرت‌گیری"
@@ -1247,7 +1247,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.txtToDate.Enabled = False
             Me.txtToDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.txtToDate.Location = New System.Drawing.Point(15, 43)
+            Me.txtToDate.Location = New System.Drawing.Point(24, 33)
             Me.txtToDate.Name = "txtToDate"
             Me.txtToDate.Size = New System.Drawing.Size(90, 21)
             Me.txtToDate.TabIndex = 6
@@ -1257,7 +1257,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.lblToDate.AutoSize = True
             Me.lblToDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblToDate.Location = New System.Drawing.Point(110, 46)
+            Me.lblToDate.Location = New System.Drawing.Point(119, 36)
             Me.lblToDate.Name = "lblToDate"
             Me.lblToDate.Size = New System.Drawing.Size(44, 14)
             Me.lblToDate.TabIndex = 5
@@ -1267,7 +1267,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.txtFromDate.Enabled = False
             Me.txtFromDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.txtFromDate.Location = New System.Drawing.Point(165, 43)
+            Me.txtFromDate.Location = New System.Drawing.Point(174, 33)
             Me.txtFromDate.Name = "txtFromDate"
             Me.txtFromDate.Size = New System.Drawing.Size(90, 21)
             Me.txtFromDate.TabIndex = 4
@@ -1277,7 +1277,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.lblFromDate.AutoSize = True
             Me.lblFromDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblFromDate.Location = New System.Drawing.Point(260, 46)
+            Me.lblFromDate.Location = New System.Drawing.Point(269, 36)
             Me.lblFromDate.Name = "lblFromDate"
             Me.lblFromDate.Size = New System.Drawing.Size(44, 14)
             Me.lblFromDate.TabIndex = 3
@@ -1287,7 +1287,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.rbCustomRange.AutoSize = True
             Me.rbCustomRange.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.rbCustomRange.Location = New System.Drawing.Point(320, 25)
+            Me.rbCustomRange.Location = New System.Drawing.Point(325, 33)
             Me.rbCustomRange.Name = "rbCustomRange"
             Me.rbCustomRange.Size = New System.Drawing.Size(83, 18)
             Me.rbCustomRange.TabIndex = 2
@@ -1298,7 +1298,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.rbCurrentYear.AutoSize = True
             Me.rbCurrentYear.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.rbCurrentYear.Location = New System.Drawing.Point(415, 25)
+            Me.rbCurrentYear.Location = New System.Drawing.Point(420, 33)
             Me.rbCurrentYear.Name = "rbCurrentYear"
             Me.rbCurrentYear.Size = New System.Drawing.Size(79, 18)
             Me.rbCurrentYear.TabIndex = 1
@@ -1310,7 +1310,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.rbAllYears.AutoSize = True
             Me.rbAllYears.Checked = True
             Me.rbAllYears.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.rbAllYears.Location = New System.Drawing.Point(500, 25)
+            Me.rbAllYears.Location = New System.Drawing.Point(505, 33)
             Me.rbAllYears.Name = "rbAllYears"
             Me.rbAllYears.Size = New System.Drawing.Size(86, 18)
             Me.rbAllYears.TabIndex = 0

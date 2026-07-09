@@ -323,7 +323,7 @@ Namespace Sys_Hes_Anb.Forms
             detailsForm.Show()
         End Sub
 
-        Public Sub OpenDocumentForEdit(entryId As Integer, targetLineNumber As Integer?, returnToLedger As Boolean)
+        Public Sub OpenDocumentForEdit(entryId As Integer, targetLineNumber As Integer?, returnToLedger As Boolean, Optional returnToDaftarShenavar As Boolean = False)
             Dim parentContainer = Me.Parent   ' TabPage
             If parentContainer IsNot Nothing Then
                 ' بستن هرگونه فرم جزئیات باز قبلی در تب جاری
@@ -360,6 +360,11 @@ Namespace Sys_Hes_Anb.Forms
                         Dim parentForm = TryCast(Application.OpenForms("HesabdaryForm"), HesabdaryForm)
                         If parentForm IsNot Nothing Then
                             parentForm.SwitchToLedgerTabAndRefresh()
+                        End If
+                    ElseIf returnToDaftarShenavar Then
+                        Dim parentForm = TryCast(Application.OpenForms("HesabdaryForm"), HesabdaryForm)
+                        If parentForm IsNot Nothing Then
+                            parentForm.SwitchToDaftarShenavarTabAndRefresh()
                         End If
                     End If
                 End Sub

@@ -20,6 +20,8 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents tabBankReconciliation As TabPage
         Friend WithEvents tabTrial As TabPage
         Friend WithEvents tabLedger As TabPage
+        Friend WithEvents tabTarazShenavar As TabPage
+        Friend WithEvents tabDaftarShenavar As TabPage
         Friend WithEvents tabReports As TabPage
         Friend WithEvents lblBankReconciliation As Label
         Friend WithEvents lblReports As Label
@@ -35,6 +37,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblBankReconciliation = New Label()
             Me.tabTrial = New TabPage()
             Me.tabLedger = New TabPage()
+            Me.tabTarazShenavar = New TabPage()
+            Me.tabDaftarShenavar = New TabPage()
             Me.tabReports = New TabPage()
             Me.lblReports = New Label()
             Me.tabs.SuspendLayout()
@@ -113,6 +117,24 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabLedger.Size = New Size(1312, 722)
             Me.tabLedger.Text = "دفتر حساب"
             Me.tabLedger.UseVisualStyleBackColor = True
+            '
+            ' tabTarazShenavar
+            '
+            Me.tabTarazShenavar.Location = New Point(4, 23)
+            Me.tabTarazShenavar.Name = "tabTarazShenavar"
+            Me.tabTarazShenavar.Padding = New Padding(3)
+            Me.tabTarazShenavar.Size = New Size(1312, 722)
+            Me.tabTarazShenavar.Text = "تراز شناور"
+            Me.tabTarazShenavar.UseVisualStyleBackColor = True
+            '
+            ' tabDaftarShenavar
+            '
+            Me.tabDaftarShenavar.Location = New Point(4, 23)
+            Me.tabDaftarShenavar.Name = "tabDaftarShenavar"
+            Me.tabDaftarShenavar.Padding = New Padding(3)
+            Me.tabDaftarShenavar.Size = New Size(1312, 722)
+            Me.tabDaftarShenavar.Text = "دفتر شناور"
+            Me.tabDaftarShenavar.UseVisualStyleBackColor = True
 
             '
             ' lblReports
@@ -143,6 +165,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabs.Controls.Add(Me.tabBankReconciliation)
             Me.tabs.Controls.Add(Me.tabTrial)
             Me.tabs.Controls.Add(Me.tabLedger)
+            Me.tabs.Controls.Add(Me.tabTarazShenavar)
+            Me.tabs.Controls.Add(Me.tabDaftarShenavar)
             Me.tabs.Controls.Add(Me.tabReports)
 
             Me.Controls.Add(Me.tabs)

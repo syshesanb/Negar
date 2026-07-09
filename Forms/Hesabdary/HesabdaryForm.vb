@@ -43,6 +43,8 @@ Namespace Sys_Hes_Anb.Forms
         Private _sanad1Form As HesabdarySanad1Form
         Private _trialForm As HesabdaryTarazForm
         Private _ledgerForm As HesabdaryDaftarForm
+        Private _tarazShenavarForm As HesabdaryTarazShenavarForm
+        Private _daftarShenavarForm As HesabdaryDaftarShenavarForm
 
         Private Sub LoadAllTabs()
             Using progress As New ProgressForm()
@@ -56,6 +58,8 @@ Namespace Sys_Hes_Anb.Forms
                 tabs.TabPages.Add(tabBankReconciliation)
                 tabs.TabPages.Add(tabTrial)
                 tabs.TabPages.Add(tabLedger)
+                tabs.TabPages.Add(tabTarazShenavar)
+                tabs.TabPages.Add(tabDaftarShenavar)
                 tabs.TabPages.Add(tabReports)
 
                 ApplySecurity()
@@ -92,6 +96,16 @@ Namespace Sys_Hes_Anb.Forms
                     _ledgerForm = New HesabdaryDaftarForm()
                     HostForm(tabLedger, _ledgerForm)
                 End If
+                
+                If tabs.TabPages.Contains(tabTarazShenavar) Then
+                    _tarazShenavarForm = New HesabdaryTarazShenavarForm()
+                    HostForm(tabTarazShenavar, _tarazShenavarForm)
+                End If
+
+                If tabs.TabPages.Contains(tabDaftarShenavar) Then
+                    _daftarShenavarForm = New HesabdaryDaftarShenavarForm()
+                    HostForm(tabDaftarShenavar, _daftarShenavarForm)
+                End If
                 progress.UpdateProgress(90, "اتمام تنظیم دسترسی‌های حسابداری...")
 
                 If _trialForm IsNot Nothing AndAlso _ledgerForm IsNot Nothing Then
@@ -99,6 +113,12 @@ Namespace Sys_Hes_Anb.Forms
                 End If
                 If _ledgerForm IsNot Nothing AndAlso _sanad1Form IsNot Nothing Then
                     AddHandler _ledgerForm.EditDocumentRequested, AddressOf OnLedgerEditDocumentRequested
+                End If
+                If _tarazShenavarForm IsNot Nothing AndAlso _daftarShenavarForm IsNot Nothing Then
+                    AddHandler _tarazShenavarForm.ShenavarSelected, AddressOf OnTarazShenavarSelected
+                End If
+                If _daftarShenavarForm IsNot Nothing AndAlso _sanad1Form IsNot Nothing Then
+                    AddHandler _daftarShenavarForm.EditDocumentRequested, AddressOf OnDaftarShenavarEditDocumentRequested
                 End If
 
                 progress.UpdateProgress(100, "اتمام بارگذاری فرم حسابداری")
@@ -123,9 +143,11 @@ Namespace Sys_Hes_Anb.Forms
             End If
             If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalance)) Then
                 tabs.TabPages.Remove(tabTrial)
+                tabs.TabPages.Remove(tabTarazShenavar)
             End If
             If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingLedger)) Then
                 tabs.TabPages.Remove(tabLedger)
+                tabs.TabPages.Remove(tabDaftarShenavar)
             End If
             If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingReports)) Then
                 tabs.TabPages.Remove(tabReports)
@@ -147,6 +169,21 @@ Namespace Sys_Hes_Anb.Forms
             _ledgerForm.RefreshLedger()
         End Sub
 
+        Private Sub OnTarazShenavarSelected(shenavarId As Integer, shenavarCode As String, shenavarName As String, hasChildren As Boolean, allIds As List(Of Integer))
+            tabs.SelectedTab = tabDaftarShenavar
+            _daftarShenavarForm.LoadShenavar(shenavarId, shenavarCode, shenavarName, hasChildren, allIds)
+        End Sub
+
+        Private Sub OnDaftarShenavarEditDocumentRequested(entryId As Integer, lineNumber As Integer?)
+            tabs.SelectedTab = tabEntry
+            _sanad1Form.OpenDocumentForEdit(entryId, lineNumber, returnToLedger:=False, returnToDaftarShenavar:=True)
+        End Sub
+
+        Public Sub SwitchToDaftarShenavarTabAndRefresh()
+            tabs.SelectedTab = tabDaftarShenavar
+            _daftarShenavarForm.RefreshLedger()
+        End Sub
+
         Private Sub Tabs_SelectedIndexChanged(sender As Object, e As EventArgs) Handles tabs.SelectedIndexChanged
             If tabs.SelectedTab Is tabAccounts AndAlso _accountsForm IsNot Nothing Then
                 _accountsForm.RefreshData()
@@ -158,6 +195,10 @@ Namespace Sys_Hes_Anb.Forms
                 _trialForm.RefreshData()
             ElseIf tabs.SelectedTab Is tabLedger AndAlso _ledgerForm IsNot Nothing Then
                 _ledgerForm.RefreshLedger()
+            ElseIf tabs.SelectedTab Is tabTarazShenavar AndAlso _tarazShenavarForm IsNot Nothing Then
+                _tarazShenavarForm.RefreshData()
+            ElseIf tabs.SelectedTab Is tabDaftarShenavar AndAlso _daftarShenavarForm IsNot Nothing Then
+                _daftarShenavarForm.RefreshLedger()
             End If
         End Sub
 

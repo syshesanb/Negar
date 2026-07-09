@@ -1362,5 +1362,422 @@ Namespace Sys_Hes_Anb.Business
 
             Return Tuple.Create(0D, 0D)
         End Function
+
+        Public Function GetAllShenavarsWithDirectTotals(
+            Optional fromDateStr As String = Nothing,
+            Optional toDateStr As String = Nothing,
+            Optional fromDoc As Integer? = Nothing,
+            Optional toDoc As Integer? = Nothing,
+            Optional docStatus As String = Nothing
+        ) As DataTable
+            If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
+                Return New DataTable()
+            End If
+            If SessionContext.CurrentUser Is Nothing Then Return New DataTable()
+
+            Dim companyId = SessionContext.CurrentCompanyID.Value
+            Dim fyId = SessionContext.CurrentFiscalYearID.Value
+
+            Dim shenavars = Sql.ExecuteTable(
+                "SELECT ShenavarID AS AccountID, AccountCode, AccountName, ParentShenavarID AS ParentAccountID, 'Bedehkar' AS AccountNature FROM shenavar " &
+                "WHERE CompanyID = ? ORDER BY AccountCode",
+                companyId)
+
+            ' 1. Build base filters
+            Dim baseFilters As New List(Of String)()
+            Dim baseParams As New List(Of Object)()
+
+            baseFilters.Add("e.CompanyID = ?")
+            baseParams.Add(companyId)
+
+            baseFilters.Add("e.FiscalYearID = ?")
+            baseParams.Add(fyId)
+
+            If Not String.IsNullOrEmpty(docStatus) Then
+                If docStatus = "موقت" Then
+                    baseFilters.Add("(e.VazeiatSanad LIKE ? OR e.VazeiatSanad IS NULL) AND e.VazeiatSanad <> 'سند موقت - حذف موقت'")
+                    baseParams.Add("%موقت%")
+                ElseIf docStatus = "دائم" Then
+                    baseFilters.Add("e.VazeiatSanad LIKE ?")
+                    baseParams.Add("%دائم%")
+                Else
+                    baseFilters.Add("(e.VazeiatSanad <> 'سند موقت - حذف موقت' OR e.VazeiatSanad IS NULL)")
+                End If
+            Else
+                baseFilters.Add("(e.VazeiatSanad <> 'سند موقت - حذف موقت' OR e.VazeiatSanad IS NULL)")
+            End If
+
+            If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
+                baseFilters.Add("e.CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ")")
+            End If
+
+            ' 2. Parse date/doc filter boundaries
+            Dim fromDate As DateTime? = Nothing
+            Dim toDate As DateTime? = Nothing
+
+            If Not String.IsNullOrEmpty(fromDateStr) Then
+                fromDate = PersianDateHelper.ParsePersianDate(fromDateStr)
+            End If
+
+            If Not String.IsNullOrEmpty(toDateStr) Then
+                toDate = PersianDateHelper.ParsePersianDate(toDateStr)
+            End If
+
+            If fromDate.HasValue AndAlso toDate.HasValue AndAlso fromDate.Value > toDate.Value Then
+                Dim tempDate = fromDate
+                fromDate = toDate
+                toDate = tempDate
+            End If
+
+            If fromDoc.HasValue AndAlso toDoc.HasValue AndAlso fromDoc.Value > toDoc.Value Then
+                Dim tempDoc = fromDoc
+                fromDoc = toDoc
+                toDoc = tempDoc
+            End If
+
+            ' 3. Build Before query
+            Dim beforeFilters As New List(Of String)(baseFilters)
+            Dim beforeParams As New List(Of Object)(baseParams)
+            Dim hasBeforeCondition As Boolean = False
+
+            If fromDate.HasValue AndAlso fromDoc.HasValue Then
+                beforeFilters.Add("(e.EntryDate < ? OR (e.EntryDate = ? AND CAST(e.ReferenceNumber AS INTEGER) < ?))")
+                beforeParams.Add(fromDate.Value)
+                beforeParams.Add(fromDate.Value)
+                beforeParams.Add(fromDoc.Value)
+                hasBeforeCondition = True
+            ElseIf fromDate.HasValue Then
+                beforeFilters.Add("e.EntryDate < ?")
+                beforeParams.Add(fromDate.Value)
+                hasBeforeCondition = True
+            ElseIf fromDoc.HasValue Then
+                beforeFilters.Add("CAST(e.ReferenceNumber AS INTEGER) < ?")
+                beforeParams.Add(fromDoc.Value)
+                hasBeforeCondition = True
+            End If
+
+            Dim beforeSums As New Dictionary(Of Integer, Tuple(Of Decimal, Decimal))()
+
+            If hasBeforeCondition Then
+                Dim beforeFilterString = String.Join(" AND ", beforeFilters)
+                Dim beforeSumsQuery =
+                    "SELECT d.ShenavarID, " &
+                    "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
+                    "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
+                    "FROM AccountingEntryDetails AS d " &
+                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "WHERE " & beforeFilterString & " AND d.ShenavarID IS NOT NULL " &
+                    "GROUP BY d.ShenavarID"
+                Try
+                    Dim beforeSumsTable = Sql.ExecuteTable(beforeSumsQuery, beforeParams.ToArray())
+                    For Each row As DataRow In beforeSumsTable.Rows
+                        beforeSums(Convert.ToInt32(row("ShenavarID"))) = Tuple.Create(
+                            Convert.ToDecimal(row("DebitTotal")),
+                            Convert.ToDecimal(row("CreditTotal"))
+                        )
+                    Next
+                Catch ex As Exception
+                End Try
+            End If
+
+            ' 4. Build During query
+            Dim duringFilters As New List(Of String)(baseFilters)
+            Dim duringParams As New List(Of Object)(baseParams)
+
+            If fromDate.HasValue Then
+                duringFilters.Add("e.EntryDate >= ?")
+                duringParams.Add(fromDate.Value)
+            End If
+
+            If toDate.HasValue Then
+                duringFilters.Add("e.EntryDate <= ?")
+                duringParams.Add(toDate.Value)
+            End If
+
+            If fromDoc.HasValue Then
+                duringFilters.Add("CAST(e.ReferenceNumber AS INTEGER) >= ?")
+                duringParams.Add(fromDoc.Value)
+            End If
+
+            If toDoc.HasValue Then
+                duringFilters.Add("CAST(e.ReferenceNumber AS INTEGER) <= ?")
+                duringParams.Add(toDoc.Value)
+            End If
+
+            Dim duringFilterString = String.Join(" AND ", duringFilters)
+            Dim duringSumsQuery =
+                "SELECT d.ShenavarID, " &
+                "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
+                "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
+                "FROM AccountingEntryDetails AS d " &
+                "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                "WHERE " & duringFilterString & " AND d.ShenavarID IS NOT NULL " &
+                "GROUP BY d.ShenavarID"
+
+            Dim duringSums = Sql.ExecuteTable(duringSumsQuery, duringParams.ToArray())
+
+            Dim duringSumsLookup As New Dictionary(Of Integer, DataRow)()
+            For Each row As DataRow In duringSums.Rows
+                duringSumsLookup(Convert.ToInt32(row("ShenavarID"))) = row
+            Next
+
+            ' 5. Compile and merge results
+            Dim result As New DataTable()
+            result.Columns.Add("AccountID", GetType(Integer))
+            result.Columns.Add("AccountCode", GetType(String))
+            result.Columns.Add("AccountName", GetType(String))
+            result.Columns.Add("ParentAccountID", GetType(Integer))
+            result.Columns.Add("AccountNature", GetType(String))
+            result.Columns.Add("DebitBeforeDirect", GetType(Decimal))
+            result.Columns.Add("CreditBeforeDirect", GetType(Decimal))
+            result.Columns.Add("DebitDuringDirect", GetType(Decimal))
+            result.Columns.Add("CreditDuringDirect", GetType(Decimal))
+
+            For Each sRow As DataRow In shenavars.Rows
+                Dim sId = Convert.ToInt32(sRow("AccountID"))
+                Dim code = Convert.ToString(sRow("AccountCode"))
+                Dim name = Convert.ToString(sRow("AccountName"))
+                Dim parentId = If(sRow.IsNull("ParentAccountID"), CType(Nothing, Integer?), CType(Convert.ToInt32(sRow("ParentAccountID")), Integer?))
+                Dim nature = Convert.ToString(sRow("AccountNature"))
+
+                Dim debBefore = 0D
+                Dim credBefore = 0D
+                Dim debDuring = 0D
+                Dim credDuring = 0D
+
+                If beforeSums.ContainsKey(sId) Then
+                    debBefore = beforeSums(sId).Item1
+                    credBefore = beforeSums(sId).Item2
+                End If
+
+                If duringSumsLookup.ContainsKey(sId) Then
+                    Dim duringRow = duringSumsLookup(sId)
+                    debDuring = Convert.ToDecimal(duringRow("DebitTotal"))
+                    credDuring = Convert.ToDecimal(duringRow("CreditTotal"))
+                End If
+
+                result.Rows.Add(sId, code, name, parentId, nature, debBefore, credBefore, debDuring, credDuring)
+            Next
+
+            Return result
+        End Function
+
+        Public Function GetShenavarLedgerData(
+            shenavarId As Integer,
+            aggregate As Boolean,
+            Optional fromDateStr As String = Nothing,
+            Optional toDateStr As String = Nothing,
+            Optional fromDoc As Integer? = Nothing,
+            Optional toDoc As Integer? = Nothing,
+            Optional docStatus As String = Nothing
+        ) As DataTable
+            If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
+                Return New DataTable()
+            End If
+            If SessionContext.CurrentUser Is Nothing Then Return New DataTable()
+
+            Dim companyId = SessionContext.CurrentCompanyID.Value
+            Dim fyId = SessionContext.CurrentFiscalYearID.Value
+
+            ' ساخت فیلترهای پویا
+            Dim filters As New List(Of String)()
+            Dim params As New List(Of Object)()
+
+            filters.Add("d.ShenavarID = ?")
+            params.Add(shenavarId)
+            filters.Add("e.CompanyID = ?")
+            params.Add(companyId)
+            filters.Add("e.FiscalYearID = ?")
+            params.Add(fyId)
+
+            ' فیلتر وضعیت
+            If Not String.IsNullOrEmpty(docStatus) Then
+                If docStatus = "موقت" Then
+                    filters.Add("(e.VazeiatSanad LIKE ? OR e.VazeiatSanad IS NULL) AND e.VazeiatSanad <> 'سند موقت - حذف موقت'")
+                    params.Add("%موقت%")
+                ElseIf docStatus = "دائم" Then
+                    filters.Add("e.VazeiatSanad LIKE ?")
+                    params.Add("%دائم%")
+                Else
+                    filters.Add("(e.VazeiatSanad <> 'سند موقت - حذف موقت' OR e.VazeiatSanad IS NULL)")
+                End If
+            Else
+                filters.Add("(e.VazeiatSanad <> 'سند موقت - حذف موقت' OR e.VazeiatSanad IS NULL)")
+            End If
+
+            ' فیلتر دسترسی کاربر
+            If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
+                filters.Add("e.CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ")")
+            End If
+
+            ' فیلتر تاریخ
+            Dim fromDate As DateTime? = Nothing
+            Dim toDate As DateTime? = Nothing
+
+            If Not String.IsNullOrEmpty(fromDateStr) Then
+                fromDate = PersianDateHelper.ParsePersianDate(fromDateStr)
+            End If
+            If Not String.IsNullOrEmpty(toDateStr) Then
+                toDate = PersianDateHelper.ParsePersianDate(toDateStr)
+            End If
+
+            If fromDate.HasValue AndAlso toDate.HasValue AndAlso fromDate.Value > toDate.Value Then
+                Dim tempDate = fromDate
+                fromDate = toDate
+                toDate = tempDate
+            End If
+
+            If fromDate.HasValue Then
+                filters.Add("e.EntryDate >= ?")
+                params.Add(fromDate.Value)
+            End If
+            If toDate.HasValue Then
+                filters.Add("e.EntryDate <= ?")
+                params.Add(toDate.Value)
+            End If
+
+            ' فیلتر شماره سند
+            If fromDoc.HasValue AndAlso toDoc.HasValue AndAlso fromDoc.Value > toDoc.Value Then
+                Dim tempDoc = fromDoc
+                fromDoc = toDoc
+                toDoc = tempDoc
+            End If
+
+            If fromDoc.HasValue Then
+                filters.Add("CAST(e.ReferenceNumber AS INTEGER) >= ?")
+                params.Add(fromDoc.Value)
+            End If
+            If toDoc.HasValue Then
+                filters.Add("CAST(e.ReferenceNumber AS INTEGER) <= ?")
+                params.Add(toDoc.Value)
+            End If
+
+            Dim whereClause = "WHERE " & String.Join(" AND ", filters.ToArray())
+
+            Dim query As String
+            If aggregate Then
+                query =
+                    "SELECT e.EntryID, e.ReferenceNumber, e.EntryDate, " &
+                    "'' AS SharhRadif, " &
+                    "IFNULL(e.Description,'') AS Description, " &
+                    "SUM(IFNULL(d.DebitAmount,0)) AS DebitAmount, " &
+                    "SUM(IFNULL(d.CreditAmount,0)) AS CreditAmount, " &
+                    "'' AS AccountCode, '' AS AccountName " &
+                    "FROM AccountingEntryDetails AS d " &
+                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    whereClause & " " &
+                    "GROUP BY e.EntryID, e.ReferenceNumber, e.EntryDate, e.Description " &
+                    "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER)"
+            Else
+                query =
+                    "SELECT e.EntryID, e.ReferenceNumber, d.LineNumber, e.EntryDate, " &
+                    "IFNULL(d.SharhRadif,'') AS SharhRadif, " &
+                    "IFNULL(e.Description,'') AS Description, " &
+                    "IFNULL(d.DebitAmount,0) AS DebitAmount, " &
+                    "IFNULL(d.CreditAmount,0) AS CreditAmount, " &
+                    "IFNULL(a.AccountCode,'') AS AccountCode, " &
+                    "IFNULL(a.AccountName,'') AS AccountName " &
+                    "FROM AccountingEntryDetails AS d " &
+                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "LEFT JOIN ChartOfAccounts AS a ON d.AccountID = a.AccountID " &
+                    whereClause & " " &
+                    "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER), d.LineNumber"
+            End If
+
+            Return Sql.ExecuteTable(query, params.ToArray())
+        End Function
+
+        Public Function GetShenavarLedgerBeforeSums(
+            shenavarId As Integer,
+            Optional fromDateStr As String = Nothing,
+            Optional fromDoc As Integer? = Nothing,
+            Optional docStatus As String = Nothing
+        ) As Tuple(Of Decimal, Decimal)
+            If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
+                Return Tuple.Create(0D, 0D)
+            End If
+            If SessionContext.CurrentUser Is Nothing Then Return Tuple.Create(0D, 0D)
+
+            Dim companyId = SessionContext.CurrentCompanyID.Value
+            Dim fyId = SessionContext.CurrentFiscalYearID.Value
+
+            Dim filters As New List(Of String)()
+            Dim params As New List(Of Object)()
+
+            filters.Add("d.ShenavarID = ?")
+            params.Add(shenavarId)
+            filters.Add("e.CompanyID = ?")
+            params.Add(companyId)
+            filters.Add("e.FiscalYearID = ?")
+            params.Add(fyId)
+
+            If Not String.IsNullOrEmpty(docStatus) Then
+                If docStatus = "موقت" Then
+                    filters.Add("(e.VazeiatSanad LIKE ? OR e.VazeiatSanad IS NULL) AND e.VazeiatSanad <> 'سند موقت - حذف موقت'")
+                    params.Add("%موقت%")
+                ElseIf docStatus = "دائم" Then
+                    filters.Add("e.VazeiatSanad LIKE ?")
+                    params.Add("%دائم%")
+                Else
+                    filters.Add("(e.VazeiatSanad <> 'سند موقت - حذف موقت' OR e.VazeiatSanad IS NULL)")
+                End If
+            Else
+                filters.Add("(e.VazeiatSanad <> 'سند موقت - حذف موقت' OR e.VazeiatSanad IS NULL)")
+            End If
+
+            If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
+                filters.Add("e.CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ")")
+            End If
+
+            Dim fromDate As DateTime? = Nothing
+            If Not String.IsNullOrEmpty(fromDateStr) Then
+                fromDate = PersianDateHelper.ParsePersianDate(fromDateStr)
+            End If
+
+            Dim hasBeforeCondition = False
+            If fromDate.HasValue AndAlso fromDoc.HasValue Then
+                filters.Add("(e.EntryDate < ? OR (e.EntryDate = ? AND CAST(e.ReferenceNumber AS INTEGER) < ?))")
+                params.Add(fromDate.Value)
+                params.Add(fromDate.Value)
+                params.Add(fromDoc.Value)
+                hasBeforeCondition = True
+            ElseIf fromDate.HasValue Then
+                filters.Add("e.EntryDate < ?")
+                params.Add(fromDate.Value)
+                hasBeforeCondition = True
+            ElseIf fromDoc.HasValue Then
+                filters.Add("CAST(e.ReferenceNumber AS INTEGER) < ?")
+                params.Add(fromDoc.Value)
+                hasBeforeCondition = True
+            End If
+
+            If Not hasBeforeCondition Then
+                Return Tuple.Create(0D, 0D)
+            End If
+
+            Dim whereClause = "WHERE " & String.Join(" AND ", filters.ToArray())
+            Dim query = "SELECT " &
+                        "SUM(IFNULL(d.DebitAmount, 0)) AS DebitTotal, " &
+                        "SUM(IFNULL(d.CreditAmount, 0)) AS CreditTotal " &
+                        "FROM AccountingEntryDetails AS d " &
+                        "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                        whereClause
+
+            Try
+                Dim dt = Sql.ExecuteTable(query, params.ToArray())
+                If dt.Rows.Count > 0 Then
+                    Dim row = dt.Rows(0)
+                    Dim deb = If(row.IsNull("DebitTotal"), 0D, Convert.ToDecimal(row("DebitTotal")))
+                    Dim cred = If(row.IsNull("CreditTotal"), 0D, Convert.ToDecimal(row("CreditTotal")))
+                    Return Tuple.Create(deb, cred)
+                End If
+            Catch
+            End Try
+
+            Return Tuple.Create(0D, 0D)
+        End Function
     End Class
 End Namespace
