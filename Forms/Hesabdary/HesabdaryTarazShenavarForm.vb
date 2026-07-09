@@ -972,6 +972,7 @@ Namespace Sys_Hes_Anb.Forms
             
             _labelTextMain = mainTitle
             _labelTextSub = subTitle
+            lblTarazTitle.Text = " " ' Prevent default text rendering overlap
             lblTarazTitle.Invalidate()
         End Sub
 
