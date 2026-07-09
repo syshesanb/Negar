@@ -324,7 +324,9 @@ Namespace Sys_Hes_Anb.Forms
                         Dim entryId = Convert.ToInt32(row("EntryID"))
                         Dim lineNoObj = If(block.LedgerData.Columns.Contains("LineNumber"), row("LineNumber"), DBNull.Value)
                         Dim lineNumber As Integer? = If(lineNoObj Is DBNull.Value OrElse lineNoObj Is Nothing, Nothing, CType(Convert.ToInt32(lineNoObj), Integer?))
-                        gr.Tag = New RowTagInfo(entryId, lineNumber, block.AccountID, block.AccountCode, block.AccountName, block.PriorSums)
+                        Dim stdAccIdObj = If(block.LedgerData.Columns.Contains("StandardAccountID"), row("StandardAccountID"), DBNull.Value)
+                        Dim stdAccId As Integer? = If(stdAccIdObj Is DBNull.Value OrElse stdAccIdObj Is Nothing, Nothing, CType(Convert.ToInt32(stdAccIdObj), Integer?))
+                        gr.Tag = New RowTagInfo(entryId, lineNumber, block.AccountID, block.AccountCode, block.AccountName, block.PriorSums, stdAccId)
 
                         Dim bCell As New DataGridViewButtonCell()
                         bCell.Value = "رفتن به سند"
@@ -705,7 +707,9 @@ Namespace Sys_Hes_Anb.Forms
                 Dim entryId = Convert.ToInt32(row("EntryID"))
                 Dim lineNoObj = If(dt.Columns.Contains("LineNumber"), row("LineNumber"), DBNull.Value)
                 Dim lineNumber As Integer? = If(lineNoObj Is DBNull.Value OrElse lineNoObj Is Nothing, Nothing, CType(Convert.ToInt32(lineNoObj), Integer?))
-                gr.Tag = Tuple.Create(entryId, lineNumber)
+                Dim stdAccIdObj = If(dt.Columns.Contains("StandardAccountID"), row("StandardAccountID"), DBNull.Value)
+                Dim stdAccId As Integer? = If(stdAccIdObj Is DBNull.Value OrElse stdAccIdObj Is Nothing, Nothing, CType(Convert.ToInt32(stdAccIdObj), Integer?))
+                gr.Tag = New RowTagInfo(entryId, lineNumber, _currentAccountId, _currentAccountCode, _currentAccountName, _priorSums, stdAccId)
 
                 Dim bCell As New DataGridViewButtonCell()
                 bCell.Value = "رفتن به سند"
@@ -1107,14 +1111,16 @@ Namespace Sys_Hes_Anb.Forms
             Public Property AccountCode As String
             Public Property AccountName As String
             Public Property PriorSums As Tuple(Of Decimal, Decimal)
+            Public Property StandardAccountID As Integer?
 
-            Public Sub New(entryId As Integer, lineNum As Integer?, accId As Integer, accCode As String, accName As String, priorSums As Tuple(Of Decimal, Decimal))
+            Public Sub New(entryId As Integer, lineNum As Integer?, accId As Integer, accCode As String, accName As String, priorSums As Tuple(Of Decimal, Decimal), stdAccId As Integer?)
                 Me.EntryID = entryId
                 Me.LineNumber = lineNum
                 Me.AccountID = accId
                 Me.AccountCode = accCode
                 Me.AccountName = accName
                 Me.PriorSums = priorSums
+                Me.StandardAccountID = stdAccId
             End Sub
         End Class
 
@@ -1265,6 +1271,47 @@ Namespace Sys_Hes_Anb.Forms
                     e.Graphics.DrawString(_labelTextSub, fontSub, brushSub, currentX, ySub)
                 End Using
             End If
+        End Sub
+
+        Private Sub dgvLedger_SelectionChanged(sender As Object, e As EventArgs) Handles dgvLedger.SelectionChanged
+            UpdateHeaderTitleForSelectedRow()
+        End Sub
+
+        Private Sub UpdateHeaderTitleForSelectedRow()
+            If dgvLedger.CurrentRow Is Nothing OrElse dgvLedger.CurrentRow.Index < 0 Then Return
+            Dim gr = dgvLedger.CurrentRow
+            Dim tag = TryCast(gr.Tag, RowTagInfo)
+            
+            Dim mainTitle = "دفتر تفصیلی شناور :  " & _currentAccountCode & " — " & _currentAccountName
+            Dim subTitle = ""
+            
+            If tag IsNot Nothing AndAlso tag.StandardAccountID.HasValue AndAlso tag.StandardAccountID.Value > 0 Then
+                Try
+                    Dim chain = service.GetAccountHierarchyChain(tag.StandardAccountID.Value)
+                    Dim parts As New List(Of String)()
+                    For Each item In chain
+                        parts.Add(item.Item1 & " — " & item.Item2)
+                    Next
+                    subTitle = "سرفصل حساب :  " & String.Join(" / ", parts.ToArray())
+                Catch
+                End Try
+            End If
+            
+            If String.IsNullOrEmpty(subTitle) AndAlso _currentAccountId > 0 Then
+                Try
+                    Dim chain = service.GetShenavarHierarchyChain(_currentAccountId)
+                    Dim parts As New List(Of String)()
+                    For Each item In chain
+                        parts.Add(item.Item1 & " — " & item.Item2)
+                    Next
+                    subTitle = "سرفصل حساب :  " & String.Join(" / ", parts.ToArray())
+                Catch
+                End Try
+            End If
+            
+            _labelTextMain = mainTitle
+            _labelTextSub = subTitle
+            lblAccountTitle.Invalidate()
         End Sub
     End Class
 End Namespace

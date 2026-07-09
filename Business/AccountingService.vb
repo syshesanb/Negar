@@ -1664,7 +1664,8 @@ Namespace Sys_Hes_Anb.Business
                     "IFNULL(e.Description,'') AS Description, " &
                     "SUM(IFNULL(d.DebitAmount,0)) AS DebitAmount, " &
                     "SUM(IFNULL(d.CreditAmount,0)) AS CreditAmount, " &
-                    "'' AS AccountCode, '' AS AccountName " &
+                    "'' AS AccountCode, '' AS AccountName, " &
+                    "0 AS StandardAccountID " &
                     "FROM AccountingEntryDetails AS d " &
                     "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
                     whereClause & " " &
@@ -1678,7 +1679,8 @@ Namespace Sys_Hes_Anb.Business
                     "IFNULL(d.DebitAmount,0) AS DebitAmount, " &
                     "IFNULL(d.CreditAmount,0) AS CreditAmount, " &
                     "IFNULL(a.AccountCode,'') AS AccountCode, " &
-                    "IFNULL(a.AccountName,'') AS AccountName " &
+                    "IFNULL(a.AccountName,'') AS AccountName, " &
+                    "IFNULL(d.AccountID, 0) AS StandardAccountID " &
                     "FROM AccountingEntryDetails AS d " &
                     "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
                     "LEFT JOIN ChartOfAccounts AS a ON d.AccountID = a.AccountID " &
