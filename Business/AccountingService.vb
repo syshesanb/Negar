@@ -5,6 +5,7 @@ Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.IO
+Imports System.Data.SQLite
 Imports Sys_Hes_Anb.Data
 
 Namespace Sys_Hes_Anb.Business
@@ -1813,23 +1814,116 @@ Namespace Sys_Hes_Anb.Business
             Return chain
         End Function
 
+        Public Function GetProfitLossCategories(companyId As Integer) As DataTable
+            Return Sql.ExecuteTable(
+                "SELECT CategoryID, CategoryName, SortOrder FROM ProfitLossCategories WHERE CompanyID = ? ORDER BY SortOrder",
+                companyId)
+        End Function
+
         Public Function GetProfitLossMappings(companyId As Integer) As DataTable
             Return Sql.ExecuteTable(
-                "SELECT m.AccountID, m.CategoryKey, a.AccountCode, a.AccountName " &
+                "SELECT m.AccountID, m.CategoryID, a.AccountCode, a.AccountName " &
                 "FROM ProfitLossMappings m " &
                 "INNER JOIN ChartOfAccounts a ON m.AccountID = a.AccountID " &
                 "WHERE m.CompanyID = ? " &
                 "ORDER BY a.AccountCode", companyId)
         End Function
 
-        Public Sub SaveProfitLossMapping(accountId As Integer, categoryKey As String, companyId As Integer)
+        Public Sub SaveProfitLossMapping(accountId As Integer, categoryId As Integer, companyId As Integer)
             Sql.ExecuteNonQuery(
-                "INSERT OR REPLACE INTO ProfitLossMappings (AccountID, CategoryKey, CompanyID) VALUES (?, ?, ?)",
-                accountId, categoryKey, companyId)
+                "INSERT OR REPLACE INTO ProfitLossMappings (AccountID, CategoryID, CompanyID) VALUES (?, ?, ?)",
+                accountId, categoryId, companyId)
         End Sub
 
         Public Sub DeleteProfitLossMapping(accountId As Integer)
             Sql.ExecuteNonQuery("DELETE FROM ProfitLossMappings WHERE AccountID = ?", accountId)
+        End Sub
+
+        Public Sub BootstrapDefaultProfitLossFormat(companyId As Integer)
+            Dim countObj = Sql.ExecuteScalar("SELECT COUNT(*) FROM ProfitLossCategories WHERE CompanyID = ?", companyId)
+            If countObj IsNot Nothing AndAlso Convert.ToInt32(countObj) > 0 Then Return
+            
+            Dim categories As New List(Of String)()
+            categories.Add("فروش ناخالص (درآمدهای عملیاتی)")
+            categories.Add("برگشت از فروش و تخفیفات")
+            categories.Add("خرید ناخالص")
+            categories.Add("برگشت از خرید و تخفیفات")
+            categories.Add("هزینه‌های مستقیم خرید (حمل خرید)")
+            categories.Add("هزینه‌های اداری، عمومی و فروش")
+            categories.Add("سایر درآمدهای عملیاتی")
+            categories.Add("سایر درآمدهای غیرعملیاتی")
+            categories.Add("سایر هزینه‌های غیرعملیاتی و مالی")
+            
+            Using connection = Db.OpenConnection()
+                Using transaction = connection.BeginTransaction()
+                    Try
+                        Dim sortOrder = 1
+                        For Each catName In categories
+                            Using cmd As New SQLiteCommand("INSERT INTO ProfitLossCategories (CategoryName, SortOrder, CompanyID) VALUES (?, ?, ?)", connection, transaction)
+                                cmd.Parameters.AddWithValue("@CategoryName", catName)
+                                cmd.Parameters.AddWithValue("@SortOrder", sortOrder)
+                                cmd.Parameters.AddWithValue("@CompanyID", companyId)
+                                cmd.ExecuteNonQuery()
+                            End Using
+                            sortOrder += 1
+                        Next
+                        transaction.Commit()
+                    Catch
+                        transaction.Rollback()
+                        Throw
+                    End Try
+                End Using
+            End Using
+            
+            AutoMapProfitLossAccounts(companyId)
+        End Sub
+
+        Public Sub SaveProfitLossFormat(companyId As Integer, categoriesList As List(Of PLNodeDto))
+            Using connection = Db.OpenConnection()
+                Using transaction = connection.BeginTransaction()
+                    Try
+                        Using cmdDelMap As New SQLiteCommand("DELETE FROM ProfitLossMappings WHERE CompanyID = ?", connection, transaction)
+                            cmdDelMap.Parameters.AddWithValue("@CompanyID", companyId)
+                            cmdDelMap.ExecuteNonQuery()
+                        End Using
+                        
+                        Using cmdDelCat As New SQLiteCommand("DELETE FROM ProfitLossCategories WHERE CompanyID = ?", connection, transaction)
+                            cmdDelCat.Parameters.AddWithValue("@CompanyID", companyId)
+                            cmdDelCat.ExecuteNonQuery()
+                        End Using
+                        
+                        Dim sortOrder = 1
+                        For Each cat In categoriesList
+                            Dim catId As Integer = 0
+                            Using cmdInsCat As New SQLiteCommand(
+                                "INSERT INTO ProfitLossCategories (CategoryName, SortOrder, CompanyID) VALUES (?, ?, ?); SELECT last_insert_rowid();",
+                                connection, transaction)
+                                cmdInsCat.Parameters.AddWithValue("@CategoryName", cat.CategoryName)
+                                cmdInsCat.Parameters.AddWithValue("@SortOrder", sortOrder)
+                                cmdInsCat.Parameters.AddWithValue("@CompanyID", companyId)
+                                catId = Convert.ToInt32(cmdInsCat.ExecuteScalar())
+                            End Using
+                            
+                            For Each childAccId In cat.AccountIDs
+                                Using cmdInsMap As New SQLiteCommand(
+                                    "INSERT INTO ProfitLossMappings (AccountID, CategoryID, CompanyID) VALUES (?, ?, ?)",
+                                    connection, transaction)
+                                    cmdInsMap.Parameters.AddWithValue("@AccountID", childAccId)
+                                    cmdInsMap.Parameters.AddWithValue("@CategoryID", catId)
+                                    cmdInsMap.Parameters.AddWithValue("@CompanyID", companyId)
+                                    cmdInsMap.ExecuteNonQuery()
+                                End Using
+                            Next
+                            sortOrder += 1
+                        Next
+                        
+                        transaction.Commit()
+                    Catch ex As Exception
+                        transaction.Rollback()
+                        Throw
+                    End Try
+                End Using
+            End Using
         End Sub
 
         Public Sub AutoMapProfitLossAccounts(companyId As Integer)
@@ -1838,36 +1932,46 @@ Namespace Sys_Hes_Anb.Business
                 Dim accountId = Convert.ToInt32(row("AccountID"))
                 Dim name = Convert.ToString(row("AccountName"))
                 
-                ' Check if already mapped
                 Dim existObj = Sql.ExecuteScalar("SELECT COUNT(*) FROM ProfitLossMappings WHERE AccountID = ?", accountId)
                 If existObj IsNot Nothing AndAlso Convert.ToInt32(existObj) > 0 Then Continue For
                 
-                Dim category As String = Nothing
+                Dim categoryNameMatch As String = Nothing
                 
                 If name.Contains("برگشت از فروش") OrElse name.Contains("برگشت فروش") OrElse name.Contains("تخفیفات فروش") Then
-                    category = "SalesReturn"
+                    categoryNameMatch = "برگشت از فروش و تخفیفات"
                 ElseIf name.Contains("فروش") Then
-                    category = "GrossSales"
+                    categoryNameMatch = "فروش ناخالص (درآمدهای عملیاتی)"
                 ElseIf name.Contains("برگشت از خرید") OrElse name.Contains("برگشت خرید") OrElse name.Contains("تخفیفات خرید") Then
-                    category = "PurchaseReturn"
+                    categoryNameMatch = "برگشت از خرید و تخفیفات"
                 ElseIf name.Contains("حمل خرید") OrElse name.Contains("هزینه حمل خرید") Then
-                    category = "DirectPurchaseExpense"
+                    categoryNameMatch = "هزینه‌های مستقیم خرید (حمل خرید)"
                 ElseIf name.Contains("خرید") Then
-                    category = "GrossPurchases"
+                    categoryNameMatch = "خرید ناخالص"
                 ElseIf name.Contains("غیرعملیاتی") AndAlso (name.Contains("درآمد") OrElse name.Contains("سود")) Then
-                    category = "NonOperatingRevenue"
+                    categoryNameMatch = "سایر درآمدهای غیرعملیاتی"
                 ElseIf name.Contains("غیرعملیاتی") AndAlso (name.Contains("هزینه") OrElse name.Contains("زیان")) Then
-                    category = "NonOperatingExpense"
+                    categoryNameMatch = "سایر هزینه‌های غیرعملیاتی و مالی"
                 ElseIf name.Contains("مالی") AndAlso name.Contains("هزینه") Then
-                    category = "NonOperatingExpense"
+                    categoryNameMatch = "سایر هزینه‌های غیرعملیاتی و مالی"
                 ElseIf name.Contains("هزینه") OrElse name.Contains("اجاره") OrElse name.Contains("حقوق") OrElse name.Contains("بیمه") OrElse name.Contains("استهلاک") Then
-                    category = "OperatingExpense"
+                    categoryNameMatch = "هزینه‌های اداری، عمومی و فروش"
                 End If
                 
-                If category IsNot Nothing Then
-                    SaveProfitLossMapping(accountId, category, companyId)
+                If categoryNameMatch IsNot Nothing Then
+                    Dim catIdObj = Sql.ExecuteScalar("SELECT CategoryID FROM ProfitLossCategories WHERE CompanyID = ? AND CategoryName = ?", companyId, categoryNameMatch)
+                    If catIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(catIdObj) Then
+                        Dim catId = Convert.ToInt32(catIdObj)
+                        Sql.ExecuteNonQuery(
+                            "INSERT OR REPLACE INTO ProfitLossMappings (AccountID, CategoryID, CompanyID) VALUES (?, ?, ?)",
+                            accountId, catId, companyId)
+                    End If
                 End If
             Next
         End Sub
+    End Class
+
+    Public Class PLNodeDto
+        Public Property CategoryName As String
+        Public Property AccountIDs As New List(Of Integer)()
     End Class
 End Namespace

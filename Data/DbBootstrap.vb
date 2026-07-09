@@ -463,12 +463,35 @@ Namespace Sys_Hes_Anb.Data
 
         Private Sub EnsureProfitLossMappingsTable()
             Try
+                Dim hasOldCol As Boolean = False
+                Using conn = Db.OpenConnection()
+                    Dim schemaTable = conn.GetSchema("Columns", New String() {Nothing, Nothing, "ProfitLossMappings", Nothing})
+                    For Each row As DataRow In schemaTable.Rows
+                        If String.Equals(Convert.ToString(row("COLUMN_NAME")), "CategoryKey", StringComparison.OrdinalIgnoreCase) Then
+                            hasOldCol = True
+                            Exit For
+                        End If
+                    Next
+                End Using
+                
+                If hasOldCol Then
+                    Sql.ExecuteNonQuery("DROP TABLE IF EXISTS ProfitLossMappings;")
+                End If
+
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS ProfitLossCategories (" &
+                    "CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CategoryName TEXT NOT NULL, " &
+                    "SortOrder INTEGER NOT NULL, " &
+                    "CompanyID INTEGER NOT NULL);")
+
                 Sql.ExecuteNonQuery(
                     "CREATE TABLE IF NOT EXISTS ProfitLossMappings (" &
                     "AccountID INTEGER PRIMARY KEY, " &
-                    "CategoryKey TEXT NOT NULL, " &
+                    "CategoryID INTEGER NOT NULL, " &
                     "CompanyID INTEGER NOT NULL, " &
-                    "FOREIGN KEY(AccountID) REFERENCES ChartOfAccounts(AccountID) ON DELETE CASCADE);")
+                    "FOREIGN KEY(AccountID) REFERENCES ChartOfAccounts(AccountID) ON DELETE CASCADE, " &
+                    "FOREIGN KEY(CategoryID) REFERENCES ProfitLossCategories(CategoryID) ON DELETE CASCADE);")
             Catch ex As Exception
                 Log("EnsureProfitLossMappingsTable error: " & ex.Message)
             End Try
