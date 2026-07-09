@@ -31,6 +31,8 @@ Namespace Sys_Hes_Anb.Forms
             Public Level As Integer
             Public AccountCode As String
             Public AccountName As String
+            Public StandardAccountCode As String
+            Public StandardAccountName As String
             Public DebitBeforeDirect As Decimal
             Public CreditBeforeDirect As Decimal
             Public DebitDuringDirect As Decimal
@@ -172,6 +174,8 @@ Namespace Sys_Hes_Anb.Forms
                     node.AccountID = Convert.ToInt32(row("AccountID"))
                     node.AccountCode = Convert.ToString(row("AccountCode"))
                     node.AccountName = Convert.ToString(row("AccountName"))
+                    node.StandardAccountCode = Convert.ToString(row("StandardAccountCode"))
+                    node.StandardAccountName = Convert.ToString(row("StandardAccountName"))
                     node.AccountNature = Convert.ToString(row("AccountNature"))
                     node.ParentAccountID = If(row.IsNull("ParentAccountID"),
                                               CType(Nothing, Integer?),
@@ -260,6 +264,8 @@ Namespace Sys_Hes_Anb.Forms
                 row.Cells("colToggle").Value = GetToggleText(node)
                 row.Cells("colCode").Value = node.AccountCode
                 row.Cells("colName").Value = node.AccountName
+                row.Cells("colStandardAccountCode").Value = node.StandardAccountCode
+                row.Cells("colStandardAccountName").Value = node.StandardAccountName
 
                 row.Cells("colDebitBefore").Value = FormatAmount(node.DebitBeforeRollup)
                 row.Cells("colCreditBefore").Value = FormatAmount(node.CreditBeforeRollup)
@@ -774,6 +780,8 @@ Namespace Sys_Hes_Anb.Forms
             _searchTextBoxes("colLedger") = txtSearchLedger
             _searchTextBoxes("colCode") = txtSearchCode
             _searchTextBoxes("colName") = txtSearchName
+            _searchTextBoxes("colStandardAccountCode") = txtSearchStandardAccountCode
+            _searchTextBoxes("colStandardAccountName") = txtSearchStandardAccountName
             _searchTextBoxes("colDebitBefore") = txtSearchDebitBefore
             _searchTextBoxes("colCreditBefore") = txtSearchCreditBefore
             _searchTextBoxes("colDebitBegin") = txtSearchDebitBegin
@@ -846,6 +854,8 @@ Namespace Sys_Hes_Anb.Forms
                 Select Case colName
                     Case "colCode": cellVal = node.AccountCode
                     Case "colName": cellVal = node.AccountName
+                    Case "colStandardAccountCode": cellVal = node.StandardAccountCode
+                    Case "colStandardAccountName": cellVal = node.StandardAccountName
                     Case "colDebitBefore": cellVal = FormatAmount(node.DebitBeforeRollup)
                     Case "colCreditBefore": cellVal = FormatAmount(node.CreditBeforeRollup)
                     Case "colDebitBegin": cellVal = FormatAmount(node.DebitBegin)

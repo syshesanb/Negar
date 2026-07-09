@@ -73,6 +73,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.colLedger = New System.Windows.Forms.DataGridViewButtonColumn()
             Me.colCode = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colName = New System.Windows.Forms.DataGridViewTextBoxColumn()
+            Me.colStandardAccountCode = New System.Windows.Forms.DataGridViewTextBoxColumn()
+            Me.colStandardAccountName = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colDebitBefore = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colCreditBefore = New System.Windows.Forms.DataGridViewTextBoxColumn()
             Me.colDebitBegin = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -115,6 +117,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.txtSearchLedger = New System.Windows.Forms.TextBox()
             Me.txtSearchCode = New System.Windows.Forms.TextBox()
             Me.txtSearchName = New System.Windows.Forms.TextBox()
+            Me.txtSearchStandardAccountCode = New System.Windows.Forms.TextBox()
+            Me.txtSearchStandardAccountName = New System.Windows.Forms.TextBox()
             Me.txtSearchDebitBefore = New System.Windows.Forms.TextBox()
             Me.txtSearchCreditBefore = New System.Windows.Forms.TextBox()
             Me.txtSearchDebitBegin = New System.Windows.Forms.TextBox()
@@ -250,7 +254,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.dgvTrial.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
             Me.dgvTrial.ColumnHeadersHeight = 30
             Me.dgvTrial.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-            Me.dgvTrial.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colToggle, Me.colLedger, Me.colCode, Me.colName, Me.colDebitBefore, Me.colCreditBefore, Me.colDebitBegin, Me.colCreditBegin, Me.colDebitDuring, Me.colCreditDuring, Me.colDebitTotal, Me.colCreditTotal, Me.colDebitEnd, Me.colCreditEnd})
+            Me.dgvTrial.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colToggle, Me.colLedger, Me.colCode, Me.colName, Me.colStandardAccountCode, Me.colStandardAccountName, Me.colDebitBefore, Me.colCreditBefore, Me.colDebitBegin, Me.colCreditBegin, Me.colDebitDuring, Me.colCreditDuring, Me.colDebitTotal, Me.colCreditTotal, Me.colDebitEnd, Me.colCreditEnd})
             Me.dgvTrial.Dock = System.Windows.Forms.DockStyle.Fill
             Me.dgvTrial.EnableHeadersVisualStyles = False
             Me.dgvTrial.GridColor = System.Drawing.Color.LightSteelBlue
@@ -302,9 +306,23 @@ Namespace Sys_Hes_Anb.Forms
             Me.colName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
             DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
             Me.colName.DefaultCellStyle = DataGridViewCellStyle5
-            Me.colName.HeaderText = "نام حساب تفصیلی شناور"
+            Me.colName.HeaderText = "نام حساب شناور"
             Me.colName.Name = "colName"
             Me.colName.ReadOnly = True
+            '
+            'colStandardAccountCode
+            '
+            Me.colStandardAccountCode.HeaderText = "کد سرفصل"
+            Me.colStandardAccountCode.Name = "colStandardAccountCode"
+            Me.colStandardAccountCode.ReadOnly = True
+            Me.colStandardAccountCode.Width = 110
+            '
+            'colStandardAccountName
+            '
+            Me.colStandardAccountName.HeaderText = "نام سرفصل"
+            Me.colStandardAccountName.Name = "colStandardAccountName"
+            Me.colStandardAccountName.ReadOnly = True
+            Me.colStandardAccountName.Width = 180
             '
             'colDebitBefore
             '
@@ -646,6 +664,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlGridSearch.Controls.Add(Me.txtSearchLedger)
             Me.pnlGridSearch.Controls.Add(Me.txtSearchCode)
             Me.pnlGridSearch.Controls.Add(Me.txtSearchName)
+            Me.pnlGridSearch.Controls.Add(Me.txtSearchStandardAccountCode)
+            Me.pnlGridSearch.Controls.Add(Me.txtSearchStandardAccountName)
             Me.pnlGridSearch.Controls.Add(Me.txtSearchDebitBefore)
             Me.pnlGridSearch.Controls.Add(Me.txtSearchCreditBefore)
             Me.pnlGridSearch.Controls.Add(Me.txtSearchDebitBegin)
@@ -697,6 +717,22 @@ Namespace Sys_Hes_Anb.Forms
             Me.txtSearchName.Name = "txtSearchName"
             Me.txtSearchName.Size = New System.Drawing.Size(200, 21)
             Me.txtSearchName.TabIndex = 3
+            '
+            'txtSearchStandardAccountCode
+            '
+            Me.txtSearchStandardAccountCode.Font = New System.Drawing.Font("Tahoma", 8.25!)
+            Me.txtSearchStandardAccountCode.Location = New System.Drawing.Point(810, 3)
+            Me.txtSearchStandardAccountCode.Name = "txtSearchStandardAccountCode"
+            Me.txtSearchStandardAccountCode.Size = New System.Drawing.Size(90, 21)
+            Me.txtSearchStandardAccountCode.TabIndex = 20
+            '
+            'txtSearchStandardAccountName
+            '
+            Me.txtSearchStandardAccountName.Font = New System.Drawing.Font("Tahoma", 8.25!)
+            Me.txtSearchStandardAccountName.Location = New System.Drawing.Point(710, 3)
+            Me.txtSearchStandardAccountName.Name = "txtSearchStandardAccountName"
+            Me.txtSearchStandardAccountName.Size = New System.Drawing.Size(90, 21)
+            Me.txtSearchStandardAccountName.TabIndex = 21
             '
             'txtSearchDebitBefore
             '
@@ -809,6 +845,8 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents colLedger As DataGridViewButtonColumn
         Friend WithEvents colCode As DataGridViewTextBoxColumn
         Friend WithEvents colName As DataGridViewTextBoxColumn
+        Friend WithEvents colStandardAccountCode As DataGridViewTextBoxColumn
+        Friend WithEvents colStandardAccountName As DataGridViewTextBoxColumn
         Friend WithEvents colDebitBefore As DataGridViewTextBoxColumn
         Friend WithEvents colCreditBefore As DataGridViewTextBoxColumn
         Friend WithEvents colDebitBegin As DataGridViewTextBoxColumn
@@ -824,6 +862,8 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents txtSearchLedger As TextBox
         Friend WithEvents txtSearchCode As TextBox
         Friend WithEvents txtSearchName As TextBox
+        Friend WithEvents txtSearchStandardAccountCode As TextBox
+        Friend WithEvents txtSearchStandardAccountName As TextBox
         Friend WithEvents txtSearchDebitBefore As TextBox
         Friend WithEvents txtSearchCreditBefore As TextBox
         Friend WithEvents txtSearchDebitBegin As TextBox

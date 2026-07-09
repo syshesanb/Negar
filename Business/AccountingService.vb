@@ -1379,8 +1379,11 @@ Namespace Sys_Hes_Anb.Business
             Dim fyId = SessionContext.CurrentFiscalYearID.Value
 
             Dim shenavars = Sql.ExecuteTable(
-                "SELECT ShenavarID AS AccountID, AccountCode, AccountName, ParentShenavarID AS ParentAccountID, 'Bedehkar' AS AccountNature FROM shenavar " &
-                "WHERE CompanyID = ? ORDER BY AccountCode",
+                "SELECT s.ShenavarID AS AccountID, s.AccountCode, s.AccountName, s.ParentShenavarID AS ParentAccountID, 'Bedehkar' AS AccountNature, " &
+                "(SELECT a.AccountCode FROM AccountingEntryDetails d INNER JOIN ChartOfAccounts a ON d.AccountID = a.AccountID WHERE d.ShenavarID = s.ShenavarID LIMIT 1) AS StandardAccountCode, " &
+                "(SELECT a.AccountName FROM AccountingEntryDetails d INNER JOIN ChartOfAccounts a ON d.AccountID = a.AccountID WHERE d.ShenavarID = s.ShenavarID LIMIT 1) AS StandardAccountName " &
+                "FROM shenavar s " &
+                "WHERE s.CompanyID = ? ORDER BY s.AccountCode",
                 companyId)
 
             ' 1. Build base filters
@@ -1533,6 +1536,8 @@ Namespace Sys_Hes_Anb.Business
             result.Columns.Add("CreditBeforeDirect", GetType(Decimal))
             result.Columns.Add("DebitDuringDirect", GetType(Decimal))
             result.Columns.Add("CreditDuringDirect", GetType(Decimal))
+            result.Columns.Add("StandardAccountCode", GetType(String))
+            result.Columns.Add("StandardAccountName", GetType(String))
 
             For Each sRow As DataRow In shenavars.Rows
                 Dim sId = Convert.ToInt32(sRow("AccountID"))
@@ -1540,6 +1545,8 @@ Namespace Sys_Hes_Anb.Business
                 Dim name = Convert.ToString(sRow("AccountName"))
                 Dim parentId = If(sRow.IsNull("ParentAccountID"), CType(Nothing, Integer?), CType(Convert.ToInt32(sRow("ParentAccountID")), Integer?))
                 Dim nature = Convert.ToString(sRow("AccountNature"))
+                Dim stdCode = Convert.ToString(sRow("StandardAccountCode"))
+                Dim stdName = Convert.ToString(sRow("StandardAccountName"))
 
                 Dim debBefore = 0D
                 Dim credBefore = 0D
@@ -1557,7 +1564,7 @@ Namespace Sys_Hes_Anb.Business
                     credDuring = Convert.ToDecimal(duringRow("CreditTotal"))
                 End If
 
-                result.Rows.Add(sId, code, name, parentId, nature, debBefore, credBefore, debDuring, credDuring)
+                result.Rows.Add(sId, code, name, parentId, nature, debBefore, credBefore, debDuring, credDuring, stdCode, stdName)
             Next
 
             Return result
