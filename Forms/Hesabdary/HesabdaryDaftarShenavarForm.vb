@@ -27,6 +27,8 @@ Namespace Sys_Hes_Anb.Forms
         Private _selectedRangeAccounts As New List(Of Tuple(Of Integer, String, String))()
         Private _returnTargetEntryID As Integer? = Nothing
         Private _returnTargetLineNumber As Integer? = Nothing
+        Private _labelTextMain As String = ""
+        Private _labelTextSub As String = ""
 
         Public Sub New()
             InitializeComponent()
@@ -113,7 +115,18 @@ Namespace Sys_Hes_Anb.Forms
                     currentPct += stepPct
                     progress.UpdateProgress(CInt(Math.Min(100, currentPct)), "در حال بارگذاری دفتر شناور: " & block.AccountCode & "...")
 
-                    block.HierarchyChain = block.AccountCode & " — " & block.AccountName
+                    Dim chainStr = ""
+                    Try
+                        Dim chain = service.GetShenavarHierarchyChain(block.AccountID)
+                        Dim parts As New List(Of String)()
+                        For Each item In chain
+                            parts.Add(item.Item1 & " — " & item.Item2)
+                        Next
+                        chainStr = String.Join(" / ", parts.ToArray())
+                    Catch
+                        chainStr = block.AccountCode & " — " & block.AccountName
+                    End Try
+                    block.HierarchyChain = chainStr
 
                     ' Get filters
                     Dim fromDateStr As String = Nothing
@@ -185,11 +198,15 @@ Namespace Sys_Hes_Anb.Forms
                 Next
 
                 If blocks.Count = 1 Then
-                    lblAccountTitle.Text = "دفتر تفصیلی شناور :  " & blocks(0).HierarchyChain
+                    _labelTextMain = "دفتر تفصیلی شناور :  " & _currentAccountCode & " — " & _currentAccountName
+                    _labelTextSub = "سرفصل حساب :  " & blocks(0).HierarchyChain
+                    lblAccountTitle.Text = " " ' Trigger repaint
                     _fullDataTable = blocks(0).LedgerData
                     _priorSums = blocks(0).PriorSums
                 Else
-                    lblAccountTitle.Text = String.Format("چاپ تمام دفاتر شناور (تعداد: {0})", blocks.Count)
+                    _labelTextMain = String.Format("چاپ تمام دفاتر شناور (تعداد: {0})", blocks.Count)
+                    _labelTextSub = ""
+                    lblAccountTitle.Text = " " ' Trigger repaint
                     _fullDataTable = Nothing
                     _priorSums = Nothing
                 End If
@@ -1213,6 +1230,41 @@ Namespace Sys_Hes_Anb.Forms
                     End Try
                 End If
             End Using
+        End Sub
+
+        Private Sub lblAccountTitle_Paint(sender As Object, e As PaintEventArgs) Handles lblAccountTitle.Paint
+            If String.IsNullOrEmpty(_labelTextMain) Then Return
+
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit
+
+            Dim fontMain = lblAccountTitle.Font
+            Dim fontSub = New Font(fontMain.FontFamily, fontMain.Size - 0.5F, FontStyle.Regular)
+
+            Dim colorMain = lblAccountTitle.ForeColor
+            Dim colorSub = Color.FromArgb(120, 135, 155) ' Mild color
+
+            Dim sizeMain = e.Graphics.MeasureString(_labelTextMain, fontMain)
+            Dim sizeSub = If(String.IsNullOrEmpty(_labelTextSub), New SizeF(0, 0), e.Graphics.MeasureString(_labelTextSub, fontSub))
+
+            Dim yMain = (lblAccountTitle.Height - sizeMain.Height) / 2
+            Dim ySub = (lblAccountTitle.Height - sizeSub.Height) / 2
+
+            ' Align Right-to-Left
+            Dim currentX = lblAccountTitle.Width - 15
+
+            ' Draw main text
+            currentX -= sizeMain.Width
+            Using brushMain As New SolidBrush(colorMain)
+                e.Graphics.DrawString(_labelTextMain, fontMain, brushMain, currentX, yMain)
+            End Using
+
+            ' Draw sub text
+            If Not String.IsNullOrEmpty(_labelTextSub) Then
+                currentX -= (sizeSub.Width + 40) ' 40px spacing
+                Using brushSub As New SolidBrush(colorSub)
+                    e.Graphics.DrawString(_labelTextSub, fontSub, brushSub, currentX, ySub)
+                End Using
+            End If
         End Sub
     End Class
 End Namespace

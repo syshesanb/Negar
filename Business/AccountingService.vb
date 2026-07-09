@@ -1779,5 +1779,29 @@ Namespace Sys_Hes_Anb.Business
 
             Return Tuple.Create(0D, 0D)
         End Function
+
+        Public Function GetShenavarHierarchyChain(shenavarId As Integer) As List(Of Tuple(Of String, String))
+            Dim chain As New List(Of Tuple(Of String, String))()
+            Dim currentId As Integer? = shenavarId
+            Dim guard = 0
+            Do While currentId.HasValue AndAlso guard < 50
+                guard += 1
+                Dim dt = Sql.ExecuteTable(
+                    "SELECT AccountCode, AccountName, ParentShenavarID FROM shenavar WHERE ShenavarID = ?", currentId.Value)
+                If dt.Rows.Count = 0 Then Exit Do
+                Dim r = dt.Rows(0)
+                Dim code = Convert.ToString(r("AccountCode"))
+                Dim name = Convert.ToString(r("AccountName"))
+                chain.Insert(0, Tuple.Create(code, name))
+                
+                Dim pVal = r("ParentShenavarID")
+                If pVal Is Nothing OrElse Convert.IsDBNull(pVal) Then
+                    currentId = Nothing
+                Else
+                    currentId = Convert.ToInt32(pVal)
+                End If
+            Loop
+            Return chain
+        End Function
     End Class
 End Namespace
