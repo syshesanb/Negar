@@ -7,6 +7,7 @@ Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports Sys_Hes_Anb.Business
+Imports Sys_Hes_Anb.Data
 
 Namespace Sys_Hes_Anb.Forms
     Partial Class HesabdaryTarazShenavarForm
@@ -17,6 +18,8 @@ Namespace Sys_Hes_Anb.Forms
         Private _nodeDict As New Dictionary(Of Integer, TrialNode)()
         Private _showOnlyWithData As Boolean = True
         Private ReadOnly _searchTextBoxes As New Dictionary(Of String, TextBox)()
+        Private _labelTextMain As String = "تراز تفصیلی شناور"
+        Private _labelTextSub As String = ""
 
         Public Event ShenavarSelected(shenavarId As Integer, shenavarCode As String, shenavarName As String, hasChildren As Boolean, allIds As List(Of Integer))
 
@@ -921,6 +924,90 @@ Namespace Sys_Hes_Anb.Forms
                     End Try
                 End If
             End Using
+        End Sub
+
+        Private Sub dgvTrial_SelectionChanged(sender As Object, e As EventArgs) Handles dgvTrial.SelectionChanged
+            UpdateHeaderTitleForSelectedRow()
+        End Sub
+
+        Private Sub UpdateHeaderTitleForSelectedRow()
+            If dgvTrial.CurrentRow Is Nothing OrElse dgvTrial.CurrentRow.Index < 0 Then Return
+            Dim gr = dgvTrial.CurrentRow
+            Dim node = TryCast(gr.Tag, TrialNode)
+            
+            Dim mainTitle = "تراز تفصیلی شناور"
+            Dim subTitle = ""
+            
+            If node IsNot Nothing Then
+                mainTitle = "تراز تفصیلی شناور :  " & node.AccountCode & " — " & node.AccountName
+                
+                If Not String.IsNullOrEmpty(node.StandardAccountCode) Then
+                    Try
+                        Dim stdAccIdObj = Sql.ExecuteScalar("SELECT AccountID FROM ChartOfAccounts WHERE CompanyID = ? AND AccountCode = ?", SessionContext.CurrentCompanyID.Value, node.StandardAccountCode)
+                        If stdAccIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(stdAccIdObj) Then
+                            Dim stdAccId = Convert.ToInt32(stdAccIdObj)
+                            Dim chain = service.GetAccountHierarchyChain(stdAccId)
+                            Dim parts As New List(Of String)()
+                            For Each item In chain
+                                parts.Add(item.Item1 & " — " & item.Item2)
+                            Next
+                            subTitle = "سرفصل حساب :  " & String.Join(" / ", parts.ToArray())
+                        End If
+                    Catch
+                    End Try
+                End If
+                
+                If String.IsNullOrEmpty(subTitle) AndAlso node.AccountID > 0 Then
+                    Try
+                        Dim chain = service.GetShenavarHierarchyChain(node.AccountID)
+                        Dim parts As New List(Of String)()
+                        For Each item In chain
+                            parts.Add(item.Item1 & " — " & item.Item2)
+                        Next
+                        subTitle = "سرفصل حساب :  " & String.Join(" / ", parts.ToArray())
+                    Catch
+                    End Try
+                End If
+            End If
+            
+            _labelTextMain = mainTitle
+            _labelTextSub = subTitle
+            lblTarazTitle.Invalidate()
+        End Sub
+
+        Private Sub lblTarazTitle_Paint(sender As Object, e As PaintEventArgs) Handles lblTarazTitle.Paint
+            If String.IsNullOrEmpty(_labelTextMain) Then Return
+
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit
+
+            Dim fontMain = lblTarazTitle.Font
+            Dim fontSub = New Font(fontMain.FontFamily, fontMain.Size - 0.5F, FontStyle.Regular)
+
+            Dim colorMain = lblTarazTitle.ForeColor
+            Dim colorSub = Color.FromArgb(120, 135, 155) ' Mild color
+
+            Dim sizeMain = e.Graphics.MeasureString(_labelTextMain, fontMain)
+            Dim sizeSub = If(String.IsNullOrEmpty(_labelTextSub), New SizeF(0, 0), e.Graphics.MeasureString(_labelTextSub, fontSub))
+
+            Dim yMain = (lblTarazTitle.Height - sizeMain.Height) / 2
+            Dim ySub = (lblTarazTitle.Height - sizeSub.Height) / 2
+
+            ' Align Right-to-Left
+            Dim currentX = lblTarazTitle.Width - 15
+
+            ' Draw main text
+            currentX -= sizeMain.Width
+            Using brushMain As New SolidBrush(colorMain)
+                e.Graphics.DrawString(_labelTextMain, fontMain, brushMain, currentX, yMain)
+            End Using
+
+            ' Draw sub text
+            If Not String.IsNullOrEmpty(_labelTextSub) Then
+                currentX -= (sizeSub.Width + 40) ' 40px spacing
+                Using brushSub As New SolidBrush(colorSub)
+                    e.Graphics.DrawString(_labelTextSub, fontSub, brushSub, currentX, ySub)
+                End Using
+            End If
         End Sub
     End Class
 End Namespace

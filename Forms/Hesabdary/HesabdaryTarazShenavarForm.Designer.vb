@@ -59,6 +59,8 @@ Namespace Sys_Hes_Anb.Forms
             Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
             Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
             Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+            Me.pnlHeader = New System.Windows.Forms.Panel()
+            Me.lblTarazTitle = New System.Windows.Forms.Label()
             Me.pnlTop = New System.Windows.Forms.Panel()
             Me.btnRefresh = New System.Windows.Forms.Button()
             Me.btnPrintTaraz = New System.Windows.Forms.Button()
@@ -135,6 +137,29 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlJam.SuspendLayout()
             Me.pnlGridSearch.SuspendLayout()
             Me.SuspendLayout()
+            '
+            '
+            'pnlHeader
+            '
+            Me.pnlHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(235, Byte), Integer), CType(CType(243, Byte), Integer), CType(CType(255, Byte), Integer))
+            Me.pnlHeader.Controls.Add(Me.lblTarazTitle)
+            Me.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top
+            Me.pnlHeader.Location = New System.Drawing.Point(0, 0)
+            Me.pnlHeader.Name = "pnlHeader"
+            Me.pnlHeader.Size = New System.Drawing.Size(1320, 44)
+            Me.pnlHeader.TabIndex = 8
+            '
+            'lblTarazTitle
+            '
+            Me.lblTarazTitle.Dock = System.Windows.Forms.DockStyle.Fill
+            Me.lblTarazTitle.Font = New System.Drawing.Font("Tahoma", 10.0!, System.Drawing.FontStyle.Bold)
+            Me.lblTarazTitle.ForeColor = System.Drawing.Color.FromArgb(CType(CType(20, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(120, Byte), Integer))
+            Me.lblTarazTitle.Location = New System.Drawing.Point(0, 0)
+            Me.lblTarazTitle.Name = "lblTarazTitle"
+            Me.lblTarazTitle.Size = New System.Drawing.Size(1320, 44)
+            Me.lblTarazTitle.TabIndex = 0
+            Me.lblTarazTitle.Text = "تراز تفصیلی شناور"
+            Me.lblTarazTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
             '
             'pnlTop
             '
@@ -824,6 +849,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.Controls.Add(Me.pnlGridSearch)
             Me.Controls.Add(Me.pnlFilters)
             Me.Controls.Add(Me.pnlTop)
+            Me.Controls.Add(Me.pnlHeader)
             Me.Font = New System.Drawing.Font("Tahoma", 9.0!)
             Me.Name = "HesabdaryTarazShenavarForm"
             Me.RightToLeft = System.Windows.Forms.RightToLeft.Yes
@@ -875,5 +901,7 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents txtSearchDebitEnd As TextBox
         Friend WithEvents txtSearchCreditEnd As TextBox
         Friend WithEvents btnExportExcel As Button
+        Friend WithEvents pnlHeader As Panel
+        Friend WithEvents lblTarazTitle As Label
     End Class
 End Namespace
