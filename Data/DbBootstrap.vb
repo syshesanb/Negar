@@ -463,27 +463,24 @@ Namespace Sys_Hes_Anb.Data
 
         Private Sub EnsureProfitLossMappingsTable()
             Try
-                Dim hasOldCol As Boolean = False
-                Using conn = Db.OpenConnection()
-                    Dim schemaTable = conn.GetSchema("Columns", New String() {Nothing, Nothing, "ProfitLossMappings", Nothing})
-                    For Each row As DataRow In schemaTable.Rows
-                        If String.Equals(Convert.ToString(row("COLUMN_NAME")), "CategoryKey", StringComparison.OrdinalIgnoreCase) Then
-                            hasOldCol = True
-                            Exit For
-                        End If
-                    Next
-                End Using
-                
-                If hasOldCol Then
-                    Sql.ExecuteNonQuery("DROP TABLE IF EXISTS ProfitLossMappings;")
-                End If
+                ' Drop old table if exists
+                Sql.ExecuteNonQuery("DROP TABLE IF EXISTS ProfitLossCategories;")
 
                 Sql.ExecuteNonQuery(
-                    "CREATE TABLE IF NOT EXISTS ProfitLossCategories (" &
+                    "CREATE TABLE IF NOT EXISTS Report1 (" &
+                    "ReportID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ReportCode TEXT NOT NULL, " &
+                    "ReportName TEXT NOT NULL, " &
+                    "CompanyID INTEGER NOT NULL);")
+
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS Report2 (" &
                     "CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ReportID INTEGER NOT NULL, " &
                     "CategoryName TEXT NOT NULL, " &
                     "SortOrder INTEGER NOT NULL, " &
-                    "CompanyID INTEGER NOT NULL);")
+                    "CompanyID INTEGER NOT NULL, " &
+                    "FOREIGN KEY(ReportID) REFERENCES Report1(ReportID) ON DELETE CASCADE);")
 
                 Sql.ExecuteNonQuery(
                     "CREATE TABLE IF NOT EXISTS ProfitLossMappings (" &
@@ -491,7 +488,7 @@ Namespace Sys_Hes_Anb.Data
                     "CategoryID INTEGER NOT NULL, " &
                     "CompanyID INTEGER NOT NULL, " &
                     "FOREIGN KEY(AccountID) REFERENCES ChartOfAccounts(AccountID) ON DELETE CASCADE, " &
-                    "FOREIGN KEY(CategoryID) REFERENCES ProfitLossCategories(CategoryID) ON DELETE CASCADE);")
+                    "FOREIGN KEY(CategoryID) REFERENCES Report2(CategoryID) ON DELETE CASCADE);")
             Catch ex As Exception
                 Log("EnsureProfitLossMappingsTable error: " & ex.Message)
             End Try

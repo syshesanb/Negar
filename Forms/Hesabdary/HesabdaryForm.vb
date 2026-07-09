@@ -51,13 +51,8 @@ Namespace Sys_Hes_Anb.Forms
         Private _daftarShenavarForm As HesabdaryDaftarShenavarForm
         
         Private _reportsTabInitialized As Boolean = False
-        Private dgvReports As DataGridView
-        Private btnAutoMap As Button
-        Private btnSaveFormat As Button
-        Private btnDeleteRow As Button
-        Private btnAddToCategories As Button
-        Private lblChainTitle As Label
-        Private _rootNodes As New List(Of PLNode)()
+        Private _report1Form As HesabdaryReport1Form
+        Private _report2Form As HesabdaryReport2Form
 
         Private Sub LoadAllTabs()
             Using progress As New ProgressForm()
@@ -221,438 +216,53 @@ Namespace Sys_Hes_Anb.Forms
             If _reportsTabInitialized Then Return
             _reportsTabInitialized = True
 
-            ' Clear the placeholder label
-            tabReportIntroProfitLoss.Controls.Clear()
-
-            ' Create Top Actions Panel
-            Dim pnlTopActions As New Panel()
-            pnlTopActions.Dock = DockStyle.Top
-            pnlTopActions.Height = 45
-            pnlTopActions.BackColor = Color.FromArgb(235, 243, 255)
-            pnlTopActions.Padding = New Padding(10, 8, 10, 8)
-            tabReportIntroProfitLoss.Controls.Add(pnlTopActions)
-
-            ' lblChainTitle inside pnlTopActions
-            lblChainTitle = New Label()
-            lblChainTitle.Dock = DockStyle.Fill
-            lblChainTitle.TextAlign = ContentAlignment.MiddleRight
-            lblChainTitle.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
-            lblChainTitle.ForeColor = Color.FromArgb(50, 70, 100)
-            lblChainTitle.Text = ""
-            pnlTopActions.Controls.Add(lblChainTitle)
-
-            ' Action buttons in top panel (docked Left)
-            btnSaveFormat = New Button()
-            btnSaveFormat.Text = "ذخیره فرمت گزارش"
-            btnSaveFormat.Dock = DockStyle.Left
-            btnSaveFormat.Width = 140
-            btnSaveFormat.BackColor = Color.FromArgb(200, 240, 200)
-            btnSaveFormat.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
-            pnlTopActions.Controls.Add(btnSaveFormat)
-
-            Dim pnlSpacing1 As New Panel()
-            pnlSpacing1.Dock = DockStyle.Left
-            pnlSpacing1.Width = 10
-            pnlTopActions.Controls.Add(pnlSpacing1)
-
-            btnDeleteRow = New Button()
-            btnDeleteRow.Text = "حذف سطر"
-            btnDeleteRow.Dock = DockStyle.Left
-            btnDeleteRow.Width = 100
-            btnDeleteRow.BackColor = Color.FromArgb(250, 210, 210)
-            btnDeleteRow.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
-            pnlTopActions.Controls.Add(btnDeleteRow)
-
-            Dim pnlSpacing2 As New Panel()
-            pnlSpacing2.Dock = DockStyle.Left
-            pnlSpacing2.Width = 10
-            pnlTopActions.Controls.Add(pnlSpacing2)
-
-            btnAddToCategories = New Button()
-            btnAddToCategories.Text = "افزودن سطر"
-            btnAddToCategories.Dock = DockStyle.Left
-            btnAddToCategories.Width = 100
-            btnAddToCategories.BackColor = Color.FromArgb(215, 235, 255)
-            btnAddToCategories.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
-            pnlTopActions.Controls.Add(btnAddToCategories)
-
-            Dim pnlSpacing3 As New Panel()
-            pnlSpacing3.Dock = DockStyle.Left
-            pnlSpacing3.Width = 10
-            pnlTopActions.Controls.Add(pnlSpacing3)
-
-            btnAutoMap = New Button()
-            btnAutoMap.Text = "تخصیص هوشمند پیش‌فرض"
-            btnAutoMap.Dock = DockStyle.Left
-            btnAutoMap.Width = 180
-            btnAutoMap.BackColor = Color.FromArgb(220, 230, 250)
-            btnAutoMap.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
-            pnlTopActions.Controls.Add(btnAutoMap)
-
-            ' Create DataGridView for Tree representation
-            dgvReports = New DataGridView()
-            dgvReports.Dock = DockStyle.Fill
-            dgvReports.AllowUserToAddRows = False
-            dgvReports.AllowUserToDeleteRows = False
-            dgvReports.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            dgvReports.BackgroundColor = Color.White
-            dgvReports.RowHeadersVisible = False
-            dgvReports.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            dgvReports.MultiSelect = False
-            dgvReports.ReadOnly = False
-            dgvReports.RowTemplate.Height = 26
-            tabReportIntroProfitLoss.Controls.Add(dgvReports)
-
-            ' Add Columns
-            Dim colToggle As New DataGridViewTextBoxColumn()
-            colToggle.Name = "colToggle"
-            colToggle.HeaderText = "+ / -"
-            colToggle.Width = 45
-            colToggle.ReadOnly = True
-            colToggle.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            dgvReports.Columns.Add(colToggle)
-
-            Dim colRowNo As New DataGridViewTextBoxColumn()
-            colRowNo.Name = "colRowNo"
-            colRowNo.HeaderText = "ردیف"
-            colRowNo.Width = 60
-            colRowNo.ReadOnly = True
-            colRowNo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            dgvReports.Columns.Add(colRowNo)
-
-            Dim colCategory As New DataGridViewTextBoxColumn()
-            colCategory.Name = "colCategory"
-            colCategory.HeaderText = "بخش‌های گزارش عملکرد و سود و زیان"
-            colCategory.Width = 280
-            colCategory.ReadOnly = False
-            dgvReports.Columns.Add(colCategory)
-
-            Dim colAdd As New DataGridViewButtonColumn()
-            colAdd.Name = "colAdd"
-            colAdd.HeaderText = "افزودن سرفصل"
-            colAdd.Width = 110
-            colAdd.ReadOnly = True
-            dgvReports.Columns.Add(colAdd)
-
-            Dim colRemove As New DataGridViewButtonColumn()
-            colRemove.Name = "colRemove"
-            colRemove.HeaderText = "حذف سرفصل"
-            colRemove.Width = 110
-            colRemove.ReadOnly = True
-            dgvReports.Columns.Add(colRemove)
-
-            Dim colCode As New DataGridViewTextBoxColumn()
-            colCode.Name = "colCode"
-            colCode.HeaderText = "کد سرفصل"
-            colCode.Width = 100
-            colCode.ReadOnly = True
-            colCode.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            dgvReports.Columns.Add(colCode)
-
-            Dim colName As New DataGridViewTextBoxColumn()
-            colName.Name = "colName"
-            colName.HeaderText = "نام سرفصل"
-            colName.Width = 250
-            colName.ReadOnly = True
-            dgvReports.Columns.Add(colName)
-
-            Dim colID As New DataGridViewTextBoxColumn()
-            colID.Name = "colID"
-            colID.Visible = False
-            colID.ReadOnly = True
-            dgvReports.Columns.Add(colID)
-
-            ' Register Event Handlers
-            AddHandler btnAutoMap.Click, AddressOf BtnAutoMap_Click
-            AddHandler btnAddToCategories.Click, AddressOf BtnAddCategoryRow_Click
-            AddHandler btnDeleteRow.Click, AddressOf BtnDeleteCategoryRow_Click
-            AddHandler btnSaveFormat.Click, AddressOf BtnSaveFormat_Click
-            
-            AddHandler dgvReports.CellContentClick, AddressOf DgvReports_CellContentClick
-            AddHandler dgvReports.CellDoubleClick, AddressOf DgvReports_CellDoubleClick
-            AddHandler dgvReports.SelectionChanged, AddressOf DgvReports_SelectionChanged
-            AddHandler dgvReports.CellEndEdit, AddressOf DgvReports_CellEndEdit
-
-            ' Load Tree Nodes
-            LoadTreeData()
-            BuildAndRefreshGrid()
-        End Sub
-
-        Private Sub LoadTreeData()
-            Dim expansionStates As New Dictionary(Of String, Boolean)()
-            For Each r In _rootNodes
-                expansionStates(r.CategoryName) = r.IsExpanded
-            Next
-            _rootNodes.Clear()
-            
-            Dim dtCats = service.GetProfitLossCategories(SessionContext.CurrentCompanyID.Value)
-            If dtCats.Rows.Count = 0 Then
+            Try
                 service.BootstrapDefaultProfitLossFormat(SessionContext.CurrentCompanyID.Value)
-                dtCats = service.GetProfitLossCategories(SessionContext.CurrentCompanyID.Value)
-            End If
-
-            Dim allMappings = service.GetProfitLossMappings(SessionContext.CurrentCompanyID.Value)
-
-            For Each rowCat As DataRow In dtCats.Rows
-                Dim catId = Convert.ToInt32(rowCat("CategoryID"))
-                Dim catName = Convert.ToString(rowCat("CategoryName"))
-                
-                Dim parent As New PLNode()
-                parent.CategoryID = catId
-                parent.CategoryName = catName
-                parent.IsCategory = True
-                
-                If expansionStates.ContainsKey(parent.CategoryName) Then
-                    parent.IsExpanded = expansionStates(parent.CategoryName)
-                Else
-                    parent.IsExpanded = True
-                End If
-
-                Dim dv As New DataView(allMappings)
-                dv.RowFilter = "CategoryID = " & catId
-                For Each row As DataRowView In dv
-                    Dim child As New PLNode()
-                    child.AccountID = Convert.ToInt32(row("AccountID"))
-                    child.AccountCode = Convert.ToString(row("AccountCode"))
-                    child.AccountName = Convert.ToString(row("AccountName"))
-                    child.IsCategory = False
-                    
-                    parent.Children.Add(child)
-                Next
-                
-                _rootNodes.Add(parent)
-            Next
-        End Sub
-
-        Private Sub BuildAndRefreshGrid()
-            If dgvReports Is Nothing Then Return
-            
-            dgvReports.SuspendLayout()
-            dgvReports.Rows.Clear()
-            
-            Dim displayList As New List(Of PLNode)()
-            For Each root In _rootNodes
-                displayList.Add(root)
-                If root.IsExpanded Then
-                    For Each child In root.Children
-                        displayList.Add(child)
-                    Next
-                End If
-            Next
-
-            For i As Integer = 0 To displayList.Count - 1
-                Dim node = displayList(i)
-                Dim rowIdx = dgvReports.Rows.Add()
-                Dim row = dgvReports.Rows(rowIdx)
-                row.Tag = node
-                
-                row.Cells("colToggle").Value = If(node.IsCategory, If(node.IsExpanded, "－", "＋"), "")
-                row.Cells("colRowNo").Value = i + 1
-                row.Cells("colCategory").Value = If(node.IsCategory, node.CategoryName, "")
-                row.Cells("colCode").Value = If(node.IsCategory, "", node.AccountCode)
-                row.Cells("colName").Value = If(node.IsCategory, "", node.AccountName)
-                row.Cells("colID").Value = If(node.IsCategory, 0, node.AccountID)
-                
-                If node.IsCategory Then
-                    row.Cells("colCategory").ReadOnly = False
-                    row.Cells("colAdd").Value = "افزودن سرفصل"
-                    row.Cells("colRemove") = New DataGridViewTextBoxCell()
-                    row.Cells("colRemove").Value = ""
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(235, 243, 255)
-                    row.DefaultCellStyle.Font = New Font(dgvReports.Font, FontStyle.Bold)
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(20, 50, 100)
-                Else
-                    row.Cells("colCategory").ReadOnly = True
-                    row.Cells("colAdd") = New DataGridViewTextBoxCell()
-                    row.Cells("colAdd").Value = ""
-                    row.Cells("colRemove").Value = "حذف سرفصل"
-                    row.DefaultCellStyle.BackColor = Color.White
-                    row.DefaultCellStyle.Font = New Font(dgvReports.Font, FontStyle.Regular)
-                    row.DefaultCellStyle.ForeColor = Color.Black
-                End If
-            Next
-            
-            dgvReports.ResumeLayout()
-            UpdateReportsChainLabel()
-        End Sub
-
-        Private Sub DgvReports_CellContentClick(sender As Object, e As DataGridViewCellEventArgs)
-            If e.RowIndex < 0 Then Return
-            Dim row = dgvReports.Rows(e.RowIndex)
-            Dim node = TryCast(row.Tag, PLNode)
-            If node Is Nothing Then Return
-            
-            Dim colName = dgvReports.Columns(e.ColumnIndex).Name
-            
-            If colName = "colToggle" AndAlso node.IsCategory Then
-                node.IsExpanded = Not node.IsExpanded
-                BuildAndRefreshGrid()
-            ElseIf colName = "colAdd" AndAlso node.IsCategory Then
-                Using picker As New AccountPickerForm(SessionContext.CurrentCompanyID.Value)
-                    If picker.ShowDialog(Me) = DialogResult.OK AndAlso picker.SelectedAccountID > 0 Then
-                        Try
-                            Dim dtAcc = Sql.ExecuteTable("SELECT AccountCode, AccountName FROM ChartOfAccounts WHERE AccountID = ?", picker.SelectedAccountID)
-                            If dtAcc.Rows.Count > 0 Then
-                                Dim child As New PLNode()
-                                child.AccountID = picker.SelectedAccountID
-                                child.AccountCode = Convert.ToString(dtAcc.Rows(0)("AccountCode"))
-                                child.AccountName = Convert.ToString(dtAcc.Rows(0)("AccountName"))
-                                child.IsCategory = False
-                                
-                                node.Children.Add(child)
-                                BuildAndRefreshGrid()
-                            End If
-                        Catch ex As Exception
-                            MessageBox.Show("خطا در افزودن حساب: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        End Try
-                    End If
-                End Using
-            ElseIf colName = "colRemove" AndAlso Not node.IsCategory Then
-                If MessageBox.Show("آیا مطمئن هستید که می‌خواهید اتصال حساب '" & node.AccountName & "' را از این دسته قطع کنید؟", "تایید حذف", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    For Each root In _rootNodes
-                        If root.Children.Contains(node) Then
-                            root.Children.Remove(node)
-                            Exit For
-                        End If
-                    Next
-                    BuildAndRefreshGrid()
-                End If
-            End If
-        End Sub
-
-        Private Sub DgvReports_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs)
-            If e.RowIndex < 0 Then Return
-            Dim row = dgvReports.Rows(e.RowIndex)
-            Dim node = TryCast(row.Tag, PLNode)
-            If node IsNot Nothing AndAlso node.IsCategory Then
-                node.IsExpanded = Not node.IsExpanded
-                BuildAndRefreshGrid()
-            End If
-        End Sub
-
-        Private Sub DgvReports_SelectionChanged(sender As Object, e As EventArgs)
-            UpdateReportsChainLabel()
-        End Sub
-
-        Private Sub UpdateReportsChainLabel()
-            If lblChainTitle Is Nothing Then Return
-            If dgvReports.CurrentRow Is Nothing Then
-                lblChainTitle.Text = ""
-                Return
-            End If
-            
-            Dim row = dgvReports.CurrentRow
-            Dim node = TryCast(row.Tag, PLNode)
-            If node Is Nothing OrElse node.IsCategory OrElse node.AccountID <= 0 Then
-                lblChainTitle.Text = ""
-                Return
-            End If
-            
-            Try
-                Dim chain = service.GetAccountHierarchyChain(node.AccountID)
-                Dim parts As New List(Of String)()
-                For Each item In chain
-                    parts.Add(item.Item1 & " — " & item.Item2)
-                Next
-                lblChainTitle.Text = "زنجیره سرفصل:  " & String.Join("  /  ", parts.ToArray())
             Catch
-                lblChainTitle.Text = ""
             End Try
+
+            ShowReport1Form()
         End Sub
 
-        Private Sub BtnAutoMap_Click(sender As Object, e As EventArgs)
-            If MessageBox.Show("آیا مایل هستید سیستم به صورت خودکار حساب‌های سود و زیانی را دسته‌بندی کند؟ (حساب‌هایی که قبلاً تخصیص داده شده‌اند تغییر نخواهند کرد)", "تخصیص هوشمند پیش‌فرض", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                service.AutoMapProfitLossAccounts(SessionContext.CurrentCompanyID.Value)
-                LoadTreeData()
-                BuildAndRefreshGrid()
-                MessageBox.Show("تخصیص هوشمند با موفقیت انجام شد.", "پیام سیستم", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Private Sub ShowReport1Form()
+            If _report1Form Is Nothing Then
+                _report1Form = New HesabdaryReport1Form()
+                AddHandler _report1Form.NewReportRequested, AddressOf Report1Form_NewReportRequested
+                AddHandler _report1Form.EditReportRequested, AddressOf Report1Form_EditReportRequested
             End If
+
+            HostForm(tabReportIntroProfitLoss, _report1Form)
+            _report1Form.RefreshData()
         End Sub
 
-        Private Sub BtnAddCategoryRow_Click(sender As Object, e As EventArgs)
-            Dim newCat As New PLNode()
-            newCat.CategoryID = 0
-            newCat.CategoryName = "بخش جدید"
-            newCat.IsCategory = True
-            newCat.IsExpanded = True
-            _rootNodes.Add(newCat)
-            BuildAndRefreshGrid()
-            
-            For i As Integer = 0 To dgvReports.Rows.Count - 1
-                Dim row = dgvReports.Rows(i)
-                Dim node = TryCast(row.Tag, PLNode)
-                If node Is newCat Then
-                    dgvReports.CurrentCell = row.Cells("colCategory")
-                    dgvReports.BeginEdit(True)
-                    Exit For
-                End If
-            Next
-        End Sub
-
-        Private Sub BtnDeleteCategoryRow_Click(sender As Object, e As EventArgs)
-            If dgvReports.CurrentRow Is Nothing Then Return
-            Dim row = dgvReports.CurrentRow
-            Dim node = TryCast(row.Tag, PLNode)
-            If node Is Nothing Then Return
-            
-            If node.IsCategory Then
-                If MessageBox.Show("آیا مطمئن هستید که می‌خواهید بخش '" & node.CategoryName & "' را به همراه تمام حساب‌های متصل به آن حذف کنید؟", "تایید حذف بخش", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    _rootNodes.Remove(node)
-                    BuildAndRefreshGrid()
-                End If
-            Else
-                MessageBox.Show("برای قطع اتصال حساب از دکمه 'حذف سرفصل' در همان سطر استفاده کنید.", "راهنمایی", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Private Sub ShowReport2Form(reportId As Integer)
+            If _report2Form Is Nothing Then
+                _report2Form = New HesabdaryReport2Form()
+                AddHandler _report2Form.SaveCompleted, AddressOf Report2Form_SaveCompleted
+                AddHandler _report2Form.ExitRequested, AddressOf Report2Form_ExitRequested
             End If
+
+            HostForm(tabReportIntroProfitLoss, _report2Form)
+            _report2Form.ReportID = reportId
         End Sub
 
-        Private Sub BtnSaveFormat_Click(sender As Object, e As EventArgs)
-            Try
-                Dim dtoList As New List(Of PLNodeDto)()
-                For Each root In _rootNodes
-                    Dim dto As New PLNodeDto()
-                    dto.CategoryName = root.CategoryName
-                    For Each child In root.Children
-                        dto.AccountIDs.Add(child.AccountID)
-                    Next
-                    dtoList.Add(dto)
-                Next
-                
-                service.SaveProfitLossFormat(SessionContext.CurrentCompanyID.Value, dtoList)
-                LoadTreeData()
-                BuildAndRefreshGrid()
-                
-                MessageBox.Show("فرمت گزارش سود و زیان با موفقیت ذخیره شد.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Catch ex As Exception
-                MessageBox.Show("خطا در ذخیره فرمت گزارش: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
+        Private Sub Report1Form_NewReportRequested(sender As Object, e As EventArgs)
+            ShowReport2Form(0)
         End Sub
 
-        Private Sub DgvReports_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs)
-            If e.RowIndex < 0 Then Return
-            Dim row = dgvReports.Rows(e.RowIndex)
-            Dim node = TryCast(row.Tag, PLNode)
-            If node IsNot Nothing AndAlso node.IsCategory Then
-                node.CategoryName = Convert.ToString(row.Cells("colCategory").Value).Trim()
-                If String.IsNullOrEmpty(node.CategoryName) Then
-                    node.CategoryName = "بخش جدید"
-                    row.Cells("colCategory").Value = "بخش جدید"
-                End If
-            End If
+        Private Sub Report1Form_EditReportRequested(reportId As Integer)
+            ShowReport2Form(reportId)
         End Sub
 
-        Private Class PLNode
-            Public CategoryID As Integer
-            Public Key As String
-            Public CategoryName As String
-            Public AccountID As Integer
-            Public AccountCode As String
-            Public AccountName As String
-            Public IsCategory As Boolean
-            Public IsExpanded As Boolean = True
-            Public Children As New List(Of PLNode)()
-        End Class
+        Private Sub Report2Form_SaveCompleted(sender As Object, e As EventArgs)
+            ShowReport1Form()
+        End Sub
 
-        Private Class AccountPickerForm
+        Private Sub Report2Form_ExitRequested(sender As Object, e As EventArgs)
+            ShowReport1Form()
+        End Sub
+
+        Public Class AccountPickerForm
             Inherits Form
 
             Public SelectedAccountID As Integer = 0

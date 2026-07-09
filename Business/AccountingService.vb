@@ -1814,10 +1814,48 @@ Namespace Sys_Hes_Anb.Business
             Return chain
         End Function
 
-        Public Function GetProfitLossCategories(companyId As Integer) As DataTable
+        Public Function GetReports(companyId As Integer) As DataTable
+            Return Sql.ExecuteTable("SELECT ReportID, ReportCode, ReportName FROM Report1 WHERE CompanyID = ? ORDER BY ReportCode", companyId)
+        End Function
+
+        Public Sub DeleteReport(reportId As Integer)
+            Using connection = Db.OpenConnection()
+                Using transaction = connection.BeginTransaction()
+                    Try
+                        Using cmdMaps As New SQLiteCommand(
+                            "DELETE FROM ProfitLossMappings WHERE CategoryID IN (SELECT CategoryID FROM Report2 WHERE ReportID = ?)",
+                            connection, transaction)
+                            cmdMaps.Parameters.AddWithValue("@ReportID", reportId)
+                            cmdMaps.ExecuteNonQuery()
+                        End Using
+                        
+                        Using cmdCats As New SQLiteCommand(
+                            "DELETE FROM Report2 WHERE ReportID = ?",
+                            connection, transaction)
+                            cmdCats.Parameters.AddWithValue("@ReportID", reportId)
+                            cmdCats.ExecuteNonQuery()
+                        End Using
+
+                        Using cmdRep As New SQLiteCommand(
+                            "DELETE FROM Report1 WHERE ReportID = ?",
+                            connection, transaction)
+                            cmdRep.Parameters.AddWithValue("@ReportID", reportId)
+                            cmdRep.ExecuteNonQuery()
+                        End Using
+                        
+                        transaction.Commit()
+                    Catch
+                        transaction.Rollback()
+                        Throw
+                    End Try
+                End Using
+            End Using
+        End Sub
+
+        Public Function GetProfitLossCategories(reportId As Integer) As DataTable
             Return Sql.ExecuteTable(
-                "SELECT CategoryID, CategoryName, SortOrder FROM ProfitLossCategories WHERE CompanyID = ? ORDER BY SortOrder",
-                companyId)
+                "SELECT CategoryID, CategoryName, SortOrder FROM Report2 WHERE ReportID = ? ORDER BY SortOrder",
+                reportId)
         End Function
 
         Public Function GetProfitLossMappings(companyId As Integer) As DataTable
@@ -1829,37 +1867,42 @@ Namespace Sys_Hes_Anb.Business
                 "ORDER BY a.AccountCode", companyId)
         End Function
 
-        Public Sub SaveProfitLossMapping(accountId As Integer, categoryId As Integer, companyId As Integer)
-            Sql.ExecuteNonQuery(
-                "INSERT OR REPLACE INTO ProfitLossMappings (AccountID, CategoryID, CompanyID) VALUES (?, ?, ?)",
-                accountId, categoryId, companyId)
-        End Sub
-
         Public Sub DeleteProfitLossMapping(accountId As Integer)
             Sql.ExecuteNonQuery("DELETE FROM ProfitLossMappings WHERE AccountID = ?", accountId)
         End Sub
 
         Public Sub BootstrapDefaultProfitLossFormat(companyId As Integer)
-            Dim countObj = Sql.ExecuteScalar("SELECT COUNT(*) FROM ProfitLossCategories WHERE CompanyID = ?", companyId)
+            Dim countObj = Sql.ExecuteScalar("SELECT COUNT(*) FROM Report1 WHERE CompanyID = ?", companyId)
             If countObj IsNot Nothing AndAlso Convert.ToInt32(countObj) > 0 Then Return
             
-            Dim categories As New List(Of String)()
-            categories.Add("فروش ناخالص (درآمدهای عملیاتی)")
-            categories.Add("برگشت از فروش و تخفیفات")
-            categories.Add("خرید ناخالص")
-            categories.Add("برگشت از خرید و تخفیفات")
-            categories.Add("هزینه‌های مستقیم خرید (حمل خرید)")
-            categories.Add("هزینه‌های اداری، عمومی و فروش")
-            categories.Add("سایر درآمدهای عملیاتی")
-            categories.Add("سایر درآمدهای غیرعملیاتی")
-            categories.Add("سایر هزینه‌های غیرعملیاتی و مالی")
-            
+            Dim reportId As Integer = 0
             Using connection = Db.OpenConnection()
                 Using transaction = connection.BeginTransaction()
                     Try
+                        Using cmd As New SQLiteCommand(
+                            "INSERT INTO Report1 (ReportCode, ReportName, CompanyID) VALUES (?, ?, ?); SELECT last_insert_rowid();",
+                            connection, transaction)
+                            cmd.Parameters.AddWithValue("@ReportCode", "PL01")
+                            cmd.Parameters.AddWithValue("@ReportName", "گزارش سود و زیان پیش‌فرض")
+                            cmd.Parameters.AddWithValue("@CompanyID", companyId)
+                            reportId = Convert.ToInt32(cmd.ExecuteScalar())
+                        End Using
+                        
+                        Dim categories As New List(Of String)()
+                        categories.Add("فروش ناخالص (درآمدهای عملیاتی)")
+                        categories.Add("برگشت از فروش و تخفیفات")
+                        categories.Add("خرید ناخالص")
+                        categories.Add("برگشت از خرید و تخفیفات")
+                        categories.Add("هزینه‌های مستقیم خرید (حمل خرید)")
+                        categories.Add("هزینه‌های اداری، عمومی و فروش")
+                        categories.Add("سایر درآمدهای عملیاتی")
+                        categories.Add("سایر درآمدهای غیرعملیاتی")
+                        categories.Add("سایر هزینه‌های غیرعملیاتی و مالی")
+                        
                         Dim sortOrder = 1
                         For Each catName In categories
-                            Using cmd As New SQLiteCommand("INSERT INTO ProfitLossCategories (CategoryName, SortOrder, CompanyID) VALUES (?, ?, ?)", connection, transaction)
+                            Using cmd As New SQLiteCommand("INSERT INTO Report2 (ReportID, CategoryName, SortOrder, CompanyID) VALUES (?, ?, ?, ?)", connection, transaction)
+                                cmd.Parameters.AddWithValue("@ReportID", reportId)
                                 cmd.Parameters.AddWithValue("@CategoryName", catName)
                                 cmd.Parameters.AddWithValue("@SortOrder", sortOrder)
                                 cmd.Parameters.AddWithValue("@CompanyID", companyId)
@@ -1875,20 +1918,45 @@ Namespace Sys_Hes_Anb.Business
                 End Using
             End Using
             
-            AutoMapProfitLossAccounts(companyId)
+            AutoMapProfitLossAccounts(reportId, companyId)
         End Sub
 
-        Public Sub SaveProfitLossFormat(companyId As Integer, categoriesList As List(Of PLNodeDto))
+        Public Function SaveProfitLossFormat(reportId As Integer, code As String, name As String, companyId As Integer, categoriesList As List(Of PLNodeDto)) As Integer
             Using connection = Db.OpenConnection()
                 Using transaction = connection.BeginTransaction()
                     Try
-                        Using cmdDelMap As New SQLiteCommand("DELETE FROM ProfitLossMappings WHERE CompanyID = ?", connection, transaction)
-                            cmdDelMap.Parameters.AddWithValue("@CompanyID", companyId)
+                        Dim activeReportId = reportId
+                        If activeReportId <= 0 Then
+                            Using cmd As New SQLiteCommand(
+                                "INSERT INTO Report1 (ReportCode, ReportName, CompanyID) VALUES (?, ?, ?); SELECT last_insert_rowid();",
+                                connection, transaction)
+                                cmd.Parameters.AddWithValue("@ReportCode", code)
+                                cmd.Parameters.AddWithValue("@ReportName", name)
+                                cmd.Parameters.AddWithValue("@CompanyID", companyId)
+                                activeReportId = Convert.ToInt32(cmd.ExecuteScalar())
+                            End Using
+                        Else
+                            Using cmd As New SQLiteCommand(
+                                "UPDATE Report1 SET ReportCode = ?, ReportName = ? WHERE ReportID = ?",
+                                connection, transaction)
+                                cmd.Parameters.AddWithValue("@ReportCode", code)
+                                cmd.Parameters.AddWithValue("@ReportName", name)
+                                cmd.Parameters.AddWithValue("@ReportID", activeReportId)
+                                cmd.ExecuteNonQuery()
+                            End Using
+                        End If
+
+                        Using cmdDelMap As New SQLiteCommand(
+                            "DELETE FROM ProfitLossMappings WHERE CategoryID IN (SELECT CategoryID FROM Report2 WHERE ReportID = ?)",
+                            connection, transaction)
+                            cmdDelMap.Parameters.AddWithValue("@ReportID", activeReportId)
                             cmdDelMap.ExecuteNonQuery()
                         End Using
                         
-                        Using cmdDelCat As New SQLiteCommand("DELETE FROM ProfitLossCategories WHERE CompanyID = ?", connection, transaction)
-                            cmdDelCat.Parameters.AddWithValue("@CompanyID", companyId)
+                        Using cmdDelCat As New SQLiteCommand(
+                            "DELETE FROM Report2 WHERE ReportID = ?",
+                            connection, transaction)
+                            cmdDelCat.Parameters.AddWithValue("@ReportID", activeReportId)
                             cmdDelCat.ExecuteNonQuery()
                         End Using
                         
@@ -1896,8 +1964,9 @@ Namespace Sys_Hes_Anb.Business
                         For Each cat In categoriesList
                             Dim catId As Integer = 0
                             Using cmdInsCat As New SQLiteCommand(
-                                "INSERT INTO ProfitLossCategories (CategoryName, SortOrder, CompanyID) VALUES (?, ?, ?); SELECT last_insert_rowid();",
+                                "INSERT INTO Report2 (ReportID, CategoryName, SortOrder, CompanyID) VALUES (?, ?, ?, ?); SELECT last_insert_rowid();",
                                 connection, transaction)
+                                cmdInsCat.Parameters.AddWithValue("@ReportID", activeReportId)
                                 cmdInsCat.Parameters.AddWithValue("@CategoryName", cat.CategoryName)
                                 cmdInsCat.Parameters.AddWithValue("@SortOrder", sortOrder)
                                 cmdInsCat.Parameters.AddWithValue("@CompanyID", companyId)
@@ -1918,21 +1987,25 @@ Namespace Sys_Hes_Anb.Business
                         Next
                         
                         transaction.Commit()
+                        Return activeReportId
                     Catch ex As Exception
                         transaction.Rollback()
                         Throw
                     End Try
                 End Using
             End Using
-        End Sub
+        End Function
 
-        Public Sub AutoMapProfitLossAccounts(companyId As Integer)
+        Public Sub AutoMapProfitLossAccounts(reportId As Integer, companyId As Integer)
             Dim accounts = Sql.ExecuteTable("SELECT AccountID, AccountCode, AccountName FROM ChartOfAccounts WHERE CompanyID = ? AND IsActive = 1", companyId)
             For Each row As DataRow In accounts.Rows
                 Dim accountId = Convert.ToInt32(row("AccountID"))
                 Dim name = Convert.ToString(row("AccountName"))
                 
-                Dim existObj = Sql.ExecuteScalar("SELECT COUNT(*) FROM ProfitLossMappings WHERE AccountID = ?", accountId)
+                Dim existObj = Sql.ExecuteScalar(
+                    "SELECT COUNT(*) FROM ProfitLossMappings m " &
+                    "INNER JOIN Report2 r ON m.CategoryID = r.CategoryID " &
+                    "WHERE m.AccountID = ? AND r.ReportID = ?", accountId, reportId)
                 If existObj IsNot Nothing AndAlso Convert.ToInt32(existObj) > 0 Then Continue For
                 
                 Dim categoryNameMatch As String = Nothing
@@ -1958,7 +2031,7 @@ Namespace Sys_Hes_Anb.Business
                 End If
                 
                 If categoryNameMatch IsNot Nothing Then
-                    Dim catIdObj = Sql.ExecuteScalar("SELECT CategoryID FROM ProfitLossCategories WHERE CompanyID = ? AND CategoryName = ?", companyId, categoryNameMatch)
+                    Dim catIdObj = Sql.ExecuteScalar("SELECT CategoryID FROM Report2 WHERE ReportID = ? AND CategoryName = ?", reportId, categoryNameMatch)
                     If catIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(catIdObj) Then
                         Dim catId = Convert.ToInt32(catIdObj)
                         Sql.ExecuteNonQuery(

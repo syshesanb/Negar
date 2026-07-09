@@ -183,6 +183,12 @@
     <Compile Include="Forms\Hesabdary\HesabdaryCodingForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryReport1Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryReport2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Hesabdary\HesabdaryCodingForm.Designer.vb">
       <DependentUpon>HesabdaryCodingForm.vb</DependentUpon>
     </Compile>
