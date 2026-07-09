@@ -494,7 +494,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             'colDebit
             '
-            DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+            DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
             Me.colDebit.DefaultCellStyle = DataGridViewCellStyle8
             Me.colDebit.HeaderText = "بدهکار (واریز)"
             Me.colDebit.Name = "colDebit"
@@ -503,7 +503,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             'colCredit
             '
-            DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+            DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
             Me.colCredit.DefaultCellStyle = DataGridViewCellStyle9
             Me.colCredit.HeaderText = "بستانکار (برداشت)"
             Me.colCredit.Name = "colCredit"
@@ -517,7 +517,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.colTash.HeaderText = "تش"
             Me.colTash.Name = "colTash"
             Me.colTash.ReadOnly = True
-            Me.colTash.Width = 40
+            Me.colTash.Width = 70
             '
             'colBalance
             '
@@ -558,7 +558,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblSumDebit.Name = "lblSumDebit"
             Me.lblSumDebit.Size = New System.Drawing.Size(115, 18)
             Me.lblSumDebit.TabIndex = 1
-            Me.lblSumDebit.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+            Me.lblSumDebit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
             '
             'lblSumCredit
             '
@@ -566,13 +566,13 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblSumCredit.Name = "lblSumCredit"
             Me.lblSumCredit.Size = New System.Drawing.Size(115, 18)
             Me.lblSumCredit.TabIndex = 2
-            Me.lblSumCredit.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+            Me.lblSumCredit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
             '
             'lblTash
             '
             Me.lblTash.Location = New System.Drawing.Point(0, 8)
             Me.lblTash.Name = "lblTash"
-            Me.lblTash.Size = New System.Drawing.Size(40, 18)
+            Me.lblTash.Size = New System.Drawing.Size(70, 18)
             Me.lblTash.TabIndex = 3
             Me.lblTash.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
             '
@@ -582,7 +582,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblSumBalance.Name = "lblSumBalance"
             Me.lblSumBalance.Size = New System.Drawing.Size(125, 18)
             Me.lblSumBalance.TabIndex = 4
-            Me.lblSumBalance.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+            Me.lblSumBalance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
             '
             'pnlFilters
             '
