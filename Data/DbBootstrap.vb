@@ -36,6 +36,8 @@ Namespace Sys_Hes_Anb.Data
                 Log("bootstrap:background-images-ok")
                 EnsureSoBankTables()
                 Log("bootstrap:sobank-tables-ok")
+                EnsureProfitLossMappingsTable()
+                Log("bootstrap:profit-loss-mappings-ok")
             Catch ex As Exception
                 Log("bootstrap-error: " & ex.Message & Environment.NewLine & ex.StackTrace)
                 Throw
@@ -456,6 +458,19 @@ Namespace Sys_Hes_Anb.Data
                 AddColumnIfMissing("SoBank_2", "MatchedDetailID", "INTEGER")
             Catch ex As Exception
                 Log("EnsureSoBankTables error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureProfitLossMappingsTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS ProfitLossMappings (" &
+                    "AccountID INTEGER PRIMARY KEY, " &
+                    "CategoryKey TEXT NOT NULL, " &
+                    "CompanyID INTEGER NOT NULL, " &
+                    "FOREIGN KEY(AccountID) REFERENCES ChartOfAccounts(AccountID) ON DELETE CASCADE);")
+            Catch ex As Exception
+                Log("EnsureProfitLossMappingsTable error: " & ex.Message)
             End Try
         End Sub
 

@@ -1812,5 +1812,62 @@ Namespace Sys_Hes_Anb.Business
             Loop
             Return chain
         End Function
+
+        Public Function GetProfitLossMappings(companyId As Integer) As DataTable
+            Return Sql.ExecuteTable(
+                "SELECT m.AccountID, m.CategoryKey, a.AccountCode, a.AccountName " &
+                "FROM ProfitLossMappings m " &
+                "INNER JOIN ChartOfAccounts a ON m.AccountID = a.AccountID " &
+                "WHERE m.CompanyID = ? " &
+                "ORDER BY a.AccountCode", companyId)
+        End Function
+
+        Public Sub SaveProfitLossMapping(accountId As Integer, categoryKey As String, companyId As Integer)
+            Sql.ExecuteNonQuery(
+                "INSERT OR REPLACE INTO ProfitLossMappings (AccountID, CategoryKey, CompanyID) VALUES (?, ?, ?)",
+                accountId, categoryKey, companyId)
+        End Sub
+
+        Public Sub DeleteProfitLossMapping(accountId As Integer)
+            Sql.ExecuteNonQuery("DELETE FROM ProfitLossMappings WHERE AccountID = ?", accountId)
+        End Sub
+
+        Public Sub AutoMapProfitLossAccounts(companyId As Integer)
+            Dim accounts = Sql.ExecuteTable("SELECT AccountID, AccountCode, AccountName FROM ChartOfAccounts WHERE CompanyID = ? AND IsActive = 1", companyId)
+            For Each row As DataRow In accounts.Rows
+                Dim accountId = Convert.ToInt32(row("AccountID"))
+                Dim name = Convert.ToString(row("AccountName"))
+                
+                ' Check if already mapped
+                Dim existObj = Sql.ExecuteScalar("SELECT COUNT(*) FROM ProfitLossMappings WHERE AccountID = ?", accountId)
+                If existObj IsNot Nothing AndAlso Convert.ToInt32(existObj) > 0 Then Continue For
+                
+                Dim category As String = Nothing
+                
+                If name.Contains("برگشت از فروش") OrElse name.Contains("برگشت فروش") OrElse name.Contains("تخفیفات فروش") Then
+                    category = "SalesReturn"
+                ElseIf name.Contains("فروش") Then
+                    category = "GrossSales"
+                ElseIf name.Contains("برگشت از خرید") OrElse name.Contains("برگشت خرید") OrElse name.Contains("تخفیفات خرید") Then
+                    category = "PurchaseReturn"
+                ElseIf name.Contains("حمل خرید") OrElse name.Contains("هزینه حمل خرید") Then
+                    category = "DirectPurchaseExpense"
+                ElseIf name.Contains("خرید") Then
+                    category = "GrossPurchases"
+                ElseIf name.Contains("غیرعملیاتی") AndAlso (name.Contains("درآمد") OrElse name.Contains("سود")) Then
+                    category = "NonOperatingRevenue"
+                ElseIf name.Contains("غیرعملیاتی") AndAlso (name.Contains("هزینه") OrElse name.Contains("زیان")) Then
+                    category = "NonOperatingExpense"
+                ElseIf name.Contains("مالی") AndAlso name.Contains("هزینه") Then
+                    category = "NonOperatingExpense"
+                ElseIf name.Contains("هزینه") OrElse name.Contains("اجاره") OrElse name.Contains("حقوق") OrElse name.Contains("بیمه") OrElse name.Contains("استهلاک") Then
+                    category = "OperatingExpense"
+                End If
+                
+                If category IsNot Nothing Then
+                    SaveProfitLossMapping(accountId, category, companyId)
+                End If
+            Next
+        End Sub
     End Class
 End Namespace
