@@ -471,7 +471,23 @@ Namespace Sys_Hes_Anb.Data
                     "ReportID INTEGER PRIMARY KEY AUTOINCREMENT, " &
                     "ReportCode TEXT NOT NULL, " &
                     "ReportName TEXT NOT NULL, " &
-                    "CompanyID INTEGER NOT NULL);")
+                    "CompanyID INTEGER NOT NULL, " &
+                    "FontHeaderName TEXT NULL, " &
+                    "FontHeaderSize REAL NULL, " &
+                    "FontMainRowName TEXT NULL, " &
+                    "FontMainRowSize REAL NULL, " &
+                    "FontDetailRowName TEXT NULL, " &
+                    "FontDetailRowSize REAL NULL, " &
+                    "FontFormulaName TEXT NULL, " &
+                    "FontFormulaSize REAL NULL, " &
+                    "RowCount INTEGER NULL, " &
+                    "ColCount INTEGER NULL, " &
+                    "Orientation TEXT NULL, " &
+                    "MarginTop REAL NULL, " &
+                    "MarginBottom REAL NULL, " &
+                    "MarginLeft REAL NULL, " &
+                    "MarginRight REAL NULL, " &
+                    "PageBorder TEXT NULL);")
 
                 Sql.ExecuteNonQuery(
                     "CREATE TABLE IF NOT EXISTS Report2 (" &
@@ -480,7 +496,38 @@ Namespace Sys_Hes_Anb.Data
                     "CategoryName TEXT NOT NULL, " &
                     "SortOrder INTEGER NOT NULL, " &
                     "CompanyID INTEGER NOT NULL, " &
+                    "Formula TEXT NULL, " &
+                    "IsMainRow INTEGER NULL, " &
+                    "RO TEXT NULL, " &
+                    "SO TEXT NULL, " &
+                    "RN TEXT NULL, " &
+                    "SN TEXT NULL, " &
+                    "UnderlineStyle TEXT NULL, " &
                     "FOREIGN KEY(ReportID) REFERENCES Report1(ReportID) ON DELETE CASCADE);")
+
+                 ' Alter existing databases to make sure all new columns are present
+                 Dim colsReport1 As String() = {
+                     "FontHeaderName TEXT", "FontHeaderSize REAL", "FontMainRowName TEXT", "FontMainRowSize REAL",
+                     "FontDetailRowName TEXT", "FontDetailRowSize REAL", "FontFormulaName TEXT", "FontFormulaSize REAL",
+                     "RowCount INTEGER", "ColCount INTEGER", "Orientation TEXT", "MarginTop REAL", "MarginBottom REAL",
+                     "MarginLeft REAL", "MarginRight REAL", "PageBorder TEXT"
+                 }
+                 For Each col In colsReport1
+                     Try
+                         Sql.ExecuteNonQuery("ALTER TABLE Report1 ADD COLUMN " & col & ";")
+                     Catch
+                     End Try
+                 Next
+
+                 Dim colsReport2 As String() = {
+                     "Formula TEXT", "IsMainRow INTEGER", "RO TEXT", "SO TEXT", "RN TEXT", "SN TEXT", "UnderlineStyle TEXT"
+                 }
+                 For Each col In colsReport2
+                     Try
+                         Sql.ExecuteNonQuery("ALTER TABLE Report2 ADD COLUMN " & col & ";")
+                     Catch
+                     End Try
+                 Next
 
                 Sql.ExecuteNonQuery(
                     "CREATE TABLE IF NOT EXISTS ProfitLossMappings (" &

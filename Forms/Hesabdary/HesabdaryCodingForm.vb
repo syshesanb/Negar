@@ -28,6 +28,7 @@ Namespace Sys_Hes_Anb.Forms
         Private _editParentId As Integer? = Nothing      ' Parent of new/edited record
 
         Public Property SelectMode As Boolean = False
+        Public Property ReportSelectionMode As Boolean = False
         Public Property SelectedAccountID As Integer? = Nothing
 
         Public Property LevelMode As Boolean = False
@@ -104,6 +105,10 @@ Namespace Sys_Hes_Anb.Forms
 
                 If SelectMode Then
                     dgvAccounts.Columns(ColBtnSelect).Visible = True
+                End If
+                If ReportSelectionMode Then
+                    dgvAccounts.Columns(ColBtnEdit).Visible = False
+                    dgvAccounts.Columns(ColBtnDelete).Visible = False
                 End If
                 ApplySecurity()
                 System.IO.File.AppendAllText(System.IO.Path.Combine(Application.StartupPath, "debug_load.txt"), Environment.NewLine & "Form_Load finished successfully")
@@ -488,7 +493,7 @@ Namespace Sys_Hes_Anb.Forms
                     If LevelMode Then
                         SelectedAccountID = accountId
                         RaiseEvent LevelAccountSelected(accountId, Convert.ToString(row.Cells("colAccountCode").Value))
-                    ElseIf selectedNode IsNot Nothing AndAlso selectedNode.HasChildren Then
+                    ElseIf selectedNode IsNot Nothing AndAlso selectedNode.HasChildren AndAlso Not ReportSelectionMode Then
                         MessageBox.Show("این سرفصل حساب ، دارای زیر سطح می باشد",
                                         "توجه", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Else
@@ -882,10 +887,10 @@ Namespace Sys_Hes_Anb.Forms
             btnSave.Visible = canCreate OrElse canEdit
 
             If dgvAccounts.Columns.Contains(ColBtnEdit) Then
-                dgvAccounts.Columns(ColBtnEdit).Visible = canEdit
+                dgvAccounts.Columns(ColBtnEdit).Visible = canEdit AndAlso Not ReportSelectionMode
             End If
             If dgvAccounts.Columns.Contains(ColBtnDelete) Then
-                dgvAccounts.Columns(ColBtnDelete).Visible = canDelete
+                dgvAccounts.Columns(ColBtnDelete).Visible = canDelete AndAlso Not ReportSelectionMode
             End If
         End Sub
 

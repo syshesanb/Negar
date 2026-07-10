@@ -231,7 +231,7 @@ Namespace Sys_Hes_Anb.Forms
                 AddHandler _report1Form.EditReportRequested, AddressOf Report1Form_EditReportRequested
             End If
 
-            HostForm(tabReportIntroProfitLoss, _report1Form)
+            HostForm(tabReports, _report1Form)
             _report1Form.RefreshData()
         End Sub
 
@@ -242,7 +242,7 @@ Namespace Sys_Hes_Anb.Forms
                 AddHandler _report2Form.ExitRequested, AddressOf Report2Form_ExitRequested
             End If
 
-            HostForm(tabReportIntroProfitLoss, _report2Form)
+            HostForm(tabReports, _report2Form)
             _report2Form.ReportID = reportId
         End Sub
 
@@ -255,7 +255,9 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub Report2Form_SaveCompleted(sender As Object, e As EventArgs)
-            ShowReport1Form()
+            If _report1Form IsNot Nothing Then
+                _report1Form.RefreshData()
+            End If
         End Sub
 
         Private Sub Report2Form_ExitRequested(sender As Object, e As EventArgs)

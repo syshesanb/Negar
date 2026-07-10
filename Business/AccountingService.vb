@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -1196,6 +1196,47 @@ Namespace Sys_Hes_Anb.Business
             Return result
         End Function
 
+                Public Function GetAllAccountBalances(companyId As Integer, fiscalYearId As Integer) As Dictionary(Of Integer, Tuple(Of String, Decimal))
+            Dim dict As New Dictionary(Of Integer, Tuple(Of String, Decimal))()
+            If SessionContext.CurrentUser Is Nothing Then Return dict
+
+            Dim sumsQuery As String
+            If String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                sumsQuery =
+                    "SELECT c.AccountID, c.AccountCode, " &
+                    "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
+                    "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
+                    "FROM ChartOfAccounts c " &
+                    "LEFT JOIN AccountingEntryDetails d ON c.AccountID = d.AccountID " &
+                    "LEFT JOIN AccountingEntries e ON d.EntryID = e.EntryID AND e.CompanyID = ? AND e.FiscalYearID = ? " &
+                    "WHERE c.CompanyID = ? " &
+                    "GROUP BY c.AccountID, c.AccountCode"
+            Else
+                Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
+                Dim idClause = ActivityLogService.BuildIDInClause(visibleIds)
+                sumsQuery =
+                    "SELECT c.AccountID, c.AccountCode, " &
+                    "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
+                    "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
+                    "FROM ChartOfAccounts c " &
+                    "LEFT JOIN AccountingEntryDetails d ON c.AccountID = d.AccountID " &
+                    "LEFT JOIN AccountingEntries e ON d.EntryID = e.EntryID AND e.CompanyID = ? AND e.FiscalYearID = ? AND e.CreatedBy IN (" & idClause & ") " &
+                    "WHERE c.CompanyID = ? " &
+                    "GROUP BY c.AccountID, c.AccountCode"
+            End If
+            
+            Dim dt = Sql.ExecuteTable(sumsQuery, companyId, fiscalYearId, companyId)
+            For Each row As DataRow In dt.Rows
+                Dim accId = Convert.ToInt32(row("AccountID"))
+                Dim code = Convert.ToString(row("AccountCode"))
+                Dim deb = If(row.IsNull("DebitTotal"), 0D, Convert.ToDecimal(row("DebitTotal")))
+                Dim cred = If(row.IsNull("CreditTotal"), 0D, Convert.ToDecimal(row("CreditTotal")))
+                dict(accId) = Tuple.Create(code, deb - cred)
+            Next
+            
+            Return dict
+        End Function
+
         Public Function GetTrialBalance() As DataTable
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
                 Return New DataTable()
@@ -1854,7 +1895,7 @@ Namespace Sys_Hes_Anb.Business
 
         Public Function GetProfitLossCategories(reportId As Integer) As DataTable
             Return Sql.ExecuteTable(
-                "SELECT CategoryID, CategoryName, SortOrder FROM Report2 WHERE ReportID = ? ORDER BY SortOrder",
+                "SELECT CategoryID, CategoryName, SortOrder, Formula, IsMainRow, RO, SO, RN, SN, UnderlineStyle, AccountID FROM Report2 WHERE ReportID = ? ORDER BY SortOrder",
                 reportId)
         End Function
 
@@ -1921,26 +1962,62 @@ Namespace Sys_Hes_Anb.Business
             AutoMapProfitLossAccounts(reportId, companyId)
         End Sub
 
-        Public Function SaveProfitLossFormat(reportId As Integer, code As String, name As String, companyId As Integer, categoriesList As List(Of PLNodeDto)) As Integer
+        Public Function SaveProfitLossFormat(reportId As Integer, code As String, name As String, companyId As Integer, categoriesList As List(Of PLNodeDto),
+                                             fontHeaderName As String, fontHeaderSize As Decimal, fontMainRowName As String, fontMainRowSize As Decimal,
+                                             fontDetailRowName As String, fontDetailRowSize As Decimal, fontFormulaName As String, fontFormulaSize As Decimal,
+                                             rowCount As Integer, colCount As Integer, orientation As String,
+                                             marginTop As Decimal, marginBottom As Decimal, marginLeft As Decimal, marginRight As Decimal, pageBorder As String) As Integer
             Using connection = Db.OpenConnection()
                 Using transaction = connection.BeginTransaction()
                     Try
                         Dim activeReportId = reportId
                         If activeReportId <= 0 Then
                             Using cmd As New SQLiteCommand(
-                                "INSERT INTO Report1 (ReportCode, ReportName, CompanyID) VALUES (?, ?, ?); SELECT last_insert_rowid();",
+                                "INSERT INTO Report1 (ReportCode, ReportName, CompanyID, FontHeaderName, FontHeaderSize, FontMainRowName, FontMainRowSize, FontDetailRowName, FontDetailRowSize, FontFormulaName, FontFormulaSize, RowCount, ColCount, Orientation, MarginTop, MarginBottom, MarginLeft, MarginRight, PageBorder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); SELECT last_insert_rowid();",
                                 connection, transaction)
                                 cmd.Parameters.AddWithValue("@ReportCode", code)
                                 cmd.Parameters.AddWithValue("@ReportName", name)
                                 cmd.Parameters.AddWithValue("@CompanyID", companyId)
+                                cmd.Parameters.AddWithValue("@FontHeaderName", fontHeaderName)
+                                cmd.Parameters.AddWithValue("@FontHeaderSize", fontHeaderSize)
+                                cmd.Parameters.AddWithValue("@FontMainRowName", fontMainRowName)
+                                cmd.Parameters.AddWithValue("@FontMainRowSize", fontMainRowSize)
+                                cmd.Parameters.AddWithValue("@FontDetailRowName", fontDetailRowName)
+                                cmd.Parameters.AddWithValue("@FontDetailRowSize", fontDetailRowSize)
+                                cmd.Parameters.AddWithValue("@FontFormulaName", fontFormulaName)
+                                cmd.Parameters.AddWithValue("@FontFormulaSize", fontFormulaSize)
+                                cmd.Parameters.AddWithValue("@RowCount", rowCount)
+                                cmd.Parameters.AddWithValue("@ColCount", colCount)
+                                cmd.Parameters.AddWithValue("@Orientation", orientation)
+                                cmd.Parameters.AddWithValue("@MarginTop", marginTop)
+                                cmd.Parameters.AddWithValue("@MarginBottom", marginBottom)
+                                cmd.Parameters.AddWithValue("@MarginLeft", marginLeft)
+                                cmd.Parameters.AddWithValue("@MarginRight", marginRight)
+                                cmd.Parameters.AddWithValue("@PageBorder", pageBorder)
                                 activeReportId = Convert.ToInt32(cmd.ExecuteScalar())
                             End Using
                         Else
                             Using cmd As New SQLiteCommand(
-                                "UPDATE Report1 SET ReportCode = ?, ReportName = ? WHERE ReportID = ?",
+                                "UPDATE Report1 SET ReportCode = ?, ReportName = ?, FontHeaderName = ?, FontHeaderSize = ?, FontMainRowName = ?, FontMainRowSize = ?, FontDetailRowName = ?, FontDetailRowSize = ?, FontFormulaName = ?, FontFormulaSize = ?, RowCount = ?, ColCount = ?, Orientation = ?, MarginTop = ?, MarginBottom = ?, MarginLeft = ?, MarginRight = ?, PageBorder = ? WHERE ReportID = ?",
                                 connection, transaction)
                                 cmd.Parameters.AddWithValue("@ReportCode", code)
                                 cmd.Parameters.AddWithValue("@ReportName", name)
+                                cmd.Parameters.AddWithValue("@FontHeaderName", fontHeaderName)
+                                cmd.Parameters.AddWithValue("@FontHeaderSize", fontHeaderSize)
+                                cmd.Parameters.AddWithValue("@FontMainRowName", fontMainRowName)
+                                cmd.Parameters.AddWithValue("@FontMainRowSize", fontMainRowSize)
+                                cmd.Parameters.AddWithValue("@FontDetailRowName", fontDetailRowName)
+                                cmd.Parameters.AddWithValue("@FontDetailRowSize", fontDetailRowSize)
+                                cmd.Parameters.AddWithValue("@FontFormulaName", fontFormulaName)
+                                cmd.Parameters.AddWithValue("@FontFormulaSize", fontFormulaSize)
+                                cmd.Parameters.AddWithValue("@RowCount", rowCount)
+                                cmd.Parameters.AddWithValue("@ColCount", colCount)
+                                cmd.Parameters.AddWithValue("@Orientation", orientation)
+                                cmd.Parameters.AddWithValue("@MarginTop", marginTop)
+                                cmd.Parameters.AddWithValue("@MarginBottom", marginBottom)
+                                cmd.Parameters.AddWithValue("@MarginLeft", marginLeft)
+                                cmd.Parameters.AddWithValue("@MarginRight", marginRight)
+                                cmd.Parameters.AddWithValue("@PageBorder", pageBorder)
                                 cmd.Parameters.AddWithValue("@ReportID", activeReportId)
                                 cmd.ExecuteNonQuery()
                             End Using
@@ -1964,12 +2041,20 @@ Namespace Sys_Hes_Anb.Business
                         For Each cat In categoriesList
                             Dim catId As Integer = 0
                             Using cmdInsCat As New SQLiteCommand(
-                                "INSERT INTO Report2 (ReportID, CategoryName, SortOrder, CompanyID) VALUES (?, ?, ?, ?); SELECT last_insert_rowid();",
+                                "INSERT INTO Report2 (ReportID, CategoryName, SortOrder, CompanyID, Formula, IsMainRow, RO, SO, RN, SN, UnderlineStyle, AccountID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); SELECT last_insert_rowid();",
                                 connection, transaction)
                                 cmdInsCat.Parameters.AddWithValue("@ReportID", activeReportId)
                                 cmdInsCat.Parameters.AddWithValue("@CategoryName", cat.CategoryName)
                                 cmdInsCat.Parameters.AddWithValue("@SortOrder", sortOrder)
                                 cmdInsCat.Parameters.AddWithValue("@CompanyID", companyId)
+                                cmdInsCat.Parameters.AddWithValue("@Formula", cat.Formula)
+                                cmdInsCat.Parameters.AddWithValue("@IsMainRow", If(cat.IsMainRow, 1, 0))
+                                cmdInsCat.Parameters.AddWithValue("@RO", cat.RO)
+                                cmdInsCat.Parameters.AddWithValue("@SO", cat.SO)
+                                cmdInsCat.Parameters.AddWithValue("@RN", cat.RN)
+                                cmdInsCat.Parameters.AddWithValue("@SN", cat.SN)
+                                cmdInsCat.Parameters.AddWithValue("@UnderlineStyle", cat.UnderlineStyle)
+                                cmdInsCat.Parameters.AddWithValue("@AccountID", If(cat.AccountID > 0, cat.AccountID, DBNull.Value))
                                 catId = Convert.ToInt32(cmdInsCat.ExecuteScalar())
                             End Using
                             
@@ -2044,7 +2129,15 @@ Namespace Sys_Hes_Anb.Business
     End Class
 
     Public Class PLNodeDto
+        Public Property AccountID As Integer
         Public Property CategoryName As String
+        Public Property Formula As String
+        Public Property IsMainRow As Boolean
+        Public Property RO As String
+        Public Property SO As String
+        Public Property RN As String
+        Public Property SN As String
+        Public Property UnderlineStyle As String
         Public Property AccountIDs As New List(Of Integer)()
     End Class
 End Namespace
