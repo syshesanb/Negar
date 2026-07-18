@@ -21,6 +21,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub UserManagementForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             If LicenseManager.UsageMode = LicenseUsageMode.Designtime Then
                 Return
             End If

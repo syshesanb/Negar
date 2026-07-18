@@ -16,6 +16,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub ActivityLogForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            If Me.dgvLog IsNot Nothing Then Me.dgvLog.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             LoadLog()
         End Sub
 

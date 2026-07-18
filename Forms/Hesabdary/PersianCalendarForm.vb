@@ -19,8 +19,10 @@ Namespace Sys_Hes_Anb.Forms
         Private _month As Integer
 
         Private _lblMonthYear As Label
+        Private _btnPrevYear As Button
         Private _btnPrev As Button
         Private _btnNext As Button
+        Private _btnNextYear As Button
         Private _pnlDays As Panel
 
         ' ColW=34, gap=2, margin=4 → 7*(34+2)-2+2*4 = 258px داخل فرم
@@ -77,28 +79,44 @@ Namespace Sys_Hes_Anb.Forms
             pnlHeader.Dock = DockStyle.Top
             pnlHeader.Height = 30
 
-            ' code-LEFT → visual RIGHT (RTL) → دکمه ماه قبل در سمت راست
+            ' code-LEFT → visual RIGHT (RTL) → دکمه سال قبل در انتهای سمت راست
+            _btnPrevYear = New Button()
+            _btnPrevYear.Text = "»»"
+            _btnPrevYear.Size = New Size(28, 24)
+            _btnPrevYear.Location = New Point(CalMargin, 3)
+            _btnPrevYear.FlatStyle = FlatStyle.Flat
+            AddHandler _btnPrevYear.Click, AddressOf BtnPrevYear_Click
+
+            ' دکمه ماه قبل در کنار آن
             _btnPrev = New Button()
             _btnPrev.Text = "»"
             _btnPrev.Size = New Size(28, 24)
-            _btnPrev.Location = New Point(CalMargin, 3)
+            _btnPrev.Location = New Point(CalMargin + 30, 3)
             _btnPrev.FlatStyle = FlatStyle.Flat
             AddHandler _btnPrev.Click, AddressOf BtnPrev_Click
 
             _lblMonthYear = New Label()
             _lblMonthYear.TextAlign = ContentAlignment.MiddleCenter
-            _lblMonthYear.Size = New Size(198, 24)
-            _lblMonthYear.Location = New Point(36, 3)
+            _lblMonthYear.Size = New Size(138, 24)
+            _lblMonthYear.Location = New Point(66, 3)
 
-            ' code-RIGHT → visual LEFT (RTL) → دکمه ماه بعد در سمت چپ
+            ' دکمه ماه بعد
             _btnNext = New Button()
             _btnNext.Text = "«"
             _btnNext.Size = New Size(28, 24)
-            _btnNext.Location = New Point(238, 3)
+            _btnNext.Location = New Point(208, 3)
             _btnNext.FlatStyle = FlatStyle.Flat
             AddHandler _btnNext.Click, AddressOf BtnNext_Click
 
-            pnlHeader.Controls.AddRange(New Control() {_btnPrev, _lblMonthYear, _btnNext})
+            ' دکمه سال بعد در انتهای سمت چپ
+            _btnNextYear = New Button()
+            _btnNextYear.Text = "««"
+            _btnNextYear.Size = New Size(28, 24)
+            _btnNextYear.Location = New Point(238, 3)
+            _btnNextYear.FlatStyle = FlatStyle.Flat
+            AddHandler _btnNextYear.Click, AddressOf BtnNextYear_Click
+
+            pnlHeader.Controls.AddRange(New Control() {_btnPrevYear, _btnPrev, _lblMonthYear, _btnNext, _btnNextYear})
 
             ' ---- ردیف نام روزها ----
             Dim pnlDayNames = New Panel()
@@ -169,12 +187,22 @@ Namespace Sys_Hes_Anb.Forms
             RenderCalendar()
         End Sub
 
+        Private Sub BtnPrevYear_Click(sender As Object, e As EventArgs)
+            _year -= 1
+            RenderCalendar()
+        End Sub
+
         Private Sub BtnNext_Click(sender As Object, e As EventArgs)
             _month += 1
             If _month = 13 Then
                 _month = 1
                 _year += 1
             End If
+            RenderCalendar()
+        End Sub
+
+        Private Sub BtnNextYear_Click(sender As Object, e As EventArgs)
+            _year += 1
             RenderCalendar()
         End Sub
 

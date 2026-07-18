@@ -117,6 +117,7 @@ Namespace Sys_Hes_Anb.Forms
         End Function
 
         Private Sub UserNotebookForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             SetupGridColumns()
             LoadNotesData()
         End Sub

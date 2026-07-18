@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -66,6 +66,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryCodingForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
             Try
                 System.IO.File.WriteAllText(System.IO.Path.Combine(Application.StartupPath, "debug_load.txt"), "Form_Load started")
                 LoadAccountTypes()
@@ -135,12 +137,30 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Public Sub RefreshData()
-            LoadData()
-            If cmbExpandToLevel IsNot Nothing AndAlso cmbExpandToLevel.SelectedIndex >= 0 Then
-                ExpandTreeToLevel(cmbExpandToLevel.SelectedIndex)
-            Else
-                RefreshGrid()
+            Dim oldExpandedNodes As New HashSet(Of Integer)()
+            If _nodeDict IsNot Nothing Then
+                For Each node In _nodeDict.Values
+                    If node.IsExpanded Then
+                        oldExpandedNodes.Add(node.AccountID)
+                    End If
+                Next
             End If
+
+            LoadData()
+
+            If oldExpandedNodes.Count > 0 Then
+                For Each node In _nodeDict.Values
+                    If oldExpandedNodes.Contains(node.AccountID) Then
+                        node.IsExpanded = True
+                    Else
+                        node.IsExpanded = False
+                    End If
+                Next
+            ElseIf cmbExpandToLevel IsNot Nothing AndAlso cmbExpandToLevel.SelectedIndex >= 0 Then
+                ExpandTreeToLevel(cmbExpandToLevel.SelectedIndex)
+            End If
+
+            RefreshGrid()
             HideDataPanel()
         End Sub
 
@@ -314,7 +334,9 @@ Namespace Sys_Hes_Anb.Forms
                     row.Cells("colParentAccountID").Value = node.ParentAccountID
                     row.Cells("colAccountType").Value = node.AccountType
                     row.Cells("colAccountCode").Value = node.AccountCode
-                    row.Cells("colAccountName").Value = node.AccountName
+                    
+                    Dim indentSpaces As String = New String(Convert.ToChar(160), node.Level * 6)
+                    row.Cells("colAccountName").Value = indentSpaces & node.AccountName
                     row.Cells("colIsActive").Value = node.IsActive
 
                     ApplyRowStyle(row, node)
@@ -378,14 +400,20 @@ Namespace Sys_Hes_Anb.Forms
             Select Case node.Level
                 Case 0
                     row.DefaultCellStyle.Font = New Font(dgvAccounts.Font, FontStyle.Bold)
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(210, 228, 255)
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(20, 40, 100)
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(195, 218, 255)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(15, 30, 80)
                 Case 1
                     row.DefaultCellStyle.Font = New Font(dgvAccounts.Font, FontStyle.Bold)
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(232, 243, 255)
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(30, 60, 120)
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(215, 232, 255)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(20, 40, 100)
                 Case 2
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(246, 251, 255)
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(235, 244, 255)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(30, 60, 120)
+                Case 3
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(245, 250, 255)
+                    row.DefaultCellStyle.ForeColor = Color.Black
+                Case 4
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(252, 254, 255)
                     row.DefaultCellStyle.ForeColor = Color.Black
                 Case Else
                     row.DefaultCellStyle.BackColor = Color.White
@@ -593,6 +621,7 @@ Namespace Sys_Hes_Anb.Forms
                 Case 3: codeLength = compSettings.Item4
                 Case 4: codeLength = compSettings.Item5
                 Case 5: codeLength = compSettings.Item6
+                Case 6: codeLength = compSettings.Item7
             End Select
 
             txtAccountCode.MaxLength = codeLength
@@ -692,6 +721,7 @@ Namespace Sys_Hes_Anb.Forms
                 Case 3: codeLength = settings.Item4
                 Case 4: codeLength = settings.Item5
                 Case 5: codeLength = settings.Item6
+                Case 6: codeLength = settings.Item7
             End Select
 
             Dim enteredCode = txtAccountCode.Text.Trim()

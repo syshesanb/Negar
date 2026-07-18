@@ -104,9 +104,15 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryTarazShenavarForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            If Me.dgvTrial IsNot Nothing Then Me.dgvTrial.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             dgvTrial.RowTemplate.Height = 26
             _showOnlyWithData = chkOnlyWithData.Checked
             cmbTrialType.SelectedIndex = 1 ' پیش‌فرض ۴ ستونی
+            
+            SetupRangeFilterUI()
+
             LoadData()
 
             cmbExpandToLevel.Items.Clear()
@@ -119,6 +125,98 @@ Namespace Sys_Hes_Anb.Forms
 
             cmbExpandToLevel.SelectedIndex = 0
             ExpandTreeToLevel(0)
+        End Sub
+
+        Private Sub SetupRangeFilterUI()
+            ' ۱. مخفی کردن چک‌باکس‌های فیلتر تاریخ و سند
+            chkFilterByDate.Visible = False
+            chkFilterByDoc.Visible = False
+
+            ' ۲. ایجاد و طراحی عنوان
+            Dim lblRangeMethodTitle As New Label()
+            lblRangeMethodTitle.Text = "مبنای گزارش:"
+            lblRangeMethodTitle.Location = New Point(970, 12)
+            lblRangeMethodTitle.Size = New Size(90, 18)
+            lblRangeMethodTitle.TextAlign = ContentAlignment.MiddleLeft
+            lblRangeMethodTitle.Font = New Font("Tahoma", 9.0!)
+
+            ' ۳. ایجاد کامبوباکس انتخاب مبنا
+            Dim cmbRangeMethod As New ComboBox()
+            cmbRangeMethod.Name = "cmbRangeMethod"
+            cmbRangeMethod.DropDownStyle = ComboBoxStyle.DropDownList
+            cmbRangeMethod.Location = New Point(710, 9)
+            cmbRangeMethod.Size = New Size(250, 22)
+            cmbRangeMethod.DropDownWidth = 270
+            cmbRangeMethod.Font = New Font("Tahoma", 9.0!)
+            cmbRangeMethod.Items.Add("بر اساس شماره سند در سال جاری")
+            cmbRangeMethod.Items.Add("بر اساس تاریخ")
+            cmbRangeMethod.Items.Add("بر اساس تمام اسناد در تمام سالهای مالی")
+
+            pnlFilters.Controls.Add(lblRangeMethodTitle)
+            pnlFilters.Controls.Add(cmbRangeMethod)
+
+            ' ۴. افزودن رویداد تغییر مبنا
+            AddHandler cmbRangeMethod.SelectedIndexChanged,
+                Sub(s, ea)
+                    Dim idx = cmbRangeMethod.SelectedIndex
+                    Dim isDocMode = (idx = 0)
+                    Dim isDateMode = (idx = 1)
+                    Dim isAllMode = (idx = 2)
+
+                    ' فعال‌سازی فیلترها و مقادیر درونی
+                    chkFilterByDoc.Checked = isDocMode
+                    chkFilterByDate.Checked = isDateMode
+
+                    ' فعال/غیرفعال کردن کنترل‌های مربوطه برای این‌که اعتبارسنجی‌ها به درستی عمل کنند
+                    txtFromDoc.Enabled = isDocMode
+                    txtToDoc.Enabled = isDocMode
+                    txtFromDate.Enabled = isDateMode
+                    btnFromDate.Enabled = isDateMode
+                    txtToDate.Enabled = isDateMode
+                    btnToDate.Enabled = isDateMode
+
+                    ' نمایش/عدم نمایش فیلدهای سند
+                    lblFromDoc.Visible = isDocMode
+                    txtFromDoc.Visible = isDocMode
+                    lblToDoc.Visible = isDocMode
+                    txtToDoc.Visible = isDocMode
+
+                    ' نمایش/عدم نمایش فیلدهای تاریخ
+                    lblFromDate.Visible = isDateMode
+                    txtFromDate.Visible = isDateMode
+                    btnFromDate.Visible = isDateMode
+                    lblToDate.Visible = isDateMode
+                    txtToDate.Visible = isDateMode
+                    btnToDate.Visible = isDateMode
+
+                    ' مقداردهی پیش‌فرض تاریخ‌ها در صورت لزوم
+                    If isDateMode Then
+                        If String.IsNullOrWhiteSpace(txtFromDate.Text.Replace("/", "").Replace(" ", "")) Then
+                            txtFromDate.Text = PersianDateHelper.ToPersian(DateTime.Today)
+                        End If
+                        If String.IsNullOrWhiteSpace(txtToDate.Text.Replace("/", "").Replace(" ", "")) Then
+                            txtToDate.Text = PersianDateHelper.ToPersian(DateTime.Today)
+                        End If
+                    End If
+
+                    ' جابجایی کنترل‌ها برای تراز بودن در پنل
+                    If isDateMode Then
+                        lblFromDate.Location = New Point(660, 12)
+                        txtFromDate.Location = New Point(550, 9)
+                        btnFromDate.Location = New Point(518, 9)
+                        lblToDate.Location = New Point(470, 12)
+                        txtToDate.Location = New Point(360, 9)
+                        btnToDate.Location = New Point(328, 9)
+                    ElseIf isDocMode Then
+                        lblFromDoc.Location = New Point(660, 12)
+                        txtFromDoc.Location = New Point(550, 9)
+                        lblToDoc.Location = New Point(470, 12)
+                        txtToDoc.Location = New Point(360, 9)
+                    End If
+                End Sub
+
+            ' ۵. مقدار پیش‌فرض: بر اساس تاریخ (۱)
+            cmbRangeMethod.SelectedIndex = 1
         End Sub
 
         ' ================================================================
@@ -153,13 +251,22 @@ Namespace Sys_Hes_Anb.Forms
                 End If
             End If
 
+            Dim cmbRangeMethod As ComboBox = Nothing
+            For Each ctrl As Control In pnlFilters.Controls
+                If ctrl.Name = "cmbRangeMethod" AndAlso TypeOf ctrl Is ComboBox Then
+                    cmbRangeMethod = CType(ctrl, ComboBox)
+                    Exit For
+                End If
+            Next
+            Dim allFiscalYears As Boolean = (cmbRangeMethod IsNot Nothing AndAlso cmbRangeMethod.SelectedIndex = 2)
+
             Dim dt As DataTable
             Using progress As New ProgressForm()
                 progress.ShowAndCenter(Me)
                 progress.UpdateProgress(15, "محاسبه تراز شناور و دریافت اطلاعات تفصیلی‌ها...")
 
                 Try
-                    dt = service.GetAllShenavarsWithDirectTotals(fromDateStr, toDateStr, fromDoc, toDoc, docStatus)
+                    dt = service.GetAllShenavarsWithDirectTotals(fromDateStr, toDateStr, fromDoc, toDoc, docStatus, allFiscalYears)
                 Catch ex As Exception
                     MessageBox.Show("خطا در بارگذاری داده‌ها: " & ex.Message, "خطا",
                                     MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -943,7 +1050,7 @@ Namespace Sys_Hes_Anb.Forms
                 
                 If Not String.IsNullOrEmpty(node.StandardAccountCode) Then
                     Try
-                        Dim stdAccIdObj = Sql.ExecuteScalar("SELECT AccountID FROM ChartOfAccounts WHERE CompanyID = ? AND AccountCode = ?", SessionContext.CurrentCompanyID.Value, node.StandardAccountCode)
+                        Dim stdAccIdObj = Sql.ExecuteScalar("SELECT AccountID FROM SarfaslHesab WHERE CompanyID = ? AND AccountCode = ?", SessionContext.CurrentCompanyID.Value, node.StandardAccountCode)
                         If stdAccIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(stdAccIdObj) Then
                             Dim stdAccId = Convert.ToInt32(stdAccIdObj)
                             Dim chain = service.GetAccountHierarchyChain(stdAccId)

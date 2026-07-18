@@ -69,8 +69,8 @@ Main() → DbBootstrap.EnsureSeedData() → LoginForm → MainForm
 | `Inventory` | موجودی کالا در انبار |
 | `PurchaseInvoices` / `PurchaseInvoiceDetails` | فاکتورهای خرید |
 | `SalesInvoices` / `SalesInvoiceDetails` | فاکتورهای فروش |
-| `ChartOfAccounts` | سرفصل حساب‌ها |
-| `AccountingEntries` / `AccountingEntryDetails` | اسناد حسابداری (دوطرفه) |
+| `SarfaslHesab` | سرفصل حساب‌ها |
+| `Sanad1` / `Sanad2` | اسناد حسابداری (دوطرفه) |
 | `AppSettings` | تنظیمات برنامه |
 
 ---

@@ -212,27 +212,35 @@ Namespace Sys_Hes_Anb.Business
                     CopyDirectoryRecursive(Path.Combine(sourceBinDir, "x64"), Path.Combine(packageDir, "x64"))
                 End If
 
+                ' ایجاد پوشه پیش‌نیازها و دانلود خودکار VC++ Redistributable
+                DownloadPrerequisites(packageDir)
+
                 ' ایجاد فایل راهنمای ورود برای نصب‌کننده
                 Dim readmePath As String = Path.Combine(packageDir, "راهنمای نصب و ورود.txt")
+                Dim rlm As String = Char.ConvertFromUtf32(&H200F)
                 Dim sbReadme As New System.Text.StringBuilder()
-                sbReadme.AppendLine("==================================================")
-                sbReadme.AppendLine("           راهنمای نصب و ورود به سیستم            ")
-                sbReadme.AppendLine("==================================================")
-                sbReadme.AppendLine()
-                sbReadme.AppendLine("اطلاعات ورود به نرم‌افزار جهت استفاده نصب‌کننده:")
-                sbReadme.AppendLine("--------------------------------------------------")
-                sbReadme.AppendLine("نام کاربر: " & managerFullName)
-                sbReadme.AppendLine("نام کاربری (کاربر میانی): " & managerUsername)
-                sbReadme.AppendLine("کلمه عبور اولیه: " & managerPassword)
-                sbReadme.AppendLine("--------------------------------------------------")
-                sbReadme.AppendLine()
-                sbReadme.AppendLine("دستورالعمل نصب:")
-                sbReadme.AppendLine("جهت نصب نرم‌افزار روی هر کامپیوتر دیگر، کافی است فایل Setup_Sys_Hes_Anb.exe را اجرا کنید.")
-                sbReadme.AppendLine("پس از تعیین مسیر نصب توسط نصب‌کننده، نرم‌افزار به همراه دیتابیس خام و مجوزهای تعیین‌شده مستقر خواهد شد.")
+                sbReadme.AppendLine(rlm & "==================================================")
+                sbReadme.AppendLine(rlm & "           راهنمای نصب و ورود به سیستم            ")
+                sbReadme.AppendLine(rlm & "==================================================")
+                sbReadme.AppendLine(rlm)
+                sbReadme.AppendLine(rlm & "اطلاعات ورود به نرم‌افزار جهت استفاده نصب‌کننده:")
+                sbReadme.AppendLine(rlm & "--------------------------------------------------")
+                sbReadme.AppendLine(rlm & "نام کاربر: " & managerFullName)
+                sbReadme.AppendLine(rlm & "نام کاربری (کاربر میانی): " & managerUsername)
+                sbReadme.AppendLine(rlm & "کلمه عبور اولیه: " & managerPassword)
+                sbReadme.AppendLine(rlm & "--------------------------------------------------")
+                sbReadme.AppendLine(rlm)
+                sbReadme.AppendLine(rlm & "دستورالعمل نصب:")
+                sbReadme.AppendLine(rlm & "جهت نصب نرم‌افزار روی هر کامپیوتر دیگر، کافی است فایل Setup_Sys_Hes_Anb.exe را اجرا کنید.")
+                sbReadme.AppendLine(rlm & "پس از تعیین مسیر نصب توسط نصب‌کننده، نرم‌افزار به همراه دیتابیس خام و مجوزهای تعیین‌شده مستقر خواهد شد.")
+                sbReadme.AppendLine(rlm)
+                sbReadme.AppendLine(rlm & "نکته بسیار مهم:")
+                sbReadme.AppendLine(rlm & "در صورتی که نرم‌افزار پس از نصب در کامپیوتر مقصد اجرا نشد یا با خطای SQLite (مانند DllNotFoundException برای SQLite.Interop.dll) مواجه شدید،")
+                sbReadme.AppendLine(rlm & "لطفاً فایل‌های پیش‌نیاز موجود در پوشه Prerequisites (نسخه vc_redist.x86.exe یا vc_redist.x64.exe متناسب با سیستم‌عامل مقصد) را نصب نمایید.")
 
                 File.WriteAllText(readmePath, sbReadme.ToString(), System.Text.Encoding.UTF8)
 
-                MessageBox.Show("نسخه قابل انتشار با موفقیت تولید شد!" & Environment.NewLine & Environment.NewLine & "مشخصات کاربر میانی (" & managerUsername & ") در دیتابیس خام قرار گرفت و در فایل راهنما ذخیره گردید." & Environment.NewLine & Environment.NewLine & "مسیر نسخه خروجی:" & Environment.NewLine & packageDir, "موفقیت در ایجاد نسخه قابل انتشار", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("نسخه قابل انتشار با موفقیت تولید شد!" & Environment.NewLine & Environment.NewLine & "مشخصات کاربر میانی (" & managerUsername & ") در دیتابیس خام قرار گرفت و فایل‌های پیش‌نیاز (Visual C++) نیز در پوشه Prerequisites دانلود گردید." & Environment.NewLine & Environment.NewLine & "مسیر نسخه خروجی:" & Environment.NewLine & packageDir, "موفقیت در ایجاد نسخه قابل انتشار", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Process.Start("explorer.exe", entesharDir)
             Catch ex As Exception
                 MessageBox.Show("خطا در ایجاد نسخه قابل انتشار: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -251,12 +259,13 @@ Namespace Sys_Hes_Anb.Business
 
                     ' اجرا اسکریپت ساخت جداول
                     Dim schemaSqlPath As String = Path.Combine(projectRoot, "Database", "CreateSchema.sql")
-                    If File.Exists(schemaSqlPath) Then
-                        Dim sqlScript As String = File.ReadAllText(schemaSqlPath)
-                        Using cmd As New System.Data.SQLite.SQLiteCommand(sqlScript, conn)
-                            cmd.ExecuteNonQuery()
-                        End Using
+                    If Not File.Exists(schemaSqlPath) Then
+                        Throw New FileNotFoundException("اسکریپت ساخت جداول دیتابیس یافت نشد: " & schemaSqlPath)
                     End If
+                    Dim sqlScript As String = File.ReadAllText(schemaSqlPath)
+                    Using cmd As New System.Data.SQLite.SQLiteCommand(sqlScript, conn)
+                        cmd.ExecuteNonQuery()
+                    End Using
 
                     ' ساخت و کپی تصاویر پس‌زمینه با تم‌های ملایم به دیتابیس خام نسخه انتشار
                     Using cmd As New System.Data.SQLite.SQLiteCommand(
@@ -391,6 +400,34 @@ Namespace Sys_Hes_Anb.Business
                 CopyDirectoryRecursive(subdir.FullName, temppath)
             Next
         End Sub
+
+        Friend Sub DownloadPrerequisites(targetDir As String)
+            Try
+                ' فعال‌سازی پروتکل TLS 1.2 برای برقراری ارتباط امن با سرور مایکروسافت در دات‌نت‌های قدیمی
+                System.Net.ServicePointManager.SecurityProtocol = DirectCast(3072, System.Net.SecurityProtocolType) Or System.Net.SecurityProtocolType.Tls
+
+                Dim prereqDir As String = Path.Combine(targetDir, "Prerequisites")
+                If Not Directory.Exists(prereqDir) Then
+                    Directory.CreateDirectory(prereqDir)
+                End If
+
+                Using wClient As New System.Net.WebClient()
+                    ' Visual C++ 2015-2022 Redistributable (x86)
+                    Dim x86Path As String = Path.Combine(prereqDir, "vc_redist.x86.exe")
+                    If Not File.Exists(x86Path) Then
+                        wClient.DownloadFile("https://aka.ms/vs/17/release/vc_redist.x86.exe", x86Path)
+                    End If
+
+                    ' Visual C++ 2015-2022 Redistributable (x64)
+                    Dim x64Path As String = Path.Combine(prereqDir, "vc_redist.x64.exe")
+                    If Not File.Exists(x64Path) Then
+                        wClient.DownloadFile("https://aka.ms/vs/17/release/vc_redist.x64.exe", x64Path)
+                    End If
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("هشدار: امکان دانلود خودکار پیش‌نیازهای C++ وجود نداشت. لطفاً به اینترنت متصل شوید و مجدداً تلاش کنید." & Environment.NewLine & "در صورت عدم وجود اینترنت، می‌توانید فایل‌های vc_redist را دستی دانلود کرده و در پوشه Prerequisites قرار دهید." & Environment.NewLine & "خطا: " & ex.Message, "هشدار دانلود پیش‌نیازها", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End Try
+        End Sub
     End Module
 
     Public Module MigrationService
@@ -404,6 +441,62 @@ Namespace Sys_Hes_Anb.Business
                 Dim connStr As String = "Data Source=" & dbFile & ";Version=3;"
                 Using conn As New System.Data.SQLite.SQLiteConnection(connStr)
                     conn.Open()
+
+                    ' Check and rename old AccountingEntries table to Sanad1 if exists
+                    Dim hasAccountingEntries As Boolean = False
+                    Using cmdCheck1 As New System.Data.SQLite.SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table' AND name='AccountingEntries';", conn)
+                        Dim res = cmdCheck1.ExecuteScalar()
+                        If res IsNot Nothing AndAlso Not Convert.IsDBNull(res) Then
+                            hasAccountingEntries = True
+                        End If
+                    End Using
+                    If hasAccountingEntries Then
+                        Using cmdRename1 As New System.Data.SQLite.SQLiteCommand("ALTER TABLE AccountingEntries RENAME TO Sanad1;", conn)
+                            cmdRename1.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                    ' Check and rename old AccountingEntryDetails table to Sanad2 if exists
+                    Dim hasAccountingEntryDetails As Boolean = False
+                    Using cmdCheck2 As New System.Data.SQLite.SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table' AND name='AccountingEntryDetails';", conn)
+                        Dim res = cmdCheck2.ExecuteScalar()
+                        If res IsNot Nothing AndAlso Not Convert.IsDBNull(res) Then
+                            hasAccountingEntryDetails = True
+                        End If
+                    End Using
+                    If hasAccountingEntryDetails Then
+                        Using cmdRename2 As New System.Data.SQLite.SQLiteCommand("ALTER TABLE AccountingEntryDetails RENAME TO Sanad2;", conn)
+                            cmdRename2.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                                        ' Check and rename old ChartOfAccounts table to SarfaslHesab if still exists
+                    Dim hasChartOfAccounts As Boolean = False
+                    Using cmdCheck3 As New System.Data.SQLite.SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table' AND name='ChartOfAccounts';", conn)
+                        Dim res = cmdCheck3.ExecuteScalar()
+                        If res IsNot Nothing AndAlso Not Convert.IsDBNull(res) Then
+                            hasChartOfAccounts = True
+                        End If
+                    End Using
+                    If hasChartOfAccounts Then
+                        Using cmdRename3 As New System.Data.SQLite.SQLiteCommand("ALTER TABLE ChartOfAccounts RENAME TO SarfaslHesab;", conn)
+                            cmdRename3.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                    ' Check and rename old shenavar table to SarfaslShenavar if still exists
+                    Dim hasShenavar As Boolean = False
+                    Using cmdCheck4 As New System.Data.SQLite.SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table' AND name='shenavar';", conn)
+                        Dim res = cmdCheck4.ExecuteScalar()
+                        If res IsNot Nothing AndAlso Not Convert.IsDBNull(res) Then
+                            hasShenavar = True
+                        End If
+                    End Using
+                    If hasShenavar Then
+                        Using cmdRename4 As New System.Data.SQLite.SQLiteCommand("ALTER TABLE shenavar RENAME TO SarfaslShenavar;", conn)
+                            cmdRename4.ExecuteNonQuery()
+                        End Using
+                    End If
 
                     ' ۱. اطمینان از وجود جدول SchemaVersions
                     Using cmd As New System.Data.SQLite.SQLiteCommand("CREATE TABLE IF NOT EXISTS SchemaVersions (VersionID INTEGER PRIMARY KEY AUTOINCREMENT, ScriptName TEXT UNIQUE NOT NULL, AppliedDate DATETIME NOT NULL);", conn)
@@ -458,6 +551,11 @@ Namespace Sys_Hes_Anb.Business
                     Next
                 End Using
             Catch ex As Exception
+                Try
+                    File.AppendAllText(Path.Combine(Application.StartupPath, "bootstrap.log"),
+                                       DateTime.Now.ToString("yyyy-MM-dd") & " migration-error: " & ex.Message & Environment.NewLine & ex.StackTrace & Environment.NewLine)
+                Catch
+                End Try
             End Try
         End Sub
     End Module
@@ -520,20 +618,28 @@ Namespace Sys_Hes_Anb.Business
                     CopyUpdateBinariesRecursive(Path.Combine(sourceBinDir, "x64"), Path.Combine(packageDir, "x64"))
                 End If
 
+                ' ایجاد پوشه پیش‌نیازها و دانلود خودکار VC++ Redistributable برای بسته به‌روزرسانی
+                DownloadPrerequisites(packageDir)
+
                 Dim readmePath As String = Path.Combine(packageDir, "راهنمای به‌روزرسانی.txt")
+                Dim rlm As String = Char.ConvertFromUtf32(&H200F)
                 Dim sb As New System.Text.StringBuilder()
-                sb.AppendLine("==================================================")
-                sb.AppendLine("         راهنمای به‌روزرسانی سیستم به نسخه جدید        ")
-                sb.AppendLine("==================================================")
-                sb.AppendLine()
-                sb.AppendLine("دستورالعمل به‌روزرسانی:")
-                sb.AppendLine("جهت به‌روزرسانی سیستم مشتری، کافی است فایل Update_Sys_Hes_Anb.exe را در سیستم مقصد اجرا کنید.")
-                sb.AppendLine("۱. قبل از شروع کپی، سیستم به طور خودکار یک بک‌آپ کامل از دیتابیس فعلی مشتری تهیه خواهد کرد.")
-                sb.AppendLine("۲. فایل‌های جدید جایگزین شده و تمامی اسکریپت‌های جدید ارتقای ساختار دیتابیس اعمال می‌شوند.")
-                sb.AppendLine("۳. اطلاعات قبلی مشتری ۱۰۰٪ محفوظ می‌ماند.")
+                sb.AppendLine(rlm & "==================================================")
+                sb.AppendLine(rlm & "         راهنمای به‌روزرسانی سیستم به نسخه جدید        ")
+                sb.AppendLine(rlm & "==================================================")
+                sb.AppendLine(rlm)
+                sb.AppendLine(rlm & "دستورالعمل به‌روزرسانی:")
+                sb.AppendLine(rlm & "جهت به‌روزرسانی سیستم مشتری، کافی است فایل Update_Sys_Hes_Anb.exe را در سیستم مقصد اجرا کنید.")
+                sb.AppendLine(rlm & "۱. قبل از شروع کپی، سیستم به طور خودکار یک بک‌آپ کامل از دیتابیس فعلی مشتری تهیه خواهد کرد.")
+                sb.AppendLine(rlm & "۲. فایل‌های جدید جایگزین شده و تمامی اسکریپت‌های جدید ارتقای ساختار دیتابیس اعمال می‌شوند.")
+                sb.AppendLine(rlm & "۳. اطلاعات قبلی مشتری ۱۰۰٪ محفوظ می‌ماند.")
+                sb.AppendLine(rlm)
+                sb.AppendLine(rlm & "نکته بسیار مهم:")
+                sb.AppendLine(rlm & "در صورتی که نرم‌افزار پس از به‌روزرسانی با خطای SQLite مواجه شد،")
+                sb.AppendLine(rlm & "لطفاً پیش‌نیازهای موجود در پوشه Prerequisites را روی سیستم مقصد نصب نمایید.")
                 File.WriteAllText(readmePath, sb.ToString(), System.Text.Encoding.UTF8)
 
-                MessageBox.Show("بسته به‌روزرسانی (Update) با موفقیت تولید شد!" & Environment.NewLine & Environment.NewLine & "مسیر بسته خروجی:" & Environment.NewLine & packageDir, "موفقیت در ایجاد بسته به‌روزرسانی", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("بسته به‌روزرسانی (Update) با موفقیت تولید شد!" & Environment.NewLine & Environment.NewLine & "فایل‌های پیش‌نیاز (Visual C++) نیز در پوشه Prerequisites دانلود گردید." & Environment.NewLine & Environment.NewLine & "مسیر بسته خروجی:" & Environment.NewLine & packageDir, "موفقیت در ایجاد بسته به‌روزرسانی", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Process.Start("explorer.exe", entesharDir)
             Catch ex As Exception
                 MessageBox.Show("خطا در ایجاد بسته به‌روزرسانی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)

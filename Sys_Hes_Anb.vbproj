@@ -52,6 +52,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.vb" />
     <Compile Include="Program.vb" />
+    <Compile Include="Forms\AppBaseForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Data\AesDbService.vb" />
     <Compile Include="Data\Db.vb" />
     <Compile Include="Data\DbBootstrap.vb" />
@@ -78,6 +81,44 @@
     <Compile Include="Business\SettingsService.vb" />
     <Compile Include="Business\BackupRestoreService.vb" />
     <Compile Include="Business\InvoiceService.vb" />
+    <Compile Include="Business\ThemeHelper.vb" />
+    <Compile Include="Business\CsvImportService.vb" />
+    <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\ThemeSelectionForm.Designer.vb">
+      <DependentUpon>ThemeSelectionForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\SystemMessagesForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\SystemMessagesForm.Designer.vb">
+      <DependentUpon>SystemMessagesForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\ImagePopupForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\ImagePopupForm.Designer.vb">
+      <DependentUpon>ImagePopupForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\DataMigrationForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\DataMigrationForm.Designer.vb">
+      <DependentUpon>DataMigrationForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\HesabdaryTabdilDataSarfaslForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\HesabdaryTabdilDataSarfaslForm.Designer.vb">
+      <DependentUpon>HesabdaryTabdilDataSarfaslForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\HesabdaryTabdilDataSanadForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HasteAsly\HesabdaryTabdilDataSanadForm.Designer.vb">
+      <DependentUpon>HesabdaryTabdilDataSanadForm.vb</DependentUpon>
+    </Compile>
     <Compile Include="Models\UserAccount.vb" />
     <Compile Include="Models\ProductItem.vb" />
     <Compile Include="Models\WarehouseItem.vb" />
@@ -179,6 +220,18 @@
     </Compile>
     <Compile Include="Forms\Hesabdary\HesabdaryForm.Designer.vb">
       <DependentUpon>HesabdaryForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryProfitLossReportControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryProfitLossMappingForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryBalanceSheetReportControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryBalanceSheetMappingForm.vb">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Hesabdary\HesabdaryCodingForm.vb">
       <SubType>Form</SubType>
@@ -353,6 +406,9 @@
     <Compile Include="Forms\Moshtarak\ProgressForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Moshtarak\FiscalYearSelectorForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Moshtarak\UserNotebookForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -382,6 +438,9 @@
     <Folder Include="My Project\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\HasteAsly\HesabdaryTabdilDataSanadForm.resx">
+      <DependentUpon>HesabdaryTabdilDataSanadForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\HasteAsly\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>

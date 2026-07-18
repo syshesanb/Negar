@@ -95,6 +95,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryDaftarPrintForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             Using progress As New ProgressForm()
                 progress.ShowAndCenter(Me)
                 progress.UpdateProgress(10, "بارگذاری مشخصات چاپگرها...")

@@ -197,6 +197,16 @@ Namespace Sys_Hes_Anb.Business
                 Throw New InvalidOperationException("شما اجازه ثبت این مجوز را ندارید.")
             End If
 
+            If SessionContext.CurrentUser IsNot Nothing AndAlso Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                Dim allowedSet As New HashSet(Of String)(If(allowedPermissionKeys, SessionContext.CurrentPermissions), StringComparer.OrdinalIgnoreCase)
+                If canView AndAlso Not allowedSet.Contains(permissionKey) Then canView = False
+                If canCreate AndAlso Not allowedSet.Contains(permissionKey & ".CanCreate") Then canCreate = False
+                If canEdit AndAlso Not allowedSet.Contains(permissionKey & ".CanEdit") Then canEdit = False
+                If canDelete AndAlso Not allowedSet.Contains(permissionKey & ".CanDelete") Then canDelete = False
+                If canPrint AndAlso Not allowedSet.Contains(permissionKey & ".CanPrint") Then canPrint = False
+                If canExport AndAlso Not allowedSet.Contains(permissionKey & ".CanExport") Then canExport = False
+            End If
+
             Dim exists = Convert.ToInt32(If(Sql.ExecuteScalar("SELECT COUNT(*) FROM RolePermissions WHERE UserID = ? AND PermissionID = ?", userId, permissionId), 0))
             If exists > 0 Then
                 Sql.ExecuteNonQuery("UPDATE RolePermissions SET CanView = ?, CanCreate = ?, CanEdit = ?, CanDelete = ?, CanPrint = ?, CanExport = ? WHERE UserID = ? AND PermissionID = ?",

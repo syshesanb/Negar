@@ -10,6 +10,7 @@ Imports Sys_Hes_Anb.Data
 Namespace Sys_Hes_Anb.Forms
     Public Class ChangeProfileForm
         Private Sub ChangeProfileForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             If SessionContext.CurrentUser IsNot Nothing Then
                 txtFullName.Text = SessionContext.CurrentUser.FullName
                 txtUsername.Text = SessionContext.CurrentUser.Username

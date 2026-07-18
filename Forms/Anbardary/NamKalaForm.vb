@@ -18,6 +18,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub NamKalaForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            If Me.dgv IsNot Nothing Then Me.dgv.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             LoadData()
         End Sub
 

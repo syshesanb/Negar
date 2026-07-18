@@ -10,7 +10,7 @@ Imports Microsoft.VisualBasic.CompilerServices
 Namespace Sys_Hes_Anb.Forms
     <DesignerGenerated()>
     Partial Class AnbardaryForm
-        Inherits Form
+        Inherits AppBaseForm
 
         Private components As IContainer
         Friend WithEvents tabs As TabControl

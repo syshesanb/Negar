@@ -25,6 +25,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub PrintRangeDialog_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             ' تاریخ‌ها به طور پیش‌فرض خالی می‌مانند تا کاربر بتواند کل بازه را فیلتر کند
             txtFromDate.Text = String.Empty
             txtToDate.Text = String.Empty

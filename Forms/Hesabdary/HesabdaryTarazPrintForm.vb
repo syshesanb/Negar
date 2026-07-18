@@ -58,16 +58,18 @@ Namespace Sys_Hes_Anb.Forms
             Public Property Level As Integer = 0
         End Class
 
-        Public Sub New(companyName As String, dateTitle As String, columns As List(Of PrintColumnInfo), rows As List(Of PrintRowInfo), totals As Dictionary(Of String, Decimal))
+        Public Sub New(companyName As String, dateTitle As String, columns As List(Of PrintColumnInfo), rows As List(Of PrintRowInfo), totals As Dictionary(Of String, Decimal), Optional reportTitle As String = "تراز آزمایشی")
             InitializeComponent()
             _companyName = If(String.IsNullOrWhiteSpace(companyName), "مؤسسه", companyName)
             _dateTitle = dateTitle
+            _reportTitle = reportTitle
             _columns = columns
             _rows = rows
             _totals = totals
         End Sub
 
         Private Sub HesabdaryTarazPrintForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             Using progress As New ProgressForm()
                 progress.ShowAndCenter(Me)
                 progress.UpdateProgress(10, "بارگذاری مشخصات چاپگرها...")

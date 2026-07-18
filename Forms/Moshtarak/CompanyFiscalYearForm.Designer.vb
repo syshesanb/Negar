@@ -95,6 +95,8 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents numLevel4Length As NumericUpDown
         Friend WithEvents lblLevel5Length As Label
         Friend WithEvents numLevel5Length As NumericUpDown
+        Friend WithEvents lblLevel6Length As Label
+        Friend WithEvents numLevel6Length As NumericUpDown
 
         Friend WithEvents chkCompanyActive As CheckBox
         Friend WithEvents btnNewCompany As Button
@@ -219,6 +221,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.numLevel4Length = New System.Windows.Forms.NumericUpDown()
             Me.lblLevel5Length = New System.Windows.Forms.Label()
             Me.numLevel5Length = New System.Windows.Forms.NumericUpDown()
+            Me.lblLevel6Length = New System.Windows.Forms.Label()
+            Me.numLevel6Length = New System.Windows.Forms.NumericUpDown()
             Me.chkCompanyActive = New System.Windows.Forms.CheckBox()
             Me.btnNewCompany = New System.Windows.Forms.Button()
             Me.btnSaveCompany = New System.Windows.Forms.Button()
@@ -998,6 +1002,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.grpCoding.Controls.Add(Me.numLevel4Length)
             Me.grpCoding.Controls.Add(Me.lblLevel5Length)
             Me.grpCoding.Controls.Add(Me.numLevel5Length)
+            Me.grpCoding.Controls.Add(Me.lblLevel6Length)
+            Me.grpCoding.Controls.Add(Me.numLevel6Length)
             Me.grpCoding.Location = New System.Drawing.Point(10, 10)
             Me.grpCoding.Name = "grpCoding"
             Me.grpCoding.Size = New System.Drawing.Size(225, 280)
@@ -1100,6 +1106,22 @@ Namespace Sys_Hes_Anb.Forms
             Me.numLevel5Length.Name = "numLevel5Length"
             Me.numLevel5Length.Size = New System.Drawing.Size(71, 22)
             Me.numLevel5Length.TabIndex = 11
+            '
+            'lblLevel6Length
+            '
+            Me.lblLevel6Length.Location = New System.Drawing.Point(93, 203)
+            Me.lblLevel6Length.Name = "lblLevel6Length"
+            Me.lblLevel6Length.Size = New System.Drawing.Size(118, 20)
+            Me.lblLevel6Length.TabIndex = 12
+            Me.lblLevel6Length.Text = "طول کد تفصیلی ۳:"
+            Me.lblLevel6Length.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            '
+            'numLevel6Length
+            '
+            Me.numLevel6Length.Location = New System.Drawing.Point(15, 200)
+            Me.numLevel6Length.Name = "numLevel6Length"
+            Me.numLevel6Length.Size = New System.Drawing.Size(71, 22)
+            Me.numLevel6Length.TabIndex = 13
             '
             'chkCompanyActive
             '

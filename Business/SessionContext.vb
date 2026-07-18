@@ -10,6 +10,7 @@ Namespace Sys_Hes_Anb.Business
         Public Property CurrentUser As UserAccount
         Public Property CurrentPermissions As HashSet(Of String) = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
         Public Property CurrentTheme As String = "Light"
+        Public Property CurrentFormThemeColorHex As String = ""
         Public Property CurrentIP As String = "127.0.0.1"
         Public Property CurrentCompanyID As Integer? = Nothing
         Public Property CurrentCompanyName As String = "-"

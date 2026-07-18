@@ -43,6 +43,27 @@ Namespace Sys_Hes_Anb.Forms
 
         Public Property HighlightDetailID As Integer? = Nothing
 
+        ''' <summary>
+        ''' True اگر سند در حالت جدید یا ویرایش با تغییرات ذخیره‌نشده باشد.
+        ''' توسط منطق Alt+S تغییر سال مالی بررسی می‌شود.
+        ''' </summary>
+        Public ReadOnly Property HasUnsavedChanges As Boolean
+            Get
+                Return _isDirty OrElse (Not _editEntryId.HasValue AndAlso Not _copyEntryId.HasValue AndAlso Not String.IsNullOrEmpty(_suggestedRef))
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' متد عمومی که قبل از بستن اجباری فرم (توسط تغییر سال مالی) فراخوانی می‌شود
+        ''' تا پیام تأیید بستن نمایش داده نشود.
+        ''' </summary>
+        Public Sub SuppressCloseConfirmation()
+            _suppressCloseConfirmation = True
+        End Sub
+
+
+
+
         Private Const TotalPreloadedRows As Integer = 100
 
         ' حالت سند جدید
@@ -65,6 +86,14 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdarySanad2Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            If Me.dgvEntryNotes IsNot Nothing Then Me.dgvEntryNotes.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvLineNotes IsNot Nothing Then Me.dgvLineNotes.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvAttachments IsNot Nothing Then Me.dgvAttachments.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvZamLineSelector IsNot Nothing Then Me.dgvZamLineSelector.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvNoteLineSelector IsNot Nothing Then Me.dgvNoteLineSelector.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvEntryLines IsNot Nothing Then Me.dgvEntryLines.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             _isLoading = True
             Me.KeyPreview = True
             service.EnsureEntryDetailsColumns()
@@ -284,14 +313,20 @@ Namespace Sys_Hes_Anb.Forms
         Private Sub UpdateRowInfoLabels(rowIndex As Integer)
             If rowIndex < 0 OrElse rowIndex >= dgvEntryLines.Rows.Count Then Return
             Dim row = dgvEntryLines.Rows(rowIndex)
+            If row.IsNewRow Then Return
 
-            Dim sfVal = row.Cells("colSF").Value
-            Dim accountId = If(sfVal IsNot Nothing AndAlso sfVal IsNot DBNull.Value, Convert.ToInt32(sfVal), 0)
-            lblSarfaslValue.Text = If(accountId > 0, BuildAccountChain(accountId), "")
+            Try
+                Dim sfVal = row.Cells("colSF").Value
+                Dim accountId = If(sfVal IsNot Nothing AndAlso sfVal IsNot DBNull.Value, Convert.ToInt32(sfVal), 0)
+                lblSarfaslValue.Text = If(accountId > 0, BuildAccountChain(accountId), "")
 
-            Dim shVal = row.Cells("colSH").Value
-            Dim shenavarId = If(shVal IsNot Nothing AndAlso shVal IsNot DBNull.Value, Convert.ToInt32(shVal), 0)
-            lblShenavarValue.Text = If(shenavarId > 0, BuildShenavarChain(shenavarId), "")
+                Dim shVal = row.Cells("colSH").Value
+                Dim shenavarId = If(shVal IsNot Nothing AndAlso shVal IsNot DBNull.Value, Convert.ToInt32(shVal), 0)
+                lblShenavarValue.Text = If(shenavarId > 0, BuildShenavarChain(shenavarId), "")
+            Catch
+                lblSarfaslValue.Text = ""
+                lblShenavarValue.Text = ""
+            End Try
         End Sub
 
         ' ساخت رشته زنجیره سرفصل از ریشه تا حساب انتخابی — با کَش
@@ -399,6 +434,8 @@ Namespace Sys_Hes_Anb.Forms
             Dim details = service.GetEntryDetails(entryId)
             Dim table = TryCast(dgvEntryLines.DataSource, DataTable)
             If table Is Nothing Then Return
+
+            table.Rows.Clear()
 
             For Each dr As DataRow In details.Rows
                 Dim lineNo = Convert.ToInt32(If(dr("LineNumber") Is DBNull.Value OrElse dr("LineNumber") Is Nothing, 0, dr("LineNumber")))
@@ -940,8 +977,11 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub RenumberRows(table As DataTable)
+            Dim lineNum As Integer = 1
             For i As Integer = 0 To table.Rows.Count - 1
-                table.Rows(i)("LineNumber") = i + 1
+                If table.Rows(i).RowState = DataRowState.Deleted Then Continue For
+                table.Rows(i)("LineNumber") = lineNum
+                lineNum += 1
             Next
         End Sub
 
@@ -1809,9 +1849,15 @@ Namespace Sys_Hes_Anb.Forms
             If table Is Nothing Then Return
             Dim rowIdx = dgvEntryLines.CurrentRow.Index
             If rowIdx < 0 OrElse rowIdx >= table.Rows.Count Then Return
-            Dim lineNo = Convert.ToInt32(If(table.Rows(rowIdx)("LineNumber") Is DBNull.Value, 0, table.Rows(rowIdx)("LineNumber")))
-            _zamLineNumber = lineNo
-            If _editEntryId.HasValue Then _zamEntryId = _editEntryId.Value
+            ' Skip rows that have been deleted from the table
+            If table.Rows(rowIdx).RowState = DataRowState.Deleted Then Return
+            Try
+                Dim lineNo = Convert.ToInt32(If(table.Rows(rowIdx)("LineNumber") Is DBNull.Value, 0, table.Rows(rowIdx)("LineNumber")))
+                _zamLineNumber = lineNo
+                If _editEntryId.HasValue Then _zamEntryId = _editEntryId.Value
+            Catch ex As Exception
+                ' Row may have been removed during selection change — ignore
+            End Try
         End Sub
 
         Private Sub InitializeAttachmentGrid()

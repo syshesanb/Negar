@@ -8,7 +8,7 @@ Imports Sys_Hes_Anb.Business
 
 Namespace Sys_Hes_Anb.Forms
     Partial Class AnbardaryForm
-        Inherits Form
+        Inherits AppBaseForm
 
         Public Sub New()
             InitializeComponent()

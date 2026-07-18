@@ -26,7 +26,8 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents mUtilities As ToolStripMenuItem
 
         ' Sub-items for System Management
-        Friend WithEvents miSettings As ToolStripMenuItem
+        Friend WithEvents miSettingsMessages As ToolStripMenuItem
+        Friend WithEvents miSettingsThemes As ToolStripMenuItem
         Friend WithEvents miSepSys1 As ToolStripSeparator
         Friend WithEvents miBackupData As ToolStripMenuItem
         Friend WithEvents miRestoreData As ToolStripMenuItem
@@ -107,7 +108,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
-            Me.miSettings = New ToolStripMenuItem()
+            Me.miSettingsMessages = New ToolStripMenuItem()
+            Me.miSettingsThemes = New ToolStripMenuItem()
             Me.miSepSys1 = New ToolStripSeparator()
             Me.miBackupData = New ToolStripMenuItem()
             Me.miRestoreData = New ToolStripMenuItem()
@@ -179,15 +181,20 @@ Namespace Sys_Hes_Anb.Forms
             Me.mainMenu.TabIndex = 1
 
             ' mSystemMgmt
-            Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettings, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
+            Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
             Me.mSystemMgmt.Name = "mSystemMgmt"
             Me.mSystemMgmt.Size = New Size(93, 20)
             Me.mSystemMgmt.Text = "مدیریت سیستم"
 
-            ' miSettings
-            Me.miSettings.Name = "miSettings"
-            Me.miSettings.Size = New Size(245, 22)
-            Me.miSettings.Text = "تنظیمات سیستم"
+            ' miSettingsMessages
+            Me.miSettingsMessages.Name = "miSettingsMessages"
+            Me.miSettingsMessages.Size = New Size(245, 22)
+            Me.miSettingsMessages.Text = "مدیریت پیامهای : درباره... و ارتباط با ما"
+
+            ' miSettingsThemes
+            Me.miSettingsThemes.Name = "miSettingsThemes"
+            Me.miSettingsThemes.Size = New Size(245, 22)
+            Me.miSettingsThemes.Text = "مدیریت تمهای برنامه و فرمها"
 
             ' miSepSys1
             Me.miSepSys1.Name = "miSepSys1"

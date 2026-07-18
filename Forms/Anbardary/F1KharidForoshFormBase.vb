@@ -36,6 +36,8 @@ Namespace Sys_Hes_Anb.Forms
         End Function
 
         Private Sub F1KharidForoshFormBase_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            If Me.dgvLines IsNot Nothing Then Me.dgvLines.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If LicenseManager.UsageMode = LicenseUsageMode.Designtime Then
                 Return
             End If

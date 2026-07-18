@@ -26,11 +26,14 @@ Namespace Sys_Hes_Anb.Forms
             Me.tcMain = New System.Windows.Forms.TabControl()
             Me.tpIntroBanks = New System.Windows.Forms.TabPage()
             Me.dgvBanks = New System.Windows.Forms.DataGridView()
+            Me.lblBankStatementRange = New System.Windows.Forms.Label()
             Me.pnlBankInput = New System.Windows.Forms.Panel()
             Me.btnNewBank = New System.Windows.Forms.Button()
             Me.btnDeleteBank = New System.Windows.Forms.Button()
             Me.btnSaveBank = New System.Windows.Forms.Button()
-            Me.cmbAccountCoding = New System.Windows.Forms.ComboBox()
+            Me.btnSelectAccount = New System.Windows.Forms.Button()
+            Me.lblAccountID = New System.Windows.Forms.Label()
+            Me.lblAccountCodeChain = New System.Windows.Forms.Label()
             Me.lblAccountCoding = New System.Windows.Forms.Label()
             Me.txtAccountNumber = New System.Windows.Forms.TextBox()
             Me.lblAccountNumber = New System.Windows.Forms.Label()
@@ -114,10 +117,12 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlRecTop = New System.Windows.Forms.Panel()
             Me.btnRunReconciliation = New System.Windows.Forms.Button()
             Me.grpDateOptions = New System.Windows.Forms.GroupBox()
-            Me.txtToDate = New System.Windows.Forms.TextBox()
+            Me.txtToDate = New System.Windows.Forms.MaskedTextBox()
             Me.lblToDate = New System.Windows.Forms.Label()
-            Me.txtFromDate = New System.Windows.Forms.TextBox()
+            Me.txtFromDate = New System.Windows.Forms.MaskedTextBox()
             Me.lblFromDate = New System.Windows.Forms.Label()
+            Me.btnFromDate = New System.Windows.Forms.Button()
+            Me.btnToDate = New System.Windows.Forms.Button()
             Me.rbCustomRange = New System.Windows.Forms.RadioButton()
             Me.rbCurrentYear = New System.Windows.Forms.RadioButton()
             Me.rbAllYears = New System.Windows.Forms.RadioButton()
@@ -126,6 +131,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlBottom = New System.Windows.Forms.Panel()
             Me.lblSummary = New System.Windows.Forms.Label()
             Me.btnExport = New System.Windows.Forms.Button()
+            Me.btnBankStatementReport = New System.Windows.Forms.Button()
+            Me.btnTransferDesc = New System.Windows.Forms.Button()
             Me.tcMain.SuspendLayout()
             Me.tpIntroBanks.SuspendLayout()
             CType(Me.dgvBanks, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -189,6 +196,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.tcMain.Controls.Add(Me.tpIntroBanks)
             Me.tcMain.Controls.Add(Me.tpImportStatement)
             Me.tcMain.Controls.Add(Me.tpReconciliation)
+            Me.tcMain.Controls.Add(Me.tpAsnad_Suggestions)
             Me.tcMain.Dock = System.Windows.Forms.DockStyle.Fill
             Me.tcMain.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(178, Byte))
             Me.tcMain.Location = New System.Drawing.Point(0, 0)
@@ -201,6 +209,7 @@ Namespace Sys_Hes_Anb.Forms
             'tpIntroBanks
             '
             Me.tpIntroBanks.Controls.Add(Me.dgvBanks)
+            Me.tpIntroBanks.Controls.Add(Me.lblBankStatementRange)
             Me.tpIntroBanks.Controls.Add(Me.pnlBankInput)
             Me.tpIntroBanks.Location = New System.Drawing.Point(4, 23)
             Me.tpIntroBanks.Name = "tpIntroBanks"
@@ -231,7 +240,9 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlBankInput.Controls.Add(Me.btnNewBank)
             Me.pnlBankInput.Controls.Add(Me.btnDeleteBank)
             Me.pnlBankInput.Controls.Add(Me.btnSaveBank)
-            Me.pnlBankInput.Controls.Add(Me.cmbAccountCoding)
+            Me.pnlBankInput.Controls.Add(Me.btnSelectAccount)
+            Me.pnlBankInput.Controls.Add(Me.lblAccountID)
+            Me.pnlBankInput.Controls.Add(Me.lblAccountCodeChain)
             Me.pnlBankInput.Controls.Add(Me.lblAccountCoding)
             Me.pnlBankInput.Controls.Add(Me.txtAccountNumber)
             Me.pnlBankInput.Controls.Add(Me.lblAccountNumber)
@@ -290,15 +301,52 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnSaveBank.Text = "ذخیره"
             Me.btnSaveBank.UseVisualStyleBackColor = False
             '
-            'cmbAccountCoding
+            'btnSelectAccount
             '
-            Me.cmbAccountCoding.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-            Me.cmbAccountCoding.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-            Me.cmbAccountCoding.FormattingEnabled = True
-            Me.cmbAccountCoding.Location = New System.Drawing.Point(15, 420)
-            Me.cmbAccountCoding.Name = "cmbAccountCoding"
-            Me.cmbAccountCoding.Size = New System.Drawing.Size(290, 22)
-            Me.cmbAccountCoding.TabIndex = 13
+            Me.btnSelectAccount.BackColor = System.Drawing.Color.LightGray
+            Me.btnSelectAccount.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+            Me.btnSelectAccount.Font = New System.Drawing.Font("Tahoma", 9.0!)
+            Me.btnSelectAccount.Location = New System.Drawing.Point(180, 420)
+            Me.btnSelectAccount.Name = "btnSelectAccount"
+            Me.btnSelectAccount.Size = New System.Drawing.Size(125, 26)
+            Me.btnSelectAccount.TabIndex = 13
+            Me.btnSelectAccount.Text = "انتخاب سرفصل"
+            Me.btnSelectAccount.UseVisualStyleBackColor = True
+            '
+            'lblAccountID
+            '
+            Me.lblAccountID.Font = New System.Drawing.Font("Tahoma", 9.0!)
+            Me.lblAccountID.Location = New System.Drawing.Point(15, 424)
+            Me.lblAccountID.Name = "lblAccountID"
+            Me.lblAccountID.Size = New System.Drawing.Size(155, 18)
+            Me.lblAccountID.TabIndex = 15
+            Me.lblAccountID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            Me.lblAccountID.Visible = False
+            '
+            'lblAccountCodeChain
+            '
+            Me.lblAccountCodeChain.Font = New System.Drawing.Font("Tahoma", 8.5!)
+            Me.lblAccountCodeChain.ForeColor = System.Drawing.Color.DarkBlue
+            Me.lblAccountCodeChain.Location = New System.Drawing.Point(15, 450)
+            Me.lblAccountCodeChain.Name = "lblAccountCodeChain"
+            Me.lblAccountCodeChain.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+            Me.lblAccountCodeChain.Size = New System.Drawing.Size(290, 30)
+            Me.lblAccountCodeChain.TabIndex = 16
+            Me.lblAccountCodeChain.TextAlign = System.Drawing.ContentAlignment.TopRight
+            '
+            'lblBankStatementRange
+            '
+            Me.lblBankStatementRange.BackColor = System.Drawing.Color.FromArgb(CType(CType(242, Byte), Integer), CType(CType(248, Byte), Integer), CType(CType(255, Byte), Integer))
+            Me.lblBankStatementRange.Dock = System.Windows.Forms.DockStyle.Top
+            Me.lblBankStatementRange.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold)
+            Me.lblBankStatementRange.ForeColor = System.Drawing.Color.DarkSlateBlue
+            Me.lblBankStatementRange.Location = New System.Drawing.Point(3, 3)
+            Me.lblBankStatementRange.Name = "lblBankStatementRange"
+            Me.lblBankStatementRange.Size = New System.Drawing.Size(766, 30)
+            Me.lblBankStatementRange.TabIndex = 2
+            Me.lblBankStatementRange.Text = "بازه تاریخی صورت حساب وارد شده: فاقد صورت حساب وارد شده"
+            Me.lblBankStatementRange.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+            Me.lblBankStatementRange.RightToLeft = System.Windows.Forms.RightToLeft.Yes
             '
             'lblAccountCoding
             '
@@ -645,6 +693,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblImportFilePath.TabIndex = 2
             Me.lblImportFilePath.Text = "فایلی انتخاب نشده است"
             Me.lblImportFilePath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+            Me.lblImportFilePath.RightToLeft = System.Windows.Forms.RightToLeft.No
             '
             'cmbImportBank
             '
@@ -673,7 +722,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.tpReconciliation.Name = "tpReconciliation"
             Me.tpReconciliation.Size = New System.Drawing.Size(1092, 623)
             Me.tpReconciliation.TabIndex = 2
-            Me.tpReconciliation.Text = "مغایرات بانکی"
+            Me.tpReconciliation.Text = "مغایرت گیری"
             Me.tpReconciliation.UseVisualStyleBackColor = True
             '
             'splitRec
@@ -717,7 +766,6 @@ Namespace Sys_Hes_Anb.Forms
             Me.tcBank.Controls.Add(Me.tpBank_ClosedDebit)
             Me.tcBank.Controls.Add(Me.tpBank_ClosedCredit)
             Me.tcBank.Controls.Add(Me.tpBank_Dup)
-            Me.tcBank.Controls.Add(Me.tpBank_Suggestions)
             Me.tcBank.Dock = System.Windows.Forms.DockStyle.Fill
             Me.tcBank.Location = New System.Drawing.Point(0, 20)
             Me.tcBank.Name = "tcBank"
@@ -969,7 +1017,6 @@ Namespace Sys_Hes_Anb.Forms
             Me.tcAsnad.Controls.Add(Me.tpAsnad_ClosedDebit)
             Me.tcAsnad.Controls.Add(Me.tpAsnad_ClosedCredit)
             Me.tcAsnad.Controls.Add(Me.tpAsnad_Dup)
-            Me.tcAsnad.Controls.Add(Me.tpAsnad_Suggestions)
             Me.tcAsnad.Dock = System.Windows.Forms.DockStyle.Fill
             Me.tcAsnad.Location = New System.Drawing.Point(0, 20)
             Me.tcAsnad.Name = "tcAsnad"
@@ -1169,9 +1216,9 @@ Namespace Sys_Hes_Anb.Forms
             Me.tpAsnad_Suggestions.Controls.Add(Me.dgvAsnad_Suggestions)
             Me.tpAsnad_Suggestions.Location = New System.Drawing.Point(4, 23)
             Me.tpAsnad_Suggestions.Name = "tpAsnad_Suggestions"
-            Me.tpAsnad_Suggestions.Size = New System.Drawing.Size(1082, 220)
-            Me.tpAsnad_Suggestions.TabIndex = 8
-            Me.tpAsnad_Suggestions.Text = "پیشنهاد برای رفع مغایرت دفتر"
+            Me.tpAsnad_Suggestions.Size = New System.Drawing.Size(1092, 623)
+            Me.tpAsnad_Suggestions.TabIndex = 3
+            Me.tpAsnad_Suggestions.Text = "پیشنهاد برای رفع مغایرت"
             Me.tpAsnad_Suggestions.UseVisualStyleBackColor = True
             '
             'dgvAsnad_Suggestions
@@ -1228,8 +1275,10 @@ Namespace Sys_Hes_Anb.Forms
             '
             'grpDateOptions
             '
+            Me.grpDateOptions.Controls.Add(Me.btnToDate)
             Me.grpDateOptions.Controls.Add(Me.txtToDate)
             Me.grpDateOptions.Controls.Add(Me.lblToDate)
+            Me.grpDateOptions.Controls.Add(Me.btnFromDate)
             Me.grpDateOptions.Controls.Add(Me.txtFromDate)
             Me.grpDateOptions.Controls.Add(Me.lblFromDate)
             Me.grpDateOptions.Controls.Add(Me.rbCustomRange)
@@ -1243,13 +1292,23 @@ Namespace Sys_Hes_Anb.Forms
             Me.grpDateOptions.TabStop = False
             Me.grpDateOptions.Text = "بازه تاریخ مغایرت‌گیری"
             '
+            'btnToDate
+            '
+            Me.btnToDate.Enabled = False
+            Me.btnToDate.Location = New System.Drawing.Point(4, 32)
+            Me.btnToDate.Name = "btnToDate"
+            Me.btnToDate.Size = New System.Drawing.Size(28, 23)
+            Me.btnToDate.TabIndex = 7
+            Me.btnToDate.Text = "..."
+            '
             'txtToDate
             '
             Me.txtToDate.Enabled = False
             Me.txtToDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.txtToDate.Location = New System.Drawing.Point(24, 33)
+            Me.txtToDate.Location = New System.Drawing.Point(36, 33)
+            Me.txtToDate.Mask = "0000/00/00"
             Me.txtToDate.Name = "txtToDate"
-            Me.txtToDate.Size = New System.Drawing.Size(90, 21)
+            Me.txtToDate.Size = New System.Drawing.Size(80, 21)
             Me.txtToDate.TabIndex = 6
             Me.txtToDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
             '
@@ -1257,19 +1316,29 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.lblToDate.AutoSize = True
             Me.lblToDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblToDate.Location = New System.Drawing.Point(119, 36)
+            Me.lblToDate.Location = New System.Drawing.Point(120, 36)
             Me.lblToDate.Name = "lblToDate"
             Me.lblToDate.Size = New System.Drawing.Size(44, 14)
             Me.lblToDate.TabIndex = 5
             Me.lblToDate.Text = "تا تاریخ:"
             '
+            'btnFromDate
+            '
+            Me.btnFromDate.Enabled = False
+            Me.btnFromDate.Location = New System.Drawing.Point(169, 32)
+            Me.btnFromDate.Name = "btnFromDate"
+            Me.btnFromDate.Size = New System.Drawing.Size(28, 23)
+            Me.btnFromDate.TabIndex = 5
+            Me.btnFromDate.Text = "..."
+            '
             'txtFromDate
             '
             Me.txtFromDate.Enabled = False
             Me.txtFromDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.txtFromDate.Location = New System.Drawing.Point(174, 33)
+            Me.txtFromDate.Location = New System.Drawing.Point(201, 33)
+            Me.txtFromDate.Mask = "0000/00/00"
             Me.txtFromDate.Name = "txtFromDate"
-            Me.txtFromDate.Size = New System.Drawing.Size(90, 21)
+            Me.txtFromDate.Size = New System.Drawing.Size(80, 21)
             Me.txtFromDate.TabIndex = 4
             Me.txtFromDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
             '
@@ -1277,7 +1346,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.lblFromDate.AutoSize = True
             Me.lblFromDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblFromDate.Location = New System.Drawing.Point(269, 36)
+            Me.lblFromDate.Location = New System.Drawing.Point(285, 36)
             Me.lblFromDate.Name = "lblFromDate"
             Me.lblFromDate.Size = New System.Drawing.Size(44, 14)
             Me.lblFromDate.TabIndex = 3
@@ -1287,7 +1356,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.rbCustomRange.AutoSize = True
             Me.rbCustomRange.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.rbCustomRange.Location = New System.Drawing.Point(325, 33)
+            Me.rbCustomRange.Location = New System.Drawing.Point(335, 33)
             Me.rbCustomRange.Name = "rbCustomRange"
             Me.rbCustomRange.Size = New System.Drawing.Size(83, 18)
             Me.rbCustomRange.TabIndex = 2
@@ -1298,7 +1367,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.rbCurrentYear.AutoSize = True
             Me.rbCurrentYear.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.rbCurrentYear.Location = New System.Drawing.Point(420, 33)
+            Me.rbCurrentYear.Location = New System.Drawing.Point(430, 33)
             Me.rbCurrentYear.Name = "rbCurrentYear"
             Me.rbCurrentYear.Size = New System.Drawing.Size(79, 18)
             Me.rbCurrentYear.TabIndex = 1
@@ -1310,7 +1379,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.rbAllYears.AutoSize = True
             Me.rbAllYears.Checked = True
             Me.rbAllYears.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.rbAllYears.Location = New System.Drawing.Point(505, 33)
+            Me.rbAllYears.Location = New System.Drawing.Point(515, 33)
             Me.rbAllYears.Name = "rbAllYears"
             Me.rbAllYears.Size = New System.Drawing.Size(86, 18)
             Me.rbAllYears.TabIndex = 0
@@ -1342,6 +1411,8 @@ Namespace Sys_Hes_Anb.Forms
             Me.pnlBottom.BackColor = System.Drawing.Color.FromArgb(CType(CType(236, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(241, Byte), Integer))
             Me.pnlBottom.Controls.Add(Me.lblSummary)
             Me.pnlBottom.Controls.Add(Me.btnExport)
+            Me.pnlBottom.Controls.Add(Me.btnBankStatementReport)
+            Me.pnlBottom.Controls.Add(Me.btnTransferDesc)
             Me.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom
             Me.pnlBottom.Location = New System.Drawing.Point(0, 650)
             Me.pnlBottom.Name = "pnlBottom"
@@ -1354,7 +1425,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblSummary.AutoSize = True
             Me.lblSummary.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold)
             Me.lblSummary.ForeColor = System.Drawing.Color.FromArgb(CType(CType(44, Byte), Integer), CType(CType(62, Byte), Integer), CType(CType(80, Byte), Integer))
-            Me.lblSummary.Location = New System.Drawing.Point(234, 18)
+            Me.lblSummary.Location = New System.Drawing.Point(700, 18)
             Me.lblSummary.Name = "lblSummary"
             Me.lblSummary.Size = New System.Drawing.Size(0, 14)
             Me.lblSummary.TabIndex = 1
@@ -1371,6 +1442,32 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnExport.TabIndex = 0
             Me.btnExport.Text = "خروجی اکسل اقلام مغایرت..."
             Me.btnExport.UseVisualStyleBackColor = False
+            '
+            'btnBankStatementReport
+            '
+            Me.btnBankStatementReport.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+            Me.btnBankStatementReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+            Me.btnBankStatementReport.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
+            Me.btnBankStatementReport.ForeColor = System.Drawing.Color.White
+            Me.btnBankStatementReport.Location = New System.Drawing.Point(226, 10)
+            Me.btnBankStatementReport.Name = "btnBankStatementReport"
+            Me.btnBankStatementReport.Size = New System.Drawing.Size(200, 30)
+            Me.btnBankStatementReport.TabIndex = 2
+            Me.btnBankStatementReport.Text = "گزارش صورتحساب بانکی"
+            Me.btnBankStatementReport.UseVisualStyleBackColor = False
+            '
+            'btnTransferDesc
+            '
+            Me.btnTransferDesc.BackColor = System.Drawing.Color.FromArgb(CType(CType(142, Byte), Integer), CType(CType(68, Byte), Integer), CType(CType(173, Byte), Integer))
+            Me.btnTransferDesc.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+            Me.btnTransferDesc.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
+            Me.btnTransferDesc.ForeColor = System.Drawing.Color.White
+            Me.btnTransferDesc.Location = New System.Drawing.Point(436, 10)
+            Me.btnTransferDesc.Name = "btnTransferDesc"
+            Me.btnTransferDesc.Size = New System.Drawing.Size(250, 30)
+            Me.btnTransferDesc.TabIndex = 3
+            Me.btnTransferDesc.Text = "انتقال شرح صورت حساب به شرح ردیف دفتر"
+            Me.btnTransferDesc.UseVisualStyleBackColor = False
             '
             'HesabdaryMogBankForm
             '
@@ -1467,7 +1564,10 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents lblAccountType As System.Windows.Forms.Label
         Friend WithEvents txtAccountNumber As System.Windows.Forms.TextBox
         Friend WithEvents lblAccountNumber As System.Windows.Forms.Label
-        Friend WithEvents cmbAccountCoding As System.Windows.Forms.ComboBox
+        Friend WithEvents btnSelectAccount As System.Windows.Forms.Button
+        Friend WithEvents lblAccountID As System.Windows.Forms.Label
+        Friend WithEvents lblAccountCodeChain As System.Windows.Forms.Label
+        Friend WithEvents lblBankStatementRange As System.Windows.Forms.Label
         Friend WithEvents lblAccountCoding As System.Windows.Forms.Label
         Friend WithEvents btnSaveBank As System.Windows.Forms.Button
         Friend WithEvents btnDeleteBank As System.Windows.Forms.Button
@@ -1549,14 +1649,18 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents rbAllYears As System.Windows.Forms.RadioButton
         Friend WithEvents rbCurrentYear As System.Windows.Forms.RadioButton
         Friend WithEvents rbCustomRange As System.Windows.Forms.RadioButton
-        Friend WithEvents txtFromDate As System.Windows.Forms.TextBox
+        Friend WithEvents txtFromDate As System.Windows.Forms.MaskedTextBox
         Friend WithEvents lblFromDate As System.Windows.Forms.Label
-        Friend WithEvents txtToDate As System.Windows.Forms.TextBox
+        Friend WithEvents txtToDate As System.Windows.Forms.MaskedTextBox
         Friend WithEvents lblToDate As System.Windows.Forms.Label
+        Friend WithEvents btnFromDate As System.Windows.Forms.Button
+        Friend WithEvents btnToDate As System.Windows.Forms.Button
         Friend WithEvents btnRunReconciliation As System.Windows.Forms.Button
 
         Friend WithEvents pnlBottom As System.Windows.Forms.Panel
         Friend WithEvents lblSummary As System.Windows.Forms.Label
         Friend WithEvents btnExport As System.Windows.Forms.Button
+        Friend WithEvents btnBankStatementReport As System.Windows.Forms.Button
+        Friend WithEvents btnTransferDesc As System.Windows.Forms.Button
     End Class
 End Namespace

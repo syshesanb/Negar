@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -22,6 +22,9 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdarySanad1Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            If Me.dgvEntries IsNot Nothing Then Me.dgvEntries.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             Me.KeyPreview = True
             SetupGrid()
             InitializeSearchPanel()
@@ -95,15 +98,21 @@ Namespace Sys_Hes_Anb.Forms
             colBed.Name = "colBed"
             colBed.DataPropertyName = "JamBedehkar"
             colBed.HeaderText = "جمع بدهکار"
-            colBed.Width = 120
+            colBed.Width = 130
             colBed.ReadOnly = True
+            colBed.DefaultCellStyle.Format = "N0"
+            colBed.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colBed.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
             Dim colBes As New DataGridViewTextBoxColumn()
             colBes.Name = "colBes"
             colBes.DataPropertyName = "JamBestankar"
             colBes.HeaderText = "جمع بستانکار"
-            colBes.Width = 120
+            colBes.Width = 130
             colBes.ReadOnly = True
+            colBes.DefaultCellStyle.Format = "N0"
+            colBes.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colBes.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
             Dim colTaeaz As New DataGridViewTextBoxColumn()
             colTaeaz.Name = "colTaeaz"

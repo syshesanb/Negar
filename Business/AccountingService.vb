@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -20,16 +20,16 @@ Namespace Sys_Hes_Anb.Business
             If Not SessionContext.CurrentCompanyID.HasValue Then Return New DataTable()
             Return Sql.ExecuteTable(
                 "SELECT AccountID, AccountCode, AccountName, AccountType, ParentAccountID, IsActive, AccountNature " &
-                "FROM ChartOfAccounts WHERE CompanyID = ? ORDER BY AccountCode",
+                "FROM SarfaslHesab WHERE CompanyID = ? ORDER BY AccountCode",
                 SessionContext.CurrentCompanyID.Value)
         End Function
 
-        Public Function GetCompanyAccountSettings() As Tuple(Of Integer, Integer, Integer, Integer, Integer, Integer)
-            If Not SessionContext.CurrentCompanyID.HasValue Then Return Tuple.Create(4, 2, 2, 2, 2, 2)
+        Public Function GetCompanyAccountSettings() As Tuple(Of Integer, Integer, Integer, Integer, Integer, Integer, Integer)
+            If Not SessionContext.CurrentCompanyID.HasValue Then Return Tuple.Create(4, 2, 2, 2, 2, 2, 2)
             Dim dt = Sql.ExecuteTable(
-                "SELECT AccountLevels, Level1Length, Level2Length, Level3Length, Level4Length, Level5Length FROM Companies WHERE CompanyID = ?",
+                "SELECT AccountLevels, Level1Length, Level2Length, Level3Length, Level4Length, Level5Length, Level6Length FROM Companies WHERE CompanyID = ?",
                 SessionContext.CurrentCompanyID.Value)
-            If dt.Rows.Count = 0 Then Return Tuple.Create(4, 2, 2, 2, 2, 2)
+            If dt.Rows.Count = 0 Then Return Tuple.Create(4, 2, 2, 2, 2, 2, 2)
             Dim row = dt.Rows(0)
             Dim levels = If(row("AccountLevels") Is DBNull.Value, 4, Convert.ToInt32(row("AccountLevels")))
             Dim l1 = If(row("Level1Length") Is DBNull.Value, 2, Convert.ToInt32(row("Level1Length")))
@@ -37,14 +37,15 @@ Namespace Sys_Hes_Anb.Business
             Dim l3 = If(row("Level3Length") Is DBNull.Value, 2, Convert.ToInt32(row("Level3Length")))
             Dim l4 = If(row("Level4Length") Is DBNull.Value, 2, Convert.ToInt32(row("Level4Length")))
             Dim l5 = If(row("Level5Length") Is DBNull.Value, 2, Convert.ToInt32(row("Level5Length")))
-            Return Tuple.Create(levels, l1, l2, l3, l4, l5)
+            Dim l6 = If(row.Table.Columns.Contains("Level6Length") AndAlso row("Level6Length") IsNot DBNull.Value, Convert.ToInt32(row("Level6Length")), 2)
+            Return Tuple.Create(levels, l1, l2, l3, l4, l5, l6)
         End Function
 
         Private Sub UpdateDescendantsTypeAndNature(parentId As Integer, companyId As Integer, accountType As String, accountNature As String)
-            Dim dt = Sql.ExecuteTable("SELECT AccountID FROM ChartOfAccounts WHERE CompanyID = ? AND ParentAccountID = ?", companyId, parentId)
+            Dim dt = Sql.ExecuteTable("SELECT AccountID FROM SarfaslHesab WHERE CompanyID = ? AND ParentAccountID = ?", companyId, parentId)
             For Each row As DataRow In dt.Rows
                 Dim childId = Convert.ToInt32(row("AccountID"))
-                Sql.ExecuteNonQuery("UPDATE ChartOfAccounts SET AccountType = ?, AccountNature = ? WHERE AccountID = ?", accountType, accountNature, childId)
+                Sql.ExecuteNonQuery("UPDATE SarfaslHesab SET AccountType = ?, AccountNature = ? WHERE AccountID = ?", accountType, accountNature, childId)
                 UpdateDescendantsTypeAndNature(childId, companyId, accountType, accountNature)
             Next
         End Sub
@@ -62,11 +63,11 @@ Namespace Sys_Hes_Anb.Business
             Dim dupCount As Integer
             If parentAccountId.HasValue Then
                 dupCount = Convert.ToInt32(If(Sql.ExecuteScalar(
-                    "SELECT COUNT(*) FROM ChartOfAccounts WHERE CompanyID = ? AND AccountCode = ? AND ParentAccountID = ? AND AccountID <> ?",
+                    "SELECT COUNT(*) FROM SarfaslHesab WHERE CompanyID = ? AND AccountCode = ? AND ParentAccountID = ? AND AccountID <> ?",
                     companyId, accountCode, parentAccountId.Value, excludeId), 0))
             Else
                 dupCount = Convert.ToInt32(If(Sql.ExecuteScalar(
-                    "SELECT COUNT(*) FROM ChartOfAccounts WHERE CompanyID = ? AND AccountCode = ? AND ParentAccountID IS NULL AND AccountID <> ?",
+                    "SELECT COUNT(*) FROM SarfaslHesab WHERE CompanyID = ? AND AccountCode = ? AND ParentAccountID IS NULL AND AccountID <> ?",
                     companyId, accountCode, excludeId), 0))
             End If
 
@@ -80,7 +81,7 @@ Namespace Sys_Hes_Anb.Business
 
             If accountId.HasValue AndAlso accountId.Value > 0 Then
                 Sql.ExecuteNonQuery(
-                    "UPDATE ChartOfAccounts SET AccountCode = ?, AccountName = ?, AccountType = ?, ParentAccountID = ?, IsActive = ?, AccountNature = ? WHERE AccountID = ? AND CompanyID = ?",
+                    "UPDATE SarfaslHesab SET AccountCode = ?, AccountName = ?, AccountType = ?, ParentAccountID = ?, IsActive = ?, AccountNature = ? WHERE AccountID = ? AND CompanyID = ?",
                     accountCode, accountName, accountType, parentVal2, isActive, accountNature, accountId.Value, companyId)
                 
                 If Not parentAccountId.HasValue Then
@@ -91,13 +92,13 @@ Namespace Sys_Hes_Anb.Business
             End If
 
             Return Sql.ExecuteIdentity(
-                "INSERT INTO ChartOfAccounts (CompanyID, AccountCode, AccountName, AccountType, ParentAccountID, IsActive, AccountNature) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO SarfaslHesab (CompanyID, AccountCode, AccountName, AccountType, ParentAccountID, IsActive, AccountNature) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 companyId, accountCode, accountName, accountType, parentVal2, isActive, accountNature)
         End Function
 
         Public Sub DeleteAccount(accountId As Integer)
             If Not SessionContext.CurrentCompanyID.HasValue Then Return
-            Sql.ExecuteNonQuery("DELETE FROM ChartOfAccounts WHERE AccountID = ? AND CompanyID = ?",
+            Sql.ExecuteNonQuery("DELETE FROM SarfaslHesab WHERE AccountID = ? AND CompanyID = ?",
                                 accountId, SessionContext.CurrentCompanyID.Value)
         End Sub
 
@@ -107,12 +108,12 @@ Namespace Sys_Hes_Anb.Business
             If parentId.HasValue Then
                 Return Sql.ExecuteTable(
                     "SELECT AccountID, AccountCode, AccountName, AccountType, ParentAccountID, IsActive " &
-                    "FROM ChartOfAccounts WHERE CompanyID = ? AND ParentAccountID = ? ORDER BY AccountCode",
+                    "FROM SarfaslHesab WHERE CompanyID = ? AND ParentAccountID = ? ORDER BY AccountCode",
                     companyId, parentId.Value)
             Else
                 Return Sql.ExecuteTable(
                     "SELECT AccountID, AccountCode, AccountName, AccountType, ParentAccountID, IsActive " &
-                    "FROM ChartOfAccounts WHERE CompanyID = ? AND ParentAccountID IS NULL ORDER BY AccountCode",
+                    "FROM SarfaslHesab WHERE CompanyID = ? AND ParentAccountID IS NULL ORDER BY AccountCode",
                     companyId)
             End If
         End Function
@@ -121,7 +122,7 @@ Namespace Sys_Hes_Anb.Business
         Public Function AccountHasChildren(accountId As Integer) As Boolean
             If Not SessionContext.CurrentCompanyID.HasValue Then Return False
             Dim count = Convert.ToInt32(If(Sql.ExecuteScalar(
-                "SELECT COUNT(*) FROM ChartOfAccounts WHERE CompanyID = ? AND ParentAccountID = ?",
+                "SELECT COUNT(*) FROM SarfaslHesab WHERE CompanyID = ? AND ParentAccountID = ?",
                 SessionContext.CurrentCompanyID.Value, accountId), 0))
             Return count > 0
         End Function
@@ -130,7 +131,7 @@ Namespace Sys_Hes_Anb.Business
             Dim hs As New HashSet(Of Integer)()
             If Not SessionContext.CurrentCompanyID.HasValue Then Return hs
             Dim dt = Sql.ExecuteTable(
-                "SELECT DISTINCT ParentAccountID FROM ChartOfAccounts WHERE CompanyID = ? AND ParentAccountID IS NOT NULL",
+                "SELECT DISTINCT ParentAccountID FROM SarfaslHesab WHERE CompanyID = ? AND ParentAccountID IS NOT NULL",
                 SessionContext.CurrentCompanyID.Value)
             For Each r As DataRow In dt.Rows
                 If Not r.IsNull("ParentAccountID") Then
@@ -142,14 +143,14 @@ Namespace Sys_Hes_Anb.Business
 
         Public Function GetAccountParentId(accountId As Integer) As Integer?
             Dim result = Sql.ExecuteScalar(
-                "SELECT ParentAccountID FROM ChartOfAccounts WHERE AccountID = ?", accountId)
+                "SELECT ParentAccountID FROM SarfaslHesab WHERE AccountID = ?", accountId)
             If result Is Nothing OrElse Convert.IsDBNull(result) Then Return Nothing
             Return Convert.ToInt32(result)
         End Function
 
         Public Function GetAccountName(accountId As Integer) As String
             Dim result = Sql.ExecuteScalar(
-                "SELECT AccountName FROM ChartOfAccounts WHERE AccountID = ?", accountId)
+                "SELECT AccountName FROM SarfaslHesab WHERE AccountID = ?", accountId)
             If result Is Nothing OrElse Convert.IsDBNull(result) Then Return String.Empty
             Return Convert.ToString(result)
         End Function
@@ -157,7 +158,7 @@ Namespace Sys_Hes_Anb.Business
         ' کد و نام یک سرفصل حساب را با هم برمی‌گرداند
         Public Function GetAccountInfo(accountId As Integer) As Tuple(Of String, String)
             Dim dt = Sql.ExecuteTable(
-                "SELECT AccountCode, AccountName FROM ChartOfAccounts WHERE AccountID = ?", accountId)
+                "SELECT AccountCode, AccountName FROM SarfaslHesab WHERE AccountID = ?", accountId)
             If dt.Rows.Count = 0 Then Return Tuple.Create("", "")
             Return Tuple.Create(Convert.ToString(dt.Rows(0)("AccountCode")),
                                 Convert.ToString(dt.Rows(0)("AccountName")))
@@ -170,7 +171,7 @@ Namespace Sys_Hes_Anb.Business
             Do While currentId.HasValue AndAlso guard < 50
                 guard += 1
                 Dim dt = Sql.ExecuteTable(
-                    "SELECT AccountCode, AccountName, ParentAccountID FROM ChartOfAccounts WHERE AccountID = ?", currentId.Value)
+                    "SELECT AccountCode, AccountName, ParentAccountID FROM SarfaslHesab WHERE AccountID = ?", currentId.Value)
                 If dt.Rows.Count = 0 Then Exit Do
                 Dim r = dt.Rows(0)
                 Dim code = Convert.ToString(r("AccountCode"))
@@ -192,7 +193,7 @@ Namespace Sys_Hes_Anb.Business
             If Not SessionContext.CurrentCompanyID.HasValue Then Return New DataTable()
             Dim companyId = SessionContext.CurrentCompanyID.Value
             Dim query = "SELECT AccountID, AccountCode, AccountName, AccountType, ParentAccountID, IsActive " &
-                        "FROM ChartOfAccounts WHERE CompanyID = ?"
+                        "FROM SarfaslHesab WHERE CompanyID = ?"
             Dim params As New System.Collections.Generic.List(Of Object)()
             params.Add(companyId)
             If codeFilter.Length > 0 Then
@@ -213,7 +214,7 @@ Namespace Sys_Hes_Anb.Business
             Do While guard < 50
                 guard += 1
                 Dim dt = Sql.ExecuteTable(
-                    "SELECT AccountType, ParentAccountID FROM ChartOfAccounts WHERE AccountID = ?", currentId)
+                    "SELECT AccountType, ParentAccountID FROM SarfaslHesab WHERE AccountID = ?", currentId)
                 If dt.Rows.Count = 0 Then Return String.Empty
                 Dim r = dt.Rows(0)
                 Dim pVal = r("ParentAccountID")
@@ -231,7 +232,7 @@ Namespace Sys_Hes_Anb.Business
             Do While guard < 50
                 guard += 1
                 Dim dt = Sql.ExecuteTable(
-                    "SELECT AccountNature, ParentAccountID FROM ChartOfAccounts WHERE AccountID = ?", currentId)
+                    "SELECT AccountNature, ParentAccountID FROM SarfaslHesab WHERE AccountID = ?", currentId)
                 If dt.Rows.Count = 0 Then Return String.Empty
                 Dim r = dt.Rows(0)
                 Dim pVal = r("ParentAccountID")
@@ -249,11 +250,11 @@ Namespace Sys_Hes_Anb.Business
             Dim maxCodeObj As Object
             If parentId.HasValue Then
                 maxCodeObj = Sql.ExecuteScalar(
-                    "SELECT MAX(AccountCode) FROM ChartOfAccounts WHERE CompanyID = ? AND ParentAccountID = ?",
+                    "SELECT MAX(AccountCode) FROM SarfaslHesab WHERE CompanyID = ? AND ParentAccountID = ?",
                     companyId, parentId.Value)
             Else
                 maxCodeObj = Sql.ExecuteScalar(
-                    "SELECT MAX(AccountCode) FROM ChartOfAccounts WHERE CompanyID = ? AND ParentAccountID IS NULL",
+                    "SELECT MAX(AccountCode) FROM SarfaslHesab WHERE CompanyID = ? AND ParentAccountID IS NULL",
                     companyId)
             End If
             If maxCodeObj Is Nothing OrElse Convert.IsDBNull(maxCodeObj) Then Return "1"
@@ -267,13 +268,13 @@ Namespace Sys_Hes_Anb.Business
         ' اسناد حسابداری (مخصوص شرکت و سال مالی جاری)
         ' ========================
 
-        ' اطمینان از وجود ستون‌های اختیاری در جدول AccountingEntryDetails
+        ' اطمینان از وجود ستون‌های اختیاری در جدول Sanad2
         ' در صورت عدم وجود، ستون را اضافه می‌کند (خطای تکراری بودن بی‌صدا نادیده گرفته می‌شود)
         Public Sub EnsureEntryDetailsColumns()
             For Each ddl As String In New String() {
-                "ALTER TABLE AccountingEntryDetails ADD COLUMN SharhRadif MEMO",
-                "ALTER TABLE AccountingEntryDetails ADD COLUMN TransactionNumber TEXT(50)",
-                "ALTER TABLE AccountingEntryDetails ADD COLUMN TransactionDate TEXT(10)"}
+                "ALTER TABLE Sanad2 ADD COLUMN SharhRadif MEMO",
+                "ALTER TABLE Sanad2 ADD COLUMN TransactionNumber TEXT(50)",
+                "ALTER TABLE Sanad2 ADD COLUMN TransactionDate TEXT(10)"}
                 Try
                     Sql.ExecuteNonQuery(ddl)
                 Catch
@@ -285,7 +286,7 @@ Namespace Sys_Hes_Anb.Business
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then Return False
             Dim excludeId = If(excludeEntryId.HasValue, excludeEntryId.Value, -1)
             Dim count = Convert.ToInt32(If(Sql.ExecuteScalar(
-                "SELECT COUNT(*) FROM AccountingEntries WHERE CompanyID = ? AND FiscalYearID = ? AND ReferenceNumber = ? AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL) AND EntryID <> ?",
+                "SELECT COUNT(*) FROM Sanad1 WHERE CompanyID = ? AND FiscalYearID = ? AND ReferenceNumber = ? AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL) AND EntryID <> ?",
                 SessionContext.CurrentCompanyID.Value, SessionContext.CurrentFiscalYearID.Value, referenceNumber, excludeId), 0))
             Return count > 0
         End Function
@@ -293,7 +294,7 @@ Namespace Sys_Hes_Anb.Business
         Public Function GetNextReferenceNumber() As String
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then Return "1"
             Dim result = Sql.ExecuteScalar(
-                "SELECT MAX(CAST(ReferenceNumber AS INTEGER)) FROM AccountingEntries WHERE CompanyID = ? AND FiscalYearID = ?",
+                "SELECT MAX(CAST(ReferenceNumber AS INTEGER)) FROM Sanad1 WHERE CompanyID = ? AND FiscalYearID = ?",
                 SessionContext.CurrentCompanyID.Value, SessionContext.CurrentFiscalYearID.Value)
             If result Is Nothing OrElse Convert.IsDBNull(result) Then Return "1"
             Dim doubleVal As Double
@@ -313,7 +314,7 @@ Namespace Sys_Hes_Anb.Business
 
             If SessionContext.CurrentUser Is Nothing Then Return New DataTable()
 
-            Dim baseSelect = "SELECT EntryID, ReferenceNumber, EntryDate, Description, JamBedehkar, JamBestankar, TaeazSanad, VazeiatSanad, AdamVirayesh, CreatedBy FROM AccountingEntries "
+            Dim baseSelect = "SELECT EntryID, ReferenceNumber, EntryDate, Description, JamBedehkar, JamBestankar, TaeazSanad, VazeiatSanad, AdamVirayesh, CreatedBy FROM Sanad1 "
             Dim baseWhere = "WHERE CompanyID = ? AND FiscalYearID = ? AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL) "
 
             If String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
@@ -336,7 +337,7 @@ Namespace Sys_Hes_Anb.Business
 
             If SessionContext.CurrentUser Is Nothing Then Return New DataTable()
 
-            Dim baseSelect = "SELECT EntryID, ReferenceNumber, EntryDate, Description FROM AccountingEntries "
+            Dim baseSelect = "SELECT EntryID, ReferenceNumber, EntryDate, Description FROM Sanad1 "
             Dim baseWhere = "WHERE CompanyID = ? AND FiscalYearID = ? AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL) "
             Dim params As New List(Of Object)
             params.Add(companyId)
@@ -426,17 +427,17 @@ Namespace Sys_Hes_Anb.Business
             End Sub
 
             addRow("آخرین سند", Sql.ExecuteTable(
-                "SELECT ReferenceNumber, EntryDate FROM AccountingEntries " &
+                "SELECT ReferenceNumber, EntryDate FROM Sanad1 " &
                 "WHERE CompanyID = ? AND FiscalYearID = ? ORDER BY CAST(ReferenceNumber AS INTEGER) DESC LIMIT 1",
                 cid, fyid))
 
             addRow("سند قبلی", Sql.ExecuteTable(
-                "SELECT ReferenceNumber, EntryDate FROM AccountingEntries " &
+                "SELECT ReferenceNumber, EntryDate FROM Sanad1 " &
                 "WHERE CompanyID = ? AND FiscalYearID = ? AND CAST(ReferenceNumber AS INTEGER) < ? ORDER BY CAST(ReferenceNumber AS INTEGER) DESC LIMIT 1",
                 cid, fyid, numRef))
 
             addRow("سند بعدی", Sql.ExecuteTable(
-                "SELECT ReferenceNumber, EntryDate FROM AccountingEntries " &
+                "SELECT ReferenceNumber, EntryDate FROM Sanad1 " &
                 "WHERE CompanyID = ? AND FiscalYearID = ? AND CAST(ReferenceNumber AS INTEGER) > ? ORDER BY CAST(ReferenceNumber AS INTEGER) ASC LIMIT 1",
                 cid, fyid, numRef))
 
@@ -445,7 +446,7 @@ Namespace Sys_Hes_Anb.Business
 
         Public Function GetEntryById(entryId As Integer) As DataRow
             Dim dt = Sql.ExecuteTable(
-                "SELECT EntryID, ReferenceNumber, EntryDate, Description, VazeiatSanad FROM AccountingEntries WHERE EntryID = ?",
+                "SELECT EntryID, ReferenceNumber, EntryDate, Description, VazeiatSanad FROM Sanad1 WHERE EntryID = ?",
                 entryId)
             If dt.Rows.Count = 0 Then Return Nothing
             Return dt.Rows(0)
@@ -457,7 +458,7 @@ Namespace Sys_Hes_Anb.Business
                 Return Sql.ExecuteTable(
                     "SELECT d.DetailID, d.AccountID, a.AccountCode, a.AccountName, d.DebitAmount, d.CreditAmount, " &
                     "d.LineNumber, d.ShenavarID, d.SharhRadif, d.TransactionNumber, d.TransactionDate " &
-                    "FROM AccountingEntryDetails AS d LEFT JOIN ChartOfAccounts AS a ON d.AccountID = a.AccountID " &
+                    "FROM Sanad2 AS d LEFT JOIN SarfaslHesab AS a ON d.AccountID = a.AccountID " &
                     "WHERE d.EntryID = ? ORDER BY d.LineNumber", entryId)
             Catch
             End Try
@@ -467,7 +468,7 @@ Namespace Sys_Hes_Anb.Business
                 Return Sql.ExecuteTable(
                     "SELECT d.DetailID, d.AccountID, a.AccountCode, a.AccountName, d.DebitAmount, d.CreditAmount, " &
                     "d.LineNumber, d.ShenavarID " &
-                    "FROM AccountingEntryDetails AS d LEFT JOIN ChartOfAccounts AS a ON d.AccountID = a.AccountID " &
+                    "FROM Sanad2 AS d LEFT JOIN SarfaslHesab AS a ON d.AccountID = a.AccountID " &
                     "WHERE d.EntryID = ? ORDER BY d.LineNumber", entryId)
             Catch
             End Try
@@ -484,17 +485,17 @@ Namespace Sys_Hes_Anb.Business
 
             ' بروزرسانی سربرگ سند (شامل تاریخ)
             Sql.ExecuteNonQuery(
-                "UPDATE AccountingEntries SET EntryDate = ?, Description = ?, ReferenceNumber = ? WHERE EntryID = ?",
+                "UPDATE Sanad1 SET EntryDate = ?, Description = ?, ReferenceNumber = ? WHERE EntryID = ?",
                 entryDate, description, referenceNumber, entryId)
 
             ' حذف و درج مجدد ردیف‌ها
-            Sql.ExecuteNonQuery("DELETE FROM AccountingEntryDetails WHERE EntryID = ?", entryId)
+            Sql.ExecuteNonQuery("DELETE FROM Sanad2 WHERE EntryID = ?", entryId)
 
             For Each line In lines
                 Dim debit = Math.Truncate(line.DebitAmount)
                 Dim credit = Math.Truncate(line.CreditAmount)
                 Sql.ExecuteNonQuery(
-                    "INSERT INTO AccountingEntryDetails (EntryID, AccountID, DebitAmount, CreditAmount, LineNumber, ShenavarID, SharhRadif, TransactionNumber, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO Sanad2 (EntryID, AccountID, DebitAmount, CreditAmount, LineNumber, ShenavarID, SharhRadif, TransactionNumber, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     entryId, line.AccountID, debit, credit, line.LineNumber,
                     If(line.ShenavarID = 0, CType(DBNull.Value, Object), CType(line.ShenavarID, Object)),
                     If(String.IsNullOrEmpty(line.SharhRadif), CType(DBNull.Value, Object), CType(line.SharhRadif, Object)),
@@ -503,7 +504,7 @@ Namespace Sys_Hes_Anb.Business
             Next
 
             Sql.ExecuteNonQuery(
-                "UPDATE AccountingEntries SET JamBedehkar = ?, JamBestankar = ?, TaeazSanad = ?, VazeiatSanad = 'سند موقت - ویرایش شده' WHERE EntryID = ?",
+                "UPDATE Sanad1 SET JamBedehkar = ?, JamBestankar = ?, TaeazSanad = ?, VazeiatSanad = 'سند موقت - ویرایش شده' WHERE EntryID = ?",
                 jamBedehkar, jamBestankar, taeazSanad, entryId)
 
             ' دریافت ردیف‌های جدید برای مقایسه
@@ -558,11 +559,11 @@ Namespace Sys_Hes_Anb.Business
         End Sub
 
         Public Sub SetAdamVirayesh(entryId As Integer, value As Boolean)
-            Sql.ExecuteNonQuery("UPDATE AccountingEntries SET AdamVirayesh = ? WHERE EntryID = ?", value, entryId)
+            Sql.ExecuteNonQuery("UPDATE Sanad1 SET AdamVirayesh = ? WHERE EntryID = ?", value, entryId)
         End Sub
 
         Public Sub SetEntryStatus(entryId As Integer, status As String)
-            Sql.ExecuteNonQuery("UPDATE AccountingEntries SET VazeiatSanad = ? WHERE EntryID = ?", status, entryId)
+            Sql.ExecuteNonQuery("UPDATE Sanad1 SET VazeiatSanad = ? WHERE EntryID = ?", status, entryId)
         End Sub
 
         Public Sub SaveEntry(entryDate As Date, description As String, referenceNumber As String, createdBy As Integer, lines As IEnumerable(Of AccountingEntryLine), jamBedehkar As Decimal, jamBestankar As Decimal, taeazSanad As String)
@@ -574,14 +575,14 @@ Namespace Sys_Hes_Anb.Business
             Dim fyId = SessionContext.CurrentFiscalYearID.Value
 
             Dim entryId = Sql.ExecuteIdentity(
-                "INSERT INTO AccountingEntries (CompanyID, FiscalYearID, EntryDate, Description, ReferenceNumber, CreatedBy, VazeiatSanad) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO Sanad1 (CompanyID, FiscalYearID, EntryDate, Description, ReferenceNumber, CreatedBy, VazeiatSanad) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 companyId, fyId, entryDate, description, referenceNumber, createdBy, "سند موقت - ثبت اولیه")
 
             For Each line In lines
                 Dim debit = Math.Truncate(line.DebitAmount)
                 Dim credit = Math.Truncate(line.CreditAmount)
                 Sql.ExecuteNonQuery(
-                    "INSERT INTO AccountingEntryDetails (EntryID, AccountID, DebitAmount, CreditAmount, LineNumber, ShenavarID, SharhRadif, TransactionNumber, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO Sanad2 (EntryID, AccountID, DebitAmount, CreditAmount, LineNumber, ShenavarID, SharhRadif, TransactionNumber, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     entryId, line.AccountID, debit, credit, line.LineNumber,
                     If(line.ShenavarID = 0, CType(DBNull.Value, Object), CType(line.ShenavarID, Object)),
                     If(String.IsNullOrEmpty(line.SharhRadif), CType(DBNull.Value, Object), CType(line.SharhRadif, Object)),
@@ -590,7 +591,7 @@ Namespace Sys_Hes_Anb.Business
             Next
 
             Sql.ExecuteNonQuery(
-                "UPDATE AccountingEntries SET JamBedehkar = ?, JamBestankar = ?, TaeazSanad = ? WHERE EntryID = ?",
+                "UPDATE Sanad1 SET JamBedehkar = ?, JamBestankar = ?, TaeazSanad = ? WHERE EntryID = ?",
                 jamBedehkar, jamBestankar, taeazSanad, entryId)
 
             logService.LogActivity(createdBy, "CreateEntry", "AccountingEntry", entryId,
@@ -638,51 +639,51 @@ Namespace Sys_Hes_Anb.Business
             End Try
             lines.Add("")
 
-            ' --- ستون‌های AccountingEntryDetails ---
-            lines.Add("[Columns: AccountingEntryDetails]")
+            ' --- ستون‌های Sanad2 ---
+            lines.Add("[Columns: Sanad2]")
             Try
                 Using conn = Db.OpenConnection()
-                    Dim cols = conn.GetSchema("Columns", New String() {Nothing, Nothing, "AccountingEntryDetails", Nothing})
+                    Dim cols = conn.GetSchema("Columns", New String() {Nothing, Nothing, "Sanad2", Nothing})
                     For Each row As DataRow In cols.Rows
                         lines.Add("  " & Convert.ToString(row("COLUMN_NAME")) & " | " & Convert.ToString(row("DATA_TYPE")) & " | size=" & Convert.ToString(row("CHARACTER_MAXIMUM_LENGTH")))
                     Next
                 End Using
             Catch ex As Exception
-                lines.Add("Columns(AccountingEntryDetails) ERROR: " & ex.Message)
+                lines.Add("Columns(Sanad2) ERROR: " & ex.Message)
             End Try
             lines.Add("")
 
-            ' --- ستون‌های AccountingEntries ---
-            lines.Add("[Columns: AccountingEntries]")
+            ' --- ستون‌های Sanad1 ---
+            lines.Add("[Columns: Sanad1]")
             Try
                 Using conn = Db.OpenConnection()
-                    Dim cols = conn.GetSchema("Columns", New String() {Nothing, Nothing, "AccountingEntries", Nothing})
+                    Dim cols = conn.GetSchema("Columns", New String() {Nothing, Nothing, "Sanad1", Nothing})
                     For Each row As DataRow In cols.Rows
                         lines.Add("  " & Convert.ToString(row("COLUMN_NAME")) & " | " & Convert.ToString(row("DATA_TYPE")) & " | size=" & Convert.ToString(row("CHARACTER_MAXIMUM_LENGTH")))
                     Next
                 End Using
             Catch ex As Exception
-                lines.Add("Columns(AccountingEntries) ERROR: " & ex.Message)
+                lines.Add("Columns(Sanad1) ERROR: " & ex.Message)
             End Try
             lines.Add("")
 
-            ' --- ستون‌های ChartOfAccounts ---
-            lines.Add("[Columns: ChartOfAccounts]")
+            ' --- ستون‌های SarfaslHesab ---
+            lines.Add("[Columns: SarfaslHesab]")
             Try
                 Using conn = Db.OpenConnection()
-                    Dim cols = conn.GetSchema("Columns", New String() {Nothing, Nothing, "ChartOfAccounts", Nothing})
+                    Dim cols = conn.GetSchema("Columns", New String() {Nothing, Nothing, "SarfaslHesab", Nothing})
                     For Each row As DataRow In cols.Rows
                         lines.Add("  " & Convert.ToString(row("COLUMN_NAME")) & " | " & Convert.ToString(row("DATA_TYPE")))
                     Next
                 End Using
             Catch ex As Exception
-                lines.Add("Columns(ChartOfAccounts) ERROR: " & ex.Message)
+                lines.Add("Columns(SarfaslHesab) ERROR: " & ex.Message)
             End Try
             lines.Add("")
 
             ' --- تعداد رکورد جداول ---
             lines.Add("[Row Counts]")
-            For Each tbl In New String() {"ChartOfAccounts", "AccountingEntries", "AccountingEntryDetails"}
+            For Each tbl In New String() {"SarfaslHesab", "Sanad1", "Sanad2"}
                 Try
                     Dim cnt = Convert.ToInt32(If(Sql.ExecuteScalar("SELECT COUNT(*) FROM " & tbl), 0))
                     lines.Add("  " & tbl & " = " & cnt & " rows")
@@ -693,11 +694,11 @@ Namespace Sys_Hes_Anb.Business
             lines.Add("")
 
             ' --- آزمایش کوئری ۱: حسابها ---
-            lines.Add("[Query Test 1: ChartOfAccounts simple]")
+            lines.Add("[Query Test 1: SarfaslHesab simple]")
             Try
                 If SessionContext.CurrentCompanyID.HasValue Then
                     Dim dt = Sql.ExecuteTable(
-                        "SELECT AccountID, AccountCode, AccountName FROM ChartOfAccounts WHERE CompanyID = ? ORDER BY AccountCode",
+                        "SELECT AccountID, AccountCode, AccountName FROM SarfaslHesab WHERE CompanyID = ? ORDER BY AccountCode",
                         SessionContext.CurrentCompanyID.Value)
                     lines.Add("  OK - rows=" & dt.Rows.Count)
                 Else
@@ -708,10 +709,10 @@ Namespace Sys_Hes_Anb.Business
             End Try
             lines.Add("")
 
-            ' --- آزمایش کوئری ۲: ساده‌ترین کوئری روی AccountingEntryDetails ---
-            lines.Add("[Query Test 2: AccountingEntryDetails SELECT *]")
+            ' --- آزمایش کوئری ۲: ساده‌ترین کوئری روی Sanad2 ---
+            lines.Add("[Query Test 2: Sanad2 SELECT *]")
             Try
-                Dim dt = Sql.ExecuteTable("SELECT * FROM AccountingEntryDetails LIMIT 1")
+                Dim dt = Sql.ExecuteTable("SELECT * FROM Sanad2 LIMIT 1")
                 lines.Add("  OK - columns=" & dt.Columns.Count)
                 For Each col As DataColumn In dt.Columns
                     lines.Add("    col: " & col.ColumnName & " (" & col.DataType.Name & ")")
@@ -722,9 +723,9 @@ Namespace Sys_Hes_Anb.Business
             lines.Add("")
 
             ' --- آزمایش کوئری ۳: DebitAmount / CreditAmount ---
-            lines.Add("[Query Test 3: AccountingEntryDetails DebitAmount/CreditAmount]")
+            lines.Add("[Query Test 3: Sanad2 DebitAmount/CreditAmount]")
             Try
-                Dim dt = Sql.ExecuteTable("SELECT DebitAmount, CreditAmount FROM AccountingEntryDetails LIMIT 1")
+                Dim dt = Sql.ExecuteTable("SELECT DebitAmount, CreditAmount FROM Sanad2 LIMIT 1")
                 lines.Add("  OK - DebitAmount and CreditAmount exist")
             Catch ex As Exception
                 lines.Add("  ERROR: " & ex.Message)
@@ -732,12 +733,12 @@ Namespace Sys_Hes_Anb.Business
             lines.Add("")
 
             ' --- آزمایش کوئری ۴: INNER JOIN ساده ---
-            lines.Add("[Query Test 4: INNER JOIN AccountingEntryDetails + AccountingEntries]")
+            lines.Add("[Query Test 4: INNER JOIN Sanad2 + Sanad1]")
             Try
                 Dim dt = Sql.ExecuteTable(
                     "SELECT d.AccountID, d.DebitAmount, d.CreditAmount " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID")
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID")
                 lines.Add("  OK - rows=" & dt.Rows.Count)
             Catch ex As Exception
                 lines.Add("  ERROR: " & ex.Message)
@@ -752,8 +753,8 @@ Namespace Sys_Hes_Anb.Business
                     Dim fid = SessionContext.CurrentFiscalYearID.Value
                     Dim dt = Sql.ExecuteTable(
                         "SELECT d.AccountID, SUM(d.DebitAmount) AS DebitTotal, SUM(d.CreditAmount) AS CreditTotal " &
-                        "FROM AccountingEntryDetails AS d " &
-                        "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                        "FROM Sanad2 AS d " &
+                        "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                         "WHERE e.CompanyID = ? AND e.FiscalYearID = ? " &
                         "GROUP BY d.AccountID",
                         cid, fid)
@@ -813,8 +814,8 @@ Namespace Sys_Hes_Anb.Business
                 "IFNULL(e.Description,'') AS SharhRadif, " &
                 "SUM(IFNULL(d.DebitAmount,0)) AS DebitAmount, " &
                 "SUM(IFNULL(d.CreditAmount,0)) AS CreditAmount " &
-                "FROM AccountingEntryDetails AS d " &
-                "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                "FROM Sanad2 AS d " &
+                "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                 "WHERE d.AccountID IN (" & inClause & ") AND e.CompanyID = ? AND e.FiscalYearID = ?" &
                 permFilter & " " &
                 "GROUP BY e.ReferenceNumber, e.EntryDate, e.EntryID, e.Description " &
@@ -839,8 +840,8 @@ Namespace Sys_Hes_Anb.Business
                     "IFNULL(d.SharhRadif,'') AS SharhRadif, " &
                     "IFNULL(d.DebitAmount,0) AS DebitAmount, " &
                     "IFNULL(d.CreditAmount,0) AS CreditAmount " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     "WHERE d.AccountID = ? AND e.CompanyID = ? AND e.FiscalYearID = ? " &
                     "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER), d.LineNumber"
             Else
@@ -851,8 +852,8 @@ Namespace Sys_Hes_Anb.Business
                     "IFNULL(d.SharhRadif,'') AS SharhRadif, " &
                     "IFNULL(d.DebitAmount,0) AS DebitAmount, " &
                     "IFNULL(d.CreditAmount,0) AS CreditAmount " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     "WHERE d.AccountID = ? AND e.CompanyID = ? AND e.FiscalYearID = ? " &
                     "AND e.CreatedBy IN (" & idClause & ") " &
                     "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER), d.LineNumber"
@@ -868,7 +869,8 @@ Namespace Sys_Hes_Anb.Business
             Optional toDateStr As String = Nothing,
             Optional fromDoc As Integer? = Nothing,
             Optional toDoc As Integer? = Nothing,
-            Optional docStatus As String = Nothing
+            Optional docStatus As String = Nothing,
+            Optional allFiscalYears As Boolean = False
         ) As DataTable
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
                 Return New DataTable()
@@ -892,8 +894,18 @@ Namespace Sys_Hes_Anb.Business
             filters.Add("d.AccountID IN (" & inClause & ")")
             filters.Add("e.CompanyID = ?")
             params.Add(companyId)
-            filters.Add("e.FiscalYearID = ?")
-            params.Add(fyId)
+
+            Dim useFiscalYearFilter As Boolean = True
+            If allFiscalYears Then
+                useFiscalYearFilter = False
+            ElseIf Not String.IsNullOrEmpty(fromDateStr) OrElse Not String.IsNullOrEmpty(toDateStr) Then
+                useFiscalYearFilter = False
+            End If
+
+            If useFiscalYearFilter Then
+                filters.Add("e.FiscalYearID = ?")
+                params.Add(fyId)
+            End If
 
             ' فیلتر وضعیت
             If Not String.IsNullOrEmpty(docStatus) Then
@@ -969,8 +981,8 @@ Namespace Sys_Hes_Anb.Business
                     "IFNULL(e.Description,'') AS Description, " &
                     "SUM(IFNULL(d.DebitAmount,0)) AS DebitAmount, " &
                     "SUM(IFNULL(d.CreditAmount,0)) AS CreditAmount " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     whereClause & " " &
                     "GROUP BY e.EntryID, e.ReferenceNumber, e.EntryDate, e.Description " &
                     "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER)"
@@ -981,8 +993,8 @@ Namespace Sys_Hes_Anb.Business
                     "IFNULL(e.Description,'') AS Description, " &
                     "IFNULL(d.DebitAmount,0) AS DebitAmount, " &
                     "IFNULL(d.CreditAmount,0) AS CreditAmount " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     whereClause & " " &
                     "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER), d.LineNumber"
             End If
@@ -996,7 +1008,8 @@ Namespace Sys_Hes_Anb.Business
             Optional toDateStr As String = Nothing,
             Optional fromDoc As Integer? = Nothing,
             Optional toDoc As Integer? = Nothing,
-            Optional docStatus As String = Nothing
+            Optional docStatus As String = Nothing,
+            Optional allFiscalYears As Boolean = False
         ) As DataTable
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
                 Return New DataTable()
@@ -1007,7 +1020,7 @@ Namespace Sys_Hes_Anb.Business
             Dim fyId = SessionContext.CurrentFiscalYearID.Value
 
             Dim accounts = Sql.ExecuteTable(
-                "SELECT AccountID, AccountCode, AccountName, ParentAccountID, AccountNature FROM ChartOfAccounts " &
+                "SELECT AccountID, AccountCode, AccountName, ParentAccountID, AccountNature FROM SarfaslHesab " &
                 "WHERE CompanyID = ? ORDER BY AccountCode",
                 companyId)
 
@@ -1018,8 +1031,17 @@ Namespace Sys_Hes_Anb.Business
             baseFilters.Add("e.CompanyID = ?")
             baseParams.Add(companyId)
 
-            baseFilters.Add("e.FiscalYearID = ?")
-            baseParams.Add(fyId)
+            Dim useFiscalYearFilter As Boolean = True
+            If allFiscalYears Then
+                useFiscalYearFilter = False
+            ElseIf Not String.IsNullOrEmpty(fromDateStr) OrElse Not String.IsNullOrEmpty(toDateStr) Then
+                useFiscalYearFilter = False
+            End If
+
+            If useFiscalYearFilter Then
+                baseFilters.Add("e.FiscalYearID = ?")
+                baseParams.Add(fyId)
+            End If
 
             ' Exclude soft-deleted by default, but if user explicitly filters for a status, handle that
             If Not String.IsNullOrEmpty(docStatus) Then
@@ -1096,8 +1118,8 @@ Namespace Sys_Hes_Anb.Business
                     "SELECT d.AccountID, " &
                     "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
                     "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     "WHERE " & beforeFilterString & " " &
                     "GROUP BY d.AccountID"
                 Try
@@ -1142,8 +1164,8 @@ Namespace Sys_Hes_Anb.Business
                 "SELECT d.AccountID, " &
                 "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
                 "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                "FROM AccountingEntryDetails AS d " &
-                "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                "FROM Sanad2 AS d " &
+                "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                 "WHERE " & duringFilterString & " " &
                 "GROUP BY d.AccountID"
 
@@ -1196,36 +1218,97 @@ Namespace Sys_Hes_Anb.Business
             Return result
         End Function
 
-                Public Function GetAllAccountBalances(companyId As Integer, fiscalYearId As Integer) As Dictionary(Of Integer, Tuple(Of String, Decimal))
+                Public Function GetAllAccountBalances(
+            companyId As Integer,
+            fiscalYearId As Integer,
+            Optional fromDateStr As String = Nothing,
+            Optional toDateStr As String = Nothing,
+            Optional fromDoc As Integer? = Nothing,
+            Optional toDoc As Integer? = Nothing,
+            Optional allFiscalYears As Boolean = False
+        ) As Dictionary(Of Integer, Tuple(Of String, Decimal))
             Dim dict As New Dictionary(Of Integer, Tuple(Of String, Decimal))()
             If SessionContext.CurrentUser Is Nothing Then Return dict
 
-            Dim sumsQuery As String
-            If String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
-                sumsQuery =
-                    "SELECT c.AccountID, c.AccountCode, " &
-                    "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
-                    "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                    "FROM ChartOfAccounts c " &
-                    "LEFT JOIN AccountingEntryDetails d ON c.AccountID = d.AccountID " &
-                    "LEFT JOIN AccountingEntries e ON d.EntryID = e.EntryID AND e.CompanyID = ? AND e.FiscalYearID = ? " &
-                    "WHERE c.CompanyID = ? " &
-                    "GROUP BY c.AccountID, c.AccountCode"
-            Else
+            Dim joinFilters As New List(Of String)()
+            Dim joinParams As New List(Of Object)()
+
+            joinFilters.Add("e.CompanyID = ?")
+            joinParams.Add(companyId)
+
+            Dim useFiscalYearFilter As Boolean = True
+            If allFiscalYears Then
+                useFiscalYearFilter = False
+            ElseIf Not String.IsNullOrEmpty(fromDateStr) OrElse Not String.IsNullOrEmpty(toDateStr) Then
+                useFiscalYearFilter = False
+            End If
+
+            If useFiscalYearFilter Then
+                joinFilters.Add("e.FiscalYearID = ?")
+                joinParams.Add(fiscalYearId)
+            End If
+
+            If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
                 Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
                 Dim idClause = ActivityLogService.BuildIDInClause(visibleIds)
-                sumsQuery =
-                    "SELECT c.AccountID, c.AccountCode, " &
-                    "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
-                    "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                    "FROM ChartOfAccounts c " &
-                    "LEFT JOIN AccountingEntryDetails d ON c.AccountID = d.AccountID " &
-                    "LEFT JOIN AccountingEntries e ON d.EntryID = e.EntryID AND e.CompanyID = ? AND e.FiscalYearID = ? AND e.CreatedBy IN (" & idClause & ") " &
-                    "WHERE c.CompanyID = ? " &
-                    "GROUP BY c.AccountID, c.AccountCode"
+                joinFilters.Add("e.CreatedBy IN (" & idClause & ")")
             End If
-            
-            Dim dt = Sql.ExecuteTable(sumsQuery, companyId, fiscalYearId, companyId)
+
+            Dim fromDate As DateTime? = Nothing
+            Dim toDate As DateTime? = Nothing
+            If Not String.IsNullOrEmpty(fromDateStr) Then
+                fromDate = PersianDateHelper.ParsePersianDate(fromDateStr)
+            End If
+            If Not String.IsNullOrEmpty(toDateStr) Then
+                toDate = PersianDateHelper.ParsePersianDate(toDateStr)
+            End If
+
+            If fromDate.HasValue AndAlso toDate.HasValue AndAlso fromDate.Value > toDate.Value Then
+                Dim temp = fromDate
+                fromDate = toDate
+                toDate = temp
+            End If
+
+            If fromDate.HasValue Then
+                joinFilters.Add("e.EntryDate >= ?")
+                joinParams.Add(fromDate.Value)
+            End If
+            If toDate.HasValue Then
+                joinFilters.Add("e.EntryDate <= ?")
+                joinParams.Add(toDate.Value)
+            End If
+
+            If fromDoc.HasValue AndAlso toDoc.HasValue AndAlso fromDoc.Value > toDoc.Value Then
+                Dim temp = fromDoc
+                fromDoc = toDoc
+                toDoc = temp
+            End If
+
+            If fromDoc.HasValue Then
+                joinFilters.Add("CAST(e.ReferenceNumber AS INTEGER) >= ?")
+                joinParams.Add(fromDoc.Value)
+            End If
+            If toDoc.HasValue Then
+                joinFilters.Add("CAST(e.ReferenceNumber AS INTEGER) <= ?")
+                joinParams.Add(toDoc.Value)
+            End If
+
+            Dim joinCondition = String.Join(" AND ", joinFilters.ToArray())
+
+            Dim sumsQuery =
+                "SELECT c.AccountID, c.AccountCode, " &
+                "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
+                "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
+                "FROM SarfaslHesab c " &
+                "LEFT JOIN Sanad2 d ON c.AccountID = d.AccountID " &
+                "LEFT JOIN Sanad1 e ON d.EntryID = e.EntryID AND " & joinCondition & " " &
+                "WHERE c.CompanyID = ? " &
+                "GROUP BY c.AccountID, c.AccountCode"
+
+            Dim finalParams As New List(Of Object)(joinParams)
+            finalParams.Add(companyId)
+
+            Dim dt = Sql.ExecuteTable(sumsQuery, finalParams.ToArray())
             For Each row As DataRow In dt.Rows
                 Dim accId = Convert.ToInt32(row("AccountID"))
                 Dim code = Convert.ToString(row("AccountCode"))
@@ -1248,7 +1331,7 @@ Namespace Sys_Hes_Anb.Business
 
             ' کوئری ۱: همه حسابهای شرکت
             Dim accounts = Sql.ExecuteTable(
-                "SELECT AccountID, AccountCode, AccountName FROM ChartOfAccounts " &
+                "SELECT AccountID, AccountCode, AccountName FROM SarfaslHesab " &
                 "WHERE CompanyID = ? ORDER BY AccountCode",
                 companyId)
 
@@ -1259,8 +1342,8 @@ Namespace Sys_Hes_Anb.Business
                     "SELECT d.AccountID, " &
                     "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
                     "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     "WHERE e.CompanyID = ? AND e.FiscalYearID = ? " &
                     "GROUP BY d.AccountID"
             Else
@@ -1270,8 +1353,8 @@ Namespace Sys_Hes_Anb.Business
                     "SELECT d.AccountID, " &
                     "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
                     "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     "WHERE e.CompanyID = ? AND e.FiscalYearID = ? AND e.CreatedBy IN (" & idClause & ") " &
                     "GROUP BY d.AccountID"
             End If
@@ -1312,7 +1395,8 @@ Namespace Sys_Hes_Anb.Business
             accountIds As List(Of Integer),
             Optional fromDateStr As String = Nothing,
             Optional fromDoc As Integer? = Nothing,
-            Optional docStatus As String = Nothing
+            Optional docStatus As String = Nothing,
+            Optional allFiscalYears As Boolean = False
         ) As Tuple(Of Decimal, Decimal)
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
                 Return Tuple.Create(0D, 0D)
@@ -1335,8 +1419,18 @@ Namespace Sys_Hes_Anb.Business
             filters.Add("d.AccountID IN (" & inClause & ")")
             filters.Add("e.CompanyID = ?")
             params.Add(companyId)
-            filters.Add("e.FiscalYearID = ?")
-            params.Add(fyId)
+
+            Dim useFiscalYearFilter As Boolean = True
+            If allFiscalYears Then
+                useFiscalYearFilter = False
+            ElseIf Not String.IsNullOrEmpty(fromDateStr) Then
+                useFiscalYearFilter = False
+            End If
+
+            If useFiscalYearFilter Then
+                filters.Add("e.FiscalYearID = ?")
+                params.Add(fyId)
+            End If
 
             If Not String.IsNullOrEmpty(docStatus) Then
                 If docStatus = "موقت" Then
@@ -1387,8 +1481,8 @@ Namespace Sys_Hes_Anb.Business
             Dim query = "SELECT " &
                         "SUM(IFNULL(d.DebitAmount, 0)) AS DebitTotal, " &
                         "SUM(IFNULL(d.CreditAmount, 0)) AS CreditTotal " &
-                        "FROM AccountingEntryDetails AS d " &
-                        "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                        "FROM Sanad2 AS d " &
+                        "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                         whereClause
 
             Try
@@ -1410,7 +1504,8 @@ Namespace Sys_Hes_Anb.Business
             Optional toDateStr As String = Nothing,
             Optional fromDoc As Integer? = Nothing,
             Optional toDoc As Integer? = Nothing,
-            Optional docStatus As String = Nothing
+            Optional docStatus As String = Nothing,
+            Optional allFiscalYears As Boolean = False
         ) As DataTable
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
                 Return New DataTable()
@@ -1422,9 +1517,9 @@ Namespace Sys_Hes_Anb.Business
 
             Dim shenavars = Sql.ExecuteTable(
                 "SELECT s.ShenavarID AS AccountID, s.AccountCode, s.AccountName, s.ParentShenavarID AS ParentAccountID, 'Bedehkar' AS AccountNature, " &
-                "(SELECT a.AccountCode FROM AccountingEntryDetails d INNER JOIN ChartOfAccounts a ON d.AccountID = a.AccountID WHERE d.ShenavarID = s.ShenavarID LIMIT 1) AS StandardAccountCode, " &
-                "(SELECT a.AccountName FROM AccountingEntryDetails d INNER JOIN ChartOfAccounts a ON d.AccountID = a.AccountID WHERE d.ShenavarID = s.ShenavarID LIMIT 1) AS StandardAccountName " &
-                "FROM shenavar s " &
+                "(SELECT a.AccountCode FROM Sanad2 d INNER JOIN SarfaslHesab a ON d.AccountID = a.AccountID WHERE d.ShenavarID = s.ShenavarID LIMIT 1) AS StandardAccountCode, " &
+                "(SELECT a.AccountName FROM Sanad2 d INNER JOIN SarfaslHesab a ON d.AccountID = a.AccountID WHERE d.ShenavarID = s.ShenavarID LIMIT 1) AS StandardAccountName " &
+                "FROM SarfaslShenavar s " &
                 "WHERE s.CompanyID = ? ORDER BY s.AccountCode",
                 companyId)
 
@@ -1435,8 +1530,17 @@ Namespace Sys_Hes_Anb.Business
             baseFilters.Add("e.CompanyID = ?")
             baseParams.Add(companyId)
 
-            baseFilters.Add("e.FiscalYearID = ?")
-            baseParams.Add(fyId)
+            Dim useFiscalYearFilter As Boolean = True
+            If allFiscalYears Then
+                useFiscalYearFilter = False
+            ElseIf Not String.IsNullOrEmpty(fromDateStr) OrElse Not String.IsNullOrEmpty(toDateStr) Then
+                useFiscalYearFilter = False
+            End If
+
+            If useFiscalYearFilter Then
+                baseFilters.Add("e.FiscalYearID = ?")
+                baseParams.Add(fyId)
+            End If
 
             If Not String.IsNullOrEmpty(docStatus) Then
                 If docStatus = "موقت" Then
@@ -1510,8 +1614,8 @@ Namespace Sys_Hes_Anb.Business
                     "SELECT d.ShenavarID, " &
                     "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
                     "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     "WHERE " & beforeFilterString & " AND d.ShenavarID IS NOT NULL " &
                     "GROUP BY d.ShenavarID"
                 Try
@@ -1555,8 +1659,8 @@ Namespace Sys_Hes_Anb.Business
                 "SELECT d.ShenavarID, " &
                 "SUM(IFNULL(d.DebitAmount,0)) AS DebitTotal, " &
                 "SUM(IFNULL(d.CreditAmount,0)) AS CreditTotal " &
-                "FROM AccountingEntryDetails AS d " &
-                "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                "FROM Sanad2 AS d " &
+                "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                 "WHERE " & duringFilterString & " AND d.ShenavarID IS NOT NULL " &
                 "GROUP BY d.ShenavarID"
 
@@ -1619,7 +1723,8 @@ Namespace Sys_Hes_Anb.Business
             Optional toDateStr As String = Nothing,
             Optional fromDoc As Integer? = Nothing,
             Optional toDoc As Integer? = Nothing,
-            Optional docStatus As String = Nothing
+            Optional docStatus As String = Nothing,
+            Optional allFiscalYears As Boolean = False
         ) As DataTable
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
                 Return New DataTable()
@@ -1637,8 +1742,18 @@ Namespace Sys_Hes_Anb.Business
             params.Add(shenavarId)
             filters.Add("e.CompanyID = ?")
             params.Add(companyId)
-            filters.Add("e.FiscalYearID = ?")
-            params.Add(fyId)
+
+            Dim useFiscalYearFilter As Boolean = True
+            If allFiscalYears Then
+                useFiscalYearFilter = False
+            ElseIf Not String.IsNullOrEmpty(fromDateStr) OrElse Not String.IsNullOrEmpty(toDateStr) Then
+                useFiscalYearFilter = False
+            End If
+
+            If useFiscalYearFilter Then
+                filters.Add("e.FiscalYearID = ?")
+                params.Add(fyId)
+            End If
 
             ' فیلتر وضعیت
             If Not String.IsNullOrEmpty(docStatus) Then
@@ -1715,8 +1830,8 @@ Namespace Sys_Hes_Anb.Business
                     "SUM(IFNULL(d.CreditAmount,0)) AS CreditAmount, " &
                     "'' AS AccountCode, '' AS AccountName, " &
                     "0 AS StandardAccountID " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                     whereClause & " " &
                     "GROUP BY e.EntryID, e.ReferenceNumber, e.EntryDate, e.Description " &
                     "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER)"
@@ -1730,9 +1845,9 @@ Namespace Sys_Hes_Anb.Business
                     "IFNULL(a.AccountCode,'') AS AccountCode, " &
                     "IFNULL(a.AccountName,'') AS AccountName, " &
                     "IFNULL(d.AccountID, 0) AS StandardAccountID " &
-                    "FROM AccountingEntryDetails AS d " &
-                    "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
-                    "LEFT JOIN ChartOfAccounts AS a ON d.AccountID = a.AccountID " &
+                    "FROM Sanad2 AS d " &
+                    "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
+                    "LEFT JOIN SarfaslHesab AS a ON d.AccountID = a.AccountID " &
                     whereClause & " " &
                     "ORDER BY e.EntryDate, CAST(e.ReferenceNumber AS INTEGER), d.LineNumber"
             End If
@@ -1744,7 +1859,8 @@ Namespace Sys_Hes_Anb.Business
             shenavarId As Integer,
             Optional fromDateStr As String = Nothing,
             Optional fromDoc As Integer? = Nothing,
-            Optional docStatus As String = Nothing
+            Optional docStatus As String = Nothing,
+            Optional allFiscalYears As Boolean = False
         ) As Tuple(Of Decimal, Decimal)
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then
                 Return Tuple.Create(0D, 0D)
@@ -1761,8 +1877,18 @@ Namespace Sys_Hes_Anb.Business
             params.Add(shenavarId)
             filters.Add("e.CompanyID = ?")
             params.Add(companyId)
-            filters.Add("e.FiscalYearID = ?")
-            params.Add(fyId)
+
+            Dim useFiscalYearFilter As Boolean = True
+            If allFiscalYears Then
+                useFiscalYearFilter = False
+            ElseIf Not String.IsNullOrEmpty(fromDateStr) Then
+                useFiscalYearFilter = False
+            End If
+
+            If useFiscalYearFilter Then
+                filters.Add("e.FiscalYearID = ?")
+                params.Add(fyId)
+            End If
 
             If Not String.IsNullOrEmpty(docStatus) Then
                 If docStatus = "موقت" Then
@@ -1813,8 +1939,8 @@ Namespace Sys_Hes_Anb.Business
             Dim query = "SELECT " &
                         "SUM(IFNULL(d.DebitAmount, 0)) AS DebitTotal, " &
                         "SUM(IFNULL(d.CreditAmount, 0)) AS CreditTotal " &
-                        "FROM AccountingEntryDetails AS d " &
-                        "INNER JOIN AccountingEntries AS e ON d.EntryID = e.EntryID " &
+                        "FROM Sanad2 AS d " &
+                        "INNER JOIN Sanad1 AS e ON d.EntryID = e.EntryID " &
                         whereClause
 
             Try
@@ -1838,7 +1964,7 @@ Namespace Sys_Hes_Anb.Business
             Do While currentId.HasValue AndAlso guard < 50
                 guard += 1
                 Dim dt = Sql.ExecuteTable(
-                    "SELECT AccountCode, AccountName, ParentShenavarID FROM shenavar WHERE ShenavarID = ?", currentId.Value)
+                    "SELECT AccountCode, AccountName, ParentShenavarID FROM SarfaslShenavar WHERE ShenavarID = ?", currentId.Value)
                 If dt.Rows.Count = 0 Then Exit Do
                 Dim r = dt.Rows(0)
                 Dim code = Convert.ToString(r("AccountCode"))
@@ -1903,7 +2029,7 @@ Namespace Sys_Hes_Anb.Business
             Return Sql.ExecuteTable(
                 "SELECT m.AccountID, m.CategoryID, a.AccountCode, a.AccountName " &
                 "FROM ProfitLossMappings m " &
-                "INNER JOIN ChartOfAccounts a ON m.AccountID = a.AccountID " &
+                "INNER JOIN SarfaslHesab a ON m.AccountID = a.AccountID " &
                 "WHERE m.CompanyID = ? " &
                 "ORDER BY a.AccountCode", companyId)
         End Function
@@ -2082,7 +2208,7 @@ Namespace Sys_Hes_Anb.Business
         End Function
 
         Public Sub AutoMapProfitLossAccounts(reportId As Integer, companyId As Integer)
-            Dim accounts = Sql.ExecuteTable("SELECT AccountID, AccountCode, AccountName FROM ChartOfAccounts WHERE CompanyID = ? AND IsActive = 1", companyId)
+            Dim accounts = Sql.ExecuteTable("SELECT AccountID, AccountCode, AccountName FROM SarfaslHesab WHERE CompanyID = ? AND IsActive = 1", companyId)
             For Each row As DataRow In accounts.Rows
                 Dim accountId = Convert.ToInt32(row("AccountID"))
                 Dim name = Convert.ToString(row("AccountName"))

@@ -15,6 +15,7 @@ Namespace Sys_Hes_Anb.Forms
         Private ReadOnly userService As New UserService()
 
         Private Sub SelectReleaseUserForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             LoadManagers()
         End Sub
 

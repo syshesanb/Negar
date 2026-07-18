@@ -58,6 +58,17 @@ Namespace Sys_Hes_Anb.Forms
         Private _startScrollPosX As Integer
         Private _startScrollPosY As Integer
 
+        ' Range Filter Controls
+        Private grpRange As GroupBox
+        Private cmbRangeMethod As ComboBox
+        Private lblRangeFrom As Label
+        Private txtRangeFrom As TextBox
+        Private btnCalendarFrom As Button
+        Private lblRangeTo As Label
+        Private txtRangeTo As TextBox
+        Private btnCalendarTo As Button
+        Private btnApplyFilter As Button
+
         Public Class ReportRowNode
             Public Property CategoryName As String
             Public Property IsMainRow As Boolean
@@ -79,6 +90,8 @@ End Class
         End Sub
 
         Private Sub HesabdaryReportPrintForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            SetupRangeFilterUI()
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             Using progress As New ProgressForm()
                 progress.ShowAndCenter(Me)
                 progress.UpdateProgress(10, "بارگذاری مشخصات چاپگرها...")
@@ -624,7 +637,36 @@ End Class
         End Sub
             Private Sub CalculateNodeValues()
             If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then Return
-            Dim balances = service.GetAllAccountBalances(SessionContext.CurrentCompanyID.Value, SessionContext.CurrentFiscalYearID.Value)
+
+            Dim fromDateStr As String = Nothing
+            Dim toDateStr As String = Nothing
+            Dim fromDoc As Integer? = Nothing
+            Dim toDoc As Integer? = Nothing
+            Dim allFiscalYears As Boolean = False
+
+            If cmbRangeMethod IsNot Nothing Then
+                Dim idx = cmbRangeMethod.SelectedIndex
+                If idx = 0 Then ' Doc range
+                    Dim fVal = 0, tVal = 0
+                    If Integer.TryParse(txtRangeFrom.Text.Trim(), fVal) Then fromDoc = fVal
+                    If Integer.TryParse(txtRangeTo.Text.Trim(), tVal) Then toDoc = tVal
+                ElseIf idx = 1 Then ' Date range
+                    fromDateStr = txtRangeFrom.Text.Trim()
+                    toDateStr = txtRangeTo.Text.Trim()
+                ElseIf idx = 2 Then ' All fiscal years
+                    allFiscalYears = True
+                End If
+            End If
+
+            Dim balances = service.GetAllAccountBalances(
+                SessionContext.CurrentCompanyID.Value, 
+                SessionContext.CurrentFiscalYearID.Value,
+                fromDateStr,
+                toDateStr,
+                fromDoc,
+                toDoc,
+                allFiscalYears
+            )
             Dim allMappings = service.GetProfitLossMappings(SessionContext.CurrentCompanyID.Value)
 
             ' Pass 1: Calculate Base Values
@@ -702,6 +744,201 @@ End Class
             Next
         End Sub
 
+        Private Sub SetupRangeFilterUI()
+            ' ۱. ایجاد و طراحی گروه بازه گزارش
+            grpRange = New GroupBox()
+            grpRange.Text = "تنظیم بازه گزارش"
+            grpRange.Location = New Point(10, 465)
+            grpRange.Size = New Size(260, 175)
+            grpRange.RightToLeft = RightToLeft.Yes
+            grpRange.Font = New Font("Tahoma", 9.0!)
+
+            ' ۲. ایجاد کامبوباکس مبنای گزارش
+            cmbRangeMethod = New ComboBox()
+            cmbRangeMethod.DropDownStyle = ComboBoxStyle.DropDownList
+            cmbRangeMethod.Location = New Point(10, 22)
+            cmbRangeMethod.Size = New Size(240, 22)
+            cmbRangeMethod.DropDownWidth = 270
+            cmbRangeMethod.Items.Add("بر اساس شماره سند در سال جاری")
+            cmbRangeMethod.Items.Add("بر اساس تاریخ")
+            cmbRangeMethod.Items.Add("بر اساس تمام اسناد در تمام سالهای مالی")
+
+            ' ۳. فیلد از
+            lblRangeFrom = New Label()
+            lblRangeFrom.Text = "از:"
+            lblRangeFrom.Location = New Point(210, 58)
+            lblRangeFrom.Size = New Size(40, 14)
+            lblRangeFrom.TextAlign = ContentAlignment.MiddleLeft
+
+            txtRangeFrom = New TextBox()
+            txtRangeFrom.Location = New Point(100, 55)
+            txtRangeFrom.Size = New Size(100, 22)
+            AddHandler txtRangeFrom.KeyPress, AddressOf NumericOnly_KeyPress
+            AddHandler txtRangeFrom.TextChanged, AddressOf txtRange_TextChanged
+
+            btnCalendarFrom = New Button()
+            btnCalendarFrom.Text = "📅"
+            btnCalendarFrom.Location = New Point(65, 54)
+            btnCalendarFrom.Size = New Size(30, 24)
+            btnCalendarFrom.FlatStyle = FlatStyle.Flat
+            btnCalendarFrom.BackColor = Color.White
+            AddHandler btnCalendarFrom.Click, AddressOf btnCalendarFrom_Click
+
+            ' ۴. فیلد تا
+            lblRangeTo = New Label()
+            lblRangeTo.Text = "تا:"
+            lblRangeTo.Location = New Point(210, 93)
+            lblRangeTo.Size = New Size(40, 14)
+            lblRangeTo.TextAlign = ContentAlignment.MiddleLeft
+
+            txtRangeTo = New TextBox()
+            txtRangeTo.Location = New Point(100, 90)
+            txtRangeTo.Size = New Size(100, 22)
+            AddHandler txtRangeTo.KeyPress, AddressOf NumericOnly_KeyPress
+            AddHandler txtRangeTo.TextChanged, AddressOf txtRange_TextChanged
+
+            btnCalendarTo = New Button()
+            btnCalendarTo.Text = "📅"
+            btnCalendarTo.Location = New Point(65, 90)
+            btnCalendarTo.Size = New Size(30, 24)
+            btnCalendarTo.FlatStyle = FlatStyle.Flat
+            btnCalendarTo.BackColor = Color.White
+            AddHandler btnCalendarTo.Click, AddressOf btnCalendarTo_Click
+
+            ' ۵. دکمه اعمال بازه
+            btnApplyFilter = New Button()
+            btnApplyFilter.Text = "اعمال بازه"
+            btnApplyFilter.Location = New Point(10, 130)
+            btnApplyFilter.Size = New Size(240, 28)
+            btnApplyFilter.BackColor = Color.SteelBlue
+            btnApplyFilter.ForeColor = Color.White
+            btnApplyFilter.FlatStyle = FlatStyle.Flat
+            AddHandler btnApplyFilter.Click, AddressOf btnApplyFilter_Click
+
+            grpRange.Controls.Add(cmbRangeMethod)
+            grpRange.Controls.Add(lblRangeFrom)
+            grpRange.Controls.Add(txtRangeFrom)
+            grpRange.Controls.Add(btnCalendarFrom)
+            grpRange.Controls.Add(lblRangeTo)
+            grpRange.Controls.Add(txtRangeTo)
+            grpRange.Controls.Add(btnCalendarTo)
+            grpRange.Controls.Add(btnApplyFilter)
+
+            splitPrint.Panel1.Controls.Add(grpRange)
+
+            ' ۶. متصل کردن رویداد تغییر مبنا
+            AddHandler cmbRangeMethod.SelectedIndexChanged, AddressOf cmbRangeMethod_SelectedIndexChanged
+
+            ' ۷. مقدار پیش‌فرض: بر اساس تاریخ (۱)
+            cmbRangeMethod.SelectedIndex = 1
+        End Sub
+
+        Private Sub cmbRangeMethod_SelectedIndexChanged(sender As Object, e As EventArgs)
+            Dim isDoc = (cmbRangeMethod.SelectedIndex = 0)
+            Dim isDate = (cmbRangeMethod.SelectedIndex = 1)
+            Dim isAll = (cmbRangeMethod.SelectedIndex = 2)
+
+            lblRangeFrom.Visible = Not isAll
+            txtRangeFrom.Visible = Not isAll
+            btnCalendarFrom.Visible = isDate
+
+            lblRangeTo.Visible = Not isAll
+            txtRangeTo.Visible = Not isAll
+            btnCalendarTo.Visible = isDate
+
+            If isDoc Then
+                lblRangeFrom.Text = "از سند:"
+                lblRangeTo.Text = "تا سند:"
+            ElseIf isDate Then
+                lblRangeFrom.Text = "از تاریخ:"
+                lblRangeTo.Text = "تا تاریخ:"
+                If String.IsNullOrWhiteSpace(txtRangeFrom.Text) OrElse Not txtRangeFrom.Text.Contains("/") Then
+                    txtRangeFrom.Text = PersianDateHelper.ToPersian(DateTime.Today)
+                End If
+                If String.IsNullOrWhiteSpace(txtRangeTo.Text) OrElse Not txtRangeTo.Text.Contains("/") Then
+                    txtRangeTo.Text = PersianDateHelper.ToPersian(DateTime.Today)
+                End If
+            End If
+
+            If isDoc OrElse isAll Then
+                txtRangeFrom.Text = ""
+                txtRangeTo.Text = ""
+            End If
+        End Sub
+
+        Private Sub txtRange_TextChanged(sender As Object, e As EventArgs)
+            If cmbRangeMethod.SelectedIndex = 1 Then ' Date mode
+                Dim txtBox = DirectCast(sender, TextBox)
+                Dim cursor = txtBox.SelectionStart
+                Dim text = txtBox.Text.Replace("/", "")
+                If IsAllDigits(text) Then
+                    txtBox.Text = FormatPersianDatePartial(text)
+                    txtBox.SelectionStart = If(cursor > txtBox.Text.Length, txtBox.Text.Length, cursor)
+                End If
+            End If
+        End Sub
+
+        Private Function IsAllDigits(text As String) As Boolean
+            If String.IsNullOrEmpty(text) Then Return False
+            For Each c As Char In text
+                If Not Char.IsDigit(c) Then Return False
+            Next
+            Return True
+        End Function
+
+        Private Function FormatPersianDatePartial(digits As String) As String
+            If digits.Length > 8 Then digits = digits.Substring(0, 8)
+            Select Case digits.Length
+                Case <= 4 : Return digits
+                Case <= 6 : Return digits.Substring(0, 4) & "/" & digits.Substring(4)
+                Case Else : Return digits.Substring(0, 4) & "/" & digits.Substring(4, 2) & "/" & digits.Substring(6)
+            End Select
+        End Function
+
+        Private Sub NumericOnly_KeyPress(sender As Object, e As KeyPressEventArgs)
+            If Not Char.IsControl(e.KeyChar) AndAlso Not Char.IsDigit(e.KeyChar) Then
+                e.Handled = True
+            End If
+        End Sub
+
+        Private Sub btnCalendarFrom_Click(sender As Object, e As EventArgs)
+            ShowCalendarForTextBox(txtRangeFrom)
+        End Sub
+
+        Private Sub btnCalendarTo_Click(sender As Object, e As EventArgs)
+            ShowCalendarForTextBox(txtRangeTo)
+        End Sub
+
+        Private Sub ShowCalendarForTextBox(txtBox As TextBox)
+            Dim anchor = EnsureOnScreen(
+                txtBox.PointToScreen(New Point(0, txtBox.Height)),
+                New Size(270, 228))
+            Using cal As New PersianCalendarForm(txtBox.Text)
+                cal.StartPosition = FormStartPosition.Manual
+                cal.Location = anchor
+                If cal.ShowDialog(Me) = DialogResult.OK Then
+                    txtBox.Text = cal.SelectedDate
+                End If
+            End Using
+        End Sub
+
+        Private Shared Function EnsureOnScreen(pos As Point, waSize As Size) As Point
+            Dim wa = Screen.FromPoint(pos).WorkingArea
+            Return New Point(
+                Math.Max(wa.Left, Math.Min(pos.X, wa.Right - waSize.Width)),
+                Math.Max(wa.Top, Math.Min(pos.Y, wa.Bottom - waSize.Height)))
+        End Function
+
+        Private Sub btnApplyFilter_Click(sender As Object, e As EventArgs)
+            Using progress As New ProgressForm()
+                progress.ShowAndCenter(Me)
+                progress.UpdateProgress(30, "در حال محاسبه مجدد مقادیر گزارش...")
+                CalculateNodeValues()
+                progress.UpdateProgress(70, "در حال بروزرسانی پیش‌نمایش چاپ...")
+                previewCtrl.InvalidatePreview()
+                progress.UpdateProgress(100, "بروزرسانی با موفقیت انجام شد")
+            End Using
+        End Sub
 
 End Class
 End Namespace

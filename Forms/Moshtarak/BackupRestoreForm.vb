@@ -21,6 +21,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub BackupRestoreForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             If _mode = OperationMode.Backup Then
                 Me.Text = "پشتیبان‌گیری از اطلاعات سیستم"
                 lblTitle.Text = "پشتیبان‌گیری از دیتابیس و اطلاعات"

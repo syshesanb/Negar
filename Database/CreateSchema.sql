@@ -1,4 +1,4 @@
-CREATE TABLE Users (
+﻿CREATE TABLE Users (
     UserID INTEGER PRIMARY KEY AUTOINCREMENT,
     Username TEXT NOT NULL,
     [Password] TEXT NOT NULL,
@@ -154,7 +154,7 @@ CREATE TABLE SalesInvoiceDetails (
     CostAtSaleTime DECIMAL
 );
 
-CREATE TABLE ChartOfAccounts (
+CREATE TABLE SarfaslHesab (
     AccountID INTEGER PRIMARY KEY AUTOINCREMENT,
     CompanyID INTEGER NOT NULL,
     AccountCode TEXT NOT NULL,
@@ -165,9 +165,9 @@ CREATE TABLE ChartOfAccounts (
     AccountNature TEXT
 );
 
-CREATE INDEX IF NOT EXISTS IX_ChartOfAccounts_CompanyCode ON ChartOfAccounts (CompanyID, AccountCode);
+CREATE INDEX IF NOT EXISTS IX_SarfaslHesab_CompanyCode ON SarfaslHesab (CompanyID, AccountCode);
 
-CREATE TABLE shenavar (
+CREATE TABLE SarfaslShenavar (
     ShenavarID INTEGER PRIMARY KEY AUTOINCREMENT,
     CompanyID INTEGER NOT NULL,
     AccountCode TEXT NOT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE shenavar (
     IsActive BOOLEAN
 );
 
-CREATE TABLE AccountingEntries (
+CREATE TABLE Sanad1 (
     EntryID INTEGER PRIMARY KEY AUTOINCREMENT,
     CompanyID INTEGER NOT NULL,
     FiscalYearID INTEGER NOT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE AccountingEntries (
     AdamVirayesh BOOLEAN
 );
 
-CREATE TABLE AccountingEntryDetails (
+CREATE TABLE Sanad2 (
     DetailID INTEGER PRIMARY KEY AUTOINCREMENT,
     EntryID INTEGER NOT NULL,
     AccountID INTEGER NOT NULL,

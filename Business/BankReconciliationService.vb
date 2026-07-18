@@ -151,13 +151,18 @@ Namespace Sys_Hes_Anb.Business
             Return parts.ToArray()
         End Function
 
-        Public Function GetLedgerEntries(companyId As Integer, fiscalYearId As Integer, accountId As Integer, fromDate As DateTime?, toDate As DateTime?) As DataTable
+        Public Function GetLedgerEntries(companyId As Integer, fiscalYearId As Integer?, accountId As Integer, fromDate As DateTime?, toDate As DateTime?) As DataTable
             Dim query = "SELECT d.DetailID, e.EntryID, e.EntryDate, e.ReferenceNumber, d.DebitAmount, d.CreditAmount, d.SharhRadif, d.TransactionNumber, d.TransactionDate " &
-                        "FROM AccountingEntryDetails d " &
-                        "INNER JOIN AccountingEntries e ON d.EntryID = e.EntryID " &
-                        "WHERE e.CompanyID = ? AND e.FiscalYearID = ? AND d.AccountID = ?"
+                        "FROM Sanad2 d " &
+                        "INNER JOIN Sanad1 e ON d.EntryID = e.EntryID " &
+                        "WHERE e.CompanyID = ? AND d.AccountID = ?"
             
-            Dim params As New List(Of Object) From {companyId, fiscalYearId, accountId}
+            Dim params As New List(Of Object) From {companyId, accountId}
+            
+            If fiscalYearId.HasValue Then
+                query &= " AND e.FiscalYearID = ?"
+                params.Add(fiscalYearId.Value)
+            End If
             
             If fromDate.HasValue Then
                 query &= " AND e.EntryDate >= ?"
@@ -277,26 +282,40 @@ Namespace Sys_Hes_Anb.Business
             If String.IsNullOrWhiteSpace(dateStr) Then Return False
             
             dateStr = dateStr.Trim()
-            If DateTime.TryParse(dateStr, result) Then Return True
             
             Try
                 Dim cleaned = dateStr.Replace("-", "/").Replace("\", "/")
                 Dim parts = cleaned.Split("/"c)
                 If parts.Length = 3 Then
-                    Dim year = Convert.ToInt32(parts(0))
-                    Dim month = Convert.ToInt32(parts(1))
-                    Dim day = Convert.ToInt32(parts(2))
+                    Dim year As Integer = 0
+                    Dim month As Integer = 0
+                    Dim day As Integer = 0
                     
-                    If year < 100 Then
-                        year += 1400
+                    If parts(0).Length = 4 Then
+                        year = Convert.ToInt32(parts(0))
+                        month = Convert.ToInt32(parts(1))
+                        day = Convert.ToInt32(parts(2))
+                    ElseIf parts(2).Length = 4 Then
+                        year = Convert.ToInt32(parts(2))
+                        month = Convert.ToInt32(parts(1))
+                        day = Convert.ToInt32(parts(0))
+                    Else
+                        year = Convert.ToInt32(parts(0))
+                        month = Convert.ToInt32(parts(1))
+                        day = Convert.ToInt32(parts(2))
+                        If year < 100 Then year += 1400
                     End If
                     
-                    Dim pc As New System.Globalization.PersianCalendar()
-                    result = pc.ToDateTime(year, month, day, 0, 0, 0, 0)
-                    Return True
+                    If year >= 1300 AndAlso year <= 1500 AndAlso month >= 1 AndAlso month <= 12 AndAlso day >= 1 AndAlso day <= 31 Then
+                        Dim pc As New System.Globalization.PersianCalendar()
+                        result = pc.ToDateTime(year, month, day, 0, 0, 0, 0)
+                        Return True
+                    End If
                 End If
             Catch
             End Try
+            
+            If DateTime.TryParse(dateStr, result) Then Return True
             
             Return False
         End Function
@@ -361,11 +380,13 @@ Namespace Sys_Hes_Anb.Business
             Return dt
         End Function
 
-        Public Function PerformDatabaseReconciliation(companyId As Integer, fiscalYearId As Integer, bankId As Integer, accountId As Integer, fromDate As DateTime?, toDate As DateTime?) As ReconciliationResult
+        Public Function PerformDatabaseReconciliation(companyId As Integer, fiscalYearId As Integer?, bankId As Integer, accountId As Integer, fromDate As DateTime?, toDate As DateTime?, Optional progressCallback As Action(Of Integer, Integer, String) = Nothing) As ReconciliationResult
+            If progressCallback IsNot Nothing Then progressCallback(5, 0, "در حال بارگذاری تراکنش‌های دفاتر از دیتابیس...")
             Dim res As New ReconciliationResult()
             Dim ledgerTable = GetLedgerEntries(companyId, fiscalYearId, accountId, fromDate, toDate)
 
             ' 1. Load Bank statement from SoBank_2
+            If progressCallback IsNot Nothing Then progressCallback(15, 0, "در حال بارگذاری تراکنش‌های صورتحساب بانک...")
             Dim bankTransactions As New List(Of BankTransaction)()
             Dim dtBank = Sql.ExecuteTable("SELECT TxID, TxDate, RefNo, Debit, Credit, Description, Payee, MatchedDetailID FROM SoBank_2 WHERE BankID = ?", bankId)
             For Each row As DataRow In dtBank.Rows
@@ -422,31 +443,44 @@ Namespace Sys_Hes_Anb.Business
             Dim unmatchedLedger As New List(Of LedgerTransaction)(ledgerTransactions)
             Dim unmatchedBank As New List(Of BankTransaction)()
 
+            If progressCallback IsNot Nothing Then progressCallback(30, 0, "تفکیک آرتیکل‌های تطبیق داده شده قبلی...")
             ' 2.5 Separate already matched entries based on database MatchedDetailID
             For Each bt In bankTransactions
                 If bt.MatchedDetailID.HasValue AndAlso bt.MatchedDetailID.Value > 0 Then
                     Dim found = unmatchedLedger.FirstOrDefault(Function(lt) lt.DetailID = bt.MatchedDetailID.Value)
                     If found IsNot Nothing Then
-                        res.Matched.Add(New MatchedTransactionPair() With {
-                            .BankTx = bt,
-                            .LedgerTx = found
-                        })
-                        unmatchedLedger.Remove(found)
-                        Continue For
+                        Dim trackingMatch = (Not String.IsNullOrWhiteSpace(bt.RefNo) AndAlso
+                                             (String.Equals(found.TxNo?.Trim(), bt.RefNo.Trim(), StringComparison.OrdinalIgnoreCase) OrElse
+                                              String.Equals(found.RefNo?.Trim(), bt.RefNo.Trim(), StringComparison.OrdinalIgnoreCase)))
+                        
+                        Dim debitMatch = (found.Debit = bt.Debit)
+                        Dim creditMatch = (found.Credit = bt.Credit)
+
+                        If trackingMatch AndAlso debitMatch AndAlso creditMatch Then
+                            res.Matched.Add(New MatchedTransactionPair() With {
+                                .BankTx = bt,
+                                .LedgerTx = found
+                            })
+                            unmatchedLedger.Remove(found)
+                            Continue For
+                        End If
                     End If
                 End If
                 unmatchedBank.Add(bt)
             Next
 
+            If progressCallback IsNot Nothing Then progressCallback(45, 0, "در حال اجرای الگوریتم تطبیق شماره پیگیری و مبلغ...")
             ' 3. Priority 1 Matching: Exact match by Reference Number and Amount
             Dim remainingBank As New List(Of BankTransaction)()
             For Each bt In unmatchedBank
                 Dim found As LedgerTransaction = Nothing
                 If Not String.IsNullOrWhiteSpace(bt.RefNo) Then
                     found = unmatchedLedger.FirstOrDefault(Function(lt) 
-                        Return (String.Equals(lt.TxNo, bt.RefNo, StringComparison.OrdinalIgnoreCase) OrElse 
-                                String.Equals(lt.RefNo, bt.RefNo, StringComparison.OrdinalIgnoreCase)) AndAlso
-                               ((bt.Debit > 0 AndAlso lt.Debit = bt.Debit) OrElse (bt.Credit > 0 AndAlso lt.Credit = bt.Credit))
+                        Dim trackingMatch = (String.Equals(lt.TxNo?.Trim(), bt.RefNo.Trim(), StringComparison.OrdinalIgnoreCase) OrElse 
+                                             String.Equals(lt.RefNo?.Trim(), bt.RefNo.Trim(), StringComparison.OrdinalIgnoreCase))
+                        Dim debitMatch = (lt.Debit = bt.Debit)
+                        Dim creditMatch = (lt.Credit = bt.Credit)
+                        Return trackingMatch AndAlso debitMatch AndAlso creditMatch
                     End Function)
                 End If
 
@@ -463,7 +497,21 @@ Namespace Sys_Hes_Anb.Business
 
             ' 4. Suggestion Algorithm: find the closest matches based on RefNo, Amount, Date, and Description
             Dim tempUnmatchedLedger As New List(Of LedgerTransaction)(unmatchedLedger)
+            Dim totalBank = remainingBank.Count
+            Dim currentBank = 0
+
             For Each bt In remainingBank
+                currentBank += 1
+                If progressCallback IsNot Nothing Then
+                    If currentBank Mod 50 = 0 OrElse currentBank = totalBank Then
+                        Dim overallProgress = 60 + CInt((currentBank / totalBank) * 40)
+                        Dim detailProgress = CInt(((currentBank - 1) Mod 50) / 49 * 100)
+                        If totalBank <= 50 Then
+                            detailProgress = CInt((currentBank / totalBank) * 100)
+                        End If
+                        progressCallback(overallProgress, detailProgress, "در حال تحلیل پیشنهادات رفع مغایرت: رکورد " & currentBank & " از " & totalBank & "...")
+                    End If
+                End If
                 Dim bestLedger As LedgerTransaction = Nothing
                 Dim maxScore As Double = 0.0
                 

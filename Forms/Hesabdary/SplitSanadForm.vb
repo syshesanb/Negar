@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -77,7 +77,7 @@ Namespace Sys_Hes_Anb.Forms
 
                 ' کوئری برای سند قبلی بلافصل
                 Dim dtPrev = Sql.ExecuteTable(
-                    "SELECT ReferenceNumber, EntryDate FROM AccountingEntries " &
+                    "SELECT ReferenceNumber, EntryDate FROM Sanad1 " &
                     "WHERE CompanyID = ? AND FiscalYearID = ? AND CAST(ReferenceNumber AS INTEGER) < ? " &
                     "AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL) " &
                     "ORDER BY CAST(ReferenceNumber AS INTEGER) DESC LIMIT 1",
@@ -104,7 +104,7 @@ Namespace Sys_Hes_Anb.Forms
 
                 ' کوئری برای سند بعدی بلافصل
                 Dim dtNext = Sql.ExecuteTable(
-                    "SELECT ReferenceNumber, EntryDate FROM AccountingEntries " &
+                    "SELECT ReferenceNumber, EntryDate FROM Sanad1 " &
                     "WHERE CompanyID = ? AND FiscalYearID = ? AND CAST(ReferenceNumber AS INTEGER) > ? " &
                     "AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL) " &
                     "ORDER BY CAST(ReferenceNumber AS INTEGER) ASC LIMIT 1",
@@ -223,7 +223,7 @@ Namespace Sys_Hes_Anb.Forms
             Dim activeDocs As New List(Of ActiveDocInfo)()
             Try
                 Dim dt = Sql.ExecuteTable(
-                    "SELECT ReferenceNumber, EntryDate FROM AccountingEntries " &
+                    "SELECT ReferenceNumber, EntryDate FROM Sanad1 " &
                     "WHERE CompanyID = ? AND FiscalYearID = ? " &
                     "AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL)",
                     SessionContext.CurrentCompanyID.Value, SessionContext.CurrentFiscalYearID.Value)

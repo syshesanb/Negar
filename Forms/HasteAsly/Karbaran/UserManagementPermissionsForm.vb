@@ -25,6 +25,9 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub UserManagementPermissionsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            If Me.dgvUsers IsNot Nothing Then Me.dgvUsers.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvPermissions IsNot Nothing Then Me.dgvPermissions.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             LoadUsers()
             LoadPermissionsForSelection()
             AdjustLayoutSplitter()
@@ -198,8 +201,8 @@ Namespace Sys_Hes_Anb.Forms
                     Return "مدیریت شرکت‌ها و سال‌های مالی ( جامع )"
                 Case PermissionKeys.SelectCompanyFiscalYear
                     Return "انتخاب شرکت و سال مالی جاری"
-                Case PermissionKeys.ManageSettings
-                    Return "تنظیمات سیستم"
+                Case PermissionKeys.ManageAppThemes
+                    Return "مدیریت تمهای برنامه و فرمها"
                 Case PermissionKeys.BackupData
                     Return "پشتیبان‌گیری اطلاعات"
                 Case PermissionKeys.RestoreData

@@ -150,7 +150,7 @@
             'txtCode
             '
             Me.txtCode.Dock = System.Windows.Forms.DockStyle.Right
-            Me.txtCode.Location = New System.Drawing.Point(1085, 10)
+            Me.txtCode.Location = New System.Drawing.Point(1061, 10)
             Me.txtCode.Name = "txtCode"
             Me.txtCode.Size = New System.Drawing.Size(100, 22)
             Me.txtCode.TabIndex = 1
@@ -160,7 +160,7 @@
             Me.txtName.Dock = System.Windows.Forms.DockStyle.Fill
             Me.txtName.Location = New System.Drawing.Point(10, 10)
             Me.txtName.Name = "txtName"
-            Me.txtName.Size = New System.Drawing.Size(985, 22)
+            Me.txtName.Size = New System.Drawing.Size(896, 22)
             Me.txtName.TabIndex = 4
             '
             'btnAddToCategories
@@ -1088,30 +1088,30 @@
             'lblName
             '
             Me.lblName.Dock = System.Windows.Forms.DockStyle.Right
-            Me.lblName.Location = New System.Drawing.Point(995, 10)
+            Me.lblName.Location = New System.Drawing.Point(906, 10)
             Me.lblName.Name = "lblName"
             Me.lblName.Size = New System.Drawing.Size(70, 35)
             Me.lblName.TabIndex = 3
             Me.lblName.Text = "نام گزارش:"
-            Me.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+            Me.lblName.TextAlign = System.Drawing.ContentAlignment.TopRight
             '
             'pnlHeaderSpacer
             '
             Me.pnlHeaderSpacer.Dock = System.Windows.Forms.DockStyle.Right
-            Me.pnlHeaderSpacer.Location = New System.Drawing.Point(1065, 10)
+            Me.pnlHeaderSpacer.Location = New System.Drawing.Point(976, 10)
             Me.pnlHeaderSpacer.Name = "pnlHeaderSpacer"
-            Me.pnlHeaderSpacer.Size = New System.Drawing.Size(20, 35)
+            Me.pnlHeaderSpacer.Size = New System.Drawing.Size(85, 35)
             Me.pnlHeaderSpacer.TabIndex = 2
             '
             'lblCode
             '
             Me.lblCode.Dock = System.Windows.Forms.DockStyle.Right
-            Me.lblCode.Location = New System.Drawing.Point(1185, 10)
+            Me.lblCode.Location = New System.Drawing.Point(1161, 10)
             Me.lblCode.Name = "lblCode"
-            Me.lblCode.Size = New System.Drawing.Size(55, 35)
+            Me.lblCode.Size = New System.Drawing.Size(79, 35)
             Me.lblCode.TabIndex = 0
             Me.lblCode.Text = "کد گزارش:"
-            Me.lblCode.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+            Me.lblCode.TextAlign = System.Drawing.ContentAlignment.TopRight
             '
             'pnlActions
             '

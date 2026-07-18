@@ -22,9 +22,17 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents tabLedger As TabPage
         Friend WithEvents tabTarazShenavar As TabPage
         Friend WithEvents tabDaftarShenavar As TabPage
+        Friend WithEvents tabProfitLoss As TabPage
+        Friend WithEvents tabBalanceSheet As TabPage
+        Friend WithEvents tabAdvancedReports As TabPage
+        Friend WithEvents tabChartReports As TabPage
         Friend WithEvents tabReports As TabPage
         Friend WithEvents lblBankReconciliation As Label
         Friend WithEvents lblReportIntroProfitLoss As Label
+        Friend WithEvents lblProfitLossIntro As Label
+        Friend WithEvents lblBalanceSheetIntro As Label
+        Friend WithEvents lblAdvancedReportsIntro As Label
+        Friend WithEvents lblChartReportsIntro As Label
 
         <DebuggerStepThrough()>
         Private Sub InitializeComponent()
@@ -39,11 +47,23 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabLedger = New TabPage()
             Me.tabTarazShenavar = New TabPage()
             Me.tabDaftarShenavar = New TabPage()
+            Me.tabProfitLoss = New TabPage()
+            Me.tabBalanceSheet = New TabPage()
+            Me.tabAdvancedReports = New TabPage()
+            Me.tabChartReports = New TabPage()
             Me.tabReports = New TabPage()
             Me.lblReportIntroProfitLoss = New Label()
+            Me.lblProfitLossIntro = New Label()
+            Me.lblBalanceSheetIntro = New Label()
+            Me.lblAdvancedReportsIntro = New Label()
+            Me.lblChartReportsIntro = New Label()
             Me.tabs.SuspendLayout()
             Me.tabBankReconciliation.SuspendLayout()
             Me.tabReports.SuspendLayout()
+            Me.tabProfitLoss.SuspendLayout()
+            Me.tabBalanceSheet.SuspendLayout()
+            Me.tabAdvancedReports.SuspendLayout()
+            Me.tabChartReports.SuspendLayout()
             Me.SuspendLayout()
 
             Me.AutoScaleMode = AutoScaleMode.Font
@@ -135,7 +155,91 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabDaftarShenavar.Size = New Size(1312, 722)
             Me.tabDaftarShenavar.Text = "دفتر شناور"
             Me.tabDaftarShenavar.UseVisualStyleBackColor = True
+            '
+            ' tabProfitLoss
+            '
+            Me.tabProfitLoss.Controls.Add(Me.lblProfitLossIntro)
+            Me.tabProfitLoss.Location = New Point(4, 23)
+            Me.tabProfitLoss.Name = "tabProfitLoss"
+            Me.tabProfitLoss.Padding = New Padding(3)
+            Me.tabProfitLoss.Size = New Size(1312, 722)
+            Me.tabProfitLoss.Text = "عملکرد و سود و زیان"
+            Me.tabProfitLoss.UseVisualStyleBackColor = True
+            '
+            ' tabBalanceSheet
+            '
+            Me.tabBalanceSheet.Controls.Add(Me.lblBalanceSheetIntro)
+            Me.tabBalanceSheet.Location = New Point(4, 23)
+            Me.tabBalanceSheet.Name = "tabBalanceSheet"
+            Me.tabBalanceSheet.Padding = New Padding(3)
+            Me.tabBalanceSheet.Size = New Size(1312, 722)
+            Me.tabBalanceSheet.Text = "ترازنامه"
+            Me.tabBalanceSheet.UseVisualStyleBackColor = True
+            '
+            ' tabAdvancedReports
+            '
+            Me.tabAdvancedReports.Controls.Add(Me.lblAdvancedReportsIntro)
+            Me.tabAdvancedReports.Location = New Point(4, 23)
+            Me.tabAdvancedReports.Name = "tabAdvancedReports"
+            Me.tabAdvancedReports.Padding = New Padding(3)
+            Me.tabAdvancedReports.Size = New Size(1312, 722)
+            Me.tabAdvancedReports.Text = "گزارشات پیشرفته"
+            Me.tabAdvancedReports.UseVisualStyleBackColor = True
+            '
+            ' tabChartReports
+            '
+            Me.tabChartReports.Controls.Add(Me.lblChartReportsIntro)
+            Me.tabChartReports.Location = New Point(4, 23)
+            Me.tabChartReports.Name = "tabChartReports"
+            Me.tabChartReports.Padding = New Padding(3)
+            Me.tabChartReports.Size = New Size(1312, 722)
+            Me.tabChartReports.Text = "گزارشات نموداری"
+            Me.tabChartReports.UseVisualStyleBackColor = True
 
+            '
+            ' lblProfitLossIntro
+            '
+            Me.lblProfitLossIntro.Dock = DockStyle.Fill
+            Me.lblProfitLossIntro.Font = New Font("Tahoma", 14.0!, FontStyle.Bold)
+            Me.lblProfitLossIntro.Location = New Point(3, 3)
+            Me.lblProfitLossIntro.Name = "lblProfitLossIntro"
+            Me.lblProfitLossIntro.Size = New Size(1306, 716)
+            Me.lblProfitLossIntro.TabIndex = 0
+            Me.lblProfitLossIntro.Text = "این گزارش در دست تکمیل می باشد"
+            Me.lblProfitLossIntro.TextAlign = ContentAlignment.MiddleCenter
+            '
+            ' lblBalanceSheetIntro
+            '
+            Me.lblBalanceSheetIntro.Dock = DockStyle.Fill
+            Me.lblBalanceSheetIntro.Font = New Font("Tahoma", 14.0!, FontStyle.Bold)
+            Me.lblBalanceSheetIntro.Location = New Point(3, 3)
+            Me.lblBalanceSheetIntro.Name = "lblBalanceSheetIntro"
+            Me.lblBalanceSheetIntro.Size = New Size(1306, 716)
+            Me.lblBalanceSheetIntro.TabIndex = 0
+            Me.lblBalanceSheetIntro.Text = "این گزارش در دست تکمیل می باشد"
+            Me.lblBalanceSheetIntro.TextAlign = ContentAlignment.MiddleCenter
+            '
+            ' lblAdvancedReportsIntro
+            '
+            Me.lblAdvancedReportsIntro.Dock = DockStyle.Fill
+            Me.lblAdvancedReportsIntro.Font = New Font("Tahoma", 14.0!, FontStyle.Bold)
+            Me.lblAdvancedReportsIntro.Location = New Point(3, 3)
+            Me.lblAdvancedReportsIntro.Name = "lblAdvancedReportsIntro"
+            Me.lblAdvancedReportsIntro.Size = New Size(1306, 716)
+            Me.lblAdvancedReportsIntro.TabIndex = 0
+            Me.lblAdvancedReportsIntro.Text = "این گزارش در دست تکمیل می باشد"
+            Me.lblAdvancedReportsIntro.TextAlign = ContentAlignment.MiddleCenter
+            '
+            ' lblChartReportsIntro
+            '
+            Me.lblChartReportsIntro.Dock = DockStyle.Fill
+            Me.lblChartReportsIntro.Font = New Font("Tahoma", 14.0!, FontStyle.Bold)
+            Me.lblChartReportsIntro.Location = New Point(3, 3)
+            Me.lblChartReportsIntro.Name = "lblChartReportsIntro"
+            Me.lblChartReportsIntro.Size = New Size(1306, 716)
+            Me.lblChartReportsIntro.TabIndex = 0
+            Me.lblChartReportsIntro.Text = "این گزارش در دست تکمیل می باشد"
+            Me.lblChartReportsIntro.TextAlign = ContentAlignment.MiddleCenter
             '
             ' lblReportIntroProfitLoss
             '
@@ -166,11 +270,19 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabs.Controls.Add(Me.tabLedger)
             Me.tabs.Controls.Add(Me.tabTarazShenavar)
             Me.tabs.Controls.Add(Me.tabDaftarShenavar)
+            Me.tabs.Controls.Add(Me.tabProfitLoss)
+            Me.tabs.Controls.Add(Me.tabBalanceSheet)
+            Me.tabs.Controls.Add(Me.tabAdvancedReports)
+            Me.tabs.Controls.Add(Me.tabChartReports)
             Me.tabs.Controls.Add(Me.tabReports)
  
             Me.Controls.Add(Me.tabs)
             Me.tabBankReconciliation.ResumeLayout(False)
             Me.tabReports.ResumeLayout(False)
+            Me.tabProfitLoss.ResumeLayout(False)
+            Me.tabBalanceSheet.ResumeLayout(False)
+            Me.tabAdvancedReports.ResumeLayout(False)
+            Me.tabChartReports.ResumeLayout(False)
             Me.tabs.ResumeLayout(False)
             Me.ResumeLayout(False)
         End Sub

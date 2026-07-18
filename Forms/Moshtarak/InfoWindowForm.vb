@@ -21,6 +21,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub InfoWindowForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             If pnlBottom IsNot Nothing AndAlso btnClose IsNot Nothing Then
                 btnClose.Location = New Point((pnlBottom.Width - btnClose.Width) \ 2, (pnlBottom.Height - btnClose.Height) \ 2)
             End If

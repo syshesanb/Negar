@@ -1,4 +1,4 @@
-Imports System
+﻿Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -91,7 +91,7 @@ Namespace Sys_Hes_Anb.Forms
             _allAccounts.Clear()
             If Not SessionContext.CurrentCompanyID.HasValue Then Return
             Try
-                Dim dt = Sys_Hes_Anb.Data.Sql.ExecuteTable("SELECT AccountID, AccountCode, AccountName, ParentAccountID FROM ChartOfAccounts WHERE CompanyID = ? AND IsActive = 1 ORDER BY AccountCode", SessionContext.CurrentCompanyID.Value)
+                Dim dt = Sys_Hes_Anb.Data.Sql.ExecuteTable("SELECT AccountID, AccountCode, AccountName, ParentAccountID FROM SarfaslHesab WHERE CompanyID = ? AND IsActive = 1 ORDER BY AccountCode", SessionContext.CurrentCompanyID.Value)
                 Dim parentMap As New Dictionary(Of Integer, Integer?)()
                 For Each row As DataRow In dt.Rows
                     Dim id = Convert.ToInt32(row("AccountID"))

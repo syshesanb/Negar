@@ -19,6 +19,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub AppLockForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             CenterPanel()
             If _currentUser IsNot Nothing Then
                 lblUserInfo.Text = "کاربر جاری: " & _currentUser.FullName & " (" & _currentUser.Username & ")"

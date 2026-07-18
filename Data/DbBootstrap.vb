@@ -4,6 +4,7 @@ Option Explicit On
 Imports System
 Imports System.Collections.Generic
 Imports System.IO
+Imports System.Drawing
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.Data.SQLite
@@ -12,6 +13,122 @@ Imports Sys_Hes_Anb.Business
 
 Namespace Sys_Hes_Anb.Data
     Public Module DbBootstrap
+        Private Sub EnsureTemFormTableAndSeed()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS TemForm (" &
+                    "ID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ThemeName TEXT, " &
+                    "ThemeColor TEXT, " &
+                    "ThemeImage BLOB);")
+
+                Dim count = Convert.ToInt32(If(Sql.ExecuteScalar("SELECT COUNT(*) FROM TemForm"), 0))
+                Sql.ExecuteNonQuery("DELETE FROM TemForm") ' Force regeneration for new graphics
+                Dim sampleThemes = New Tuple(Of String, String)() {
+                    Tuple.Create("تم کرم ملایم", "#FDF5E6"),
+                    Tuple.Create("تم گل‌بهی ملایم", "#FFDAB9"),
+                    Tuple.Create("تم نارنجی ملایم", "#FFE4B5"),
+                    Tuple.Create("تم صورتی ملایم", "#FFE4E1"),
+                    Tuple.Create("تم سبز ملایم", "#E0F8D8"),
+                    Tuple.Create("تم آبی ملایم", "#D2E8F7"),
+                    Tuple.Create("تم طوسی ویندوز (کلاسیک)", "#F0F0F0"),
+                    Tuple.Create("تم ویندوز سون", "#D4E6F1")
+                }
+                
+                For Each theme In sampleThemes
+                    Dim name = theme.Item1
+                    Dim colorStr = theme.Item2
+                    Dim col = ColorTranslator.FromHtml(colorStr)
+                    Dim imgBytes As Byte() = Nothing
+                    
+                    Using bmp As New Bitmap(400, 300)
+                        Using g As Graphics = Graphics.FromImage(bmp)
+                            ' Background
+                            g.Clear(col)
+                            
+                            ' Title Bar
+                            Dim darkCol = ControlPaint.Dark(ControlPaint.Dark(col))
+                            Using titleBrush As New SolidBrush(darkCol)
+                                g.FillRectangle(titleBrush, 0, 0, 400, 30)
+                            End Using
+                            
+                            ' Window Title Text
+                            Using f As New Font("Tahoma", 9, FontStyle.Bold)
+                                g.DrawString("فرم نمونه", f, Brushes.White, 320, 5)
+                            End Using
+                            
+                            ' Window Buttons (Close, Max, Min)
+                            g.FillRectangle(Brushes.Red, 10, 5, 40, 20)
+                            g.FillRectangle(Brushes.LightGray, 55, 5, 20, 20)
+                            g.FillRectangle(Brushes.LightGray, 80, 5, 20, 20)
+                            
+                            ' Menu Bar
+                            Using menuBrush As New SolidBrush(Color.FromArgb(200, 255, 255, 255))
+                                g.FillRectangle(menuBrush, 0, 30, 400, 25)
+                            End Using
+                            Using f As New Font("Tahoma", 8)
+                                g.DrawString("پرونده   ویرایش   امکانات   راهنما", f, Brushes.Black, 200, 35)
+                            End Using
+                            
+                            ' Toolbar
+                            Using toolBrush As New SolidBrush(Color.FromArgb(150, 255, 255, 255))
+                                g.FillRectangle(toolBrush, 0, 55, 400, 35)
+                            End Using
+                            g.FillRectangle(Brushes.White, 360, 60, 25, 25)
+                            g.FillRectangle(Brushes.White, 325, 60, 25, 25)
+                            g.FillRectangle(Brushes.White, 290, 60, 25, 25)
+                            
+                            ' Content Area - GroupBox
+                            Using f As New Font("Tahoma", 8)
+                                g.DrawString("اطلاعات پایه", f, Brushes.Black, 310, 100)
+                            End Using
+                            g.DrawRectangle(Pens.DarkGray, 20, 110, 360, 60)
+                            
+                            ' TextBox and Label
+                            Using f As New Font("Tahoma", 8)
+                                g.DrawString("نام:", f, Brushes.Black, 340, 130)
+                            End Using
+                            g.FillRectangle(Brushes.White, 180, 127, 150, 20)
+                            g.DrawRectangle(Pens.Gray, 180, 127, 150, 20)
+                            
+                            ' Calculate AltColor for grid preview
+                            Dim tintR = CInt(255 - ((255 - col.R) * 0.15))
+                            Dim tintG = CInt(255 - ((255 - col.G) * 0.15))
+                            Dim tintB = CInt(255 - ((255 - col.B) * 0.15))
+                            
+                            ' DataGridView
+                            g.FillRectangle(Brushes.White, 20, 190, 360, 90)
+                            ' Alternating Rows Backgrounds
+                            Using altBrush As New SolidBrush(Color.FromArgb(255, tintR, tintG, tintB))
+                                g.FillRectangle(altBrush, 21, 211, 358, 20)
+                                g.FillRectangle(altBrush, 21, 251, 358, 20)
+                            End Using
+                            
+                            g.DrawRectangle(Pens.DarkGray, 20, 190, 360, 90)
+                            ' DGV Header
+                            g.FillRectangle(Brushes.LightGray, 20, 190, 360, 20)
+                            ' DGV Lines
+                            g.DrawLine(Pens.LightGray, 20, 210, 380, 210)
+                            g.DrawLine(Pens.LightGray, 20, 230, 380, 230)
+                            g.DrawLine(Pens.LightGray, 20, 250, 380, 250)
+                            g.DrawLine(Pens.LightGray, 20, 270, 380, 270)
+                            ' DGV Columns
+                            g.DrawLine(Pens.DarkGray, 100, 190, 100, 280)
+                            g.DrawLine(Pens.DarkGray, 250, 190, 250, 280)
+                        End Using
+                        Using ms As New IO.MemoryStream()
+                            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png)
+                            imgBytes = ms.ToArray()
+                        End Using
+                    End Using
+                    
+                    Sql.ExecuteNonQuery("INSERT INTO TemForm (ThemeName, ThemeColor, ThemeImage) VALUES (?, ?, ?)", name, colorStr, imgBytes)
+                Next
+                Log("bootstrap:temform-seeded")
+            Catch ex As Exception
+                Log("EnsureTemFormTableAndSeed error: " & ex.Message)
+            End Try
+        End Sub
         Private ReadOnly LogPath As String = Path.Combine(Application.StartupPath, "bootstrap.log")
 
         Public Sub EnsureSeedData()
@@ -38,6 +155,8 @@ Namespace Sys_Hes_Anb.Data
                 Log("bootstrap:sobank-tables-ok")
                 EnsureProfitLossMappingsTable()
                 Log("bootstrap:profit-loss-mappings-ok")
+                EnsureTemFormTableAndSeed()
+                Log("bootstrap:temform-table-ok")
             Catch ex As Exception
                 Log("bootstrap-error: " & ex.Message & Environment.NewLine & ex.StackTrace)
                 Throw
@@ -233,12 +352,12 @@ Namespace Sys_Hes_Anb.Data
         Private Sub EnsurePermissions()
             Dim permissions = {
                 Tuple.Create("مدیریت کاربران (جامع)", PermissionKeys.ManageUsers),
-                Tuple.Create("مدیریت کاربران عادی", PermissionKeys.ManageBasicUsers),
+                Tuple.Create("مدیریت کاربران – مدیریت کاربران عادی", PermissionKeys.ManageBasicUsers),
                 Tuple.Create("مدیریت شرکت‌ها", PermissionKeys.ManageCompanies),
                 Tuple.Create("مدیریت سال‌های مالی", PermissionKeys.ManageFiscalYears),
                 Tuple.Create("مدیریت شرکت‌ها و سال‌های مالی ( جامع )", PermissionKeys.ManageCompaniesYears),
                 Tuple.Create("انتخاب شرکت و سال مالی جاری", PermissionKeys.SelectCompanyFiscalYear),
-                Tuple.Create("تنظیمات سیستم", PermissionKeys.ManageSettings),
+                Tuple.Create("مدیریت تمهای برنامه و فرمها", PermissionKeys.ManageAppThemes),
                 Tuple.Create("پشتیبان‌گیری اطلاعات", PermissionKeys.BackupData),
                 Tuple.Create("بازیابی اطلاعات", PermissionKeys.RestoreData),
                 Tuple.Create("پوسته مشاغل", PermissionKeys.ManageBusinessShells),
@@ -246,6 +365,8 @@ Namespace Sys_Hes_Anb.Data
                 Tuple.Create("مشاهده دفتر سوابق و گزارش فعالیت‌ها", PermissionKeys.ViewActivityLog),
                 Tuple.Create("قطعی‌سازی و قفل اسناد حسابداری", PermissionKeys.LockSanad1),
                 Tuple.Create("مخفی کردن ستونهای SF و SH در فرم سند حسابداری", PermissionKeys.HideSFSHInSanad),
+                Tuple.Create("مدیریت کاربران – ورود با کاربر دیگر", PermissionKeys.SwitchUser),
+                Tuple.Create("مدیریت کاربران – تغییر کلمه عبور", PermissionKeys.ChangePassword),
                 Tuple.Create("حسابداری – سرفصل حسابها", PermissionKeys.AccountingHeader),
                 Tuple.Create("حسابداری – حسابهای شناور", PermissionKeys.AccountingShenavar),
                 Tuple.Create("حسابداری – ثبت سند حسابداری", PermissionKeys.AccountingEntry),
@@ -253,6 +374,29 @@ Namespace Sys_Hes_Anb.Data
                 Tuple.Create("حسابداری – تراز آزمایشی", PermissionKeys.AccountingBalance),
                 Tuple.Create("حسابداری – دفتر حساب", PermissionKeys.AccountingLedger),
                 Tuple.Create("حسابداری – گزارشات حسابداری", PermissionKeys.AccountingReports),
+                Tuple.Create("حسابداری – عملکرد و سود و زیان", PermissionKeys.AccountingProfitLoss),
+                Tuple.Create("حسابداری – ترازنامه مالی", PermissionKeys.AccountingBalanceSheet),
+                Tuple.Create("حسابداری – گزارشات پیشرفته", PermissionKeys.AccountingAdvancedReports),
+                Tuple.Create("حسابداری – گزارشات نموداری", PermissionKeys.AccountingChartReports),
+                Tuple.Create("حسابداری – گزارشات دلخواه", PermissionKeys.AccountingCustomReports),
+                Tuple.Create("حسابداری – فرم سند 1 – چاپ اسناد", PermissionKeys.AccountingSanad1PrintDocs),
+                Tuple.Create("حسابداری – فرم سند 1 – چاپ دفتر روزنامه", PermissionKeys.AccountingSanad1PrintJournal),
+                Tuple.Create("حسابداری – فرم سند 2 – چاپ سند Ctrl+P", PermissionKeys.AccountingSanad2PrintVoucher),
+                Tuple.Create("حسابداری – مغایرات – خروجی اکسل ", PermissionKeys.AccountingBankRecExportExcel),
+                Tuple.Create("حسابداری – تراز آزمایشی – چاپ تراز", PermissionKeys.AccountingTrialPrint),
+                Tuple.Create("حسابداری – تراز آزمایشی – خروجی اکسل", PermissionKeys.AccountingTrialExport),
+                Tuple.Create("حسابداری – دفتر حساب – چاپ دفتر", PermissionKeys.AccountingLedgerPrint),
+                Tuple.Create("حسابداری – دفتر حساب – خروجی اکسل", PermissionKeys.AccountingLedgerExport),
+                Tuple.Create("حسابداری – تراز شناور – چاپ تراز", PermissionKeys.AccountingTarazShenavarPrint),
+                Tuple.Create("حسابداری – تراز شناور – خروجی اکسل", PermissionKeys.AccountingTarazShenavarExport),
+                Tuple.Create("حسابداری – دفتر شناور – چاپ دفتر", PermissionKeys.AccountingDaftarShenavarPrint),
+                Tuple.Create("حسابداری – دفتر شناور – خروجی اکسل", PermissionKeys.AccountingDaftarShenavarExport),
+                Tuple.Create("حسابداری – عملکرد و سود و زیان – چاپ", PermissionKeys.AccountingProfitLossPrint),
+                Tuple.Create("حسابداری – عملکرد و سود و زیان – خروجی اکسل", PermissionKeys.AccountingProfitLossExport),
+                Tuple.Create("حسابداری – ترازنامه – چاپ", PermissionKeys.AccountingBalanceSheetPrint),
+                Tuple.Create("حسابداری – ترازنامه – خروجی اکسل", PermissionKeys.AccountingBalanceSheetExport),
+                Tuple.Create("حسابداری – طراحی گزارش دلخواه – چاپ", PermissionKeys.AccountingCustomReportPrint),
+                Tuple.Create("حسابداری – طراحی گزارش دلخواه – خروجی اکسل", PermissionKeys.AccountingCustomReportExport),
                 Tuple.Create("خرید و فروش – تعریف کالاها و خدمات", PermissionKeys.TradeProducts),
                 Tuple.Create("خرید و فروش – تعریف انبارها", PermissionKeys.TradeWarehouses),
                 Tuple.Create("خرید و فروش – صدور فاکتور خرید", PermissionKeys.TradePurchase),
@@ -456,6 +600,13 @@ Namespace Sys_Hes_Anb.Data
 
                 AddColumnIfMissing("SoBank_2", "Payee", "TEXT")
                 AddColumnIfMissing("SoBank_2", "MatchedDetailID", "INTEGER")
+                AddColumnIfMissing("SoBank_1", "HeaderRowIndex", "INTEGER")
+                AddColumnIfMissing("SoBank_1", "ColDate", "TEXT")
+                AddColumnIfMissing("SoBank_1", "ColRef", "TEXT")
+                AddColumnIfMissing("SoBank_1", "ColDebit", "TEXT")
+                AddColumnIfMissing("SoBank_1", "ColCredit", "TEXT")
+                AddColumnIfMissing("SoBank_1", "ColDesc", "TEXT")
+                AddColumnIfMissing("SoBank_1", "ColPayee", "TEXT")
             Catch ex As Exception
                 Log("EnsureSoBankTables error: " & ex.Message)
             End Try
@@ -534,8 +685,24 @@ Namespace Sys_Hes_Anb.Data
                     "AccountID INTEGER PRIMARY KEY, " &
                     "CategoryID INTEGER NOT NULL, " &
                     "CompanyID INTEGER NOT NULL, " &
-                    "FOREIGN KEY(AccountID) REFERENCES ChartOfAccounts(AccountID) ON DELETE CASCADE, " &
+                    "FOREIGN KEY(AccountID) REFERENCES SarfaslHesab(AccountID) ON DELETE CASCADE, " &
                     "FOREIGN KEY(CategoryID) REFERENCES Report2(CategoryID) ON DELETE CASCADE);")
+
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS PnLAccountMappings (" &
+                    "CompanyID INTEGER NOT NULL, " &
+                    "CategoryKey TEXT NOT NULL, " &
+                    "AccountID INTEGER NOT NULL, " &
+                    "PRIMARY KEY (CompanyID, CategoryKey, AccountID), " &
+                    "FOREIGN KEY(AccountID) REFERENCES SarfaslHesab(AccountID) ON DELETE CASCADE);")
+
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS BalanceSheetAccountMappings (" &
+                    "CompanyID INTEGER NOT NULL, " &
+                    "CategoryKey TEXT NOT NULL, " &
+                    "AccountID INTEGER NOT NULL, " &
+                    "PRIMARY KEY (CompanyID, CategoryKey, AccountID), " &
+                    "FOREIGN KEY(AccountID) REFERENCES SarfaslHesab(AccountID) ON DELETE CASCADE);")
             Catch ex As Exception
                 Log("EnsureProfitLossMappingsTable error: " & ex.Message)
             End Try

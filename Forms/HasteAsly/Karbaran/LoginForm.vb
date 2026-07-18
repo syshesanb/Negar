@@ -19,6 +19,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub LoginForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
         End Sub
 

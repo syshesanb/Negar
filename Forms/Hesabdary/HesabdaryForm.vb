@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -14,11 +14,16 @@ Namespace Sys_Hes_Anb.Forms
     Partial Class HesabdaryForm
         Inherits Form
 
-        Public Sub New()
+        Private _reportsOnlyMode As Boolean = False
+
+        Public Sub New(Optional reportsOnly As Boolean = False)
             InitializeComponent()
+            _reportsOnlyMode = reportsOnly
         End Sub
 
         Private Sub HesabdaryForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
             Me.WindowState = FormWindowState.Maximized
             If LicenseManager.UsageMode = LicenseUsageMode.Designtime Then Return
 
@@ -53,6 +58,8 @@ Namespace Sys_Hes_Anb.Forms
         Private _reportsTabInitialized As Boolean = False
         Private _report1Form As HesabdaryReport1Form
         Private _report2Form As HesabdaryReport2Form
+        Private _profitLossControl As HesabdaryProfitLossReportControl
+        Private _balanceSheetControl As HesabdaryBalanceSheetReportControl
 
         Private Sub LoadAllTabs()
             Using progress As New ProgressForm()
@@ -68,6 +75,10 @@ Namespace Sys_Hes_Anb.Forms
                 tabs.TabPages.Add(tabLedger)
                 tabs.TabPages.Add(tabTarazShenavar)
                 tabs.TabPages.Add(tabDaftarShenavar)
+                tabs.TabPages.Add(tabProfitLoss)
+                tabs.TabPages.Add(tabBalanceSheet)
+                tabs.TabPages.Add(tabAdvancedReports)
+                tabs.TabPages.Add(tabChartReports)
                 tabs.TabPages.Add(tabReports)
 
                 ApplySecurity()
@@ -87,6 +98,18 @@ Namespace Sys_Hes_Anb.Forms
                 If tabs.TabPages.Contains(tabEntry) Then
                     _sanad1Form = New HesabdarySanad1Form()
                     HostForm(tabEntry, _sanad1Form)
+                End If
+
+                If tabs.TabPages.Contains(tabProfitLoss) Then
+                    tabProfitLoss.Controls.Clear()
+                    _profitLossControl = New HesabdaryProfitLossReportControl()
+                    tabProfitLoss.Controls.Add(_profitLossControl)
+                End If
+
+                If tabs.TabPages.Contains(tabBalanceSheet) Then
+                    tabBalanceSheet.Controls.Clear()
+                    _balanceSheetControl = New HesabdaryBalanceSheetReportControl()
+                    tabBalanceSheet.Controls.Add(_balanceSheetControl)
                 End If
 
                 If tabs.TabPages.Contains(tabBankReconciliation) Then
@@ -157,8 +180,27 @@ Namespace Sys_Hes_Anb.Forms
                 tabs.TabPages.Remove(tabLedger)
                 tabs.TabPages.Remove(tabDaftarShenavar)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingReports)) Then
+            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)) Then
+                tabs.TabPages.Remove(tabProfitLoss)
+            End If
+            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)) Then
+                tabs.TabPages.Remove(tabBalanceSheet)
+            End If
+            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingAdvancedReports)) Then
+                tabs.TabPages.Remove(tabAdvancedReports)
+            End If
+            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingChartReports)) Then
+                tabs.TabPages.Remove(tabChartReports)
+            End If
+            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReports)) Then
                 tabs.TabPages.Remove(tabReports)
+            End If
+
+            If _reportsOnlyMode Then
+                tabs.TabPages.Remove(tabAccounts)
+                tabs.TabPages.Remove(tabShenavar)
+                tabs.TabPages.Remove(tabEntry)
+                tabs.TabPages.Remove(tabBankReconciliation)
             End If
         End Sub
 
@@ -344,7 +386,7 @@ Namespace Sys_Hes_Anb.Forms
                     ' Fetch active standard accounts NOT mapped yet
                     _allAccounts = Sql.ExecuteTable(
                         "SELECT AccountID, AccountCode, AccountName " &
-                        "FROM ChartOfAccounts " &
+                        "FROM SarfaslHesab " &
                         "WHERE CompanyID = ? AND IsActive = 1 " &
                         "AND AccountID NOT IN (SELECT AccountID FROM ProfitLossMappings) " &
                         "ORDER BY AccountCode", _companyId)

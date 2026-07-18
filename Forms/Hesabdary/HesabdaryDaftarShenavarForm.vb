@@ -35,6 +35,9 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryDaftarShenavarForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            If Me.dgvLedger IsNot Nothing Then Me.dgvLedger.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             dgvLedger.RowTemplate.Height = 26
             cmbDescType.SelectedIndex = 0 ' پیش‌فرض: فقط شرح ردیف
             cmbStatus.SelectedIndex = 0 ' پیش‌فرض: موقت
@@ -43,6 +46,99 @@ Namespace Sys_Hes_Anb.Forms
             cmbSelectedAccounts.SelectedIndex = 0
 
             SetupSearchPanel()
+            SetupRangeFilterUI()
+        End Sub
+
+        Private Sub SetupRangeFilterUI()
+            ' ۱. مخفی کردن چک‌باکس‌های فیلتر تاریخ و سند
+            chkFilterByDate.Visible = False
+            chkFilterByDoc.Visible = False
+
+            ' ۲. ایجاد و طراحی عنوان
+            Dim lblRangeMethodTitle As New Label()
+            lblRangeMethodTitle.Text = "مبنای گزارش:"
+            lblRangeMethodTitle.Location = New Point(970, 12)
+            lblRangeMethodTitle.Size = New Size(90, 18)
+            lblRangeMethodTitle.TextAlign = ContentAlignment.MiddleLeft
+            lblRangeMethodTitle.Font = New Font("Tahoma", 9.0!)
+
+            ' ۳. ایجاد کامبوباکس انتخاب مبنا
+            Dim cmbRangeMethod As New ComboBox()
+            cmbRangeMethod.Name = "cmbRangeMethod"
+            cmbRangeMethod.DropDownStyle = ComboBoxStyle.DropDownList
+            cmbRangeMethod.Location = New Point(710, 9)
+            cmbRangeMethod.Size = New Size(250, 22)
+            cmbRangeMethod.DropDownWidth = 270
+            cmbRangeMethod.Font = New Font("Tahoma", 9.0!)
+            cmbRangeMethod.Items.Add("بر اساس شماره سند در سال جاری")
+            cmbRangeMethod.Items.Add("بر اساس تاریخ")
+            cmbRangeMethod.Items.Add("بر اساس تمام اسناد در تمام سالهای مالی")
+
+            pnlFilters.Controls.Add(lblRangeMethodTitle)
+            pnlFilters.Controls.Add(cmbRangeMethod)
+
+            ' ۴. افزودن رویداد تغییر مبنا
+            AddHandler cmbRangeMethod.SelectedIndexChanged,
+                Sub(s, ea)
+                    Dim idx = cmbRangeMethod.SelectedIndex
+                    Dim isDocMode = (idx = 0)
+                    Dim isDateMode = (idx = 1)
+                    Dim isAllMode = (idx = 2)
+
+                    ' فعال‌سازی فیلترها و مقادیر درونی
+                    chkFilterByDoc.Checked = isDocMode
+                    chkFilterByDate.Checked = isDateMode
+
+                    ' فعال/غیرفعال کردن کنترل‌های مربوطه برای این‌که اعتبارسنجی‌ها به درستی عمل کنند
+                    txtFromDoc.Enabled = isDocMode
+                    txtToDoc.Enabled = isDocMode
+                    txtFromDate.Enabled = isDateMode
+                    btnFromDate.Enabled = isDateMode
+                    txtToDate.Enabled = isDateMode
+                    btnToDate.Enabled = isDateMode
+
+                    ' نمایش/عدم نمایش فیلدهای سند
+                    lblFromDoc.Visible = isDocMode
+                    txtFromDoc.Visible = isDocMode
+                    lblToDoc.Visible = isDocMode
+                    txtToDoc.Visible = isDocMode
+
+                    ' نمایش/عدم نمایش فیلدهای تاریخ
+                    lblFromDate.Visible = isDateMode
+                    txtFromDate.Visible = isDateMode
+                    btnFromDate.Visible = isDateMode
+                    lblToDate.Visible = isDateMode
+                    txtToDate.Visible = isDateMode
+                    btnToDate.Visible = isDateMode
+
+                    ' مقداردهی پیش‌فرض تاریخ‌ها در صورت لزوم
+                    If isDateMode Then
+                        If String.IsNullOrWhiteSpace(txtFromDate.Text.Replace("/", "").Replace(" ", "")) Then
+                            txtFromDate.Text = PersianDateHelper.ToPersian(DateTime.Today)
+                        End If
+                        If String.IsNullOrWhiteSpace(txtToDate.Text.Replace("/", "").Replace(" ", "")) Then
+                            txtToDate.Text = PersianDateHelper.ToPersian(DateTime.Today)
+                        End If
+                    End If
+
+                    ' جابجایی کنترل‌ها برای تراز بودن در پنل
+                    If isDateMode Then
+                        lblFromDate.Location = New Point(660, 12)
+                        txtFromDate.Location = New Point(550, 9)
+                        btnFromDate.Location = New Point(518, 9)
+                        lblToDate.Location = New Point(470, 12)
+                        txtToDate.Location = New Point(360, 9)
+                        btnToDate.Location = New Point(328, 9)
+                    ElseIf isDocMode Then
+                        lblFromDoc.Location = New Point(660, 12)
+                        txtFromDoc.Location = New Point(550, 9)
+                        lblToDoc.Location = New Point(470, 12)
+                        txtToDoc.Location = New Point(360, 9)
+                    End If
+                End Sub
+
+            ' ۵. مقدار پیش‌فرض: بر اساس تاریخ (۱)
+            cmbRangeMethod.SelectedIndex = 1
         End Sub
 
         Public Sub LoadShenavar(accountId As Integer, accountCode As String, accountName As String,
@@ -151,12 +247,21 @@ Namespace Sys_Hes_Anb.Forms
                         If cmbStatus.SelectedItem IsNot Nothing Then docStatus = cmbStatus.SelectedItem.ToString()
                     End If
 
+                    Dim cmbRangeMethod As ComboBox = Nothing
+                    For Each ctrl As Control In pnlFilters.Controls
+                        If ctrl.Name = "cmbRangeMethod" AndAlso TypeOf ctrl Is ComboBox Then
+                            cmbRangeMethod = CType(ctrl, ComboBox)
+                            Exit For
+                        End If
+                    Next
+                    Dim allFiscalYears As Boolean = (cmbRangeMethod IsNot Nothing AndAlso cmbRangeMethod.SelectedIndex = 2)
+
                     ' 2. Calculate prior sums
                     Dim priorDebit = 0D
                     Dim priorCredit = 0D
                     If chkFilterByDate.Checked OrElse chkFilterByDoc.Checked Then
                         Try
-                            Dim beforeSums = service.GetShenavarLedgerBeforeSums(block.AccountID, fromDateStr, fromDoc, docStatus)
+                            Dim beforeSums = service.GetShenavarLedgerBeforeSums(block.AccountID, fromDateStr, fromDoc, docStatus, allFiscalYears)
                             priorDebit = beforeSums.Item1
                             priorCredit = beforeSums.Item2
                         Catch
@@ -166,7 +271,7 @@ Namespace Sys_Hes_Anb.Forms
 
                     ' 3. Get ledger data
                     Try
-                        Dim dt = service.GetShenavarLedgerData(block.AccountID, chkAggregate.Checked, fromDateStr, toDateStr, fromDoc, toDoc, docStatus)
+                        Dim dt = service.GetShenavarLedgerData(block.AccountID, chkAggregate.Checked, fromDateStr, toDateStr, fromDoc, toDoc, docStatus, allFiscalYears)
                         If dt IsNot Nothing Then
                             If Not dt.Columns.Contains("OriginalBalance") Then
                                 dt.Columns.Add("OriginalBalance", GetType(Decimal))
@@ -219,7 +324,7 @@ Namespace Sys_Hes_Anb.Forms
             ids.Add(parentId)
             If Not SessionContext.CurrentCompanyID.HasValue Then Return
             Try
-                Dim dt = Sql.ExecuteTable("SELECT ShenavarID, ParentShenavarID FROM shenavar WHERE CompanyID = ?", SessionContext.CurrentCompanyID.Value)
+                Dim dt = Sql.ExecuteTable("SELECT ShenavarID, ParentShenavarID FROM SarfaslShenavar WHERE CompanyID = ?", SessionContext.CurrentCompanyID.Value)
                 Dim childMap As New Dictionary(Of Integer, List(Of Integer))()
                 For Each row As DataRow In dt.Rows
                     Dim id = Convert.ToInt32(row("ShenavarID"))
@@ -498,13 +603,13 @@ Namespace Sys_Hes_Anb.Forms
                 If frm.ShowDialog(Me) = DialogResult.OK OrElse frm.SelectedShenavarID.HasValue Then
                     If frm.SelectedShenavarID.HasValue Then
                         Dim sId = frm.SelectedShenavarID.Value
-                        Dim dt = Sql.ExecuteTable("SELECT AccountCode, AccountName FROM shenavar WHERE ShenavarID = ?", sId)
+                        Dim dt = Sql.ExecuteTable("SELECT AccountCode, AccountName FROM SarfaslShenavar WHERE ShenavarID = ?", sId)
                         If dt.Rows.Count > 0 Then
                             Dim sCode = Convert.ToString(dt.Rows(0)("AccountCode"))
                             Dim sName = Convert.ToString(dt.Rows(0)("AccountName"))
                             
                             Dim hasChildren = False
-                            Dim dtChildren = Sql.ExecuteTable("SELECT COUNT(*) FROM shenavar WHERE ParentShenavarID = ?", sId)
+                            Dim dtChildren = Sql.ExecuteTable("SELECT COUNT(*) FROM SarfaslShenavar WHERE ParentShenavarID = ?", sId)
                             If dtChildren.Rows.Count > 0 AndAlso Convert.ToInt32(dtChildren.Rows(0)(0)) > 0 Then
                                 hasChildren = True
                             End If

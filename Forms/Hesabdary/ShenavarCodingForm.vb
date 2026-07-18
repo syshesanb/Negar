@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -40,6 +40,9 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub ShenavarCodingForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            If Me.dgvAccounts IsNot Nothing Then Me.dgvAccounts.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             SetupGrid()
             cmbSearchLevel.SelectedIndex = 0
             SendMessage(txtSearchCode.Handle, EM_SETCUEBANNER, New IntPtr(1), "جستجوی کد...")

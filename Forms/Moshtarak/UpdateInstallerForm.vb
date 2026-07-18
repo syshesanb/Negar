@@ -22,6 +22,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub UpdateInstallerForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
             ' مسیر پیشنهاد شده: اگر برنامه نصب شده در C:\Sys_Hes_Anb وجود داشت
             If Directory.Exists("C:\Sys_Hes_Anb") Then

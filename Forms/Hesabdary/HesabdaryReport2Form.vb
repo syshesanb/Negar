@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Data
@@ -136,6 +136,7 @@ Namespace Sys_Hes_Anb.Forms
 
         Protected Overrides Sub OnLoad(e As EventArgs)
             MyBase.OnLoad(e)
+            ApplySecurity()
 
             ' Register all 14 column header labels
             _columnLabels.Add(lblColA)
@@ -812,59 +813,34 @@ Namespace Sys_Hes_Anb.Forms
 
             ' Default text
             Dim sb As New System.Text.StringBuilder()
-            sb.AppendLine("برای فرمول‌نویسی ردیف‌ها به گونه‌ای که هم کاربری آن ساده و شبیه به اکسل باشد و هم مفسر فرمول (Parser) بتواند آن را بدون خطا و با سرعت بالا پردازش کند، ساختار زیر بهترین و استانداردترین پیشنهاد است:")
+            sb.AppendLine("راهنمای فرمول‌نویسی گزارشات دلخواه")
             sb.AppendLine("________________________________________")
-            sb.AppendLine("۱. شروع فرمول با علامت =")
-            sb.AppendLine("مشابه اکسل، تمام فرمول‌های محاسباتی با کاراکتر = شروع می‌شوند. این کار به سیستم نشان می‌دهد که مقدار این سلول متنی نیست و باید محاسبه شود.")
-            sb.AppendLine("•  مثال:  = [فرمول]")
+            sb.AppendLine("۱. مقادیر پایه ردیف‌ها")
+            sb.AppendLine("اگر برای یک ردیف فرمولی ننویسید، سیستم به طور خودکار جمع مانده حساب‌هایی که به آن ردیف متصل کرده‌اید (در زیرمجموعه آن قرار داده‌اید) را محاسبه کرده و به عنوان مقدار آن ردیف در نظر می‌گیرد.")
             sb.AppendLine()
-            sb.AppendLine("۲. ارجاع به نتیجه سایر ردیف‌ها (آدرس سلول‌های گرید)")
-            sb.AppendLine("از آنجا که ستون G نشان‌دهنده «نتیجه فرمول» است و سطرها با شماره (۱، ۲، ۳ و...) مشخص می‌شوند، برای استفاده از حاصل محاسبات ردیف‌های دیگر از آدرس سلول‌های ستون G استفاده می‌شود:")
-            sb.AppendLine("•  فرمت: G + شماره ردیف")
-            sb.AppendLine("•  مثال: G1 (نتیجه سطر ۱)، G12 (نتیجه سطر ۱۲)")
-            sb.AppendLine("•  مثال در فرمول:  =G1 - G2  (کاهش نتیجه سطر ۲ از سطر ۱)")
+            sb.AppendLine("۲. ارجاع به نتیجه سایر ردیف‌ها")
+            sb.AppendLine("برای استفاده از مقدار محاسبه شده یک ردیف در فرمول ردیفی دیگر، باید شماره آن ردیف (شماره سطر) را داخل کروشه [ ] قرار دهید:")
+            sb.AppendLine("•  فرمت: [شماره ردیف]")
+            sb.AppendLine("•  مثال: [1] (مقدار سطر ۱)، [12] (مقدار سطر ۱۲)")
+            sb.AppendLine("•  مثال در فرمول:  =[1] - [2]  (کاهش مقدار سطر ۲ از سطر ۱)")
             sb.AppendLine()
-            sb.AppendLine("۳. ارجاع به مانده سرفصل‌های حسابداری (بر اساس کد سرفصل)")
-            sb.AppendLine("برای ارجاع به مانده یک حساب مالی (چه حسابی که در ستون L همان سطر قرار دارد و چه هر حساب معین/تفصیلی دیگر در سیستم)، باید کدهای حساب را داخل کروشه [ ] قرار دهیم تا مفسر آن را با اعداد ثابت ریاضی اشتباه نگیرد:")
-            sb.AppendLine("•  فرمت: [کد حساب]")
-            sb.AppendLine("•  مثال: [101001] (مانده حساب صندوق)، [102001] (مانده حساب بانک)")
-            sb.AppendLine("•  مثال در فرمول:  = [102001] + [101001]  (مجموع مانده بانک و صندوق)")
-            sb.AppendLine()
-            sb.AppendLine("توجه:")
-            sb.AppendLine("در صورتی که بخواهید مانده حساب همین سطر (که کد آن در ستون L قرار دارد) را محاسبه کنید، می‌توانید از یک کلیدواژه خلاصه مانند Self یا ACC (بدون نیاز به نوشتن مجدد کد حساب) استفاده کنید. اما نوشتن صریح کد حساب داخل کروشه [101001] خوانایی بسیار بالاتری دارد.")
-            sb.AppendLine()
-            sb.AppendLine("۴. عملگرهای ریاضی مجاز و اولویت‌ها")
-            sb.AppendLine("فرمول‌ها از عملگرهای استاندارد ریاضی و پرانتز برای تعیین اولویت محاسبات پشتیبانی می‌کنند:")
+            sb.AppendLine("۳. عملگرهای ریاضی مجاز و اولویت‌ها")
+            sb.AppendLine("فرمول‌ها از عملگرهای استاندارد ریاضی و پرانتز پشتیبانی می‌کنند:")
             sb.AppendLine("•  + (جمع)")
             sb.AppendLine("•  - (تفریق)")
             sb.AppendLine("•  * (ضرب)")
             sb.AppendLine("•  / (تقسیم)")
-            sb.AppendLine("•  () (پرانتز جهت بسته‌بندی و اولویت‌دهی)")
+            sb.AppendLine("•  () (پرانتز برای تعیین اولویت محاسبات)")
             sb.AppendLine("________________________________________")
             sb.AppendLine("چند نمونه فرمول کاربردی:")
-            sb.AppendLine("•  فرمول ۱: محاسبه سود ناویژه (فروش منهای بهای تمام شده - فرض کنید فروش در سطر ۲ و بهای تمام شده در سطر ۳ قرار دارد):  =G2 - G3")
-            sb.AppendLine("•  فرمول ۲: مجموع چند حساب معین دارایی:  =[101001] + [102001] + [103001]")
-            sb.AppendLine("•  فرمول ۳: محاسبه مالیات بر درآمد (فرض کنید سود قبل از مالیات در سطر ۸ محاسبه شده و نرخ مالیات ۲۵٪ است):  =G8 * 0.25")
-            sb.AppendLine("•  فرمول ۴: محاسبات ترکیبی پیچیده همراه با پرانتز:  =(G5 + G6) - [201001]")
+            sb.AppendLine("•  فرمول ۱: محاسبه سود ناویژه (فرض کنید فروش در سطر ۲ و بهای تمام شده در سطر ۳ است):  =[2] - [3]")
+            sb.AppendLine("•  فرمول ۲: مجموع چند سطر:  =[1] + [4] + [7]")
+            sb.AppendLine("•  فرمول ۳: محاسبه درصدی (مثلاً ۵ درصد از مبلغ سطر ۸):  =[8] * 0.05")
+            sb.AppendLine("•  فرمول ۴: محاسبات ترکیبی با پرانتز:  =([5] + [6]) - [2]")
             sb.AppendLine("________________________________________")
-            sb.AppendLine("مزایای این فرمت پیشنهادی:")
-            sb.AppendLine("۱. سهولت یادگیری: برای کاربرانی که با اکسل کار کرده‌اند کاملاً آشنا و ملموس است.")
-            sb.AppendLine("۲. انعطاف‌پذیری فوق‌العاده: امکان فرمول‌نویسی ترکیبی بین حساب‌های دفتر کل/معین و نتایج میانی ردیف‌ها را به سادگی فراهم می‌کند.")
-            sb.AppendLine("۳. پیاده‌سازی بهینه: تجزیه (Parse) کدهای داخل کروشه [...] و آدرس‌های G[Number] برای هسته پردازشگر برنامه بسیار ساده و سریع است.")
-            sb.AppendLine("________________________________________")
-            sb.AppendLine("پیشنهاد سوم (روش ساختار درختی - کاملاً خوانا): استفاده از علامت اسلش /")
-            sb.AppendLine("اگر می‌خواهید تفکیک کدهای کل و معین از نظر بصری برای حسابدار بسیار واضح‌تر باشد، می‌توان از علامت اسلش / برای تفکیک والد و فرزند استفاده کرد:")
-            sb.AppendLine("•  فرمت: [کد کل / کد معین]")
-            sb.AppendLine("•  مثال‌ها در فرمول:")
-            sb.AppendLine("   - معینِ کل ۱۰۳۰۰۱:  [103001/000001]")
-            sb.AppendLine("   - معینِ کل ۱۰۲۰۰۱:  [102001/000001]")
-            sb.AppendLine("•  نحوه استفاده:  =[103001/000001] - [102001/000001]")
-            sb.AppendLine("________________________________________")
-            sb.AppendLine("جمع‌بندی و توصیه:")
-            sb.AppendLine("پیشنهاد اول (استفاده از نقطه یا خط تیره مانند [103001.000001]) بهترین و استانداردترین گزینه است، زیرا:")
-            sb.AppendLine("۱. در نگارش حسابداری ایران کاملاً مرسوم است.")
-            sb.AppendLine("۲. از خطا در خوانش جلوگیری می‌کند.")
-            sb.AppendLine("۳. تفکیک چشمی بسیار بالایی دارد.")
+            sb.AppendLine("نکات مهم:")
+            sb.AppendLine("- فرمول می‌تواند با علامت مساوی (=) شروع شود.")
+            sb.AppendLine("- در این روش، نیازی نیست کد حساب‌ها را به صورت دستی در فرمول تایپ کنید. فقط کافیست حساب(های) مورد نظر را به عنوان زیرمجموعه به یک سطر اضافه کنید و سپس در فرمول به شماره آن سطر ارجاع دهید. این کار باعث می‌شود فرمول‌ها بسیار خوانا، کوتاه و عاری از خطای تایپی باشند.")
             Return sb.ToString()
         End Function
 
@@ -1053,6 +1029,16 @@ Namespace Sys_Hes_Anb.Forms
 
         Private Sub DimensionParams_Changed(sender As Object, e As EventArgs) Handles cmbPaperSize.SelectedIndexChanged, cmbOrientation.SelectedIndexChanged, numMarginTop.ValueChanged, numMarginBottom.ValueChanged, numMarginLeft.ValueChanged, numMarginRight.ValueChanged
             UpdateCalculatedDimensions()
+        End Sub
+
+        Private Sub lblName_Click(sender As Object, e As EventArgs) Handles lblName.Click
+
+        End Sub
+
+        Private Sub ApplySecurity()
+            Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+            Dim hasGlobalAccounting = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)
+            btnPrintReport.Visible = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportPrint)
         End Sub
     End Class
 

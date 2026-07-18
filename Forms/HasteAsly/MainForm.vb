@@ -35,18 +35,25 @@ Namespace Sys_Hes_Anb.Forms
             Public Function PreFilterMessage(ByRef m As Message) As Boolean Implements IMessageFilter.PreFilterMessage
                 If m.Msg = WM_KEYDOWN OrElse m.Msg = WM_SYSKEYDOWN Then
                     Dim keyCode As Keys = CType(CInt(m.WParam), Keys)
-                    If keyCode = Keys.L Then
-                        Dim modifiers = Control.ModifierKeys
-                        Dim isCtrl = (modifiers And Keys.Control) = Keys.Control
-                        Dim isAlt = (modifiers And Keys.Alt) = Keys.Alt
-                        Dim isShift = (modifiers And Keys.Shift) = Keys.Shift
+                    Dim modifiers = Control.ModifierKeys
+                    Dim isAlt = (modifiers And Keys.Alt) = Keys.Alt
+                    Dim isCtrl = (modifiers And Keys.Control) = Keys.Control
+                    Dim isShift = (modifiers And Keys.Shift) = Keys.Shift
 
-                        If isCtrl AndAlso (isAlt OrElse isShift) Then
-                            If Not _mainForm._isLocked Then
-                                _mainForm.BeginInvoke(New Action(AddressOf _mainForm.LockApplication))
-                            End If
-                            Return True
+                    ' Alt+S  =>  نمایش انتخابگر سریع سال مالی
+                    If keyCode = Keys.S AndAlso isAlt AndAlso Not isCtrl AndAlso Not isShift Then
+                        If Not _mainForm._isLocked Then
+                            _mainForm.BeginInvoke(New Action(AddressOf _mainForm.ShowFiscalYearSelector))
                         End If
+                        Return True
+                    End If
+
+                    ' Ctrl+Alt+L  یا  Ctrl+Shift+L  =>  قفل برنامه
+                    If keyCode = Keys.L AndAlso isCtrl AndAlso (isAlt OrElse isShift) Then
+                        If Not _mainForm._isLocked Then
+                            _mainForm.BeginInvoke(New Action(AddressOf _mainForm.LockApplication))
+                        End If
+                        Return True
                     End If
                 End If
                 Return False
@@ -66,6 +73,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
             UpdateStatusBar()
             clockTimer.Start()
@@ -336,11 +344,13 @@ Namespace Sys_Hes_Anb.Forms
                 SessionContext.HasPermission(PermissionKeys.SelectCompanyFiscalYear)
 
             Dim canReports = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ViewReports)
-            Dim canSettings = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageSettings)
-            Dim canBackup = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BackupData) OrElse SessionContext.HasPermission(PermissionKeys.ManageSettings)
-            Dim canRestore = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.RestoreData) OrElse SessionContext.HasPermission(PermissionKeys.ManageSettings)
+            Dim canManageThemes = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAppThemes)
+            Dim canBackup = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BackupData)
+            Dim canRestore = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.RestoreData)
             Dim canBusinessShells = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageBusinessShells)
             Dim canUtilities = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageUtilities)
+            Dim canSwitchUser = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SwitchUser)
+            Dim canChangePassword = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ChangePassword)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -349,10 +359,12 @@ Namespace Sys_Hes_Anb.Forms
             miAccountingMain.Available = canAccounting
             miReportsAccounting.Available = canAccounting OrElse canReports
             miCompanyFiscalYears.Available = canCompanyYears
-            miSettings.Available = canSettings
+            miSettingsMessages.Available = isSuperAdmin
+            miSettingsThemes.Available = canManageThemes
             miBackupData.Available = canBackup
             miRestoreData.Available = canRestore
-            miChangeProfile.Available = True
+            miChangeProfile.Available = canChangePassword
+            miSwitchUser.Available = canSwitchUser
             miCreateRelease.Available = isSuperAdmin
             miCreateUpdate.Available = isSuperAdmin
             miExportDecryptedDb.Available = isSuperAdmin
@@ -366,10 +378,12 @@ Namespace Sys_Hes_Anb.Forms
             miAccountingMain.Visible = canAccounting
             miReportsAccounting.Visible = canAccounting OrElse canReports
             miCompanyFiscalYears.Visible = canCompanyYears
-            miSettings.Visible = canSettings
+            miSettingsMessages.Visible = isSuperAdmin
+            miSettingsThemes.Visible = canManageThemes
             miBackupData.Visible = canBackup
             miRestoreData.Visible = canRestore
-            miChangeProfile.Visible = True
+            miChangeProfile.Visible = canChangePassword
+            miSwitchUser.Visible = canSwitchUser
             miCreateRelease.Visible = isSuperAdmin
             miCreateUpdate.Visible = isSuperAdmin
             miExportDecryptedDb.Visible = isSuperAdmin
@@ -377,7 +391,7 @@ Namespace Sys_Hes_Anb.Forms
             miContact.Visible = True
 
             mSystemMgmt.Visible = True
-            mUserMgmt.Visible = canUsers OrElse canBasicUsers
+            mUserMgmt.Visible = canUsers OrElse canBasicUsers OrElse canSwitchUser OrElse canChangePassword
             mCompanyMgmt.Visible = canCompanyYears
             mAccounting.Visible = canAccounting OrElse canReports
             mTradeWarehouse.Visible = canTrade OrElse canReports
@@ -385,7 +399,7 @@ Namespace Sys_Hes_Anb.Forms
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
             btnToolSystemMgmt.Visible = True
-            btnToolUserMgmt.Visible = canUsers OrElse canBasicUsers
+            btnToolUserMgmt.Visible = canUsers OrElse canBasicUsers OrElse canSwitchUser OrElse canChangePassword
             btnToolCompanyMgmt.Visible = canCompanyYears
             btnToolAccounting.Visible = canAccounting OrElse canReports
             btnToolTradeWarehouse.Visible = canTrade OrElse canReports
@@ -511,7 +525,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub MiReportsAccounting_Click(sender As Object, e As EventArgs) Handles miReportsAccounting.Click
-            'OpenChild(New ReportCenterForm())
+            OpenChild(New HesabdaryForm(True))
         End Sub
 
         Private Sub MiCompanyFiscalYears_Click(sender As Object, e As EventArgs) Handles miCompanyFiscalYears.Click
@@ -552,8 +566,16 @@ Namespace Sys_Hes_Anb.Forms
             OpenChild(New PersianCalendarViewForm())
         End Sub
 
-        Private Sub MiSettings_Click(sender As Object, e As EventArgs) Handles miSettings.Click
+        Private Sub MiSettingsMessages_Click(sender As Object, e As EventArgs) Handles miSettingsMessages.Click
+            OpenChild(New SystemMessagesForm())
+        End Sub
+
+        Private Sub MiSettingsThemes_Click(sender As Object, e As EventArgs) Handles miSettingsThemes.Click
             OpenChild(New SettingsForm())
+        End Sub
+
+        Private Sub MiDataMigration_Click(sender As Object, e As EventArgs)
+            OpenChild(New DataMigrationForm())
         End Sub
 
         Private Sub MiBackupData_Click(sender As Object, e As EventArgs) Handles miBackupData.Click
@@ -705,15 +727,19 @@ Namespace Sys_Hes_Anb.Forms
                 SessionContext.HasPermission(PermissionKeys.SelectCompanyFiscalYear)
 
             Dim canReports = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ViewReports)
-            Dim canSettings = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageSettings)
-            Dim canBackup = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BackupData) OrElse SessionContext.HasPermission(PermissionKeys.ManageSettings)
-            Dim canRestore = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.RestoreData) OrElse SessionContext.HasPermission(PermissionKeys.ManageSettings)
+            Dim canManageThemes = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAppThemes)
+            Dim canBackup = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BackupData)
+            Dim canRestore = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.RestoreData)
             Dim canBusinessShells = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageBusinessShells)
             Dim canUtilities = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageUtilities)
+            Dim canSwitchUser = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SwitchUser)
+            Dim canChangePassword = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ChangePassword)
 
             Select Case category
                 Case "SystemMgmt"
-                    If canSettings Then AddDashButton("تنظیمات سیستم", AddressOf MiSettings_Click, "Settings")
+                    If isSuperAdmin Then AddDashButton("تبدیل دیتا از سایر نرم افزارها", AddressOf MiDataMigration_Click, "RestoreData")
+                    If isSuperAdmin Then AddDashButton("مدیریت پیامهای : درباره... و ارتباط با ما", AddressOf MiSettingsMessages_Click, "Settings")
+                    If canManageThemes Then AddDashButton("مدیریت تمهای برنامه و فرمها", AddressOf MiSettingsThemes_Click, "Settings")
                     If canBackup Then AddDashButton("پشتیبان‌گیری اطلاعات", AddressOf MiBackupData_Click, "BackupData")
                     If canRestore Then AddDashButton("بازیابی اطلاعات", AddressOf MiRestoreData_Click, "RestoreData")
                     If isSuperAdmin Then AddDashButton("ایجاد نسخه قابل انتشار", AddressOf MiCreateRelease_Click, "CreateRelease")
@@ -726,9 +752,9 @@ Namespace Sys_Hes_Anb.Forms
 
                 Case "UserMgmt"
                     If canUsers Then AddDashButton("مدیریت کاربران (جامع)", AddressOf MiUsers_Click, "Users")
-                    If canBasicUsers Then AddDashButton("مدیریت کاربران عادی", AddressOf MiBasicUsers_Click, "BasicUsers")
-                    AddDashButton("تغییر کلمه عبور", AddressOf MiChangeProfile_Click, "ChangeProfile")
-                    AddDashButton("ورود با کاربر دیگر", AddressOf MiSwitchUser_Click, "SwitchUser")
+                    If canBasicUsers Then AddDashButton("مدیریت کاربران – مدیریت کاربران عادی", AddressOf MiBasicUsers_Click, "BasicUsers")
+                    If canChangePassword Then AddDashButton("تغییر کلمه عبور", AddressOf MiChangeProfile_Click, "ChangeProfile")
+                    If canSwitchUser Then AddDashButton("ورود با کاربر دیگر", AddressOf MiSwitchUser_Click, "SwitchUser")
 
                 Case "CompanyMgmt"
                     If canCompanyYears Then AddDashButton("مدیریت شرکت‌ها و سال‌های مالی", AddressOf MiCompanyFiscalYears_Click, "CompanyFiscalYears")
@@ -820,6 +846,79 @@ Namespace Sys_Hes_Anb.Forms
             form.StartPosition = FormStartPosition.CenterParent
             form.ShowDialog(Me)
             UpdateStatusBar()
+        End Sub
+
+        ''' <summary>
+        ''' نمایش پنجره انتخاب سریع سال مالی (Alt+S).
+        ''' بررسی می‌کند که آیا فرم سند باز و دارای تغییرات ذخیره‌نشده است یا خیر.
+        ''' </summary>
+        Public Sub ShowFiscalYearSelector()
+            If Not SessionContext.CurrentCompanyID.HasValue Then
+                MessageBox.Show("ابتدا یک شرکت انتخاب کنید.", "توجه",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            ' بررسی فرم‌های سند باز با تغییرات ذخیره‌نشده
+            Dim openSanadForms As New List(Of HesabdarySanad2Form)()
+            For Each frm As Form In Application.OpenForms
+                Dim s2 = TryCast(frm, HesabdarySanad2Form)
+                If s2 IsNot Nothing AndAlso s2.HasUnsavedChanges Then
+                    openSanadForms.Add(s2)
+                End If
+            Next
+
+            If openSanadForms.Count > 0 Then
+                Dim ans = MessageBox.Show(
+                    "پنجره سند حسابداری باز است و دارای اطلاعات ذخیره‌نشده می‌باشد." & Environment.NewLine &
+                    "با تغییر سال مالی، اطلاعات ذخیره‌نشده سند از بین خواهد رفت." & Environment.NewLine & Environment.NewLine &
+                    "آیا مایل به تغییر سال مالی هستید؟",
+                    "تأیید تغییر سال مالی",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2)
+
+                If ans <> DialogResult.Yes Then Return
+
+                ' بستن فرم‌های سند قبل از تغییر سال مالی
+                For Each s2 In openSanadForms
+                    Try
+                        s2.SuppressCloseConfirmation()
+                        s2.Close()
+                    Catch
+                    End Try
+                Next
+            End If
+
+            ' نمایش پنجره انتخاب سال مالی
+            Using selector As New FiscalYearSelectorForm()
+                selector.ShowCentered(Me)
+                Dim result = selector.ShowDialog(Me)
+
+                If result = DialogResult.OK AndAlso selector.SelectedFiscalYearID.HasValue Then
+                    SessionContext.CurrentFiscalYearID = selector.SelectedFiscalYearID.Value
+                    SessionContext.CurrentFiscalYearName = selector.SelectedFiscalYearName
+                    UpdateStatusBar()
+                    ThemeHelper.RefreshAllStatusBars()
+
+                    ' رفرش فوری تمام فرم‌های سند 1 که در حال حاضر باز هستند
+                    For Each frm As Form In Application.OpenForms
+                        Dim s1 = TryCast(frm, HesabdarySanad1Form)
+                        If s1 IsNot Nothing AndAlso Not s1.IsDisposed Then
+                            Try
+                                s1.RefreshData()
+                            Catch
+                            End Try
+                        End If
+                    Next
+
+                    MessageBox.Show(
+                        "سال مالی به «" & selector.SelectedFiscalYearName & "» تغییر یافت.",
+                        "سال مالی تغییر کرد",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information)
+                End If
+            End Using
         End Sub
     End Class
 End Namespace

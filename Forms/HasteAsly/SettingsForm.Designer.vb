@@ -16,9 +16,8 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents cmbTheme As ComboBox
         Friend WithEvents cmbNumberFormat As ComboBox
         Friend WithEvents txtCurrencySymbol As TextBox
-        Friend WithEvents txtAboutText As TextBox
-        Friend WithEvents txtContactText As TextBox
         Friend WithEvents btnSave As Button
+        Friend WithEvents btnFormThemes As Button
 
         <DebuggerStepThrough()>
         Private Sub InitializeComponent()
@@ -26,13 +25,12 @@ Namespace Sys_Hes_Anb.Forms
             Me.cmbTheme = New ComboBox()
             Me.cmbNumberFormat = New ComboBox()
             Me.txtCurrencySymbol = New TextBox()
-            Me.txtAboutText = New TextBox()
-            Me.txtContactText = New TextBox()
             Me.btnSave = New Button()
+            Me.btnFormThemes = New Button()
             Me.SuspendLayout()
 
             Me.AutoScaleMode = AutoScaleMode.Font
-            Me.ClientSize = New Size(620, 480)
+            Me.ClientSize = New Size(620, 240)
             Me.Font = New Font("Tahoma", 9.0!)
             Me.RightToLeft = RightToLeft.Yes
             Me.RightToLeftLayout = True
@@ -56,31 +54,19 @@ Namespace Sys_Hes_Anb.Forms
             Me.txtCurrencySymbol.Location = New Point(260, 102)
             Me.txtCurrencySymbol.Width = 190
 
-            ' About section
-            Dim lblAbout As New Label() With {.Text = "متن «درباره...»:", .AutoSize = True, .Location = New Point(470, 150)}
-            Me.txtAboutText.Location = New Point(30, 147)
-            Me.txtAboutText.Size = New Size(420, 100)
-            Me.txtAboutText.Multiline = True
-            Me.txtAboutText.ScrollBars = ScrollBars.Vertical
-
-            ' Contact section
-            Dim lblContact As New Label() With {.Text = "متن «ارتباط با ما»:", .AutoSize = True, .Location = New Point(470, 270)}
-            Me.txtContactText.Location = New Point(30, 267)
-            Me.txtContactText.Size = New Size(420, 120)
-            Me.txtContactText.Multiline = True
-            Me.txtContactText.ScrollBars = ScrollBars.Vertical
+            Me.btnFormThemes.Text = "تم ظاهری فرمها"
+            Me.btnFormThemes.Size = New Size(130, 30)
+            Me.btnFormThemes.Location = New Point(30, 18)
 
             Me.btnSave.Text = "ثبت و ذخیره تنظیمات"
             Me.btnSave.Size = New Size(150, 34)
-            Me.btnSave.Location = New Point(235, 415)
+            Me.btnSave.Location = New Point(235, 170)
 
             Me.Controls.AddRange(New Control() {
                 lblTheme, Me.cmbTheme,
                 lblNum, Me.cmbNumberFormat,
                 lblCurrency, Me.txtCurrencySymbol,
-                lblAbout, Me.txtAboutText,
-                lblContact, Me.txtContactText,
-                Me.btnSave
+                Me.btnSave, Me.btnFormThemes
             })
             Me.ResumeLayout(False)
             Me.PerformLayout()

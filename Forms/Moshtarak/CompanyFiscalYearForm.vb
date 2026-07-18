@@ -82,13 +82,21 @@ Namespace Sys_Hes_Anb.Forms
             End Try
         End Function
 
-        Public Sub New(Optional mainForm As MainForm = Nothing, Optional openOnSelectTab As Boolean = False)
+        Private ReadOnly _overrideOwnerUserId As Integer?
+
+        Public Sub New(Optional mainForm As MainForm = Nothing, Optional openOnSelectTab As Boolean = False, Optional overrideOwnerUserId As Integer? = Nothing)
             _mainForm = mainForm
             _openOnSelectTab = openOnSelectTab
+            _overrideOwnerUserId = overrideOwnerUserId
             InitializeComponent()
         End Sub
 
         Private Sub CompanyFiscalYearForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            If Me.dgvCompanies IsNot Nothing Then Me.dgvCompanies.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvFiscalYears IsNot Nothing Then Me.dgvFiscalYears.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvSelectCompanies IsNot Nothing Then Me.dgvSelectCompanies.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            If Me.dgvSelectFiscalYears IsNot Nothing Then Me.dgvSelectFiscalYears.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             ApplySecurity()
             cmbLogoPosition.SelectedItem = "سمت چپ"
             LoadCompanies()
@@ -248,6 +256,14 @@ Namespace Sys_Hes_Anb.Forms
             numLevel3Length.Value = If(row.Cells("Level3Length").Value Is Nothing OrElse row.Cells("Level3Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level3Length").Value))
             numLevel4Length.Value = If(row.Cells("Level4Length").Value Is Nothing OrElse row.Cells("Level4Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level4Length").Value))
             numLevel5Length.Value = If(row.Cells("Level5Length").Value Is Nothing OrElse row.Cells("Level5Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level5Length").Value))
+            
+            Dim hasLevel6 = row.DataGridView.Columns.Contains("Level6Length")
+            If hasLevel6 Then
+                numLevel6Length.Value = If(row.Cells("Level6Length").Value Is Nothing OrElse row.Cells("Level6Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level6Length").Value))
+            Else
+                numLevel6Length.Value = 2D
+            End If
+            
             UpdateLevelsControlsState()
         End Sub
 
@@ -259,8 +275,12 @@ Namespace Sys_Hes_Anb.Forms
         Private Sub DgvFiscalYears_SelectionChanged(sender As Object, e As EventArgs) Handles dgvFiscalYears.SelectionChanged
             If dgvFiscalYears.CurrentRow Is Nothing Then Return
             Dim row = dgvFiscalYears.CurrentRow
-            If row.Cells("FiscalYearID").Value Is Nothing Then Return
+
+            If Not dgvFiscalYears.Columns.Contains("FiscalYearID") Then Return
+            If row.Cells("FiscalYearID").Value Is Nothing OrElse row.Cells("FiscalYearID").Value Is DBNull.Value Then Return
+
             _selectedFiscalYearId = Convert.ToInt32(row.Cells("FiscalYearID").Value)
+
             If Not row.IsNewRow AndAlso dgvFiscalYears.Columns.Contains("CompanyID") AndAlso row.Cells("CompanyID").Value IsNot Nothing AndAlso Not Convert.IsDBNull(row.Cells("CompanyID").Value) Then
                 If Not String.IsNullOrEmpty(cmbCompany.ValueMember) Then
                     Try
@@ -269,10 +289,22 @@ Namespace Sys_Hes_Anb.Forms
                     End Try
                 End If
             End If
-            txtFiscalYearName.Text = Convert.ToString(row.Cells("FiscalYearName").Value)
-            If row.Cells("StartDate").Value IsNot Nothing AndAlso row.Cells("StartDate").Value IsNot DBNull.Value Then StartDateValue = Convert.ToDateTime(row.Cells("StartDate").Value)
-            If row.Cells("EndDate").Value IsNot Nothing AndAlso row.Cells("EndDate").Value IsNot DBNull.Value Then EndDateValue = Convert.ToDateTime(row.Cells("EndDate").Value)
-            chkFiscalYearActive.Checked = If(row.Cells("IsActive").Value Is Nothing OrElse row.Cells("IsActive").Value Is DBNull.Value, True, Convert.ToBoolean(row.Cells("IsActive").Value))
+
+            If dgvFiscalYears.Columns.Contains("FiscalYearName") Then
+                txtFiscalYearName.Text = Convert.ToString(row.Cells("FiscalYearName").Value)
+            End If
+
+            If dgvFiscalYears.Columns.Contains("StartDate") AndAlso row.Cells("StartDate").Value IsNot Nothing AndAlso row.Cells("StartDate").Value IsNot DBNull.Value Then
+                StartDateValue = Convert.ToDateTime(row.Cells("StartDate").Value)
+            End If
+
+            If dgvFiscalYears.Columns.Contains("EndDate") AndAlso row.Cells("EndDate").Value IsNot Nothing AndAlso row.Cells("EndDate").Value IsNot DBNull.Value Then
+                EndDateValue = Convert.ToDateTime(row.Cells("EndDate").Value)
+            End If
+
+            If dgvFiscalYears.Columns.Contains("IsActive") Then
+                chkFiscalYearActive.Checked = If(row.Cells("IsActive").Value Is Nothing OrElse row.Cells("IsActive").Value Is DBNull.Value, True, Convert.ToBoolean(row.Cells("IsActive").Value))
+            End If
         End Sub
 
         Private Sub BtnNewCompany_Click(sender As Object, e As EventArgs) Handles btnNewCompany.Click
@@ -310,6 +342,7 @@ Namespace Sys_Hes_Anb.Forms
             numLevel3Length.Value = 2D
             numLevel4Length.Value = 2D
             numLevel5Length.Value = 2D
+            numLevel6Length.Value = 2D
             UpdateLevelsControlsState()
         End Sub
 
@@ -322,7 +355,8 @@ Namespace Sys_Hes_Anb.Forms
                     CInt(numLevel2Length.Value),
                     CInt(numLevel3Length.Value),
                     CInt(numLevel4Length.Value),
-                    CInt(numLevel5Length.Value)
+                    CInt(numLevel5Length.Value),
+                    CInt(numLevel6Length.Value)
                 }
                 Dim errMsg = service.ValidateCompanySettingsChange(_selectedCompanyId.Value, proposedLevels, proposedLengths)
                 If Not String.IsNullOrEmpty(errMsg) Then
@@ -335,11 +369,16 @@ Namespace Sys_Hes_Anb.Forms
             Dim logoPosition = If(cmbLogoPosition.SelectedItem IsNot Nothing, cmbLogoPosition.SelectedItem.ToString(), "سمت چپ")
             Dim logoPosDb = If(logoPosition = "سمت راست", "Right", "Left")
             Try
-                service.SaveCompany(_selectedCompanyId, txtCompanyName.Text.Trim(), txtCompanyCode.Text.Trim(), txtBrandName.Text.Trim(), txtEconomicCode.Text.Trim(), DBNull.Value, DBNull.Value, txtPostalCode.Text.Trim(), If(regDt.HasValue, CObj(regDt.Value), DBNull.Value), txtRegistrationNumber.Text.Trim(), txtActivityField.Text.Trim(), txtAddress.Text.Trim(), txtPhone.Text.Trim(), txtPhone2.Text.Trim(), txtEmail.Text.Trim(), txtTaxId.Text.Trim(), ImageToByteArray(picLogoImage.Image), txtChairmanName.Text.Trim(), txtInspectorName.Text.Trim(), txtCEOName.Text.Trim(), txtSignatory1Title.Text.Trim(), txtSignatory1Name.Text.Trim(), txtSignatory2Title.Text.Trim(), txtSignatory2Name.Text.Trim(), txtSignatory3Title.Text.Trim(), txtSignatory3Name.Text.Trim(), txtSignatory4Title.Text.Trim(), txtSignatory4Name.Text.Trim(), CInt(numAccountLevels.Value), CInt(numLevel1Length.Value), CInt(numLevel2Length.Value), CInt(numLevel3Length.Value), CInt(numLevel4Length.Value), CInt(numLevel5Length.Value), chkCompanyActive.Checked, logoPosDb)
+                service.SaveCompany(_selectedCompanyId, txtCompanyName.Text.Trim(), txtCompanyCode.Text.Trim(), txtBrandName.Text.Trim(), txtEconomicCode.Text.Trim(), DBNull.Value, DBNull.Value, txtPostalCode.Text.Trim(), If(regDt.HasValue, CObj(regDt.Value), DBNull.Value), txtRegistrationNumber.Text.Trim(), txtActivityField.Text.Trim(), txtAddress.Text.Trim(), txtPhone.Text.Trim(), txtPhone2.Text.Trim(), txtEmail.Text.Trim(), txtTaxId.Text.Trim(), ImageToByteArray(picLogoImage.Image), txtChairmanName.Text.Trim(), txtInspectorName.Text.Trim(), txtCEOName.Text.Trim(), txtSignatory1Title.Text.Trim(), txtSignatory1Name.Text.Trim(), txtSignatory2Title.Text.Trim(), txtSignatory2Name.Text.Trim(), txtSignatory3Title.Text.Trim(), txtSignatory3Name.Text.Trim(), txtSignatory4Title.Text.Trim(), txtSignatory4Name.Text.Trim(), CInt(numAccountLevels.Value), CInt(numLevel1Length.Value), CInt(numLevel2Length.Value), CInt(numLevel3Length.Value), CInt(numLevel4Length.Value), CInt(numLevel5Length.Value), CInt(numLevel6Length.Value), chkCompanyActive.Checked, logoPosDb, _overrideOwnerUserId)
                 LoadCompanies()
                 LoadFiscalYears()
                 LoadSelectCompanies()
                 MessageBox.Show("اطلاعات شرکت با موفقیت ذخیره شد.", "پیام سیستم", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                ' اگر فرم از DataMigrationForm فراخوانی شده، پس از ذخیره بسته شود
+                If _overrideOwnerUserId.HasValue Then
+                    Me.DialogResult = DialogResult.OK
+                    Me.Close()
+                End If
             Catch ex As InvalidOperationException
                 MessageBox.Show(ex.Message, "هشدار محدودیت سیستم", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Catch ex As Exception
@@ -532,6 +571,7 @@ Namespace Sys_Hes_Anb.Forms
             UpdateControl(numLevel3Length, lvls >= 3)
             UpdateControl(numLevel4Length, lvls >= 4)
             UpdateControl(numLevel5Length, lvls >= 5)
+            UpdateControl(numLevel6Length, lvls >= 6)
         End Sub
     End Class
 End Namespace
