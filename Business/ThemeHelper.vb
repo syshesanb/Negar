@@ -33,6 +33,9 @@ Namespace Sys_Hes_Anb.Business
 
         Private Sub ApplyGridTheme(parent As Control, altColor As Color)
             For Each ctrl As Control In parent.Controls
+                ' اگر کنترل یک فرم است (فرم‌های هدردهی شده فرعی)، آن را رد می‌کنیم زیرا خود تم اختصاصی‌اش را اعمال می‌کند
+                If TypeOf ctrl Is Form Then Continue For
+
                 If TypeOf ctrl Is DataGridView Then
                     Dim dgv = DirectCast(ctrl, DataGridView)
                     dgv.AlternatingRowsDefaultCellStyle.BackColor = altColor
