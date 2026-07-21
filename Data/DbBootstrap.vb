@@ -131,6 +131,23 @@ Namespace Sys_Hes_Anb.Data
         End Sub
         Private ReadOnly LogPath As String = Path.Combine(Application.StartupPath, "bootstrap.log")
 
+                Private Sub EnsurePersonnelTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS Personnel (
+                        PersonnelID INTEGER PRIMARY KEY AUTOINCREMENT,
+                        FullName TEXT NOT NULL,
+                        Role TEXT,
+                        NationalCode TEXT,
+                        Phone TEXT,
+                        Department INTEGER NOT NULL DEFAULT 1,
+                        IsActive INTEGER NOT NULL DEFAULT 1
+                    );")
+            Catch ex As Exception
+                ' Ignore
+            End Try
+        End Sub
+
         Public Sub EnsureSeedData()
             Try
                 Log("bootstrap:start")
@@ -157,8 +174,20 @@ Namespace Sys_Hes_Anb.Data
                 Log("bootstrap:profit-loss-mappings-ok")
                 EnsureTemFormTableAndSeed()
                 Log("bootstrap:temform-table-ok")
+                EnsureUnitsOfMeasureTable()
+                Log("bootstrap:units-of-measure-ok")
+                EnsureProductGroupsTable()
+                Log("bootstrap:productgroups-ok")
+                EnsureTemFormTableAndSeed()
+                Log("bootstrap:temform-ok")
+            EnsurePersonnelTable()
+            Log("bootstrap:personnel-ok")
+                EnsureWarehouseTypesTable()
+                Log("bootstrap:warehousetypes-ok")
+                EnsureWarehouseLocationsTable()
+                Log("bootstrap:warehouselocations-ok")
             Catch ex As Exception
-                Log("bootstrap-error: " & ex.Message & Environment.NewLine & ex.StackTrace)
+                Log("bootstrap:error:" & ex.Message & Environment.NewLine & ex.StackTrace)
                 Throw
             End Try
         End Sub
@@ -453,9 +482,72 @@ Namespace Sys_Hes_Anb.Data
             AddColumnIfMissing("Companies", "Level3Length", "INTEGER")
             AddColumnIfMissing("Companies", "Level4Length", "INTEGER")
             AddColumnIfMissing("Companies", "Level5Length", "INTEGER")
+            AddColumnIfMissing("Companies", "ProductGroupLevels", "INTEGER DEFAULT 3")
 
             ' Ensure SectionName in Permissions
             AddColumnIfMissing("Permissions", "SectionName", "TEXT")
+
+            ' Ensure UoM & Catch Weight columns in Products
+            AddColumnIfMissing("Products", "BaseUoMID", "INTEGER")
+            AddColumnIfMissing("Products", "IsCatchWeight", "BOOLEAN DEFAULT 0")
+            AddColumnIfMissing("Products", "SecondaryUoMID", "INTEGER")
+            AddColumnIfMissing("Products", "NominalFactor", "DECIMAL")
+            AddColumnIfMissing("Products", "ProductGroupID", "INTEGER")
+            AddColumnIfMissing("Products", "Barcode", "TEXT")
+            AddColumnIfMissing("Products", "TaxID", "TEXT")
+            AddColumnIfMissing("Products", "ProductType", "TEXT DEFAULT 'کالا'")
+            AddColumnIfMissing("Products", "PurchasePrice", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "MinStock", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "ReorderPoint", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "MaxStock", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "TrackingType", "TEXT DEFAULT 'عادی'")
+            AddColumnIfMissing("Products", "LocationID", "INTEGER")
+            AddColumnIfMissing("Products", "TechnicalName", "TEXT")
+            AddColumnIfMissing("Products", "ConsumerMarkup", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "ConsumerDiscount", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "ColleagueMarkup", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "ColleagueDiscount", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "WholesaleMarkup", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "WholesaleDiscount", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "TaxPercent", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "TollPercent", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "NetWeight", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "GrossWeight", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "Length", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "Width", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "Height", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "Volume", "DECIMAL DEFAULT 0")
+            AddColumnIfMissing("Products", "Color", "TEXT")
+            AddColumnIfMissing("Products", "Material", "TEXT")
+            AddColumnIfMissing("Products", "Size", "TEXT")
+            AddColumnIfMissing("Products", "Brand", "TEXT")
+            AddColumnIfMissing("Products", "CountryOfOrigin", "TEXT")
+            AddColumnIfMissing("Products", "PhysicalDescription", "TEXT")
+            AddColumnIfMissing("Products", "Image1", "TEXT")
+            AddColumnIfMissing("Products", "Image2", "TEXT")
+            AddColumnIfMissing("Products", "Image3", "TEXT")
+            AddColumnIfMissing("Products", "Image4", "TEXT")
+            AddColumnIfMissing("Products", "Image5", "TEXT")
+            AddColumnIfMissing("Products", "Image6", "TEXT")
+            
+            ' Ensure extra Warehouse columns
+            AddColumnIfMissing("Warehouses", "WarehouseType", "TEXT")
+            AddColumnIfMissing("Warehouses", "Phone", "TEXT")
+            AddColumnIfMissing("Warehouses", "Phone2", "TEXT")
+            AddColumnIfMissing("Warehouses", "Phone3", "TEXT")
+            AddColumnIfMissing("Warehouses", "PostalCode", "TEXT")
+            AddColumnIfMissing("Warehouses", "Capacity", "REAL")
+            AddColumnIfMissing("Warehouses", "WarehouseKeeper", "TEXT")
+            AddColumnIfMissing("Warehouses", "CostCenter", "TEXT")
+            AddColumnIfMissing("Warehouses", "AllowNegativeStock", "BOOLEAN")
+            AddColumnIfMissing("Warehouses", "Description", "TEXT")
+            
+            Try
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_Products_GroupID ON Products (ProductGroupID)")
+            Catch ex As Exception
+                ' Index might already exist or table lock
+            End Try
+
 
             ' Populate default section names if NULL or empty
             Try
@@ -679,36 +771,151 @@ Namespace Sys_Hes_Anb.Data
                      Catch
                      End Try
                  Next
-
-                Sql.ExecuteNonQuery(
-                    "CREATE TABLE IF NOT EXISTS ProfitLossMappings (" &
-                    "AccountID INTEGER PRIMARY KEY, " &
-                    "CategoryID INTEGER NOT NULL, " &
-                    "CompanyID INTEGER NOT NULL, " &
-                    "FOREIGN KEY(AccountID) REFERENCES SarfaslHesab(AccountID) ON DELETE CASCADE, " &
-                    "FOREIGN KEY(CategoryID) REFERENCES Report2(CategoryID) ON DELETE CASCADE);")
-
-                Sql.ExecuteNonQuery(
-                    "CREATE TABLE IF NOT EXISTS PnLAccountMappings (" &
-                    "CompanyID INTEGER NOT NULL, " &
-                    "CategoryKey TEXT NOT NULL, " &
-                    "AccountID INTEGER NOT NULL, " &
-                    "PRIMARY KEY (CompanyID, CategoryKey, AccountID), " &
-                    "FOREIGN KEY(AccountID) REFERENCES SarfaslHesab(AccountID) ON DELETE CASCADE);")
-
-                Sql.ExecuteNonQuery(
-                    "CREATE TABLE IF NOT EXISTS BalanceSheetAccountMappings (" &
-                    "CompanyID INTEGER NOT NULL, " &
-                    "CategoryKey TEXT NOT NULL, " &
-                    "AccountID INTEGER NOT NULL, " &
-                    "PRIMARY KEY (CompanyID, CategoryKey, AccountID), " &
-                    "FOREIGN KEY(AccountID) REFERENCES SarfaslHesab(AccountID) ON DELETE CASCADE);")
             Catch ex As Exception
                 Log("EnsureProfitLossMappingsTable error: " & ex.Message)
             End Try
         End Sub
 
+        Private Sub EnsureUnitsOfMeasureTable()
+            Try
+                ' 1. uom_categories
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS uom_categories (" &
+                    "CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CategoryName TEXT NOT NULL, " &
+                    "CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP);")
+
+                ' 2. uoms
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS uoms (" &
+                    "UoMID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CategoryID INTEGER NOT NULL, " &
+                    "UoMName TEXT NOT NULL, " &
+                    "Abbreviation TEXT, " &
+                    "IsReferenceUoM BOOLEAN DEFAULT 0, " &
+                    "ConversionNumerator INTEGER DEFAULT 1, " &
+                    "ConversionDenominator INTEGER DEFAULT 1, " &
+                    "IsActive BOOLEAN NOT NULL DEFAULT 1, " &
+                    "FOREIGN KEY(CategoryID) REFERENCES uom_categories(CategoryID));")
+
+                ' 3. product_uom_conversions
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS product_uom_conversions (" &
+                    "ConversionID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ProductID INTEGER NOT NULL, " &
+                    "FromUoMID INTEGER NOT NULL, " &
+                    "ToUoMID INTEGER NOT NULL, " &
+                    "ConversionNumerator INTEGER NOT NULL, " &
+                    "ConversionDenominator INTEGER NOT NULL, " &
+                    "FOREIGN KEY(ProductID) REFERENCES Products(ProductID), " &
+                    "FOREIGN KEY(FromUoMID) REFERENCES uoms(UoMID), " &
+                    "FOREIGN KEY(ToUoMID) REFERENCES uoms(UoMID), " &
+                    "CONSTRAINT uq_product_uom UNIQUE(ProductID, FromUoMID, ToUoMID));")
+
+                ' Seed uom_categories if empty
+                Dim catCount = Convert.ToInt32(If(Sql.ExecuteScalar("SELECT COUNT(*) FROM uom_categories"), 0))
+                If catCount = 0 Then
+                    Sql.ExecuteNonQuery("INSERT INTO uom_categories (CategoryName) VALUES (?)", "تعداد (Count)")
+                    Sql.ExecuteNonQuery("INSERT INTO uom_categories (CategoryName) VALUES (?)", "وزن (Weight)")
+                    Sql.ExecuteNonQuery("INSERT INTO uom_categories (CategoryName) VALUES (?)", "طول (Length)")
+                    Sql.ExecuteNonQuery("INSERT INTO uom_categories (CategoryName) VALUES (?)", "حجم (Volume)")
+                End If
+
+                ' Seed uoms if empty
+                Dim uomCount = Convert.ToInt32(If(Sql.ExecuteScalar("SELECT COUNT(*) FROM uoms"), 0))
+                If uomCount = 0 Then
+                    ' تعداد
+                    Dim catCountId = Convert.ToInt32(Sql.ExecuteScalar("SELECT CategoryID FROM uom_categories WHERE CategoryName = ?", "تعداد (Count)"))
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 1, 1, 1)", catCountId, "عدد", "pcs")
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 0, 24, 1)", catCountId, "کارتن ۲۴ تایی", "box-24")
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 0, 12, 1)", catCountId, "باکس ۱۲ تایی", "box-12")
+
+                    ' وزن
+                    Dim catWeightId = Convert.ToInt32(Sql.ExecuteScalar("SELECT CategoryID FROM uom_categories WHERE CategoryName = ?", "وزن (Weight)"))
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 1, 1, 1)", catWeightId, "گرم", "g")
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 0, 1000, 1)", catWeightId, "کیلوگرم", "kg")
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 0, 1000000, 1)", catWeightId, "تن", "ton")
+
+                    ' طول
+                    Dim catLengthId = Convert.ToInt32(Sql.ExecuteScalar("SELECT CategoryID FROM uom_categories WHERE CategoryName = ?", "طول (Length)"))
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 1, 1, 1)", catLengthId, "میلی‌متر", "mm")
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 0, 10, 1)", catLengthId, "سانتی‌متر", "cm")
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 0, 1000, 1)", catLengthId, "متر", "m")
+
+                    ' حجم
+                    Dim catVolumeId = Convert.ToInt32(Sql.ExecuteScalar("SELECT CategoryID FROM uom_categories WHERE CategoryName = ?", "حجم (Volume)"))
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 1, 1, 1)", catVolumeId, "سی‌سی (میلی‌لیتر)", "cc")
+                    Sql.ExecuteNonQuery("INSERT INTO uoms (CategoryID, UoMName, Abbreviation, IsReferenceUoM, ConversionNumerator, ConversionDenominator) VALUES (?, ?, ?, 0, 1000, 1)", catVolumeId, "لیتر", "L")
+                End If
+            Catch ex As Exception
+                Log("EnsureUnitsOfMeasureTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureProductGroupsTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS ProductGroups (" &
+                    "GroupID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CompanyID INTEGER NOT NULL, " &
+                    "ParentID INTEGER NULL, " &
+                    "GroupCode TEXT NOT NULL, " &
+                    "GroupName TEXT NOT NULL, " &
+                    "Level INTEGER NOT NULL, " &
+                    "IsActive INTEGER DEFAULT 1, " &
+                    "FOREIGN KEY (CompanyID) REFERENCES Companies(CompanyID) ON DELETE CASCADE, " &
+                    "FOREIGN KEY (ParentID) REFERENCES ProductGroups(GroupID) ON DELETE CASCADE);"
+                )
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS idx_productgroups_company ON ProductGroups(CompanyID);")
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS idx_productgroups_parent ON ProductGroups(ParentID);")
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS idx_productgroups_code ON ProductGroups(GroupCode);")
+                Log("bootstrap:productgroups-table-ok")
+            Catch ex As Exception
+                Log("EnsureProductGroupsTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureWarehouseTypesTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS WarehouseTypes (" &
+                    "TypeID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "TypeName TEXT UNIQUE NOT NULL);"
+                )
+
+                Dim cnt = Convert.ToInt32(Sql.ExecuteScalar("SELECT COUNT(*) FROM WarehouseTypes"))
+                If cnt = 0 Then
+                    Sql.ExecuteNonQuery("INSERT INTO WarehouseTypes (TypeName) VALUES ('مواد اولیه')")
+                    Sql.ExecuteNonQuery("INSERT INTO WarehouseTypes (TypeName) VALUES ('محصول نهایی')")
+                    Sql.ExecuteNonQuery("INSERT INTO WarehouseTypes (TypeName) VALUES ('ضایعات')")
+                    Sql.ExecuteNonQuery("INSERT INTO WarehouseTypes (TypeName) VALUES ('امانی')")
+                    Sql.ExecuteNonQuery("INSERT INTO WarehouseTypes (TypeName) VALUES ('قرنطینه')")
+                    Sql.ExecuteNonQuery("INSERT INTO WarehouseTypes (TypeName) VALUES ('قطعات یدکی')")
+                End If
+            Catch ex As Exception
+                Log("EnsureWarehouseTypesTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureWarehouseLocationsTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS WarehouseLocations (" &
+                    "LocationID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "WarehouseID INTEGER NOT NULL, " &
+                    "ParentID INTEGER, " &
+                    "LocationType INTEGER NOT NULL, " &
+                    "Title TEXT NOT NULL, " &
+                    "Code TEXT NOT NULL, " &
+                    "FOREIGN KEY (WarehouseID) REFERENCES Warehouses(WarehouseID) ON DELETE CASCADE, " &
+                    "FOREIGN KEY (ParentID) REFERENCES WarehouseLocations(LocationID) ON DELETE CASCADE);"
+                )
+            Catch ex As Exception
+                Log("EnsureWarehouseLocationsTable error: " & ex.Message)
+            End Try
+        End Sub
         Private Sub Log(message As String)
+
             Try
                 File.AppendAllText(LogPath, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & " " & message & Environment.NewLine)
             Catch
@@ -716,3 +923,5 @@ Namespace Sys_Hes_Anb.Data
         End Sub
     End Module
 End Namespace
+
+

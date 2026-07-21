@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -19,6 +19,7 @@
     <StartupWithErrorHandler>False</StartupWithErrorHandler>
     <Prefer32Bit>true</Prefer32Bit>
     <TargetFrameworkProfile />
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -66,6 +67,15 @@
     <Compile Include="Business\SecurityService.vb" />
     <Compile Include="Business\UserService.vb" />
     <Compile Include="Business\CatalogService.vb" />
+    <Compile Include="Business\PersonnelService.vb" />
+    <Compile Include="Forms\Controls\PersonnelManagementControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Controls\PersonnelManagementControl.Designer.vb">
+      <DependentUpon>PersonnelManagementControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Business\UnitOfMeasureService.vb" />
+    <Compile Include="Business\ProductGroupService.vb" />
     <Compile Include="Business\ActivityLogService.vb" />
     <Compile Include="Business\PersianDateHelper.vb" />
     <Compile Include="Business\CompanyFiscalYearService.vb" />
@@ -143,23 +153,32 @@
     <Compile Include="Forms\HasteAsly\Karbaran\SelectReleaseUserForm.Designer.vb">
       <DependentUpon>SelectReleaseUserForm.vb</DependentUpon>
     </Compile>
+    <Compile Include="Forms\HasteAsly\PersonnelManagementForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\HasteAsly\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\HasteAsly\MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Anbardary\AnbardaryForm.vb">
+    <Compile Include="Forms\Anbardary\AnbardaryMainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Anbardary\AnbardaryForm.Designer.vb">
-      <DependentUpon>AnbardaryForm.vb</DependentUpon>
+    <Compile Include="Forms\Anbardary\AnbardaryMainForm.Designer.vb">
+      <DependentUpon>AnbardaryMainForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Anbardary\F1KharidForoshFormBase.vb">
+    <Compile Include="Forms\Anbardary\AnbardaryKharid1Form.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Anbardary\F1KharidForoshFormBase.Designer.vb">
-      <DependentUpon>F1KharidForoshFormBase.vb</DependentUpon>
+    <Compile Include="Forms\Anbardary\AnbardaryKharid1Form.Designer.vb">
+      <DependentUpon>AnbardaryKharid1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryKharid2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryKharid2Form.Designer.vb">
+      <DependentUpon>AnbardaryKharid2Form.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\HasteAsly\Karbaran\UserManagementForm.vb">
       <SubType>Form</SubType>
@@ -185,29 +204,89 @@
     <Compile Include="Forms\HasteAsly\Karbaran\AppLockForm.Designer.vb">
       <DependentUpon>AppLockForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Anbardary\NamKalaForm.vb">
+    <Compile Include="Forms\Anbardary\AnbardaryNamKala1Form.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Anbardary\NamKalaForm.Designer.vb">
-      <DependentUpon>NamKalaForm.vb</DependentUpon>
+    <Compile Include="Forms\Anbardary\AnbardaryNamKala1Form.Designer.vb">
+      <DependentUpon>AnbardaryNamKala1Form.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Anbardary\NamAnbarForm.vb">
+    <Compile Include="Forms\Anbardary\AnbardaryNamKala2Form.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Anbardary\NamAnbarForm.Designer.vb">
-      <DependentUpon>NamAnbarForm.vb</DependentUpon>
+    <Compile Include="Forms\Anbardary\AnbardaryNamKala2Form.Designer.vb">
+      <DependentUpon>AnbardaryNamKala2Form.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Anbardary\F2KharidForm.vb">
+    <Compile Include="Forms\Anbardary\AnbardaryVahedKala1Form.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Anbardary\F2KharidForm.Designer.vb">
-      <DependentUpon>F2KharidForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Anbardary\F2ForoshForm.vb">
+    <Compile Include="Forms\Anbardary\AnbardaryGoroohKala1Form.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Anbardary\F2ForoshForm.Designer.vb">
-      <DependentUpon>F2ForoshForm.vb</DependentUpon>
+    <Compile Include="Forms\Anbardary\AnbardaryGoroohKala1Form.Designer.vb">
+      <DependentUpon>AnbardaryGoroohKala1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardarySettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardarySettingsForm.Designer.vb">
+      <DependentUpon>AnbardarySettingsForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryGoroohKala2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryGoroohKala2Form.Designer.vb">
+      <DependentUpon>AnbardaryGoroohKala2Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryVahedKala1Form.Designer.vb">
+      <DependentUpon>AnbardaryVahedKala1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryVahedKala2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryVahedKala2Form.Designer.vb">
+      <DependentUpon>AnbardaryVahedKala2Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryNamAnbar1Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryNamAnbar1Form.Designer.vb">
+      <DependentUpon>AnbardaryNamAnbar1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryNamAnbar2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryNamAnbar2Form.Designer.vb">
+      <DependentUpon>AnbardaryNamAnbar2Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\WarehouseTypeManagerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\WarehouseTypeManagerForm.Designer.vb">
+      <DependentUpon>WarehouseTypeManagerForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\LocationSelectorForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\LocationSelectorForm.Designer.vb">
+      <DependentUpon>LocationSelectorForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\WarehouseLocationEditForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\WarehouseLocationEditForm.Designer.vb">
+      <DependentUpon>WarehouseLocationEditForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryForoosh1Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryForoosh1Form.Designer.vb">
+      <DependentUpon>AnbardaryForoosh1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryForoosh2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryForoosh2Form.Designer.vb">
+      <DependentUpon>AnbardaryForoosh2Form.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\Anbardary\MojodyAnbarFormRep.vb">
       <SubType>Form</SubType>
@@ -215,11 +294,17 @@
     <Compile Include="Forms\Anbardary\MojodyAnbarFormRep.Designer.vb">
       <DependentUpon>MojodyAnbarFormRep.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Hesabdary\HesabdaryForm.vb">
+    <Compile Include="Forms\Hesabdary\HesabdaryInitialSettingsForm.Designer.vb">
+      <DependentUpon>HesabdaryInitialSettingsForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryInitialSettingsForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Hesabdary\HesabdaryForm.Designer.vb">
-      <DependentUpon>HesabdaryForm.vb</DependentUpon>
+    <Compile Include="Forms\Hesabdary\HesabdaryMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hesabdary\HesabdaryMainForm.Designer.vb">
+      <DependentUpon>HesabdaryMainForm.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\Hesabdary\HesabdaryProfitLossReportControl.vb">
       <SubType>UserControl</SubType>
@@ -459,8 +544,8 @@
     <EmbeddedResource Include="Forms\Hesabdary\HesabdarySanad2Form.resx">
       <DependentUpon>HesabdarySanad2Form.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryForm.resx">
-      <DependentUpon>HesabdaryForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\Hesabdary\HesabdaryMainForm.resx">
+      <DependentUpon>HesabdaryMainForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\HasteAsly\Karbaran\UserManagementForm.resx">
       <DependentUpon>UserManagementForm.vb</DependentUpon>

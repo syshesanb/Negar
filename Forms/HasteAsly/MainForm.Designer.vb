@@ -19,6 +19,7 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents mainMenu As MenuStrip
         Friend WithEvents mSystemMgmt As ToolStripMenuItem
         Friend WithEvents mUserMgmt As ToolStripMenuItem
+        Friend WithEvents mPersonnelMgmt As ToolStripMenuItem
         Friend WithEvents mCompanyMgmt As ToolStripMenuItem
         Friend WithEvents mAccounting As ToolStripMenuItem
         Friend WithEvents mTradeWarehouse As ToolStripMenuItem
@@ -74,6 +75,7 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents tool As ToolStrip
         Friend WithEvents btnToolSystemMgmt As ToolStripButton
         Friend WithEvents btnToolUserMgmt As ToolStripButton
+        Friend WithEvents btnToolPersonnelMgmt As ToolStripButton
         Friend WithEvents btnToolCompanyMgmt As ToolStripButton
         Friend WithEvents btnToolAccounting As ToolStripButton
         Friend WithEvents btnToolTradeWarehouse As ToolStripButton
@@ -102,6 +104,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.mainMenu = New MenuStrip()
             Me.mSystemMgmt = New ToolStripMenuItem()
             Me.mUserMgmt = New ToolStripMenuItem()
+            Me.mPersonnelMgmt = New ToolStripMenuItem()
             Me.mCompanyMgmt = New ToolStripMenuItem()
             Me.mAccounting = New ToolStripMenuItem()
             Me.mTradeWarehouse = New ToolStripMenuItem()
@@ -149,6 +152,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.tool = New ToolStrip()
             Me.btnToolSystemMgmt = New ToolStripButton()
             Me.btnToolUserMgmt = New ToolStripButton()
+            Me.btnToolPersonnelMgmt = New ToolStripButton()
             Me.btnToolCompanyMgmt = New ToolStripButton()
             Me.btnToolAccounting = New ToolStripButton()
             Me.btnToolTradeWarehouse = New ToolStripButton()
@@ -173,7 +177,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.SuspendLayout()
 
             ' mainMenu
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mPersonnelMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -376,7 +380,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.tool.AutoSize = False
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolPersonnelMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolBusinessShells, Me.btnToolUtilities})
             Me.tool.Location = New Point(0, 24)
             Me.tool.Name = "tool"
             Me.tool.RightToLeft = RightToLeft.Yes
@@ -503,3 +507,4 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
     End Class
 End Namespace
+

@@ -14,6 +14,16 @@ Namespace Sys_Hes_Anb.Forms
         Private ReadOnly _mainForm As MainForm
         Private ReadOnly _openOnSelectTab As Boolean
         Private _selectedCompanyId As Integer?
+        Private _selectedProductGroupLevels As Integer = 3
+        Private _selectedEconomicCode As String = String.Empty
+        Private _selectedTaxId As String = String.Empty
+        Private _selectedAccountLevels As Integer = 4
+        Private _selectedLevel1Length As Integer = 2
+        Private _selectedLevel2Length As Integer = 2
+        Private _selectedLevel3Length As Integer = 2
+        Private _selectedLevel4Length As Integer = 2
+        Private _selectedLevel5Length As Integer = 2
+        Private _selectedLevel6Length As Integer = 2
         Private _selectedFiscalYearId As Integer?
         Private _selectCompanyId As Integer?
         Private _selectFiscalYearId As Integer?
@@ -103,8 +113,11 @@ Namespace Sys_Hes_Anb.Forms
             LoadFiscalYears()
             LoadSelectCompanies()
             UpdateCurrentSelectionLabel()
-            UpdateLevelsControlsState()
             If _openOnSelectTab Then tabs.SelectedTab = tabSelectActive
+        End Sub
+
+        Private Sub UpdateLevelsControlsState()
+            ' This method kept for compatibility - coding settings are now managed in HesabdaryInitialSettingsForm
         End Sub
 
         Private Sub ApplySecurity()
@@ -220,9 +233,9 @@ Namespace Sys_Hes_Anb.Forms
             txtCompanyCode.Text = Convert.ToString(row.Cells("CompanyCode").Value)
             txtAddress.Text = Convert.ToString(row.Cells("Address").Value)
             txtPhone.Text = Convert.ToString(row.Cells("Phone").Value)
-            txtTaxId.Text = Convert.ToString(row.Cells("TaxID").Value)
+            _selectedTaxId = Convert.ToString(row.Cells("TaxID").Value)
             txtBrandName.Text = Convert.ToString(row.Cells("BrandName").Value)
-            txtEconomicCode.Text = Convert.ToString(row.Cells("EconomicCode").Value)
+            _selectedEconomicCode = Convert.ToString(row.Cells("EconomicCode").Value)
             txtPostalCode.Text = Convert.ToString(row.Cells("PostalCode").Value)
             If row.Cells("RegistrationDate").Value IsNot Nothing AndAlso Not Convert.IsDBNull(row.Cells("RegistrationDate").Value) Then txtRegistrationDate.Text = PersianDateHelper.ToPersian(Convert.ToDateTime(row.Cells("RegistrationDate").Value)) Else txtRegistrationDate.Clear()
             txtRegistrationNumber.Text = Convert.ToString(row.Cells("RegistrationNumber").Value)
@@ -250,21 +263,20 @@ Namespace Sys_Hes_Anb.Forms
                 cmbLogoPosition.SelectedItem = "سمت چپ"
             End If
 
-            numAccountLevels.Value = If(row.Cells("AccountLevels").Value Is Nothing OrElse row.Cells("AccountLevels").Value Is DBNull.Value, 4D, Convert.ToDecimal(row.Cells("AccountLevels").Value))
-            numLevel1Length.Value = If(row.Cells("Level1Length").Value Is Nothing OrElse row.Cells("Level1Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level1Length").Value))
-            numLevel2Length.Value = If(row.Cells("Level2Length").Value Is Nothing OrElse row.Cells("Level2Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level2Length").Value))
-            numLevel3Length.Value = If(row.Cells("Level3Length").Value Is Nothing OrElse row.Cells("Level3Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level3Length").Value))
-            numLevel4Length.Value = If(row.Cells("Level4Length").Value Is Nothing OrElse row.Cells("Level4Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level4Length").Value))
-            numLevel5Length.Value = If(row.Cells("Level5Length").Value Is Nothing OrElse row.Cells("Level5Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level5Length").Value))
+            _selectedAccountLevels = If(row.Cells("AccountLevels").Value Is Nothing OrElse row.Cells("AccountLevels").Value Is DBNull.Value, 4, Convert.ToInt32(row.Cells("AccountLevels").Value))
+            _selectedProductGroupLevels = If(row.Cells("ProductGroupLevels").Value Is Nothing OrElse row.Cells("ProductGroupLevels").Value Is DBNull.Value, 3, Convert.ToInt32(row.Cells("ProductGroupLevels").Value))
+            _selectedLevel1Length = If(row.Cells("Level1Length").Value Is Nothing OrElse row.Cells("Level1Length").Value Is DBNull.Value, 2, Convert.ToInt32(row.Cells("Level1Length").Value))
+            _selectedLevel2Length = If(row.Cells("Level2Length").Value Is Nothing OrElse row.Cells("Level2Length").Value Is DBNull.Value, 2, Convert.ToInt32(row.Cells("Level2Length").Value))
+            _selectedLevel3Length = If(row.Cells("Level3Length").Value Is Nothing OrElse row.Cells("Level3Length").Value Is DBNull.Value, 2, Convert.ToInt32(row.Cells("Level3Length").Value))
+            _selectedLevel4Length = If(row.Cells("Level4Length").Value Is Nothing OrElse row.Cells("Level4Length").Value Is DBNull.Value, 2, Convert.ToInt32(row.Cells("Level4Length").Value))
+            _selectedLevel5Length = If(row.Cells("Level5Length").Value Is Nothing OrElse row.Cells("Level5Length").Value Is DBNull.Value, 2, Convert.ToInt32(row.Cells("Level5Length").Value))
             
             Dim hasLevel6 = row.DataGridView.Columns.Contains("Level6Length")
             If hasLevel6 Then
-                numLevel6Length.Value = If(row.Cells("Level6Length").Value Is Nothing OrElse row.Cells("Level6Length").Value Is DBNull.Value, 2D, Convert.ToDecimal(row.Cells("Level6Length").Value))
+                _selectedLevel6Length = If(row.Cells("Level6Length").Value Is Nothing OrElse row.Cells("Level6Length").Value Is DBNull.Value, 2, Convert.ToInt32(row.Cells("Level6Length").Value))
             Else
-                numLevel6Length.Value = 2D
+                _selectedLevel6Length = 2
             End If
-            
-            UpdateLevelsControlsState()
         End Sub
 
         Private Sub DgvFiscalYears_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) _
@@ -313,9 +325,9 @@ Namespace Sys_Hes_Anb.Forms
             txtCompanyCode.Clear()
             txtAddress.Clear()
             txtPhone.Clear()
-            txtTaxId.Clear()
+            _selectedTaxId = String.Empty
             txtBrandName.Clear()
-            txtEconomicCode.Clear()
+            _selectedEconomicCode = String.Empty
             txtPostalCode.Clear()
             txtRegistrationDate.Clear()
             txtRegistrationNumber.Clear()
@@ -336,40 +348,22 @@ Namespace Sys_Hes_Anb.Forms
             txtSignatory4Title.Clear()
             txtSignatory4Name.Clear()
             chkCompanyActive.Checked = True
-            numAccountLevels.Value = 4D
-            numLevel1Length.Value = 2D
-            numLevel2Length.Value = 2D
-            numLevel3Length.Value = 2D
-            numLevel4Length.Value = 2D
-            numLevel5Length.Value = 2D
-            numLevel6Length.Value = 2D
-            UpdateLevelsControlsState()
+            _selectedProductGroupLevels = 3
+            _selectedAccountLevels = 4
+            _selectedLevel1Length = 2
+            _selectedLevel2Length = 2
+            _selectedLevel3Length = 2
+            _selectedLevel4Length = 2
+            _selectedLevel5Length = 2
+            _selectedLevel6Length = 2
         End Sub
 
         Private Sub BtnSaveCompany_Click(sender As Object, e As EventArgs) Handles btnSaveCompany.Click
-            ' در صورت ویرایش شرکت موجود، ابتدا اعتبارسنجی ساختار کدینگ را انجام می‌دهیم
-            If _selectedCompanyId.HasValue AndAlso _selectedCompanyId.Value > 0 Then
-                Dim proposedLevels = CInt(numAccountLevels.Value)
-                Dim proposedLengths = New Integer() {
-                    CInt(numLevel1Length.Value),
-                    CInt(numLevel2Length.Value),
-                    CInt(numLevel3Length.Value),
-                    CInt(numLevel4Length.Value),
-                    CInt(numLevel5Length.Value),
-                    CInt(numLevel6Length.Value)
-                }
-                Dim errMsg = service.ValidateCompanySettingsChange(_selectedCompanyId.Value, proposedLevels, proposedLengths)
-                If Not String.IsNullOrEmpty(errMsg) Then
-                    MessageBox.Show(errMsg, "خطای اعتبارسنجی ساختار حساب‌ها", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    Return
-                End If
-            End If
-
             Dim regDt = PersianDateHelper.ParsePersianDate(txtRegistrationDate.Text)
             Dim logoPosition = If(cmbLogoPosition.SelectedItem IsNot Nothing, cmbLogoPosition.SelectedItem.ToString(), "سمت چپ")
             Dim logoPosDb = If(logoPosition = "سمت راست", "Right", "Left")
             Try
-                service.SaveCompany(_selectedCompanyId, txtCompanyName.Text.Trim(), txtCompanyCode.Text.Trim(), txtBrandName.Text.Trim(), txtEconomicCode.Text.Trim(), DBNull.Value, DBNull.Value, txtPostalCode.Text.Trim(), If(regDt.HasValue, CObj(regDt.Value), DBNull.Value), txtRegistrationNumber.Text.Trim(), txtActivityField.Text.Trim(), txtAddress.Text.Trim(), txtPhone.Text.Trim(), txtPhone2.Text.Trim(), txtEmail.Text.Trim(), txtTaxId.Text.Trim(), ImageToByteArray(picLogoImage.Image), txtChairmanName.Text.Trim(), txtInspectorName.Text.Trim(), txtCEOName.Text.Trim(), txtSignatory1Title.Text.Trim(), txtSignatory1Name.Text.Trim(), txtSignatory2Title.Text.Trim(), txtSignatory2Name.Text.Trim(), txtSignatory3Title.Text.Trim(), txtSignatory3Name.Text.Trim(), txtSignatory4Title.Text.Trim(), txtSignatory4Name.Text.Trim(), CInt(numAccountLevels.Value), CInt(numLevel1Length.Value), CInt(numLevel2Length.Value), CInt(numLevel3Length.Value), CInt(numLevel4Length.Value), CInt(numLevel5Length.Value), CInt(numLevel6Length.Value), chkCompanyActive.Checked, logoPosDb, _overrideOwnerUserId)
+                service.SaveCompany(_selectedCompanyId, txtCompanyName.Text.Trim(), txtCompanyCode.Text.Trim(), txtBrandName.Text.Trim(), _selectedEconomicCode, DBNull.Value, DBNull.Value, txtPostalCode.Text.Trim(), If(regDt.HasValue, CObj(regDt.Value), DBNull.Value), txtRegistrationNumber.Text.Trim(), txtActivityField.Text.Trim(), txtAddress.Text.Trim(), txtPhone.Text.Trim(), txtPhone2.Text.Trim(), txtEmail.Text.Trim(), _selectedTaxId, ImageToByteArray(picLogoImage.Image), txtChairmanName.Text.Trim(), txtInspectorName.Text.Trim(), txtCEOName.Text.Trim(), txtSignatory1Title.Text.Trim(), txtSignatory1Name.Text.Trim(), txtSignatory2Title.Text.Trim(), txtSignatory2Name.Text.Trim(), txtSignatory3Title.Text.Trim(), txtSignatory3Name.Text.Trim(), txtSignatory4Title.Text.Trim(), txtSignatory4Name.Text.Trim(), _selectedAccountLevels, _selectedLevel1Length, _selectedLevel2Length, _selectedLevel3Length, _selectedLevel4Length, _selectedLevel5Length, _selectedLevel6Length, chkCompanyActive.Checked, logoPosDb, _selectedProductGroupLevels, _overrideOwnerUserId)
                 LoadCompanies()
                 LoadFiscalYears()
                 LoadSelectCompanies()
@@ -549,29 +543,5 @@ Namespace Sys_Hes_Anb.Forms
             End If
         End Sub
 
-        Private Sub numAccountLevels_ValueChanged(sender As Object, e As EventArgs) Handles numAccountLevels.ValueChanged
-            UpdateLevelsControlsState()
-        End Sub
-
-        Private Sub UpdateLevelsControlsState()
-            Dim lvls = CInt(numAccountLevels.Value)
-
-            Dim UpdateControl = Sub(num As NumericUpDown, enabled As Boolean)
-                                    If enabled Then
-                                        num.Enabled = True
-                                        num.Minimum = 2
-                                        If num.Value = 0 Then num.Value = 2
-                                    Else
-                                        num.Minimum = 0
-                                        num.Value = 0
-                                        num.Enabled = False
-                                    End If
-                                End Sub
-
-            UpdateControl(numLevel3Length, lvls >= 3)
-            UpdateControl(numLevel4Length, lvls >= 4)
-            UpdateControl(numLevel5Length, lvls >= 5)
-            UpdateControl(numLevel6Length, lvls >= 6)
-        End Sub
     End Class
 End Namespace

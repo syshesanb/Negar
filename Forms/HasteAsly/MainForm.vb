@@ -512,7 +512,7 @@ Namespace Sys_Hes_Anb.Forms
 
         Private Sub MiTradeWarehouseMain_Click(sender As Object, e As EventArgs) Handles miTradeWarehouseMain.Click
             If Not EnsureCompanyAndFiscalYearSelected() Then Return
-            OpenChild(New AnbardaryForm())
+            OpenChild(New AnbardaryMainForm())
         End Sub
 
         Private Sub MiReportsTrade_Click(sender As Object, e As EventArgs) Handles miReportsTrade.Click
@@ -521,11 +521,11 @@ Namespace Sys_Hes_Anb.Forms
 
         Private Sub MiAccountingMain_Click(sender As Object, e As EventArgs) Handles miAccountingMain.Click
             If Not EnsureCompanyAndFiscalYearSelected() Then Return
-            OpenChild(New HesabdaryForm())
+            OpenChild(New HesabdaryMainForm())
         End Sub
 
         Private Sub MiReportsAccounting_Click(sender As Object, e As EventArgs) Handles miReportsAccounting.Click
-            OpenChild(New HesabdaryForm(True))
+            OpenChild(New HesabdaryMainForm(True))
         End Sub
 
         Private Sub MiCompanyFiscalYears_Click(sender As Object, e As EventArgs) Handles miCompanyFiscalYears.Click
@@ -920,5 +920,11 @@ Namespace Sys_Hes_Anb.Forms
                 End If
             End Using
         End Sub
+            Private Sub mPersonnelMgmt_Click(sender As Object, e As EventArgs) Handles mPersonnelMgmt.Click, btnToolPersonnelMgmt.Click
+            Dim frm As New PersonnelManagementForm()
+            frm.ShowDialog()
+        End Sub
     End Class
 End Namespace
+
+

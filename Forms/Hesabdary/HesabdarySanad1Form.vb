@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -366,12 +366,12 @@ Namespace Sys_Hes_Anb.Forms
                     LoadEntries()
 
                     If returnToLedger Then
-                        Dim parentForm = TryCast(Application.OpenForms("HesabdaryForm"), HesabdaryForm)
+                        Dim parentForm = TryCast(Application.OpenForms("HesabdaryMainForm"), HesabdaryMainForm)
                         If parentForm IsNot Nothing Then
                             parentForm.SwitchToLedgerTabAndRefresh()
                         End If
                     ElseIf returnToDaftarShenavar Then
-                        Dim parentForm = TryCast(Application.OpenForms("HesabdaryForm"), HesabdaryForm)
+                        Dim parentForm = TryCast(Application.OpenForms("HesabdaryMainForm"), HesabdaryMainForm)
                         If parentForm IsNot Nothing Then
                             parentForm.SwitchToDaftarShenavarTabAndRefresh()
                         End If
