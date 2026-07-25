@@ -264,5 +264,14 @@ Namespace Sys_Hes_Anb.Forms
                 tvLayout.SelectedNode = e.Node
             End If
         End Sub
-    End Class
+    
+        Private Sub BtnSelectKeeper_Click(sender As Object, e As EventArgs) Handles btnSelectKeeper.Click
+            Using frm As New UserPickerForm()
+                If frm.ShowDialog() = DialogResult.OK Then
+                    txtKeeper.Text = frm.SelectedUserFullName
+                End If
+            End Using
+        End Sub
+
+End Class
 End Namespace

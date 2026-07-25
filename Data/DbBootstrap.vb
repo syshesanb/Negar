@@ -186,6 +186,16 @@ Namespace Sys_Hes_Anb.Data
                 Log("bootstrap:warehousetypes-ok")
                 EnsureWarehouseLocationsTable()
                 Log("bootstrap:warehouselocations-ok")
+                EnsureModyanCodesTable()
+                Log("bootstrap:modyancodes-ok")
+                EnsureWarehouseReceiptsTable()
+                Log("bootstrap:warehousereceipts-ok")
+                EnsurePaymentTables()
+                Log("bootstrap:payment-tables-ok")
+                EnsureCodStandardTable()
+                Log("bootstrap:cod-standard-ok")
+                EnsurePersonsTable()
+                Log("bootstrap:persons-ok")
             Catch ex As Exception
                 Log("bootstrap:error:" & ex.Message & Environment.NewLine & ex.StackTrace)
                 Throw
@@ -541,11 +551,32 @@ Namespace Sys_Hes_Anb.Data
             AddColumnIfMissing("Warehouses", "CostCenter", "TEXT")
             AddColumnIfMissing("Warehouses", "AllowNegativeStock", "BOOLEAN")
             AddColumnIfMissing("Warehouses", "Description", "TEXT")
+
+            ' Ensure extra PurchaseInvoices & Details columns
+            AddColumnIfMissing("PurchaseInvoices", "InvoiceType", "TEXT")
+            AddColumnIfMissing("PurchaseInvoices", "VendorInvoiceNumber", "TEXT")
+            AddColumnIfMissing("PurchaseInvoices", "DiscountAmount", "DECIMAL")
+            AddColumnIfMissing("PurchaseInvoices", "PaymentType", "TEXT")
+            AddColumnIfMissing("PurchaseInvoices", "Description", "TEXT")
+            AddColumnIfMissing("PurchaseInvoices", "TaxEntryMode", "INTEGER")
+            AddColumnIfMissing("PurchaseInvoices", "TotalVat", "DECIMAL")
+            AddColumnIfMissing("PurchaseInvoices", "ReceiptStatus", "TEXT")
+            AddColumnIfMissing("PurchaseInvoiceDetails", "Discount", "DECIMAL")
+            AddColumnIfMissing("PurchaseInvoiceDetails", "Vat", "DECIMAL")
+            AddColumnIfMissing("PurchaseInvoiceDetails", "ReceivedQuantity", "DECIMAL")
+            AddColumnIfMissing("SarfaslShenavar", "CreatedBy", "INTEGER")
+            AddColumnIfMissing("Products", "DefaultWarehouseID", "INTEGER")
             
             Try
                 Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_Products_GroupID ON Products (ProductGroupID)")
             Catch ex As Exception
                 ' Index might already exist or table lock
+            End Try
+
+            Try
+                Sql.ExecuteNonQuery("UPDATE PurchaseInvoiceDetails SET ReceivedQuantity = Quantity WHERE ReceivedQuantity IS NULL")
+                Sql.ExecuteNonQuery("UPDATE PurchaseInvoiceDetails SET ReceivedQuantity = 0 WHERE DetailID NOT IN (SELECT PurchaseInvoiceDetailID FROM WarehouseReceiptDetails)")
+            Catch ex As Exception
             End Try
 
 
@@ -914,6 +945,172 @@ Namespace Sys_Hes_Anb.Data
                 Log("EnsureWarehouseLocationsTable error: " & ex.Message)
             End Try
         End Sub
+
+        Private Sub EnsureModyanCodesTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS ModyanCodes (" &
+                    "CodeID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ModyanCode TEXT UNIQUE NOT NULL, " &
+                    "Description TEXT, " &
+                    "CategoryName TEXT, " &
+                    "TaxRate DECIMAL, " &
+                    "IsActive BOOLEAN);"
+                )
+                AddColumnIfMissing("ModyanCodes", "CodeType", "TEXT")
+                AddColumnIfMissing("ModyanCodes", "Brand", "TEXT")
+                AddColumnIfMissing("ModyanCodes", "TechnicalSpecs", "TEXT")
+                AddColumnIfMissing("ModyanCodes", "ParentID", "INTEGER")
+            Catch ex As Exception
+                Log("EnsureModyanCodesTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureWarehouseReceiptsTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS WarehouseReceipts (" &
+                    "ReceiptID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ReceiptNumber TEXT NOT NULL, " &
+                    "ReceiptDate DATETIME, " &
+                    "PurchaseInvoiceID INTEGER NOT NULL, " &
+                    "CreatedBy INTEGER, " &
+                    "WarehouseID INTEGER, " &
+                    "Description TEXT);"
+                )
+                Sql.ExecuteNonQuery("CREATE UNIQUE INDEX IF NOT EXISTS IX_WarehouseReceipts_Number ON WarehouseReceipts (ReceiptNumber)")
+                
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS WarehouseReceiptDetails (" &
+                    "ReceiptDetailID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ReceiptID INTEGER NOT NULL, " &
+                    "PurchaseInvoiceDetailID INTEGER NOT NULL, " &
+                    "ProductID INTEGER NOT NULL, " &
+                    "Quantity REAL);"
+                )
+            Catch ex As Exception
+                Log("EnsureWarehouseReceiptsTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsurePaymentTables()
+            Try
+                ' جدول پرداخت‌های فاکتور خرید
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS PurchaseInvoicePayments (" &
+                    "PaymentID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "PurchaseInvoiceID INTEGER NOT NULL, " &
+                    "PaymentDate DATE NOT NULL, " &
+                    "PaymentType TEXT NOT NULL, " &
+                    "Amount REAL NOT NULL, " &
+                    "DueDate DATE, " &
+                    "Description TEXT, " &
+                    "CreatedBy TEXT, " &
+                    "CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP);"
+                )
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_PIPay_Invoice ON PurchaseInvoicePayments (PurchaseInvoiceID)")
+
+                ' جدول چک‌های خرید
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS PurchaseChecks (" &
+                    "CheckID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "PaymentID INTEGER NOT NULL, " &
+                    "CheckNumber TEXT NOT NULL, " &
+                    "BankName TEXT, " &
+                    "BranchName TEXT, " &
+                    "AccountNumber TEXT, " &
+                    "Amount REAL NOT NULL, " &
+                    "DueDate DATE, " &
+                    "Status TEXT NOT NULL DEFAULT 'در جریان', " &
+                    "ExchangedWithCheckID INTEGER, " &
+                    "BounceFee REAL, " &
+                    "Notes TEXT, " &
+                    "CreatedBy TEXT, " &
+                    "CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP);"
+                )
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_PCh_Payment ON PurchaseChecks (PaymentID)")
+
+                ' جدول تاریخچه وضعیت چک
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS CheckStatusHistory (" &
+                    "HistoryID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CheckID INTEGER NOT NULL, " &
+                    "ChangeDate DATE NOT NULL, " &
+                    "OldStatus TEXT, " &
+                    "NewStatus TEXT NOT NULL, " &
+                    "NewCheckID INTEGER, " &
+                    "BounceFee REAL, " &
+                    "Description TEXT, " &
+                    "ChangedBy TEXT, " &
+                    "ChangedAt DATETIME DEFAULT CURRENT_TIMESTAMP);"
+                )
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_CSH_Check ON CheckStatusHistory (CheckID)")
+            Catch ex As Exception
+                Log("EnsurePaymentTables error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsurePersonsTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS Persons (" &
+                    "PersonID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CompanyID INTEGER NOT NULL, " &
+                    "PersonType TEXT NOT NULL DEFAULT 'حقیقی', " & ' حقیقی / حقوقی
+                    "RoleType TEXT NOT NULL DEFAULT 'هر دو', " & ' فروشنده / خریدار / هر دو
+                    "PersonCode TEXT NOT NULL, " &
+                    "FirstName TEXT, " &
+                    "LastName TEXT, " &
+                    "CompanyName TEXT, " &
+                    "NationalCode TEXT, " & ' کدملی / شناسه ملی
+                    "EconomicCode TEXT, " & ' کد اقتصادی
+                    "RegistrationNumber TEXT, " & ' شماره ثبت
+                    "Phone TEXT, " &
+                    "Mobile TEXT, " &
+                    "Address TEXT, " &
+                    "PostalCode TEXT, " &
+                    "ShenavarID INTEGER, " & ' لینک مستقیم به حساب شناور (SarfaslShenavar)
+                    "IsActive BOOLEAN DEFAULT 1, " &
+                    "CreatedBy INTEGER, " &
+                    "CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP);"
+                )
+
+                Try
+                    Sql.ExecuteNonQuery("ALTER TABLE SarfaslShenavar ADD COLUMN PersonID INTEGER;")
+                Catch
+                End Try
+                Try
+                    Sql.ExecuteNonQuery("ALTER TABLE SarfaslShenavar ADD COLUMN CreatedBy INTEGER;")
+                Catch
+                End Try
+            Catch ex As Exception
+                Log("EnsurePersonsTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureCodStandardTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS Cod_Standard (" &
+                    "AccountID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CompanyID INTEGER DEFAULT 0, " &
+                    "AccountCode TEXT NOT NULL, " &
+                    "AccountName TEXT NOT NULL, " &
+                    "AccountType TEXT NOT NULL, " &
+                    "ParentAccountID INTEGER, " &
+                    "IsActive BOOLEAN DEFAULT 1, " &
+                    "AccountNature TEXT);"
+                )
+                
+                Try
+                    Sql.ExecuteNonQuery("ALTER TABLE Companies ADD COLUMN CodingType TEXT;")
+                Catch
+                End Try
+            Catch ex As Exception
+                Log("EnsureCodStandardTable error: " & ex.Message)
+            End Try
+        End Sub
+
         Private Sub Log(message As String)
 
             Try

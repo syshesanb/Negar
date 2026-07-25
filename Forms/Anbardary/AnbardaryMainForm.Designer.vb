@@ -21,6 +21,7 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents tabProductGroups As TabPage
         Friend WithEvents tabProducts As TabPage
         Friend WithEvents tabWarehouses As TabPage
+        Friend WithEvents tabVendorsCustomers As TabPage
         Friend WithEvents tabPurchase As TabPage
         Friend WithEvents tabSales As TabPage
         Friend WithEvents tabTransfer As TabPage
@@ -37,6 +38,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabProductGroups = New TabPage()
             Me.tabProducts = New TabPage()
             Me.tabWarehouses = New TabPage()
+            Me.tabVendorsCustomers = New TabPage()
             Me.tabPurchase = New TabPage()
             Me.tabSales = New TabPage()
             Me.tabTransfer = New TabPage()
@@ -61,6 +63,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabs.Controls.Add(Me.tabProductGroups)
             Me.tabs.Controls.Add(Me.tabProducts)
             Me.tabs.Controls.Add(Me.tabWarehouses)
+            Me.tabs.Controls.Add(Me.tabVendorsCustomers)
             Me.tabs.Controls.Add(Me.tabPurchase)
             Me.tabs.Controls.Add(Me.tabSales)
             Me.tabs.Controls.Add(Me.tabTransfer)
@@ -124,7 +127,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabProducts.Name = "tabProducts"
             Me.tabProducts.Padding = New Padding(3)
             Me.tabProducts.Size = New Size(1312, 733)
-            Me.tabProducts.Text = "نام کالا / خدمات"
+            Me.tabProducts.Text = "نام کالاها و خدمات"
             Me.tabProducts.UseVisualStyleBackColor = True
             '
             'tabWarehouses
@@ -135,6 +138,15 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabWarehouses.Size = New Size(1312, 733)
             Me.tabWarehouses.Text = "تعریف انبار"
             Me.tabWarehouses.UseVisualStyleBackColor = True
+            '
+            'tabVendorsCustomers
+            '
+            Me.tabVendorsCustomers.Location = New Point(4, 23)
+            Me.tabVendorsCustomers.Name = "tabVendorsCustomers"
+            Me.tabVendorsCustomers.Padding = New Padding(3)
+            Me.tabVendorsCustomers.Size = New Size(1312, 733)
+            Me.tabVendorsCustomers.Text = "فروشندگان و خریداران"
+            Me.tabVendorsCustomers.UseVisualStyleBackColor = True
             '
             'tabPurchase
             '

@@ -47,6 +47,7 @@ Namespace Sys_Hes_Anb.Forms
         
         Friend WithEvents lblKeeper As Label
         Friend WithEvents txtKeeper As TextBox
+        Friend WithEvents btnSelectKeeper As Button
         Friend WithEvents lblCostCenter As Label
         Friend WithEvents txtCostCenter As TextBox
 
@@ -92,6 +93,7 @@ Namespace Sys_Hes_Anb.Forms
 
             Me.lblKeeper = New Label()
             Me.txtKeeper = New TextBox()
+            Me.btnSelectKeeper = New Button()
             Me.lblCostCenter = New Label()
             Me.txtCostCenter = New TextBox()
 
@@ -304,6 +306,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             Me.tabManagement.Controls.Add(Me.lblKeeper)
             Me.tabManagement.Controls.Add(Me.txtKeeper)
+            Me.tabManagement.Controls.Add(Me.btnSelectKeeper)
             Me.tabManagement.Controls.Add(Me.lblCostCenter)
             Me.tabManagement.Controls.Add(Me.txtCostCenter)
             Me.tabManagement.Location = New Point(4, 23)
@@ -319,11 +322,18 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblKeeper.Size = New Size(100, 20)
             Me.lblKeeper.Text = "انباردار:"
             
-            Me.txtKeeper.Location = New Point(120, 27)
+            Me.txtKeeper.Location = New Point(155, 27)
             Me.txtKeeper.MaxLength = 100
             Me.txtKeeper.Name = "txtKeeper"
-            Me.txtKeeper.Size = New Size(390, 22)
+            Me.txtKeeper.Size = New Size(355, 22)
             Me.txtKeeper.TabIndex = 0
+
+            Me.btnSelectKeeper.Location = New Point(120, 26)
+            Me.btnSelectKeeper.Name = "btnSelectKeeper"
+            Me.btnSelectKeeper.Size = New Size(30, 24)
+            Me.btnSelectKeeper.TabIndex = 10
+            Me.btnSelectKeeper.Text = "..."
+            Me.btnSelectKeeper.UseVisualStyleBackColor = True
 
             Me.lblCostCenter.Location = New Point(520, 70)
             Me.lblCostCenter.Name = "lblCostCenter"

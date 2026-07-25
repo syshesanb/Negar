@@ -26,6 +26,7 @@ Namespace Sys_Hes_Anb.Forms
         Private _selectedBaseUomName As String = ""
         Private _selectedSecondaryUomId As Integer = 0
         Private _selectedSecondaryUomName As String = ""
+        Private _selectedDefaultWarehouseId As Integer? = Nothing
 
         ' Product Images (Slots 1 to 6)
         Private _imagePaths(6) As String
@@ -232,6 +233,20 @@ Namespace Sys_Hes_Anb.Forms
                     numMinStock.Value = If(row.IsNull("MinStock"), 0D, Convert.ToDecimal(row("MinStock")))
                     numReorderPoint.Value = If(row.IsNull("ReorderPoint"), 0D, Convert.ToDecimal(row("ReorderPoint")))
                     numMaxStock.Value = If(row.IsNull("MaxStock"), 0D, Convert.ToDecimal(row("MaxStock")))
+
+                    ' Default Warehouse
+                    If row.Table.Columns.Contains("DefaultWarehouseID") AndAlso Not row.IsNull("DefaultWarehouseID") Then
+                        _selectedDefaultWarehouseId = Convert.ToInt32(row("DefaultWarehouseID"))
+                        Dim wRow = _service.GetWarehouseById(_selectedDefaultWarehouseId.Value)
+                        If wRow IsNot Nothing Then
+                            lblDefaultWarehouseName.Text = Convert.ToString(wRow("WarehouseName"))
+                        Else
+                            lblDefaultWarehouseName.Text = ""
+                        End If
+                    Else
+                        _selectedDefaultWarehouseId = Nothing
+                        lblDefaultWarehouseName.Text = ""
+                    End If
 
                     ' Tracking type
                     Dim trackingVal = Convert.ToString(row("TrackingType"))
@@ -497,7 +512,8 @@ Namespace Sys_Hes_Anb.Forms
                     _imagePaths(3),
                     _imagePaths(4),
                     _imagePaths(5),
-                    _imagePaths(6))
+                    _imagePaths(6),
+                    _selectedDefaultWarehouseId)
 
                 ' Step 2: Handle Image Files Copying / Saving
                 Dim imgDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProductImages")
@@ -573,7 +589,8 @@ Namespace Sys_Hes_Anb.Forms
                         _imagePaths(3),
                         _imagePaths(4),
                         _imagePaths(5),
-                        _imagePaths(6))
+                        _imagePaths(6),
+                        _selectedDefaultWarehouseId)
                 End If
 
                 MessageBox.Show("اطلاعات کالا با موفقیت ذخیره شد.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -584,7 +601,48 @@ Namespace Sys_Hes_Anb.Forms
             End Try
         End Sub
 
-        Private Sub btnSelectLocation_Click(sender As Object, e As EventArgs) Handles btnSelectLocation.Click
+        Private Sub BtnSelectDefaultWarehouse_Click(sender As Object, e As EventArgs) Handles btnSelectDefaultWarehouse.Click
+            Dim warehouses = _service.GetWarehouses()
+            If warehouses Is Nothing OrElse warehouses.Rows.Count = 0 Then
+                MessageBox.Show("هیچ انباری در سیستم تعریف نشده است.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            Using dlg As New Form()
+                dlg.Text = "انتخاب انبار پیش فرض"
+                dlg.Size = New Size(450, 350)
+                dlg.StartPosition = FormStartPosition.CenterParent
+                dlg.RightToLeft = RightToLeft.Yes
+                dlg.RightToLeftLayout = True
+
+                Dim grid As New DataGridView()
+                grid.Dock = DockStyle.Fill
+                grid.DataSource = warehouses
+                grid.ReadOnly = True
+                grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                grid.MultiSelect = False
+                grid.AllowUserToAddRows = False
+                grid.RowHeadersVisible = False
+
+                dlg.Controls.Add(grid)
+
+                AddHandler grid.CellDoubleClick, Sub(s, ea)
+                                                     If ea.RowIndex >= 0 Then
+                                                         dlg.Tag = grid.Rows(ea.RowIndex).DataBoundItem
+                                                         dlg.DialogResult = DialogResult.OK
+                                                         dlg.Close()
+                                                     End If
+                                                 End Sub
+
+                If dlg.ShowDialog() = DialogResult.OK AndAlso dlg.Tag IsNot Nothing Then
+                    Dim drv = DirectCast(dlg.Tag, DataRowView)
+                    _selectedDefaultWarehouseId = Convert.ToInt32(drv("WarehouseID"))
+                    lblDefaultWarehouseName.Text = Convert.ToString(drv("WarehouseName"))
+                End If
+            End Using
+        End Sub
+
+        Private Sub BtnSelectLocation_Click(sender As Object, e As EventArgs) Handles btnSelectLocation.Click
             Using frm As New LocationSelectorForm()
                 If frm.ShowDialog() = DialogResult.OK Then
                     _locationId = frm.SelectedLocationID

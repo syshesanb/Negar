@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -8,6 +8,16 @@ Imports Sys_Hes_Anb.Data
 
 Namespace Sys_Hes_Anb.Business
     Public Class ShenavarService
+
+        Public Function GetAllAccounts() As DataTable
+            If Not SessionContext.CurrentCompanyID.HasValue Then Return New DataTable()
+            Dim companyId = SessionContext.CurrentCompanyID.Value
+            Return Sql.ExecuteTable(
+                "SELECT ShenavarID AS AccountID, AccountCode, AccountName, " &
+                "ParentShenavarID AS ParentAccountID, IsActive " &
+                "FROM SarfaslShenavar WHERE CompanyID = ? ORDER BY AccountCode",
+                companyId)
+        End Function
 
         Public Function GetByParent(parentId As Integer?) As DataTable
             If Not SessionContext.CurrentCompanyID.HasValue Then Return New DataTable()

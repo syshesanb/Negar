@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -67,6 +67,7 @@
     <Compile Include="Business\SecurityService.vb" />
     <Compile Include="Business\UserService.vb" />
     <Compile Include="Business\CatalogService.vb" />
+    <Compile Include="Business\ModyanCodeService.vb" />
     <Compile Include="Business\PersonnelService.vb" />
     <Compile Include="Forms\Controls\PersonnelManagementControl.vb">
       <SubType>UserControl</SubType>
@@ -91,6 +92,8 @@
     <Compile Include="Business\SettingsService.vb" />
     <Compile Include="Business\BackupRestoreService.vb" />
     <Compile Include="Business\InvoiceService.vb" />
+    <Compile Include="Business\PersonService.vb" />
+    <Compile Include="Business\PaymentService.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">
@@ -177,8 +180,20 @@
     <Compile Include="Forms\Anbardary\AnbardaryKharid2Form.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryReceiptsHistoryForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Anbardary\AnbardaryKharid2Form.Designer.vb">
       <DependentUpon>AnbardaryKharid2Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\PaymentEntryForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\CheckManagementForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\VendorsCustomersControl.vb">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\HasteAsly\Karbaran\UserManagementForm.vb">
       <SubType>Form</SubType>
@@ -209,6 +224,18 @@
     </Compile>
     <Compile Include="Forms\Anbardary\AnbardaryNamKala1Form.Designer.vb">
       <DependentUpon>AnbardaryNamKala1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryModyanCodes1Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryModyanCodes1Form.Designer.vb">
+      <DependentUpon>AnbardaryModyanCodes1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryModyanCodes2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryModyanCodes2Form.Designer.vb">
+      <DependentUpon>AnbardaryModyanCodes2Form.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\Anbardary\AnbardaryNamKala2Form.vb">
       <SubType>Form</SubType>
@@ -501,6 +528,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Moshtarak\PersianCalendarViewForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\UserPickerForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Moshtarak\ShenavarTreePickerForm.vb">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

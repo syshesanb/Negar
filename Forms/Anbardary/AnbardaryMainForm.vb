@@ -39,6 +39,7 @@ Namespace Sys_Hes_Anb.Forms
                 progress.UpdateProgress(50, "بارگذاری تعریف انبارها...")
 
                 If tabs.TabPages.Contains(tabWarehouses) Then HostForm(tabWarehouses, New AnbardaryNamAnbar1Form())
+                If tabs.TabPages.Contains(tabVendorsCustomers) Then HostControl(tabVendorsCustomers, New Sys_Hes_Anb.Forms.Controls.VendorsCustomersControl())
                 progress.UpdateProgress(70, "بارگذاری فاکتورهای خرید...")
 
                 If tabs.TabPages.Contains(tabPurchase) Then HostForm(tabPurchase, New AnbardaryKharid1Form())
@@ -53,6 +54,26 @@ Namespace Sys_Hes_Anb.Forms
                 If tabs.TabPages.Contains(tabInventory) Then HostForm(tabInventory, New MojodyAnbarFormRep())
                 progress.UpdateProgress(100, "اتمام بارگذاری ماژول انبارداری")
             End Using
+
+            ' بررسی چک‌های نزدیک سررسید (۷ روز آینده)
+            CheckUpcomingChecksAlert()
+        End Sub
+
+        Private Sub CheckUpcomingChecksAlert()
+            Try
+                Dim paySvc As New PaymentService()
+                Dim upcomingDt = paySvc.GetUpcomingChecks(7)
+                If upcomingDt IsNot Nothing AndAlso upcomingDt.Rows.Count > 0 Then
+                    Dim msg = $"هشدار: تعداد {upcomingDt.Rows.Count} فقره چک تا ۷ روز آینده سررسید دارند!" & Environment.NewLine &
+                              "آیا می‌خواهید فرم مدیریت چک‌ها را جهت بررسی باز کنید؟"
+                    If MessageBox.Show(msg, "هشدار سررسید چک", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = DialogResult.Yes Then
+                        Using dlg As New CheckManagementForm()
+                            dlg.ShowDialog()
+                        End Using
+                    End If
+                End If
+            Catch
+            End Try
         End Sub
 
         Private Sub ApplySecurity()
@@ -89,6 +110,13 @@ Namespace Sys_Hes_Anb.Forms
             child.Visible = True
             targetTab.Controls.Add(child)
             child.Show()
+            child.BringToFront()
+        End Sub
+
+        Private Sub HostControl(targetTab As TabPage, child As Control)
+            child.Dock = DockStyle.Fill
+            child.Visible = True
+            targetTab.Controls.Add(child)
             child.BringToFront()
         End Sub
     End Class

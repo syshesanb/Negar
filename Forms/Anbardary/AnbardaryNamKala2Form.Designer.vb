@@ -136,6 +136,9 @@ Namespace Sys_Hes_Anb.Forms
         Friend WithEvents btnSelectLocation As Button
         Friend WithEvents lblPhysicalLocationName As Label
         Friend WithEvents lblPhysicalLocationCode As Label
+        Friend WithEvents lblDefaultWarehouseTitle As Label
+        Friend WithEvents btnSelectDefaultWarehouse As Button
+        Friend WithEvents lblDefaultWarehouseName As Label
         Friend WithEvents chkActive As CheckBox
 
         ' Main Buttons
@@ -266,6 +269,9 @@ Namespace Sys_Hes_Anb.Forms
             Me.btnSelectLocation = New Button()
             Me.lblPhysicalLocationName = New Label()
             Me.lblPhysicalLocationCode = New Label()
+            Me.lblDefaultWarehouseTitle = New Label()
+            Me.btnSelectDefaultWarehouse = New Button()
+            Me.lblDefaultWarehouseName = New Label()
             Me.chkActive = New CheckBox()
 
             ' Main Buttons
@@ -934,8 +940,6 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabPricing.Controls.Add(Me.grpSalePricingProduct)
             Me.tabPricing.Controls.Add(Me.lblTaxPercent)
             Me.tabPricing.Controls.Add(Me.numTaxPercent)
-            Me.tabPricing.Controls.Add(Me.lblTollPercent)
-            Me.tabPricing.Controls.Add(Me.numTollPercent)
             Me.tabPricing.Location = New Point(4, 23)
             Me.tabPricing.Name = "tabPricing"
             Me.tabPricing.Padding = New Padding(10)
@@ -1227,7 +1231,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblTaxPercent.Name = "lblTaxPercent"
             Me.lblTaxPercent.Size = New Size(160, 20)
             Me.lblTaxPercent.TabIndex = 8
-            Me.lblTaxPercent.Text = "درصد مالیات:"
+            Me.lblTaxPercent.Text = "درصد مالیات و عوارض:"
             Me.lblTaxPercent.TextAlign = ContentAlignment.MiddleLeft
             '
             'numTaxPercent
@@ -1249,6 +1253,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblTollPercent.TabIndex = 10
             Me.lblTollPercent.Text = "درصد عوارض:"
             Me.lblTollPercent.TextAlign = ContentAlignment.MiddleLeft
+            Me.lblTollPercent.Visible = False
             '
             'numTollPercent
             '
@@ -1259,6 +1264,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.numTollPercent.Size = New Size(120, 22)
             Me.numTollPercent.TabIndex = 11
             Me.numTollPercent.TextAlign = HorizontalAlignment.Center
+            Me.numTollPercent.Visible = False
 
             '
             'tabInventory
@@ -1271,6 +1277,9 @@ Namespace Sys_Hes_Anb.Forms
             Me.tabInventory.Controls.Add(Me.numMaxStock)
             Me.tabInventory.Controls.Add(Me.lblTrackingType)
             Me.tabInventory.Controls.Add(Me.cmbTrackingType)
+            Me.tabInventory.Controls.Add(Me.lblDefaultWarehouseTitle)
+            Me.tabInventory.Controls.Add(Me.btnSelectDefaultWarehouse)
+            Me.tabInventory.Controls.Add(Me.lblDefaultWarehouseName)
             Me.tabInventory.Controls.Add(Me.lblPhysicalLocation)
             Me.tabInventory.Controls.Add(Me.btnSelectLocation)
             Me.tabInventory.Controls.Add(Me.lblPhysicalLocationName)
@@ -1361,9 +1370,35 @@ Namespace Sys_Hes_Anb.Forms
             Me.cmbTrackingType.TabIndex = 3
 
             '
+            'lblDefaultWarehouseTitle
+            '
+            Me.lblDefaultWarehouseTitle.Location = New Point(600, 155)
+            Me.lblDefaultWarehouseTitle.Name = "lblDefaultWarehouseTitle"
+            Me.lblDefaultWarehouseTitle.Size = New Size(140, 20)
+            Me.lblDefaultWarehouseTitle.Text = "نام انبار پیش فرض:"
+            Me.lblDefaultWarehouseTitle.TextAlign = ContentAlignment.MiddleLeft
+            '
+            'btnSelectDefaultWarehouse
+            '
+            Me.btnSelectDefaultWarehouse.Location = New Point(555, 149)
+            Me.btnSelectDefaultWarehouse.Name = "btnSelectDefaultWarehouse"
+            Me.btnSelectDefaultWarehouse.Size = New Size(35, 26)
+            Me.btnSelectDefaultWarehouse.TabIndex = 4
+            Me.btnSelectDefaultWarehouse.Text = "..."
+            Me.btnSelectDefaultWarehouse.UseVisualStyleBackColor = True
+            '
+            'lblDefaultWarehouseName
+            '
+            Me.lblDefaultWarehouseName.Location = New Point(20, 149)
+            Me.lblDefaultWarehouseName.Name = "lblDefaultWarehouseName"
+            Me.lblDefaultWarehouseName.Size = New Size(525, 22)
+            Me.lblDefaultWarehouseName.BorderStyle = BorderStyle.FixedSingle
+            Me.lblDefaultWarehouseName.TextAlign = ContentAlignment.MiddleLeft
+
+            '
             'lblPhysicalLocation
             '
-            Me.lblPhysicalLocation.Location = New Point(600, 155)
+            Me.lblPhysicalLocation.Location = New Point(600, 190)
             Me.lblPhysicalLocation.Name = "lblPhysicalLocation"
             Me.lblPhysicalLocation.Size = New Size(140, 20)
             Me.lblPhysicalLocation.Text = "محل فیزیکی در انبار:"
@@ -1371,16 +1406,16 @@ Namespace Sys_Hes_Anb.Forms
             '
             'btnSelectLocation
             '
-            Me.btnSelectLocation.Location = New Point(555, 149)
+            Me.btnSelectLocation.Location = New Point(555, 184)
             Me.btnSelectLocation.Name = "btnSelectLocation"
             Me.btnSelectLocation.Size = New Size(35, 26)
-            Me.btnSelectLocation.TabIndex = 4
+            Me.btnSelectLocation.TabIndex = 5
             Me.btnSelectLocation.Text = "..."
             Me.btnSelectLocation.UseVisualStyleBackColor = True
             '
             'lblPhysicalLocationName
             '
-            Me.lblPhysicalLocationName.Location = New Point(20, 149)
+            Me.lblPhysicalLocationName.Location = New Point(20, 184)
             Me.lblPhysicalLocationName.Name = "lblPhysicalLocationName"
             Me.lblPhysicalLocationName.Size = New Size(525, 22)
             Me.lblPhysicalLocationName.BorderStyle = BorderStyle.FixedSingle
@@ -1388,7 +1423,7 @@ Namespace Sys_Hes_Anb.Forms
             '
             'lblPhysicalLocationCode
             '
-            Me.lblPhysicalLocationCode.Location = New Point(20, 175)
+            Me.lblPhysicalLocationCode.Location = New Point(20, 210)
             Me.lblPhysicalLocationCode.Name = "lblPhysicalLocationCode"
             Me.lblPhysicalLocationCode.Size = New Size(525, 22)
             Me.lblPhysicalLocationCode.BorderStyle = BorderStyle.FixedSingle
@@ -1400,10 +1435,10 @@ Namespace Sys_Hes_Anb.Forms
             Me.chkActive.AutoSize = True
             Me.chkActive.Checked = True
             Me.chkActive.CheckState = CheckState.Checked
-            Me.chkActive.Location = New Point(470, 210)
+            Me.chkActive.Location = New Point(470, 245)
             Me.chkActive.Name = "chkActive"
             Me.chkActive.Size = New Size(120, 18)
-            Me.chkActive.TabIndex = 5
+            Me.chkActive.TabIndex = 6
             Me.chkActive.Text = "کالا فعال است"
             Me.chkActive.UseVisualStyleBackColor = True
 

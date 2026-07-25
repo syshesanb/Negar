@@ -202,6 +202,26 @@ CREATE TABLE PurchaseInvoiceDetails (
     TotalPrice DECIMAL
 );
 
+CREATE TABLE WarehouseReceipts (
+    ReceiptID INTEGER PRIMARY KEY AUTOINCREMENT,
+    ReceiptNumber TEXT NOT NULL,
+    ReceiptDate DATETIME,
+    PurchaseInvoiceID INTEGER NOT NULL,
+    CreatedBy INTEGER,
+    WarehouseID INTEGER,
+    Description TEXT
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS IX_WarehouseReceipts_Number ON WarehouseReceipts (ReceiptNumber);
+
+CREATE TABLE WarehouseReceiptDetails (
+    ReceiptDetailID INTEGER PRIMARY KEY AUTOINCREMENT,
+    ReceiptID INTEGER NOT NULL,
+    PurchaseInvoiceDetailID INTEGER NOT NULL,
+    ProductID INTEGER NOT NULL,
+    Quantity REAL
+);
+
 CREATE TABLE SalesInvoices (
     InvoiceID INTEGER PRIMARY KEY AUTOINCREMENT,
     InvoiceNumber TEXT NOT NULL,

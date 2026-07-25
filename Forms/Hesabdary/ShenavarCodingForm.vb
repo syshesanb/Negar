@@ -4,6 +4,7 @@ Option Explicit On
 Imports System
 Imports System.Data
 Imports System.Drawing
+Imports System.Collections.Generic
 Imports System.Windows.Forms
 Imports Sys_Hes_Anb.Business
 
@@ -11,14 +12,33 @@ Namespace Sys_Hes_Anb.Forms
     Partial Class ShenavarCodingForm
         Inherits Form
 
+        Public Class ShenavarNode
+            Public AccountID As Integer
+            Public AccountCode As String
+            Public AccountName As String
+            Public IsActive As Boolean
+            Public ParentAccountID As Integer?
+            Public Level As Integer = 0
+            Public IsExpanded As Boolean = True
+            Public Children As New List(Of ShenavarNode)()
+
+            Public ReadOnly Property HasChildren As Boolean
+                Get
+                    Return Children.Count > 0
+                End Get
+            End Property
+        End Class
+
         Private ReadOnly service As New ShenavarService()
 
         Private Declare Auto Function SendMessage Lib "user32" (hWnd As IntPtr, msg As Integer, wParam As IntPtr, lParam As String) As IntPtr
         Private Const EM_SETCUEBANNER As Integer = &H1501
 
+        Private _nodeDict As New Dictionary(Of Integer, ShenavarNode)()
+        Private _rootNodes As New List(Of ShenavarNode)()
+
         Private _currentParentId As Integer? = Nothing
         Private _currentParentName As String = String.Empty
-        Private _currentDataTable As DataTable = Nothing
         Private _editAccountId As Integer? = Nothing
         Private _editParentId As Integer? = Nothing
 
@@ -26,12 +46,10 @@ Namespace Sys_Hes_Anb.Forms
         Public Property SelectMode As Boolean = False
         Public Property SelectedShenavarID As Integer? = Nothing
 
-        ' کَش حساب‌هایی که دارای فرزند هستند (برای رنگ‌بندی دکمه انتخاب)
-        Private _accountsWithChildren As New System.Collections.Generic.HashSet(Of Integer)()
+        ' کَش حساب‌هایی که دارای فرزند هستند
+        Private _accountsWithChildren As New HashSet(Of Integer)()
 
         Private Const ColBtnSelect As String = "colBtnSelect"
-        Private Const ColBtnUp As String = "colBtnUp"
-        Private Const ColBtnDown As String = "colBtnDown"
         Private Const ColBtnEdit As String = "colBtnEdit"
         Private Const ColBtnDelete As String = "colBtnDelete"
 
@@ -40,14 +58,14 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub ShenavarCodingForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
-            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
-            If Me.dgvAccounts IsNot Nothing Then Me.dgvAccounts.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
+            ThemeHelper.ApplyFormTheme(Me)
+            ThemeHelper.AppendStatusBar(Me)
+            If Me.dgvAccounts IsNot Nothing Then Me.dgvAccounts.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(242, 248, 255)
             SetupGrid()
             cmbSearchLevel.SelectedIndex = 0
             SendMessage(txtSearchCode.Handle, EM_SETCUEBANNER, New IntPtr(1), "جستجوی کد...")
             SendMessage(txtSearchName.Handle, EM_SETCUEBANNER, New IntPtr(1), "جستجوی نام...")
-            LoadByParent(Nothing)
+            LoadTreeData()
             If SelectMode Then
                 dgvAccounts.Columns(ColBtnSelect).Visible = True
             End If
@@ -57,6 +75,14 @@ Namespace Sys_Hes_Anb.Forms
         Private Sub SetupGrid()
             dgvAccounts.Columns.Clear()
 
+            ' Toggle button (+ / -)
+            Dim colToggle As New DataGridViewTextBoxColumn()
+            colToggle.Name = "colToggle"
+            colToggle.HeaderText = ""
+            colToggle.Width = 35
+            colToggle.ReadOnly = True
+            colToggle.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
             Dim colSelect As New DataGridViewButtonColumn()
             colSelect.Name = ColBtnSelect
             colSelect.HeaderText = "انتخاب"
@@ -65,22 +91,6 @@ Namespace Sys_Hes_Anb.Forms
             colSelect.Width = 64
             colSelect.FlatStyle = FlatStyle.Standard
             colSelect.Visible = False
-
-            Dim colUp As New DataGridViewButtonColumn()
-            colUp.Name = ColBtnUp
-            colUp.HeaderText = "سطح قبل"
-            colUp.Text = "سطح قبل"
-            colUp.UseColumnTextForButtonValue = True
-            colUp.Width = 72
-            colUp.FlatStyle = FlatStyle.Standard
-
-            Dim colDown As New DataGridViewButtonColumn()
-            colDown.Name = ColBtnDown
-            colDown.HeaderText = "سطح بعد"
-            colDown.Text = "سطح بعد"
-            colDown.UseColumnTextForButtonValue = True
-            colDown.Width = 72
-            colDown.FlatStyle = FlatStyle.Standard
 
             Dim colEdit As New DataGridViewButtonColumn()
             colEdit.Name = ColBtnEdit
@@ -128,81 +138,198 @@ Namespace Sys_Hes_Anb.Forms
             colActive.ReadOnly = True
 
             dgvAccounts.Columns.AddRange(New DataGridViewColumn() {
-                colSelect, colUp, colDown, colEdit, colDel,
+                colToggle, colSelect, colEdit, colDel,
                 colAccountId, colParentId,
                 colCode, colName, colActive})
         End Sub
 
         Public Sub RefreshData()
-            LoadByParent(_currentParentId)
+            LoadTreeData()
         End Sub
 
-        Private Sub LoadByParent(parentId As Integer?)
+        Private Sub LoadTreeData()
+            Dim dt As DataTable
             Using progress As New ProgressForm()
                 progress.ShowAndCenter(Me)
-                progress.UpdateProgress(20, "دریافت اطلاعات حساب‌های شناور...")
+                progress.UpdateProgress(20, "دریافت اطلاعات حساب‌های شناور از پایگاه داده...")
 
-                _currentParentId = parentId
-                _currentDataTable = service.GetByParent(parentId)
+                Try
+                    dt = service.GetAllAccounts()
+                Catch ex As Exception
+                    MessageBox.Show("خطا در بارگذاری داده‌ها: " & ex.Message, "خطا",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return
+                End Try
 
-                progress.UpdateProgress(50, "تحلیل و کش درخت حساب‌های شناور...")
+                progress.UpdateProgress(60, "تحلیل ساختار درختی حساب‌های شناور...")
 
-                ' در حالت انتخاب، کَش کن که کدام حساب‌ها فرزند دارند تا دکمه رنگ‌آمیزی شود
+                _nodeDict.Clear()
+                _rootNodes.Clear()
                 _accountsWithChildren.Clear()
-                If SelectMode AndAlso _currentDataTable IsNot Nothing Then
-                    Dim parentsWithChildren = service.GetShenavarsWithChildren()
-                    For Each dr As DataRow In _currentDataTable.Rows
-                        Dim idVal = dr("AccountID")
-                        If idVal IsNot Nothing AndAlso idVal IsNot DBNull.Value Then
-                            Dim id = Convert.ToInt32(idVal)
-                            If parentsWithChildren.Contains(id) Then _accountsWithChildren.Add(id)
-                        End If
-                    Next
-                End If
 
-                progress.UpdateProgress(80, "اعمال فیلترهای جستجو و نمایش...")
-                ApplyFilter()
-                UpdateLevelLabel()
+                For Each row As DataRow In dt.Rows
+                    Dim node As New ShenavarNode()
+                    node.AccountID = Convert.ToInt32(row("AccountID"))
+                    node.AccountCode = Convert.ToString(row("AccountCode"))
+                    node.AccountName = Convert.ToString(row("AccountName"))
+                    node.IsActive = If(row.IsNull("IsActive"), True, Convert.ToBoolean(row("IsActive")))
+                    node.ParentAccountID = If(row.IsNull("ParentAccountID"),
+                                              CType(Nothing, Integer?),
+                                              CType(Convert.ToInt32(row("ParentAccountID")), Integer?))
+                    node.IsExpanded = True
+                    _nodeDict(node.AccountID) = node
+                Next
 
-                progress.UpdateProgress(100, "بارگذاری کامل شد")
+                For Each node In _nodeDict.Values
+                    If node.ParentAccountID.HasValue AndAlso _nodeDict.ContainsKey(node.ParentAccountID.Value) Then
+                        _nodeDict(node.ParentAccountID.Value).Children.Add(node)
+                        _accountsWithChildren.Add(node.ParentAccountID.Value)
+                    Else
+                        _rootNodes.Add(node)
+                    End If
+                Next
+
+                SetLevels(_rootNodes, 0)
+                progress.UpdateProgress(100, "بارگذاری درختی کامل شد")
             End Using
+
+            RefreshGrid()
         End Sub
 
-        Private Sub ApplyFilter()
+        Private Sub SetLevels(nodes As List(Of ShenavarNode), level As Integer)
+            If level > 20 Then Return
+            For Each node In nodes
+                node.Level = level
+                SetLevels(node.Children, level + 1)
+            Next
+        End Sub
+
+        Private Sub RefreshGrid()
+            Try
+                If dgvAccounts Is Nothing OrElse dgvAccounts.Columns.Count = 0 Then Return
+                dgvAccounts.SuspendLayout()
+                dgvAccounts.Rows.Clear()
+
+                Dim displayList As New List(Of ShenavarNode)()
+                BuildDisplayList(_rootNodes, displayList)
+
+                For Each node In displayList
+                    Dim rowIdx = dgvAccounts.Rows.Add()
+                    Dim row = dgvAccounts.Rows(rowIdx)
+                    row.Tag = node
+
+                    row.Cells("colToggle").Value = GetToggleText(node)
+                    row.Cells("colAccountID").Value = node.AccountID
+                    row.Cells("colParentAccountID").Value = node.ParentAccountID
+                    row.Cells("colAccountCode").Value = node.AccountCode
+
+                    Dim indentSpaces As String = New String(Convert.ToChar(160), node.Level * 6)
+                    row.Cells("colAccountName").Value = indentSpaces & node.AccountName
+                    row.Cells("colIsActive").Value = node.IsActive
+
+                    ApplyRowStyle(row, node)
+                Next
+
+                dgvAccounts.ResumeLayout()
+                UpdateLevelLabel()
+            Catch ex As Exception
+                MessageBox.Show("خطا در به‌روزرسانی جدول: " & ex.Message, "خطای جدول", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BuildDisplayList(nodes As List(Of ShenavarNode), result As List(Of ShenavarNode))
             Dim codeF = txtSearchCode.Text.Trim()
             Dim nameF = txtSearchName.Text.Trim()
-            Dim allLevels = (cmbSearchLevel.SelectedIndex = 1)
+            Dim hasFilter = (codeF.Length > 0 OrElse nameF.Length > 0)
 
-            If allLevels AndAlso (codeF.Length > 0 OrElse nameF.Length > 0) Then
-                dgvAccounts.DataSource = service.SearchAll(codeF, nameF)
-            Else
-                If _currentDataTable Is Nothing Then Return
-                Dim parts As New System.Collections.Generic.List(Of String)()
-                If codeF.Length > 0 Then parts.Add("AccountCode LIKE '%" & codeF.Replace("'", "''") & "%'")
-                If nameF.Length > 0 Then parts.Add("AccountName LIKE '%" & nameF.Replace("'", "''") & "%'")
-                _currentDataTable.DefaultView.RowFilter = String.Join(" AND ", parts.ToArray())
-                dgvAccounts.DataSource = _currentDataTable.DefaultView
-            End If
+            For Each node In nodes
+                Dim matchesSearch = True
+                If hasFilter Then
+                    If codeF.Length > 0 AndAlso Not node.AccountCode.Contains(codeF) Then matchesSearch = False
+                    If nameF.Length > 0 AndAlso Not node.AccountName.Contains(nameF) Then matchesSearch = False
+                End If
+
+                Dim showNode = True
+                If hasFilter Then
+                    showNode = matchesSearch OrElse HasAnyMatchingChild(node, codeF, nameF)
+                End If
+
+                If showNode Then
+                    result.Add(node)
+                    If hasFilter Then
+                        node.IsExpanded = True
+                    End If
+
+                    If node.IsExpanded AndAlso node.HasChildren Then
+                        BuildDisplayList(node.Children, result)
+                    End If
+                End If
+            Next
+        End Sub
+
+        Private Function HasAnyMatchingChild(node As ShenavarNode, codeF As String, nameF As String) As Boolean
+            For Each child In node.Children
+                Dim matches = True
+                If codeF.Length > 0 AndAlso Not child.AccountCode.Contains(codeF) Then matches = False
+                If nameF.Length > 0 AndAlso Not child.AccountName.Contains(nameF) Then matches = False
+                If matches Then Return True
+                If HasAnyMatchingChild(child, codeF, nameF) Then Return True
+            Next
+            Return False
+        End Function
+
+        Private Function GetToggleText(node As ShenavarNode) As String
+            If Not node.HasChildren Then Return ""
+            Return If(node.IsExpanded, "−", "+")
+        End Function
+
+        Private Sub ApplyRowStyle(row As DataGridViewRow, node As ShenavarNode)
+            Select Case node.Level
+                Case 0
+                    row.DefaultCellStyle.Font = New Font(dgvAccounts.Font, FontStyle.Bold)
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(195, 218, 255)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(15, 30, 80)
+                Case 1
+                    row.DefaultCellStyle.Font = New Font(dgvAccounts.Font, FontStyle.Bold)
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(215, 232, 255)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(20, 40, 100)
+                Case 2
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(235, 244, 255)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(30, 60, 120)
+                Case Else
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(245, 250, 255)
+                    row.DefaultCellStyle.ForeColor = Color.Black
+            End Select
         End Sub
 
         Private Sub TxtSearchCode_TextChanged(sender As Object, e As EventArgs) Handles txtSearchCode.TextChanged
-            ApplyFilter()
+            RefreshGrid()
         End Sub
 
         Private Sub TxtSearchName_TextChanged(sender As Object, e As EventArgs) Handles txtSearchName.TextChanged
-            ApplyFilter()
+            RefreshGrid()
         End Sub
 
         Private Sub CmbSearchLevel_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbSearchLevel.SelectedIndexChanged
-            ApplyFilter()
+            RefreshGrid()
         End Sub
 
         Private Sub UpdateLevelLabel()
-            If Not _currentParentId.HasValue Then
-                lblCurrentLevel.Text = "سطح جاری: حسابهای شناور اصلی (سطح اول)"
-            Else
-                lblCurrentLevel.Text = "سطح جاری: زیرمجموعه‌های  « " & _currentParentName & " »   (برای بازگشت دکمه «سطح قبل» را کلیک کنید)"
+            lblCurrentLevel.Text = "نمایش درختی و ساختار سلسله‌مراتبی حساب‌های شناور"
+        End Sub
+
+        Private Sub DgvAccounts_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAccounts.CellClick
+            If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
+            If dgvAccounts.Columns(e.ColumnIndex).Name = "colToggle" Then
+                ToggleNode(e.RowIndex)
             End If
+        End Sub
+
+        Private Sub ToggleNode(rowIndex As Integer)
+            Dim node = TryCast(dgvAccounts.Rows(rowIndex).Tag, ShenavarNode)
+            If node Is Nothing OrElse Not node.HasChildren Then Return
+            node.IsExpanded = Not node.IsExpanded
+            RefreshGrid()
         End Sub
 
         Private Sub DgvAccounts_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAccounts.CellContentClick
@@ -212,39 +339,10 @@ Namespace Sys_Hes_Anb.Forms
             Dim accountIdVal = row.Cells("colAccountID").Value
             If accountIdVal Is Nothing OrElse accountIdVal Is DBNull.Value Then Return
             Dim accountId = Convert.ToInt32(accountIdVal)
-            Dim accountName = Convert.ToString(row.Cells("colAccountName").Value)
+            Dim accountName = Convert.ToString(row.Cells("colAccountName").Value).Trim()
             Dim colName = dgvAccounts.Columns(e.ColumnIndex).Name
 
             Select Case colName
-
-                Case ColBtnUp
-                    If Not _currentParentId.HasValue Then
-                        MessageBox.Show("شما در بالاترین سطح این حساب شناور هستید.", "توجه",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Else
-                        Dim grandParentId = service.GetParentId(_currentParentId.Value)
-                        _currentParentName = If(grandParentId.HasValue, service.GetName(grandParentId.Value), String.Empty)
-                        LoadByParent(grandParentId)
-                        HideDataPanel()
-                    End If
-
-                Case ColBtnDown
-                    If Not service.HasChildren(accountId) Then
-                        Dim ans = MessageBox.Show(
-                            "شما در آخرین سطح این سرفصل هستید." & Environment.NewLine &
-                            "آیا می‌خواهید برای آن زیرسطح ایجاد کنید؟",
-                            "توجه", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                        If ans = DialogResult.Yes Then
-                            _currentParentName = accountName
-                            LoadByParent(accountId)
-                            ShowDataPanel(Nothing, accountId)
-                        End If
-                    Else
-                        _currentParentName = accountName
-                        LoadByParent(accountId)
-                        HideDataPanel()
-                    End If
-
                 Case ColBtnEdit
                     Dim parentVal = row.Cells("colParentAccountID").Value
                     Dim parentId As Integer? = Nothing
@@ -254,16 +352,12 @@ Namespace Sys_Hes_Anb.Forms
                     ShowDataPanel(accountId, parentId)
 
                 Case ColBtnSelect
-                    ' انتخاب شناور: اگر فرزند داشت → پیام + ناوبری؛ اگر برگ بود → بازگشت ShenavarID
-                    If _accountsWithChildren.Contains(accountId) Then
-                        MessageBox.Show("این سرفصل حساب ، دارای زیر سطح می باشد",
+                    Dim selectedNode = TryCast(row.Tag, ShenavarNode)
+                    If selectedNode IsNot Nothing AndAlso selectedNode.HasChildren Then
+                        MessageBox.Show("این حساب شناور دارای زیر سطح می‌باشد.",
                                         "توجه", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        _currentParentName = accountName
-                        LoadByParent(accountId)
-                        HideDataPanel()
                     Else
                         SelectedShenavarID = accountId
-                        dgvAccounts.Columns(ColBtnSelect).Visible = False
                         Me.Close()
                     End If
 
@@ -278,43 +372,47 @@ Namespace Sys_Hes_Anb.Forms
                                        "تایید حذف", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                         Try
                             service.Delete(accountId)
-                            LoadByParent(_currentParentId)
+                            LoadTreeData()
                             HideDataPanel()
                         Catch ex As Exception
                             MessageBox.Show("خطا در حذف: " & ex.Message, "خطا",
                                             MessageBoxButtons.OK, MessageBoxIcon.Error)
                         End Try
                     End If
-
             End Select
         End Sub
 
-        Private Sub DgvAccounts_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles dgvAccounts.CellPainting
-            If Not SelectMode Then Return
+        Private Sub dgvAccounts_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvAccounts.CellFormatting
+            If e.RowIndex < 0 Then Return
+            Dim colName = dgvAccounts.Columns(e.ColumnIndex).Name
+
+            If colName = "colAccountName" Then
+                Dim node = TryCast(dgvAccounts.Rows(e.RowIndex).Tag, ShenavarNode)
+                If node IsNot Nothing Then
+                    dgvAccounts.Rows(e.RowIndex).Cells(e.ColumnIndex).Style.Padding =
+                        New Padding(0, 0, node.Level * 20, 0)
+                End If
+            ElseIf colName = "colToggle" Then
+                Dim txt = Convert.ToString(e.Value)
+                If txt = "+" OrElse txt = "−" Then
+                    e.CellStyle.BackColor = Color.FromArgb(225, 235, 255)
+                    e.CellStyle.SelectionBackColor = Color.FromArgb(100, 130, 200)
+                End If
+            End If
+        End Sub
+
+        Private Sub dgvAccounts_CellMouseEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAccounts.CellMouseEnter
             If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
-            If dgvAccounts.Columns(e.ColumnIndex).Name <> ColBtnSelect Then Return
+            If dgvAccounts.Columns(e.ColumnIndex).Name = "colToggle" Then
+                Dim node = TryCast(dgvAccounts.Rows(e.RowIndex).Tag, ShenavarNode)
+                If node IsNot Nothing AndAlso node.HasChildren Then
+                    dgvAccounts.Cursor = Cursors.Hand
+                End If
+            End If
+        End Sub
 
-            Dim accountIdVal = dgvAccounts.Rows(e.RowIndex).Cells("colAccountID").Value
-            If accountIdVal Is Nothing OrElse accountIdVal Is DBNull.Value Then Return
-            Dim accountId = Convert.ToInt32(accountIdVal)
-
-            Dim hasChildren = _accountsWithChildren.Contains(accountId)
-            Dim btnColor = If(hasChildren, Color.Red, Color.Green)
-
-            e.Paint(e.ClipBounds, DataGridViewPaintParts.Border)
-
-            Dim fillRect = Rectangle.Inflate(e.CellBounds, -2, -2)
-            Using brush As New SolidBrush(btnColor)
-                e.Graphics.FillRectangle(brush, fillRect)
-            End Using
-            Using pen As New Pen(Color.FromArgb(80, 0, 0, 0))
-                e.Graphics.DrawRectangle(pen, fillRect)
-            End Using
-
-            TextRenderer.DrawText(e.Graphics, "انتخاب", dgvAccounts.Font, e.CellBounds,
-                                  Color.White,
-                                  TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
-            e.Handled = True
+        Private Sub dgvAccounts_CellMouseLeave(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAccounts.CellMouseLeave
+            dgvAccounts.Cursor = Cursors.Default
         End Sub
 
         Private Sub ShowDataPanel(accountId As Integer?, parentId As Integer?)
@@ -327,7 +425,7 @@ Namespace Sys_Hes_Anb.Forms
                     If rowId Is Nothing OrElse rowId Is DBNull.Value Then Continue For
                     If Convert.ToInt32(rowId) = accountId.Value Then
                         txtAccountCode.Text = Convert.ToString(row.Cells("colAccountCode").Value)
-                        txtAccountName.Text = Convert.ToString(row.Cells("colAccountName").Value)
+                        txtAccountName.Text = Convert.ToString(row.Cells("colAccountName").Value).Trim()
                         Dim activeVal = row.Cells("colIsActive").Value
                         chkActive.Checked = If(activeVal Is Nothing OrElse activeVal Is DBNull.Value,
                                                True, Convert.ToBoolean(activeVal))
@@ -377,7 +475,7 @@ Namespace Sys_Hes_Anb.Forms
                     _editParentId,
                     chkActive.Checked)
                 HideDataPanel()
-                LoadByParent(_currentParentId)
+                LoadTreeData()
             Catch ex As InvalidOperationException
                 MessageBox.Show(ex.Message, "کد حساب تکراری",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning)

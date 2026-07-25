@@ -8,7 +8,7 @@ Imports Sys_Hes_Anb.Data
 Namespace Sys_Hes_Anb.Business
     Public Class CatalogService
         Public Function GetProducts() As DataTable
-            Return Sql.ExecuteTable("SELECT ProductID, ProductCode, ProductName, Unit, DefaultPrice, Category, IsActive FROM Products ORDER BY ProductName")
+            Return Sql.ExecuteTable("SELECT p.ProductID, p.ProductCode, p.ProductName, p.Unit, p.DefaultPrice, p.Category, p.IsActive, p.DefaultWarehouseID, w.WarehouseName AS DefaultWarehouseName, p.TaxPercent FROM Products p LEFT JOIN Warehouses w ON p.DefaultWarehouseID = w.WarehouseID ORDER BY p.ProductName")
         End Function
 
         Public Function SaveProduct(productId As Integer?, code As String, name As String, unit As String, defaultPrice As Decimal,
@@ -26,9 +26,12 @@ Namespace Sys_Hes_Anb.Business
                                     Optional size As String = "", Optional brand As String = "", Optional countryOfOrigin As String = "",
                                     Optional physicalDescription As String = "", Optional image1 As String = "",
                                     Optional image2 As String = "", Optional image3 As String = "", Optional image4 As String = "",
-                                    Optional image5 As String = "", Optional image6 As String = "") As Integer
+                                    Optional image5 As String = "", Optional image6 As String = "",
+                                    Optional defaultWarehouseId As Object = Nothing) As Integer
 
             Dim activeVal = If(isActive, 1, 0)
+            Dim defWhVal = If(defaultWarehouseId IsNot Nothing AndAlso Not Convert.IsDBNull(defaultWarehouseId), defaultWarehouseId, DBNull.Value)
+
             If productId.HasValue AndAlso productId.Value > 0 Then
                 Sql.ExecuteNonQuery("UPDATE Products SET ProductCode = ?, ProductName = ?, Unit = ?, DefaultPrice = ?, Category = ?, IsActive = ?, " &
                                     "BaseUoMID = ?, SecondaryUoMID = ?, NominalFactor = ?, ProductGroupID = ?, Barcode = ?, TaxID = ?, " &
@@ -37,7 +40,7 @@ Namespace Sys_Hes_Anb.Business
                                     "WholesaleMarkup = ?, WholesaleDiscount = ?, TaxPercent = ?, TollPercent = ?, " &
                                     "NetWeight = ?, GrossWeight = ?, Length = ?, Width = ?, Height = ?, Volume = ?, " &
                                     "Color = ?, Material = ?, Size = ?, Brand = ?, CountryOfOrigin = ?, PhysicalDescription = ?, " &
-                                    "Image1 = ?, Image2 = ?, Image3 = ?, Image4 = ?, Image5 = ?, Image6 = ? " &
+                                    "Image1 = ?, Image2 = ?, Image3 = ?, Image4 = ?, Image5 = ?, Image6 = ?, DefaultWarehouseID = ? " &
                                     "WHERE ProductID = ?",
                                     code, name, unit, defaultPrice, category, activeVal,
                                     baseUoMId, secondaryUoMId, nominalFactor, productGroupId, barcode, taxId,
@@ -46,7 +49,7 @@ Namespace Sys_Hes_Anb.Business
                                     wholesaleMarkup, wholesaleDiscount, taxPercent, tollPercent,
                                     netWeight, grossWeight, length, width, height, volume,
                                     color, material, size, brand, countryOfOrigin, physicalDescription,
-                                    image1, image2, image3, image4, image5, image6, productId.Value)
+                                    image1, image2, image3, image4, image5, image6, defWhVal, productId.Value)
                 Return productId.Value
             Else
                 Return Sql.ExecuteIdentity("INSERT INTO Products (ProductCode, ProductName, Unit, DefaultPrice, Category, IsActive, " &
@@ -56,8 +59,8 @@ Namespace Sys_Hes_Anb.Business
                                        "WholesaleMarkup, WholesaleDiscount, TaxPercent, TollPercent, " &
                                        "NetWeight, GrossWeight, Length, Width, Height, Volume, " &
                                        "Color, Material, Size, Brand, CountryOfOrigin, PhysicalDescription, " &
-                                       "Image1, Image2, Image3, Image4, Image5, Image6) " &
-                                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                       "Image1, Image2, Image3, Image4, Image5, Image6, DefaultWarehouseID) " &
+                                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                        code, name, unit, defaultPrice, category, activeVal,
                                        baseUoMId, secondaryUoMId, nominalFactor, productGroupId, barcode, taxId,
                                        productType, purchasePrice, minStock, reorderPoint, maxStock, trackingType, If(locationId, DBNull.Value), technicalName,
@@ -65,7 +68,7 @@ Namespace Sys_Hes_Anb.Business
                                        wholesaleMarkup, wholesaleDiscount, taxPercent, tollPercent,
                                        netWeight, grossWeight, length, width, height, volume,
                                        color, material, size, brand, countryOfOrigin, physicalDescription,
-                                       image1, image2, image3, image4, image5, image6)
+                                       image1, image2, image3, image4, image5, image6, defWhVal)
             End If
         End Function
 
@@ -77,7 +80,7 @@ Namespace Sys_Hes_Anb.Business
                           "p.WholesaleMarkup, p.WholesaleDiscount, p.TaxPercent, p.TollPercent, " &
                           "p.NetWeight, p.GrossWeight, p.Length, p.Width, p.Height, p.Volume, " &
                           "p.Color, p.Material, p.Size, p.Brand, p.CountryOfOrigin, p.PhysicalDescription, " &
-                          "p.Image1, p.Image2, p.Image3, p.Image4, p.Image5, p.Image6 " &
+                          "p.Image1, p.Image2, p.Image3, p.Image4, p.Image5, p.Image6, p.DefaultWarehouseID " &
                           "FROM Products p WHERE p.ProductID = ?"
             Dim dt = Sql.ExecuteTable(sqlText, productId)
             If dt.Rows.Count > 0 Then Return dt.Rows(0)
@@ -89,7 +92,7 @@ Namespace Sys_Hes_Anb.Business
         End Sub
 
         Public Function GetWarehouses() As DataTable
-            Return Sql.ExecuteTable("SELECT WarehouseID, WarehouseName, Location, IsActive, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses ORDER BY WarehouseName")
+            Return Sql.ExecuteTable("SELECT *, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses ORDER BY WarehouseName")
         End Function
 
         Public Function GetWarehouseById(warehouseId As Integer) As DataRow

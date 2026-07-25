@@ -34,6 +34,13 @@ Namespace Sys_Hes_Anb.Forms
             InitializeComponent()
         End Sub
 
+        Public Sub New(accountId As Integer, accountCode As String, accountName As String)
+            InitializeComponent()
+            _currentAccountId = accountId
+            _currentAccountCode = accountCode
+            _currentAccountName = accountName
+        End Sub
+
         Private Sub HesabdaryDaftarShenavarForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
             Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
             Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
@@ -47,6 +54,10 @@ Namespace Sys_Hes_Anb.Forms
 
             SetupSearchPanel()
             SetupRangeFilterUI()
+
+            If _currentAccountId > 0 Then
+                LoadShenavar(_currentAccountId, _currentAccountCode, _currentAccountName, False, New List(Of Integer)())
+            End If
         End Sub
 
         Private Sub SetupRangeFilterUI()
