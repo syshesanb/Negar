@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -48,6 +48,12 @@ Namespace Negar.Forms
             AddHandler Me.Resize, AddressOf AlignSearchBoxes
 
             AlignSearchBoxes()
+        End Sub
+
+        Private Sub AnbardaryNamAnbar1Form_VisibleChanged(sender As Object, e As EventArgs) Handles MyBase.VisibleChanged
+            If Me.Visible Then
+                LoadData()
+            End If
         End Sub
 
         Private Sub ConfigureGrid()

@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -160,22 +160,23 @@ Namespace Negar.Business
 
             Dim activeVal = If(isActive, 1, 0)
             Dim allowNegVal = If(allowNegative, 1, 0)
+            Dim compIdVal As Object = If(SessionContext.CurrentCompanyID.HasValue, SessionContext.CurrentCompanyID.Value, DBNull.Value)
 
             If warehouseId.HasValue AndAlso warehouseId.Value > 0 Then
                 Sql.ExecuteNonQuery("UPDATE Warehouses SET WarehouseName = ?, Location = ?, IsActive = ?, " &
                                     "WarehouseType = ?, Phone = ?, Phone2 = ?, Phone3 = ?, PostalCode = ?, " &
                                     "Capacity = ?, WarehouseKeeper = ?, CostCenter = ?, AllowNegativeStock = ?, " &
-                                    "Description = ? WHERE WarehouseID = ?",
+                                    "Description = ?, CompanyID = COALESCE(CompanyID, ?) WHERE WarehouseID = ?",
                                     warehouseName, location, activeVal, warehouseType, phone, phone2, phone3,
                                     postalCode, capacity, warehouseKeeper, costCenter, allowNegVal, description,
-                                    warehouseId.Value)
+                                    compIdVal, warehouseId.Value)
                 Return warehouseId.Value
             End If
 
-            Return Sql.ExecuteIdentity("INSERT INTO Warehouses (WarehouseName, Location, IsActive, WarehouseType, Phone, Phone2, Phone3, PostalCode, Capacity, WarehouseKeeper, CostCenter, AllowNegativeStock, Description) " &
-                                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            Return Sql.ExecuteIdentity("INSERT INTO Warehouses (WarehouseName, Location, IsActive, WarehouseType, Phone, Phone2, Phone3, PostalCode, Capacity, WarehouseKeeper, CostCenter, AllowNegativeStock, Description, CompanyID) " &
+                                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                        warehouseName, location, activeVal, warehouseType, phone, phone2, phone3,
-                                       postalCode, capacity, warehouseKeeper, costCenter, allowNegVal, description)
+                                       postalCode, capacity, warehouseKeeper, costCenter, allowNegVal, description, compIdVal)
         End Function
 
         Public Sub DeleteWarehouse(warehouseId As Integer)
