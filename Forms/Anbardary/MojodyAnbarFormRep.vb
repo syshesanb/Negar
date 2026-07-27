@@ -131,10 +131,14 @@ Namespace Negar.Forms
             dgvKardex.AutoGenerateColumns = False
             dgvKardex.Columns.Clear()
 
+            dgvKardex.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing
+            dgvKardex.ColumnHeadersHeight = 44
+            dgvKardex.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
+
             Dim rowNum As New DataGridViewTextBoxColumn()
             rowNum.Name = "colRowNum"
             rowNum.HeaderText = "ردیف"
-            rowNum.Width = 50
+            rowNum.Width = 45
             rowNum.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             rowNum.ReadOnly = True
 
@@ -142,53 +146,81 @@ Namespace Negar.Forms
             colDate.Name = "colDate"
             colDate.DataPropertyName = "PersianDate"
             colDate.HeaderText = "تاریخ"
-            colDate.Width = 110
+            colDate.Width = 105
             colDate.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
             Dim colWarehouse As New DataGridViewTextBoxColumn()
             colWarehouse.Name = "colWarehouse"
             colWarehouse.DataPropertyName = "WarehouseName"
             colWarehouse.HeaderText = "انبار"
-            colWarehouse.Width = 150
-            colWarehouse.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            colWarehouse.Width = 120
+            colWarehouse.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
 
             Dim colType As New DataGridViewTextBoxColumn()
             colType.Name = "colType"
             colType.DataPropertyName = "TransactionType"
             colType.HeaderText = "نوع عملیات"
-            colType.Width = 150
-            colType.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            colType.Width = 140
+            colType.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
 
             Dim colIn As New DataGridViewTextBoxColumn()
             colIn.Name = "colIn"
             colIn.DataPropertyName = "QuantityIn"
-            colIn.HeaderText = "ورود"
-            colIn.Width = 90
+            colIn.HeaderText = "تعداد" & vbCrLf & "وارده"
+            colIn.Width = 75
             colIn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colIn.DefaultCellStyle.Format = "N0"
 
             Dim colOut As New DataGridViewTextBoxColumn()
             colOut.Name = "colOut"
             colOut.DataPropertyName = "QuantityOut"
-            colOut.HeaderText = "خروج"
-            colOut.Width = 90
+            colOut.HeaderText = "تعداد" & vbCrLf & "صادره"
+            colOut.Width = 75
             colOut.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colOut.DefaultCellStyle.Format = "N0"
 
             Dim colBalance As New DataGridViewTextBoxColumn()
             colBalance.Name = "colBalance"
             colBalance.DataPropertyName = "Balance"
-            colBalance.HeaderText = "موجودی"
-            colBalance.Width = 90
+            colBalance.HeaderText = "تعداد" & vbCrLf & "موجودی"
+            colBalance.Width = 80
             colBalance.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colBalance.DefaultCellStyle.Format = "N0"
+
+            Dim colCostIn As New DataGridViewTextBoxColumn()
+            colCostIn.Name = "colCostIn"
+            colCostIn.DataPropertyName = "CostIn"
+            colCostIn.HeaderText = "بهای تمام شده" & vbCrLf & "وارده"
+            colCostIn.Width = 120
+            colCostIn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colCostIn.DefaultCellStyle.Format = "N0"
+
+            Dim colCostOut As New DataGridViewTextBoxColumn()
+            colCostOut.Name = "colCostOut"
+            colCostOut.DataPropertyName = "CostOut"
+            colCostOut.HeaderText = "بهای تمام شده" & vbCrLf & "صادره"
+            colCostOut.Width = 120
+            colCostOut.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colCostOut.DefaultCellStyle.Format = "N0"
+
+            Dim colBalanceCost As New DataGridViewTextBoxColumn()
+            colBalanceCost.Name = "colBalanceCost"
+            colBalanceCost.DataPropertyName = "BalanceCost"
+            colBalanceCost.HeaderText = "بهای تمام شده" & vbCrLf & "موجودی"
+            colBalanceCost.Width = 130
+            colBalanceCost.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colBalanceCost.DefaultCellStyle.Format = "N0"
 
             Dim colDesc As New DataGridViewTextBoxColumn()
             colDesc.Name = "colDesc"
             colDesc.DataPropertyName = "Description"
             colDesc.HeaderText = "توضیحات"
             colDesc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            colDesc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            colDesc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
 
             dgvKardex.Columns.AddRange(New DataGridViewColumn() {
-                rowNum, colDate, colWarehouse, colType, colIn, colOut, colBalance, colDesc
+                rowNum, colDate, colWarehouse, colType, colIn, colOut, colBalance,
+                colCostIn, colCostOut, colBalanceCost, colDesc
             })
 
             dgvKardex.RightToLeft = RightToLeft.Yes

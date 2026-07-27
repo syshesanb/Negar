@@ -70,19 +70,23 @@ Namespace Negar.Business
                     "COALESCE(w.WarehouseName, 'فروشگاه') AS WarehouseName, " &
                     "t.TxType AS TransactionType, " &
                     "t.QtyIn AS QuantityIn, " &
+                    "t.CostIn AS CostIn, " &
                     "t.QtyOut AS QuantityOut, " &
+                    "t.CostOut AS CostOut, " &
                     "t.TxDesc AS Description " &
                     "FROM (" &
                     "  SELECT pi.InvoiceDate AS TxDate, pi.WarehouseID AS WarehouseID, " &
                     "  'فاکتور خرید (' || pi.InvoiceNumber || ')' AS TxType, " &
-                    "  pd.Quantity AS QtyIn, 0 AS QtyOut, " &
+                    "  pd.Quantity AS QtyIn, (pd.Quantity * pd.UnitPrice) AS CostIn, " &
+                    "  0 AS QtyOut, 0 AS CostOut, " &
                     "  COALESCE(pi.VendorName, '') || CASE WHEN pi.Description IS NOT NULL AND pi.Description <> '' THEN ' - ' || pi.Description ELSE '' END AS TxDesc " &
                     "  FROM PurchaseInvoiceDetails pd JOIN PurchaseInvoices pi ON pd.InvoiceID = pi.InvoiceID " &
                     "  WHERE pd.ProductID = " & productId & whPurCondition & compPurCondition &
                     "  UNION ALL " &
                     "  SELECT si.InvoiceDate AS TxDate, si.WarehouseID AS WarehouseID, " &
                     "  'فاکتور فروش (' || si.InvoiceNumber || ')' AS TxType, " &
-                    "  0 AS QtyIn, sd.Quantity AS QtyOut, " &
+                    "  0 AS QtyIn, 0 AS CostIn, " &
+                    "  sd.Quantity AS QtyOut, (sd.Quantity * sd.UnitPrice) AS CostOut, " &
                     "  COALESCE(si.CustomerName, '') || CASE WHEN si.Description IS NOT NULL AND si.Description <> '' THEN ' - ' || si.Description ELSE '' END AS TxDesc " &
                     "  FROM SalesInvoiceDetails sd JOIN SalesInvoices si ON sd.InvoiceID = si.InvoiceID " &
                     "  WHERE sd.ProductID = " & productId & whSalCondition & compSalCondition &
@@ -95,11 +99,13 @@ Namespace Negar.Business
 
                 Dim dtFiltered As DataTable = dtRaw.Clone()
                 If Not dtFiltered.Columns.Contains("Balance") Then dtFiltered.Columns.Add("Balance", GetType(Decimal))
+                If Not dtFiltered.Columns.Contains("BalanceCost") Then dtFiltered.Columns.Add("BalanceCost", GetType(Decimal))
 
                 Dim cleanFrom = If(Not String.IsNullOrEmpty(fromDate), fromDate.Trim(), "")
                 Dim cleanTo = If(Not String.IsNullOrEmpty(toDate), toDate.Trim(), "")
 
                 Dim balance As Decimal = 0D
+                Dim runningCost As Decimal = 0D
 
                 For Each row As DataRow In dtRaw.Rows
                     Dim pDate As String = ""
@@ -136,9 +142,16 @@ Namespace Negar.Business
 
                 For Each row As DataRow In dtFiltered.Rows
                     Dim qIn = Convert.ToDecimal(If(row.IsNull("QuantityIn"), 0, row("QuantityIn")))
+                    Dim cIn = Convert.ToDecimal(If(row.IsNull("CostIn"), 0, row("CostIn")))
                     Dim qOut = Convert.ToDecimal(If(row.IsNull("QuantityOut"), 0, row("QuantityOut")))
+                    Dim cOut = Convert.ToDecimal(If(row.IsNull("CostOut"), 0, row("CostOut")))
+
                     balance += qIn - qOut
+                    runningCost += cIn - cOut
+                    If runningCost < 0 Then runningCost = 0D
+
                     row("Balance") = balance
+                    row("BalanceCost") = runningCost
                 Next
 
                 Return dtFiltered
