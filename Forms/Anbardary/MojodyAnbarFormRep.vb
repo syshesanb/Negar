@@ -396,7 +396,53 @@ Namespace Negar.Forms
                     Dim row = dgvProfitLoss.Rows(idx)
                     row.Cells("rowNum").Value = (idx + 1).ToString()
                     If Not row.IsNewRow Then
-                        grandTotalProfit += Convert.ToDecimal(If(row.Cells("colGrossProfit").Value Is DBNull.Value, 0, row.Cells("colGrossProfit").Value))
+                        Dim profitVal As Decimal = 0D
+                        If Not row.Cells("colGrossProfit").Value Is DBNull.Value AndAlso row.Cells("colGrossProfit").Value IsNot Nothing Then
+                            Decimal.TryParse(Convert.ToString(row.Cells("colGrossProfit").Value), profitVal)
+                        End If
+
+                        grandTotalProfit += profitVal
+
+                        Dim cellProfit = row.Cells("colGrossProfit")
+                        Dim cellMargin = row.Cells("colProfitMargin")
+
+                        If profitVal > 0 Then
+                            Dim bgProfit = Color.FromArgb(220, 248, 225)
+                            Dim fgProfit = Color.FromArgb(21, 87, 36)
+                            Dim selBgProfit = Color.FromArgb(195, 235, 202)
+
+                            cellProfit.Style.BackColor = bgProfit
+                            cellProfit.Style.ForeColor = fgProfit
+                            cellProfit.Style.SelectionBackColor = selBgProfit
+                            cellProfit.Style.SelectionForeColor = fgProfit
+
+                            cellMargin.Style.BackColor = bgProfit
+                            cellMargin.Style.ForeColor = fgProfit
+                            cellMargin.Style.SelectionBackColor = selBgProfit
+                            cellMargin.Style.SelectionForeColor = fgProfit
+                        ElseIf profitVal < 0 Then
+                            Dim bgLoss = Color.FromArgb(253, 227, 227)
+                            Dim fgLoss = Color.FromArgb(114, 28, 36)
+                            Dim selBgLoss = Color.FromArgb(245, 200, 200)
+
+                            cellProfit.Style.BackColor = bgLoss
+                            cellProfit.Style.ForeColor = fgLoss
+                            cellProfit.Style.SelectionBackColor = selBgLoss
+                            cellProfit.Style.SelectionForeColor = fgLoss
+
+                            cellMargin.Style.BackColor = bgLoss
+                            cellMargin.Style.ForeColor = fgLoss
+                            cellMargin.Style.SelectionBackColor = selBgLoss
+                            cellMargin.Style.SelectionForeColor = fgLoss
+                        Else
+                            Dim bgZero = Color.FromArgb(245, 245, 245)
+                            Dim fgZero = Color.FromArgb(80, 80, 80)
+
+                            cellProfit.Style.BackColor = bgZero
+                            cellProfit.Style.ForeColor = fgZero
+                            cellMargin.Style.BackColor = bgZero
+                            cellMargin.Style.ForeColor = fgZero
+                        End If
                     End If
                 Next
 

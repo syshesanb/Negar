@@ -293,6 +293,7 @@ Namespace Negar.Business
                             pDate = Convert.ToString(row("TransactionDate"))
                         End Try
                     End If
+                    row("TransactionDate") = pDate
 
                     Dim pDate10 = If(pDate.Length >= 10, pDate.Substring(0, 10), pDate)
 
