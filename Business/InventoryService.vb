@@ -72,13 +72,12 @@ Namespace Negar.Business
                     "t.QtyIn AS QuantityIn, " &
                     "t.CostIn AS CostIn, " &
                     "t.QtyOut AS QuantityOut, " &
-                    "t.CostOut AS CostOut, " &
                     "t.TxDesc AS Description " &
                     "FROM (" &
                     "  SELECT pi.InvoiceDate AS TxDate, pi.WarehouseID AS WarehouseID, " &
                     "  'فاکتور خرید (' || pi.InvoiceNumber || ')' AS TxType, " &
                     "  pd.Quantity AS QtyIn, (pd.Quantity * pd.UnitPrice) AS CostIn, " &
-                    "  0 AS QtyOut, 0 AS CostOut, " &
+                    "  0 AS QtyOut, " &
                     "  COALESCE(pi.VendorName, '') || CASE WHEN pi.Description IS NOT NULL AND pi.Description <> '' THEN ' - ' || pi.Description ELSE '' END AS TxDesc " &
                     "  FROM PurchaseInvoiceDetails pd JOIN PurchaseInvoices pi ON pd.InvoiceID = pi.InvoiceID " &
                     "  WHERE pd.ProductID = " & productId & whPurCondition & compPurCondition &
@@ -86,7 +85,7 @@ Namespace Negar.Business
                     "  SELECT si.InvoiceDate AS TxDate, si.WarehouseID AS WarehouseID, " &
                     "  'فاکتور فروش (' || si.InvoiceNumber || ')' AS TxType, " &
                     "  0 AS QtyIn, 0 AS CostIn, " &
-                    "  sd.Quantity AS QtyOut, (sd.Quantity * sd.UnitPrice) AS CostOut, " &
+                    "  sd.Quantity AS QtyOut, " &
                     "  COALESCE(si.CustomerName, '') || CASE WHEN si.Description IS NOT NULL AND si.Description <> '' THEN ' - ' || si.Description ELSE '' END AS TxDesc " &
                     "  FROM SalesInvoiceDetails sd JOIN SalesInvoices si ON sd.InvoiceID = si.InvoiceID " &
                     "  WHERE sd.ProductID = " & productId & whSalCondition & compSalCondition &
@@ -97,15 +96,17 @@ Namespace Negar.Business
 
                 Dim dtRaw = Sql.ExecuteTable(query)
 
+                If Not dtRaw.Columns.Contains("CostOut") Then dtRaw.Columns.Add("CostOut", GetType(Decimal))
+                If Not dtRaw.Columns.Contains("Balance") Then dtRaw.Columns.Add("Balance", GetType(Decimal))
+                If Not dtRaw.Columns.Contains("BalanceCost") Then dtRaw.Columns.Add("BalanceCost", GetType(Decimal))
+
                 Dim dtFiltered As DataTable = dtRaw.Clone()
-                If Not dtFiltered.Columns.Contains("Balance") Then dtFiltered.Columns.Add("Balance", GetType(Decimal))
-                If Not dtFiltered.Columns.Contains("BalanceCost") Then dtFiltered.Columns.Add("BalanceCost", GetType(Decimal))
 
                 Dim cleanFrom = If(Not String.IsNullOrEmpty(fromDate), fromDate.Trim(), "")
                 Dim cleanTo = If(Not String.IsNullOrEmpty(toDate), toDate.Trim(), "")
 
                 Dim balance As Decimal = 0D
-                Dim runningCost As Decimal = 0D
+                Dim balanceCost As Decimal = 0D
 
                 For Each row As DataRow In dtRaw.Rows
                     Dim pDate As String = ""
@@ -125,6 +126,30 @@ Namespace Negar.Business
 
                     Dim pDate10 = If(pDate.Length >= 10, pDate.Substring(0, 10), pDate)
 
+                    Dim qIn = Convert.ToDecimal(If(row.IsNull("QuantityIn"), 0, row("QuantityIn")))
+                    Dim cIn = Convert.ToDecimal(If(row.IsNull("CostIn"), 0, row("CostIn")))
+                    Dim qOut = Convert.ToDecimal(If(row.IsNull("QuantityOut"), 0, row("QuantityOut")))
+
+                    Dim currentAvgCost As Decimal = 0D
+                    If balance > 0 Then
+                        currentAvgCost = balanceCost / balance
+                    End If
+
+                    Dim cOut As Decimal = 0D
+                    If qOut > 0 Then
+                        cOut = Math.Round(qOut * currentAvgCost, 0)
+                    End If
+                    row("CostOut") = cOut
+
+                    balance += qIn - qOut
+                    balanceCost += cIn - cOut
+                    If balance <= 0 OrElse balanceCost < 0 Then
+                        If balance <= 0 Then balanceCost = 0D
+                    End If
+
+                    row("Balance") = balance
+                    row("BalanceCost") = Math.Round(balanceCost, 0)
+
                     Dim keepRow As Boolean = True
                     If cleanFrom.Length = 10 AndAlso pDate10 < cleanFrom Then
                         keepRow = False
@@ -138,20 +163,6 @@ Namespace Negar.Business
                         nr.ItemArray = row.ItemArray
                         dtFiltered.Rows.Add(nr)
                     End If
-                Next
-
-                For Each row As DataRow In dtFiltered.Rows
-                    Dim qIn = Convert.ToDecimal(If(row.IsNull("QuantityIn"), 0, row("QuantityIn")))
-                    Dim cIn = Convert.ToDecimal(If(row.IsNull("CostIn"), 0, row("CostIn")))
-                    Dim qOut = Convert.ToDecimal(If(row.IsNull("QuantityOut"), 0, row("QuantityOut")))
-                    Dim cOut = Convert.ToDecimal(If(row.IsNull("CostOut"), 0, row("CostOut")))
-
-                    balance += qIn - qOut
-                    runningCost += cIn - cOut
-                    If runningCost < 0 Then runningCost = 0D
-
-                    row("Balance") = balance
-                    row("BalanceCost") = runningCost
                 Next
 
                 Return dtFiltered
