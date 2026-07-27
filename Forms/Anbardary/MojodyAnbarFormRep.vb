@@ -106,7 +106,7 @@ Namespace Negar.Forms
                 New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "تعداد" & vbCrLf & "ورودی", .Width = 75, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
                 New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "تعداد" & vbCrLf & "خروجی", .Width = 75, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
                 New With {.Name = "colQty", .Prop = "Quantity", .Header = "تعداد" & vbCrLf & "موجودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
-                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای" & vbCrLf & "تمام شده", .Width = 120, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین قیمت واحد" & vbCrLf & "بهای تمام شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
                 New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "بهای تمام شده" & vbCrLf & "موجودی", .Width = 130, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
                 New With {.Name = "colLastUpdate", .Prop = "PersianLastUpdate", .Header = "آخرین" & vbCrLf & "به‌روزرسانی", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = True}
             }
