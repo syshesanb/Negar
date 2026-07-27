@@ -54,6 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.vb" />
     <Compile Include="Program.vb" />
     <Compile Include="Models\AppEdition.vb" />
+    <Compile Include="Forms\Anbardary\AnbarMini\AnbarMiniInfo.vb" />
+    <Compile Include="Forms\Anbardary\AnbarMedium\AnbarMediumInfo.vb" />
+    <Compile Include="Forms\Anbardary\AnbarBig\AnbarBigInfo.vb" />
     <Compile Include="Forms\AppBaseForm.vb">
       <SubType>Form</SubType>
     </Compile>
