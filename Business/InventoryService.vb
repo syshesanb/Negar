@@ -46,7 +46,33 @@ Namespace Negar.Business
             End If
 
             query &= " ORDER BY p.ProductCode, p.ProductName"
-            Return Sql.ExecuteTable(query)
+            Dim dt = Sql.ExecuteTable(query)
+
+            If Not dt.Columns.Contains("TotalValue") Then dt.Columns.Add("TotalValue", GetType(Decimal))
+
+            For Each row As DataRow In dt.Rows
+                Dim pId = Convert.ToInt32(row("ProductID"))
+                Dim kardexDt = GetKardex(pId, warehouseId)
+                If kardexDt IsNot Nothing AndAlso kardexDt.Rows.Count > 0 Then
+                    Dim lastRow = kardexDt.Rows(kardexDt.Rows.Count - 1)
+                    Dim qty = Convert.ToDecimal(If(lastRow.IsNull("Balance"), 0, lastRow("Balance")))
+                    Dim balCost = Convert.ToDecimal(If(lastRow.IsNull("BalanceCost"), 0, lastRow("BalanceCost")))
+
+                    row("Quantity") = qty
+                    row("TotalValue") = balCost
+                    If qty > 0 Then
+                        row("AverageCost") = Math.Round(balCost / qty, 0)
+                    Else
+                        row("AverageCost") = 0D
+                    End If
+                Else
+                    Dim qty = Convert.ToDecimal(If(row.IsNull("Quantity"), 0, row("Quantity")))
+                    Dim avg = Convert.ToDecimal(If(row.IsNull("AverageCost"), 0, row("AverageCost")))
+                    row("TotalValue") = qty * avg
+                End If
+            Next
+
+            Return dt
         End Function
 
         Public Function GetKardex(productId As Integer, Optional warehouseId As Integer? = Nothing,
