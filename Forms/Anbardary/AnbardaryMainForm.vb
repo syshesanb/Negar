@@ -1,10 +1,11 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.ComponentModel
 Imports System.Windows.Forms
 Imports Negar.Business
+Imports Negar.Models
 
 Namespace Negar.Forms
     Partial Class AnbardaryMainForm
@@ -100,6 +101,21 @@ Namespace Negar.Forms
             If Not (hasGlobalTrade OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory)) Then
                 tabs.TabPages.Remove(tabInventory)
             End If
+
+            ApplyEditionRules()
+        End Sub
+
+        Private Sub ApplyEditionRules()
+            Select Case SessionContext.CurrentEdition
+                Case AppEdition.Mini
+                    ' در نسخه مینی (یک انبار و یک فروشگاه)، تب‌های چندانباره مخفی می‌شوند
+                    If tabs.TabPages.Contains(tabWarehouses) Then tabs.TabPages.Remove(tabWarehouses)
+                    If tabs.TabPages.Contains(tabTransfer) Then tabs.TabPages.Remove(tabTransfer)
+                Case AppEdition.Medium
+                    ' در نسخه متوسط، امکان مدیریت چند انبار وجود دارد
+                Case AppEdition.Big
+                    ' در نسخه بزرگ، همه امکانات فعال است
+            End Select
         End Sub
 
         Private Sub HostForm(targetTab As TabPage, child As Form)

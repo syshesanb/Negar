@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -16,6 +16,7 @@ Namespace Negar.Business
         Public Property CurrentCompanyName As String = "-"
         Public Property CurrentFiscalYearID As Integer? = Nothing
         Public Property CurrentFiscalYearName As String = "-"
+        Public Property CurrentEdition As AppEdition = AppEdition.Mini
 
         Public Function HasPermission(key As String) As Boolean
             If CurrentUser Is Nothing Then Return False
