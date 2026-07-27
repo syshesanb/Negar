@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -32,7 +32,12 @@ Namespace Negar.Forms
             Me.btnRefresh = New Button()
             Me.btnPrintInventory = New Button()
             Me.lblInventoryCount = New Label()
+            Me.lblSearch = New Label()
+            Me.txtSearchInventory = New TextBox()
             Me.dgvInventory = New DataGridView()
+            Me.pnlInventoryFooter = New Panel()
+            Me.lblGrandTotalText = New Label()
+            Me.lblGrandTotalValue = New Label()
             Me.pnlKardexTop = New Panel()
             Me.lblKardexProductLabel = New Label()
             Me.cmbKardexProduct = New ComboBox()
@@ -67,6 +72,7 @@ Namespace Negar.Forms
             Me.tabInventory.Name = "tabInventory"
             Me.tabInventory.RightToLeft = RightToLeft.Yes
             Me.tabInventory.Controls.Add(Me.dgvInventory)
+            Me.tabInventory.Controls.Add(Me.pnlInventoryFooter)
             Me.tabInventory.Controls.Add(Me.pnlInventoryTop)
 
             ' ---------- pnlInventoryTop ----------
@@ -82,15 +88,15 @@ Namespace Negar.Forms
             Me.lblWarehouseLabel.TextAlign = ContentAlignment.MiddleRight
 
             Me.cmbWarehouse.Location = New Point(60, 11)
-            Me.cmbWarehouse.Size = New Size(230, 24)
+            Me.cmbWarehouse.Size = New Size(170, 24)
             Me.cmbWarehouse.Font = New Font("Tahoma", 9.0!)
             Me.cmbWarehouse.RightToLeft = RightToLeft.Yes
             Me.cmbWarehouse.DropDownStyle = ComboBoxStyle.DropDownList
             Me.cmbWarehouse.Name = "cmbWarehouse"
 
             Me.btnRefresh.Text = "بازخوانی"
-            Me.btnRefresh.Location = New Point(298, 10)
-            Me.btnRefresh.Size = New Size(88, 26)
+            Me.btnRefresh.Location = New Point(238, 10)
+            Me.btnRefresh.Size = New Size(75, 26)
             Me.btnRefresh.Font = New Font("Tahoma", 9.0!)
             Me.btnRefresh.BackColor = Color.FromArgb(60, 130, 75)
             Me.btnRefresh.ForeColor = Color.White
@@ -98,8 +104,8 @@ Namespace Negar.Forms
             Me.btnRefresh.Name = "btnRefresh"
 
             Me.btnPrintInventory.Text = "چاپ"
-            Me.btnPrintInventory.Location = New Point(392, 10)
-            Me.btnPrintInventory.Size = New Size(88, 26)
+            Me.btnPrintInventory.Location = New Point(320, 10)
+            Me.btnPrintInventory.Size = New Size(70, 26)
             Me.btnPrintInventory.Font = New Font("Tahoma", 9.0!)
             Me.btnPrintInventory.BackColor = Color.FromArgb(100, 55, 145)
             Me.btnPrintInventory.ForeColor = Color.White
@@ -107,16 +113,50 @@ Namespace Negar.Forms
             Me.btnPrintInventory.Name = "btnPrintInventory"
 
             Me.lblInventoryCount.Text = "تعداد اقلام: 0"
-            Me.lblInventoryCount.Location = New Point(490, 14)
-            Me.lblInventoryCount.Size = New Size(180, 18)
+            Me.lblInventoryCount.Location = New Point(398, 14)
+            Me.lblInventoryCount.Size = New Size(110, 18)
             Me.lblInventoryCount.Font = New Font("Tahoma", 9.0!)
             Me.lblInventoryCount.ForeColor = Color.FromArgb(30, 80, 140)
             Me.lblInventoryCount.Name = "lblInventoryCount"
 
+            Me.lblSearch.Text = "جستجو:"
+            Me.lblSearch.Location = New Point(515, 14)
+            Me.lblSearch.Size = New Size(50, 18)
+            Me.lblSearch.Font = New Font("Tahoma", 9.0!)
+            Me.lblSearch.Name = "lblSearch"
+
+            Me.txtSearchInventory.Location = New Point(570, 10)
+            Me.txtSearchInventory.Size = New Size(220, 26)
+            Me.txtSearchInventory.Font = New Font("Tahoma", 9.0!)
+            Me.txtSearchInventory.Name = "txtSearchInventory"
+
             Me.pnlInventoryTop.Controls.AddRange(New Control() {
                 Me.lblWarehouseLabel, Me.cmbWarehouse, Me.btnRefresh,
-                Me.btnPrintInventory, Me.lblInventoryCount
+                Me.btnPrintInventory, Me.lblInventoryCount, Me.lblSearch, Me.txtSearchInventory
             })
+
+            ' ---------- pnlInventoryFooter ----------
+            Me.pnlInventoryFooter.Dock = DockStyle.Bottom
+            Me.pnlInventoryFooter.Height = 45
+            Me.pnlInventoryFooter.Name = "pnlInventoryFooter"
+            Me.pnlInventoryFooter.BackColor = Color.FromArgb(44, 62, 80)
+
+            Me.lblGrandTotalText.Text = "جمع کل ارزش موجودی:"
+            Me.lblGrandTotalText.Font = New Font("Tahoma", 10.0!, FontStyle.Bold)
+            Me.lblGrandTotalText.ForeColor = Color.White
+            Me.lblGrandTotalText.Location = New Point(350, 12)
+            Me.lblGrandTotalText.AutoSize = True
+            Me.lblGrandTotalText.Name = "lblGrandTotalText"
+
+            Me.lblGrandTotalValue.Text = "۰ ریال"
+            Me.lblGrandTotalValue.Font = New Font("Tahoma", 13.0!, FontStyle.Bold)
+            Me.lblGrandTotalValue.ForeColor = Color.FromArgb(46, 204, 113)
+            Me.lblGrandTotalValue.Location = New Point(100, 8)
+            Me.lblGrandTotalValue.AutoSize = True
+            Me.lblGrandTotalValue.Name = "lblGrandTotalValue"
+
+            Me.pnlInventoryFooter.Controls.Add(Me.lblGrandTotalText)
+            Me.pnlInventoryFooter.Controls.Add(Me.lblGrandTotalValue)
 
             ' ---------- dgvInventory ----------
             Me.dgvInventory.Dock = DockStyle.Fill
@@ -368,7 +408,12 @@ Namespace Negar.Forms
         Friend WithEvents btnRefresh As Button
         Friend WithEvents btnPrintInventory As Button
         Friend WithEvents lblInventoryCount As Label
+        Friend WithEvents lblSearch As Label
+        Friend WithEvents txtSearchInventory As TextBox
         Friend WithEvents dgvInventory As DataGridView
+        Friend WithEvents pnlInventoryFooter As Panel
+        Friend WithEvents lblGrandTotalText As Label
+        Friend WithEvents lblGrandTotalValue As Label
         Friend WithEvents pnlKardexTop As Panel
         Friend WithEvents lblKardexProductLabel As Label
         Friend WithEvents cmbKardexProduct As ComboBox

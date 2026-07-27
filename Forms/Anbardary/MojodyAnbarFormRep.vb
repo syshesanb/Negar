@@ -96,14 +96,15 @@ Namespace Negar.Forms
             dgvInventory.Columns.Clear()
 
             Dim cols() As Object = {
-                New With {.Name = "colCode", .Prop = "ProductCode", .Header = "کد کالا", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 220, .Align = DataGridViewContentAlignment.MiddleRight},
-                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 140, .Align = DataGridViewContentAlignment.MiddleRight},
-                New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "ورودی", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "خروجی", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colQty", .Prop = "Quantity", .Header = "موجودی", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمام‌شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colLastUpdate", .Prop = "LastUpdate", .Header = "آخرین به‌روزرسانی", .Width = 150, .Align = DataGridViewContentAlignment.MiddleCenter}
+                New With {.Name = "colCode", .Prop = "ProductCode", .Header = "کد کالا", .Width = 90, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = ""},
+                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 200, .Align = DataGridViewContentAlignment.MiddleRight, .Format = ""},
+                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 130, .Align = DataGridViewContentAlignment.MiddleRight, .Format = ""},
+                New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "ورودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0"},
+                New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "خروجی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0"},
+                New With {.Name = "colQty", .Prop = "Quantity", .Header = "موجودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0"},
+                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمام‌شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleRight, .Format = "N0"},
+                New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "ارزش موجودی", .Width = 150, .Align = DataGridViewContentAlignment.MiddleRight, .Format = "N0"},
+                New With {.Name = "colLastUpdate", .Prop = "LastUpdate", .Header = "آخرین به‌روزرسانی", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = ""}
             }
 
             For Each c In cols
@@ -113,6 +114,9 @@ Namespace Negar.Forms
                 col.HeaderText = c.Header
                 col.Width = c.Width
                 col.DefaultCellStyle.Alignment = c.Align
+                If Not String.IsNullOrEmpty(c.Format) Then
+                    col.DefaultCellStyle.Format = c.Format
+                End If
                 col.ReadOnly = True
                 dgvInventory.Columns.Add(col)
             Next
@@ -213,11 +217,55 @@ Namespace Negar.Forms
                 End If
 
                 _inventoryTable = inventoryService.GetInventory(warehouseId)
+                If _inventoryTable IsNot Nothing Then
+                    If Not _inventoryTable.Columns.Contains("TotalValue") Then
+                        _inventoryTable.Columns.Add("TotalValue", GetType(Decimal), "Quantity * AverageCost")
+                    End If
+                End If
+
                 dgvInventory.DataSource = _inventoryTable
-                lblInventoryCount.Text = String.Format("تعداد اقلام: {0}", If(_inventoryTable IsNot Nothing, _inventoryTable.Rows.Count, 0))
+                ApplyInventoryFilter()
             Catch ex As Exception
                 MessageBox.Show("خطا در بارگذاری موجودی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
+        End Sub
+
+        Private Sub txtSearchInventory_TextChanged(sender As Object, e As EventArgs) Handles txtSearchInventory.TextChanged
+            ApplyInventoryFilter()
+        End Sub
+
+        Private Sub ApplyInventoryFilter()
+            If _inventoryTable Is Nothing Then Return
+            Dim f = txtSearchInventory.Text.Trim().Replace("'", "''")
+            If String.IsNullOrEmpty(f) Then
+                _inventoryTable.DefaultView.RowFilter = ""
+            Else
+                _inventoryTable.DefaultView.RowFilter = $"ProductCode LIKE '%{f}%' OR ProductName LIKE '%{f}%' OR WarehouseName LIKE '%{f}%'"
+            End If
+
+            RecalculateInventoryTotals()
+        End Sub
+
+        Private Sub RecalculateInventoryTotals()
+            If _inventoryTable Is Nothing Then
+                lblInventoryCount.Text = "تعداد اقلام: 0"
+                lblGrandTotalValue.Text = "۰ ریال"
+                Return
+            End If
+
+            Dim dv = _inventoryTable.DefaultView
+            lblInventoryCount.Text = String.Format("تعداد اقلام: {0}", dv.Count)
+
+            Dim grandTotal As Decimal = 0D
+            For Each drv As DataRowView In dv
+                If Not drv.Row.IsNull("TotalValue") Then
+                    Dim val As Decimal = 0D
+                    Decimal.TryParse(Convert.ToString(drv("TotalValue")), val)
+                    grandTotal += val
+                End If
+            Next
+
+            lblGrandTotalValue.Text = grandTotal.ToString("N0") & " ریال"
         End Sub
 
         Private Sub LoadKardex()
