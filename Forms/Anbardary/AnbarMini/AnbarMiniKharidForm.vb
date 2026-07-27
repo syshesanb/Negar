@@ -28,23 +28,40 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             LoadWarehouses()
         End Sub
 
-        Private Sub LoadWarehouses()
+        Private Sub cmbWarehouse_DropDown(sender As Object, e As EventArgs) Handles cmbWarehouse.DropDown
+            LoadWarehouses()
+        End Sub
+
+        Public Sub LoadWarehouses()
             Try
+                Dim selectedVal = cmbWarehouse.SelectedValue
                 Dim compId = SessionContext.CurrentCompanyID
                 Dim dt As DataTable
                 If compId.HasValue Then
-                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses WHERE (CompanyID = ? OR CompanyID IS NULL) ORDER BY WarehouseID", compId.Value)
+                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses WHERE (CompanyID = ? OR CompanyID IS NULL) AND IsActive = 1 ORDER BY WarehouseID", compId.Value)
                 Else
-                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses ORDER BY WarehouseID")
+                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses WHERE IsActive = 1 ORDER BY WarehouseID")
                 End If
 
+                cmbWarehouse.DataSource = Nothing
+                cmbWarehouse.Items.Clear()
+
                 If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                    cmbWarehouse.DataSource = dt
                     cmbWarehouse.DisplayMember = "WarehouseName"
                     cmbWarehouse.ValueMember = "WarehouseID"
-                    cmbWarehouse.SelectedIndex = 0
+                    cmbWarehouse.DataSource = dt
+
+                    If selectedVal IsNot Nothing Then
+                        Try
+                            cmbWarehouse.SelectedValue = selectedVal
+                        Catch
+                        End Try
+                    End If
+
+                    If cmbWarehouse.SelectedIndex < 0 AndAlso cmbWarehouse.Items.Count > 0 Then
+                        cmbWarehouse.SelectedIndex = 0
+                    End If
                 Else
-                    cmbWarehouse.Items.Clear()
                     cmbWarehouse.Items.Add("انبار اصلی")
                     cmbWarehouse.SelectedIndex = 0
                 End If
