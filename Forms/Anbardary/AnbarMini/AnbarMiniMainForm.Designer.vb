@@ -18,6 +18,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabsMini = New TabControl()
             Me.tabPOS = New TabPage()
             Me.tabPurchase = New TabPage()
+            Me.tabParties = New TabPage()
             Me.tabProducts = New TabPage()
             Me.tabWarehouses = New TabPage()
             Me.tabGroups = New TabPage()
@@ -28,6 +29,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             ' tabsMini
             Me.tabsMini.Controls.Add(Me.tabPOS)
             Me.tabsMini.Controls.Add(Me.tabPurchase)
+            Me.tabsMini.Controls.Add(Me.tabParties)
             Me.tabsMini.Controls.Add(Me.tabProducts)
             Me.tabsMini.Controls.Add(Me.tabWarehouses)
             Me.tabsMini.Controls.Add(Me.tabGroups)
@@ -53,6 +55,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabPurchase.Name = "tabPurchase"
             Me.tabPurchase.Size = New Size(992, 607)
             Me.tabPurchase.Text = "📦 خرید کالا"
+
+            ' tabParties
+            Me.tabParties.Location = New Point(4, 39)
+            Me.tabParties.Name = "tabParties"
+            Me.tabParties.Size = New Size(992, 607)
+            Me.tabParties.Text = "👥 لیست فروشنده و خریدار"
 
             ' tabProducts
             Me.tabProducts.Location = New Point(4, 39)
@@ -98,6 +106,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents tabsMini As TabControl
         Friend WithEvents tabPOS As TabPage
         Friend WithEvents tabPurchase As TabPage
+        Friend WithEvents tabParties As TabPage
         Friend WithEvents tabProducts As TabPage
         Friend WithEvents tabWarehouses As TabPage
         Friend WithEvents tabGroups As TabPage
