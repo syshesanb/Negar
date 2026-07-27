@@ -81,32 +81,32 @@ Namespace Negar.Forms
             Me.pnlInventoryTop.Name = "pnlInventoryTop"
             Me.pnlInventoryTop.BackColor = Color.FromArgb(235, 245, 252)
 
-            Me.lblWarehouseLabel.Text = "انبار:"
-            Me.lblWarehouseLabel.Location = New Point(8, 14)
-            Me.lblWarehouseLabel.Size = New Size(45, 20)
-            Me.lblWarehouseLabel.Font = New Font("Tahoma", 9.0!)
-            Me.lblWarehouseLabel.TextAlign = ContentAlignment.MiddleRight
-
-            Me.cmbWarehouse.Location = New Point(55, 11)
+            Me.cmbWarehouse.Location = New Point(8, 11)
             Me.cmbWarehouse.Size = New Size(160, 24)
             Me.cmbWarehouse.Font = New Font("Tahoma", 9.0!)
             Me.cmbWarehouse.RightToLeft = RightToLeft.Yes
             Me.cmbWarehouse.DropDownStyle = ComboBoxStyle.DropDownList
             Me.cmbWarehouse.Name = "cmbWarehouse"
 
-            Me.lblSearch.Text = "جستجو:"
-            Me.lblSearch.Location = New Point(230, 14)
-            Me.lblSearch.Size = New Size(50, 20)
-            Me.lblSearch.Font = New Font("Tahoma", 9.0!)
-            Me.lblSearch.Name = "lblSearch"
+            Me.lblWarehouseLabel.Text = "انبار:"
+            Me.lblWarehouseLabel.Location = New Point(172, 14)
+            Me.lblWarehouseLabel.Size = New Size(45, 20)
+            Me.lblWarehouseLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblWarehouseLabel.TextAlign = ContentAlignment.MiddleRight
 
-            Me.txtSearchInventory.Location = New Point(285, 10)
+            Me.txtSearchInventory.Location = New Point(225, 10)
             Me.txtSearchInventory.Size = New Size(180, 26)
             Me.txtSearchInventory.Font = New Font("Tahoma", 9.0!)
             Me.txtSearchInventory.Name = "txtSearchInventory"
 
+            Me.lblSearch.Text = "جستجو:"
+            Me.lblSearch.Location = New Point(410, 14)
+            Me.lblSearch.Size = New Size(50, 20)
+            Me.lblSearch.Font = New Font("Tahoma", 9.0!)
+            Me.lblSearch.Name = "lblSearch"
+
             Me.btnRefresh.Text = "بازخوانی"
-            Me.btnRefresh.Location = New Point(480, 10)
+            Me.btnRefresh.Location = New Point(470, 10)
             Me.btnRefresh.Size = New Size(75, 26)
             Me.btnRefresh.Font = New Font("Tahoma", 9.0!)
             Me.btnRefresh.BackColor = Color.FromArgb(60, 130, 75)
@@ -115,7 +115,7 @@ Namespace Negar.Forms
             Me.btnRefresh.Name = "btnRefresh"
 
             Me.btnPrintInventory.Text = "چاپ"
-            Me.btnPrintInventory.Location = New Point(560, 10)
+            Me.btnPrintInventory.Location = New Point(550, 10)
             Me.btnPrintInventory.Size = New Size(70, 26)
             Me.btnPrintInventory.Font = New Font("Tahoma", 9.0!)
             Me.btnPrintInventory.BackColor = Color.FromArgb(100, 55, 145)
@@ -124,14 +124,14 @@ Namespace Negar.Forms
             Me.btnPrintInventory.Name = "btnPrintInventory"
 
             Me.lblInventoryCount.Text = "تعداد اقلام: 0"
-            Me.lblInventoryCount.Location = New Point(640, 14)
+            Me.lblInventoryCount.Location = New Point(630, 14)
             Me.lblInventoryCount.Size = New Size(130, 18)
             Me.lblInventoryCount.Font = New Font("Tahoma", 9.0!)
             Me.lblInventoryCount.ForeColor = Color.FromArgb(30, 80, 140)
             Me.lblInventoryCount.Name = "lblInventoryCount"
 
             Me.pnlInventoryTop.Controls.AddRange(New Control() {
-                Me.lblWarehouseLabel, Me.cmbWarehouse, Me.lblSearch, Me.txtSearchInventory,
+                Me.cmbWarehouse, Me.lblWarehouseLabel, Me.txtSearchInventory, Me.lblSearch,
                 Me.btnRefresh, Me.btnPrintInventory, Me.lblInventoryCount
             })
 
