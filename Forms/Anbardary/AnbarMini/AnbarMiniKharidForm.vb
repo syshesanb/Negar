@@ -51,7 +51,13 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Dim term = txtProductSearch.Text.Trim()
             If String.IsNullOrEmpty(term) Then Return
 
-            Dim dt = Sql.ExecuteTable("SELECT ProductID, Code, Name, PurchasePrice FROM Products WHERE Barcode = ? OR Code = ? OR Name LIKE ?", term, term, "%" & term & "%")
+            Dim compId = SessionContext.CurrentCompanyID
+            Dim dt As DataTable
+            If compId.HasValue Then
+                dt = Sql.ExecuteTable("SELECT ProductID, Code, Name, PurchasePrice FROM Products WHERE (CompanyID = ? OR CompanyID IS NULL) AND (Barcode = ? OR Code = ? OR Name LIKE ?)", compId.Value, term, term, "%" & term & "%")
+            Else
+                dt = Sql.ExecuteTable("SELECT ProductID, Code, Name, PurchasePrice FROM Products WHERE Barcode = ? OR Code = ? OR Name LIKE ?", term, term, "%" & term & "%")
+            End If
             If dt Is Nothing OrElse dt.Rows.Count = 0 Then
                 MessageBox.Show("کالای مورد نظر یافت نشد.", "هشدار", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return

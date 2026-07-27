@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -566,11 +566,36 @@ Namespace Negar.Data
             AddColumnIfMissing("PurchaseInvoiceDetails", "ReceivedQuantity", "DECIMAL")
             AddColumnIfMissing("SarfaslShenavar", "CreatedBy", "INTEGER")
             AddColumnIfMissing("Products", "DefaultWarehouseID", "INTEGER")
-            
+
+            ' Ensure CompanyID columns for company data isolation
+            AddColumnIfMissing("Products", "CompanyID", "INTEGER")
+            AddColumnIfMissing("Warehouses", "CompanyID", "INTEGER")
+            AddColumnIfMissing("PurchaseInvoices", "CompanyID", "INTEGER")
+            AddColumnIfMissing("SalesInvoices", "CompanyID", "INTEGER")
+            AddColumnIfMissing("WarehouseReceipts", "CompanyID", "INTEGER")
+
+            Try
+                ' Backfill CompanyID for existing legacy data if needed
+                Dim defaultComp = Sql.ExecuteScalar("SELECT MIN(CompanyID) FROM Companies")
+                If defaultComp IsNot Nothing AndAlso Not Convert.IsDBNull(defaultComp) Then
+                    Dim cid = Convert.ToInt32(defaultComp)
+                    Sql.ExecuteNonQuery("UPDATE Products SET CompanyID = ? WHERE CompanyID IS NULL", cid)
+                    Sql.ExecuteNonQuery("UPDATE Warehouses SET CompanyID = ? WHERE CompanyID IS NULL", cid)
+                    Sql.ExecuteNonQuery("UPDATE PurchaseInvoices SET CompanyID = ? WHERE CompanyID IS NULL", cid)
+                    Sql.ExecuteNonQuery("UPDATE SalesInvoices SET CompanyID = ? WHERE CompanyID IS NULL", cid)
+                    Sql.ExecuteNonQuery("UPDATE WarehouseReceipts SET CompanyID = ? WHERE CompanyID IS NULL", cid)
+                End If
+            Catch ex As Exception
+            End Try
+
             Try
                 Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_Products_GroupID ON Products (ProductGroupID)")
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_Products_CompanyID ON Products (CompanyID)")
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_Warehouses_CompanyID ON Warehouses (CompanyID)")
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_PurchaseInvoices_CompanyID ON PurchaseInvoices (CompanyID)")
+                Sql.ExecuteNonQuery("CREATE INDEX IF NOT EXISTS IX_SalesInvoices_CompanyID ON SalesInvoices (CompanyID)")
             Catch ex As Exception
-                ' Index might already exist or table lock
+                ' Index might already exist
             End Try
 
             Try

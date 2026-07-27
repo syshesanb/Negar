@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -8,7 +8,12 @@ Imports Negar.Data
 Namespace Negar.Business
     Public Class CatalogService
         Public Function GetProducts() As DataTable
-            Return Sql.ExecuteTable("SELECT p.ProductID, p.ProductCode, p.ProductName, p.Unit, p.DefaultPrice, p.Category, p.IsActive, p.DefaultWarehouseID, w.WarehouseName AS DefaultWarehouseName, p.TaxPercent FROM Products p LEFT JOIN Warehouses w ON p.DefaultWarehouseID = w.WarehouseID ORDER BY p.ProductName")
+            Dim compId = SessionContext.CurrentCompanyID
+            If compId.HasValue Then
+                Return Sql.ExecuteTable("SELECT p.ProductID, p.ProductCode, p.ProductName, p.Unit, p.DefaultPrice, p.Category, p.IsActive, p.DefaultWarehouseID, w.WarehouseName AS DefaultWarehouseName, p.TaxPercent FROM Products p LEFT JOIN Warehouses w ON p.DefaultWarehouseID = w.WarehouseID WHERE p.CompanyID = ? ORDER BY p.ProductName", compId.Value)
+            Else
+                Return Sql.ExecuteTable("SELECT p.ProductID, p.ProductCode, p.ProductName, p.Unit, p.DefaultPrice, p.Category, p.IsActive, p.DefaultWarehouseID, w.WarehouseName AS DefaultWarehouseName, p.TaxPercent FROM Products p LEFT JOIN Warehouses w ON p.DefaultWarehouseID = w.WarehouseID ORDER BY p.ProductName")
+            End If
         End Function
 
         Public Function SaveProduct(productId As Integer?, code As String, name As String, unit As String, defaultPrice As Decimal,
@@ -31,6 +36,7 @@ Namespace Negar.Business
 
             Dim activeVal = If(isActive, 1, 0)
             Dim defWhVal = If(defaultWarehouseId IsNot Nothing AndAlso Not Convert.IsDBNull(defaultWarehouseId), defaultWarehouseId, DBNull.Value)
+            Dim compIdVal As Object = If(SessionContext.CurrentCompanyID.HasValue, SessionContext.CurrentCompanyID.Value, DBNull.Value)
 
             If productId.HasValue AndAlso productId.Value > 0 Then
                 Sql.ExecuteNonQuery("UPDATE Products SET ProductCode = ?, ProductName = ?, Unit = ?, DefaultPrice = ?, Category = ?, IsActive = ?, " &
@@ -40,7 +46,7 @@ Namespace Negar.Business
                                     "WholesaleMarkup = ?, WholesaleDiscount = ?, TaxPercent = ?, TollPercent = ?, " &
                                     "NetWeight = ?, GrossWeight = ?, Length = ?, Width = ?, Height = ?, Volume = ?, " &
                                     "Color = ?, Material = ?, Size = ?, Brand = ?, CountryOfOrigin = ?, PhysicalDescription = ?, " &
-                                    "Image1 = ?, Image2 = ?, Image3 = ?, Image4 = ?, Image5 = ?, Image6 = ?, DefaultWarehouseID = ? " &
+                                    "Image1 = ?, Image2 = ?, Image3 = ?, Image4 = ?, Image5 = ?, Image6 = ?, DefaultWarehouseID = ?, CompanyID = COALESCE(CompanyID, ?) " &
                                     "WHERE ProductID = ?",
                                     code, name, unit, defaultPrice, category, activeVal,
                                     baseUoMId, secondaryUoMId, nominalFactor, productGroupId, barcode, taxId,
@@ -49,7 +55,7 @@ Namespace Negar.Business
                                     wholesaleMarkup, wholesaleDiscount, taxPercent, tollPercent,
                                     netWeight, grossWeight, length, width, height, volume,
                                     color, material, size, brand, countryOfOrigin, physicalDescription,
-                                    image1, image2, image3, image4, image5, image6, defWhVal, productId.Value)
+                                    image1, image2, image3, image4, image5, image6, defWhVal, compIdVal, productId.Value)
                 Return productId.Value
             Else
                 Return Sql.ExecuteIdentity("INSERT INTO Products (ProductCode, ProductName, Unit, DefaultPrice, Category, IsActive, " &
@@ -59,8 +65,8 @@ Namespace Negar.Business
                                        "WholesaleMarkup, WholesaleDiscount, TaxPercent, TollPercent, " &
                                        "NetWeight, GrossWeight, Length, Width, Height, Volume, " &
                                        "Color, Material, Size, Brand, CountryOfOrigin, PhysicalDescription, " &
-                                       "Image1, Image2, Image3, Image4, Image5, Image6, DefaultWarehouseID) " &
-                                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                       "Image1, Image2, Image3, Image4, Image5, Image6, DefaultWarehouseID, CompanyID) " &
+                                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                        code, name, unit, defaultPrice, category, activeVal,
                                        baseUoMId, secondaryUoMId, nominalFactor, productGroupId, barcode, taxId,
                                        productType, purchasePrice, minStock, reorderPoint, maxStock, trackingType, If(locationId, DBNull.Value), technicalName,
@@ -68,7 +74,7 @@ Namespace Negar.Business
                                        wholesaleMarkup, wholesaleDiscount, taxPercent, tollPercent,
                                        netWeight, grossWeight, length, width, height, volume,
                                        color, material, size, brand, countryOfOrigin, physicalDescription,
-                                       image1, image2, image3, image4, image5, image6, defWhVal)
+                                       image1, image2, image3, image4, image5, image6, defWhVal, compIdVal)
             End If
         End Function
 
@@ -80,19 +86,37 @@ Namespace Negar.Business
                           "p.WholesaleMarkup, p.WholesaleDiscount, p.TaxPercent, p.TollPercent, " &
                           "p.NetWeight, p.GrossWeight, p.Length, p.Width, p.Height, p.Volume, " &
                           "p.Color, p.Material, p.Size, p.Brand, p.CountryOfOrigin, p.PhysicalDescription, " &
-                          "p.Image1, p.Image2, p.Image3, p.Image4, p.Image5, p.Image6, p.DefaultWarehouseID " &
+                          "p.Image1, p.Image2, p.Image3, p.Image4, p.Image5, p.Image6, p.DefaultWarehouseID, p.CompanyID " &
                           "FROM Products p WHERE p.ProductID = ?"
+            Dim compId = SessionContext.CurrentCompanyID
+            If compId.HasValue Then
+                sqlText &= " AND (p.CompanyID = ? OR p.CompanyID IS NULL)"
+                Dim dtComp = Sql.ExecuteTable(sqlText, productId, compId.Value)
+                If dtComp.Rows.Count > 0 Then Return dtComp.Rows(0)
+                Return Nothing
+            End If
+
             Dim dt = Sql.ExecuteTable(sqlText, productId)
             If dt.Rows.Count > 0 Then Return dt.Rows(0)
             Return Nothing
         End Function
 
         Public Sub DeleteProduct(productId As Integer)
-            Sql.ExecuteNonQuery("DELETE FROM Products WHERE ProductID = ?", productId)
+            Dim compId = SessionContext.CurrentCompanyID
+            If compId.HasValue Then
+                Sql.ExecuteNonQuery("DELETE FROM Products WHERE ProductID = ? AND (CompanyID = ? OR CompanyID IS NULL)", productId, compId.Value)
+            Else
+                Sql.ExecuteNonQuery("DELETE FROM Products WHERE ProductID = ?", productId)
+            End If
         End Sub
 
         Public Function GetWarehouses() As DataTable
-            Return Sql.ExecuteTable("SELECT *, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses ORDER BY WarehouseName")
+            Dim compId = SessionContext.CurrentCompanyID
+            If compId.HasValue Then
+                Return Sql.ExecuteTable("SELECT *, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses WHERE CompanyID = ? OR CompanyID IS NULL ORDER BY WarehouseName", compId.Value)
+            Else
+                Return Sql.ExecuteTable("SELECT *, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses ORDER BY WarehouseName")
+            End If
         End Function
 
         Public Function GetWarehouseById(warehouseId As Integer) As DataRow
@@ -102,7 +126,14 @@ Namespace Negar.Business
         End Function
 
         Public Function GetNextProductCode() As String
-            Dim dt = Sql.ExecuteTable("SELECT MAX(CAST(ProductCode AS INTEGER)) as MaxCode FROM Products WHERE ProductCode GLOB '[0-9]*'")
+            Dim compId = SessionContext.CurrentCompanyID
+            Dim dt As DataTable
+            If compId.HasValue Then
+                dt = Sql.ExecuteTable("SELECT MAX(CAST(ProductCode AS INTEGER)) as MaxCode FROM Products WHERE CompanyID = ? AND ProductCode GLOB '[0-9]*'", compId.Value)
+            Else
+                dt = Sql.ExecuteTable("SELECT MAX(CAST(ProductCode AS INTEGER)) as MaxCode FROM Products WHERE ProductCode GLOB '[0-9]*'")
+            End If
+
             If dt.Rows.Count > 0 AndAlso Not dt.Rows(0).IsNull("MaxCode") Then
                 Dim maxCode = Convert.ToInt32(dt.Rows(0)("MaxCode"))
                 Return (maxCode + 1).ToString()

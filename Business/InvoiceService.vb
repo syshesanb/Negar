@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -19,9 +19,18 @@ Namespace Negar.Business
                         "COALESCE(i.ReceiptStatus, 'رسید نشده') AS ReceiptStatus " &
                         "FROM PurchaseInvoices i LEFT JOIN Warehouses w ON i.WarehouseID = w.WarehouseID "
 
+            Dim conditions As New List(Of String)()
+            If SessionContext.CurrentCompanyID.HasValue Then
+                conditions.Add("(i.CompanyID = " & SessionContext.CurrentCompanyID.Value & " OR i.CompanyID IS NULL)")
+            End If
+
             If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
                 Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
-                query &= "WHERE i.CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ") "
+                conditions.Add("i.CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ")")
+            End If
+
+            If conditions.Count > 0 Then
+                query &= "WHERE " & String.Join(" AND ", conditions.ToArray()) & " "
             End If
 
             query &= "ORDER BY i.InvoiceDate DESC, i.InvoiceID DESC"
@@ -30,13 +39,24 @@ Namespace Negar.Business
 
         Public Function GetSalesInvoices() As DataTable
             If SessionContext.CurrentUser Is Nothing Then Return New DataTable()
-            If String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
-                Return Sql.ExecuteTable("SELECT InvoiceID, InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID FROM SalesInvoices ORDER BY InvoiceDate DESC")
+
+            Dim conditions As New List(Of String)()
+            If SessionContext.CurrentCompanyID.HasValue Then
+                conditions.Add("(CompanyID = " & SessionContext.CurrentCompanyID.Value & " OR CompanyID IS NULL)")
             End If
-            Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
-            Return Sql.ExecuteTable(
-                "SELECT InvoiceID, InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID FROM SalesInvoices " &
-                "WHERE CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ") ORDER BY InvoiceDate DESC")
+
+            If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
+                conditions.Add("CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ")")
+            End If
+
+            Dim query = "SELECT InvoiceID, InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID FROM SalesInvoices "
+            If conditions.Count > 0 Then
+                query &= "WHERE " & String.Join(" AND ", conditions.ToArray()) & " "
+            End If
+            query &= "ORDER BY InvoiceDate DESC"
+
+            Return Sql.ExecuteTable(query)
         End Function
 
         Public Function SavePurchaseInvoice(invoiceNumber As String, invoiceDate As DateTime, vendorName As String, warehouseId As Integer, createdBy As Integer, lines As IEnumerable(Of Tuple(Of Integer, Decimal, Decimal, Decimal, Decimal)), Optional invoiceType As String = "فاکتور خرید", Optional discountAmount As Decimal = 0D, Optional paymentType As String = "نسیه", Optional description As String = "", Optional taxEntryMode As Integer = 0, Optional totalVat As Decimal = 0D) As Integer
@@ -50,8 +70,10 @@ Namespace Negar.Business
                 total = 0D
             End If
 
-            Dim invoiceId = Sql.ExecuteIdentity("INSERT INTO PurchaseInvoices (InvoiceNumber, InvoiceDate, VendorName, TotalAmount, CreatedBy, WarehouseID, InvoiceType, DiscountAmount, PaymentType, Description, TaxEntryMode, TotalVat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                                                invoiceNumber, invoiceDate, vendorName, total, createdBy, warehouseId, invoiceType, discountAmount, paymentType, description, taxEntryMode, totalVat)
+            Dim compIdVal As Object = If(SessionContext.CurrentCompanyID.HasValue, SessionContext.CurrentCompanyID.Value, DBNull.Value)
+
+            Dim invoiceId = Sql.ExecuteIdentity("INSERT INTO PurchaseInvoices (InvoiceNumber, InvoiceDate, VendorName, TotalAmount, CreatedBy, WarehouseID, InvoiceType, DiscountAmount, PaymentType, Description, TaxEntryMode, TotalVat, CompanyID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                                invoiceNumber, invoiceDate, vendorName, total, createdBy, warehouseId, invoiceType, discountAmount, paymentType, description, taxEntryMode, totalVat, compIdVal)
 
             For Each line In lines
                 Dim lineTotal = (line.Item2 * line.Item3) - line.Item4 + line.Item5
@@ -69,8 +91,11 @@ Namespace Negar.Business
             For Each line In lines
                 total += line.Item2 * line.Item3
             Next
-            Dim invoiceId = Sql.ExecuteIdentity("INSERT INTO SalesInvoices (InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID) VALUES (?, ?, ?, ?, ?, ?)",
-                                                invoiceNumber, invoiceDate, customerName, total, createdBy, warehouseId)
+
+            Dim compIdVal As Object = If(SessionContext.CurrentCompanyID.HasValue, SessionContext.CurrentCompanyID.Value, DBNull.Value)
+
+            Dim invoiceId = Sql.ExecuteIdentity("INSERT INTO SalesInvoices (InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID, CompanyID) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                                invoiceNumber, invoiceDate, customerName, total, createdBy, warehouseId, compIdVal)
 
             For Each line In lines
                 Dim lineTotal = line.Item2 * line.Item3

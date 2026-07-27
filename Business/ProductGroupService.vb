@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Data
 Imports Negar.Data
 
@@ -107,7 +107,12 @@ Namespace Negar.Business
             End If
 
             Try
-                Sql.ExecuteNonQuery("DELETE FROM ProductGroups WHERE GroupID = ?", groupId)
+                Dim compId = SessionContext.CurrentCompanyID
+                If compId.HasValue Then
+                    Sql.ExecuteNonQuery("DELETE FROM ProductGroups WHERE GroupID = ? AND (CompanyID = ? OR CompanyID IS NULL)", groupId, compId.Value)
+                Else
+                    Sql.ExecuteNonQuery("DELETE FROM ProductGroups WHERE GroupID = ?", groupId)
+                End If
             Catch ex As Exception
                 Throw New InvalidOperationException("خطا در حذف گروه کالا: " & ex.Message)
             End Try

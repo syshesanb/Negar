@@ -87,6 +87,7 @@ CREATE TABLE FiscalYears (
 
 CREATE TABLE Products (
     ProductID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CompanyID INTEGER,
     ProductCode TEXT NOT NULL,
     ProductName TEXT NOT NULL,
     Unit TEXT,
@@ -146,6 +147,7 @@ CREATE TABLE WarehouseTypes (
 
 CREATE TABLE Warehouses (
     WarehouseID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CompanyID INTEGER,
     WarehouseName TEXT NOT NULL,
     Location TEXT,
     IsActive INTEGER DEFAULT 1,
@@ -183,6 +185,7 @@ CREATE TABLE Inventory (
 
 CREATE TABLE PurchaseInvoices (
     InvoiceID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CompanyID INTEGER,
     InvoiceNumber TEXT NOT NULL,
     InvoiceDate DATETIME,
     VendorName TEXT,
@@ -204,6 +207,7 @@ CREATE TABLE PurchaseInvoiceDetails (
 
 CREATE TABLE WarehouseReceipts (
     ReceiptID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CompanyID INTEGER,
     ReceiptNumber TEXT NOT NULL,
     ReceiptDate DATETIME,
     PurchaseInvoiceID INTEGER NOT NULL,
@@ -224,6 +228,7 @@ CREATE TABLE WarehouseReceiptDetails (
 
 CREATE TABLE SalesInvoices (
     InvoiceID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CompanyID INTEGER,
     InvoiceNumber TEXT NOT NULL,
     InvoiceDate DATETIME,
     CustomerName TEXT,
