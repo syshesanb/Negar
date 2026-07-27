@@ -187,6 +187,14 @@ Namespace Negar.Forms
             colBalance.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             colBalance.DefaultCellStyle.Format = "N0"
 
+            Dim colUnitPrice As New DataGridViewTextBoxColumn()
+            colUnitPrice.Name = "colUnitPrice"
+            colUnitPrice.DataPropertyName = "UnitPrice"
+            colUnitPrice.HeaderText = "قیمت" & vbCrLf & "واحد"
+            colUnitPrice.Width = 95
+            colUnitPrice.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colUnitPrice.DefaultCellStyle.Format = "N0"
+
             Dim colCostIn As New DataGridViewTextBoxColumn()
             colCostIn.Name = "colCostIn"
             colCostIn.DataPropertyName = "CostIn"
@@ -220,7 +228,7 @@ Namespace Negar.Forms
 
             dgvKardex.Columns.AddRange(New DataGridViewColumn() {
                 rowNum, colDate, colWarehouse, colType, colIn, colOut, colBalance,
-                colCostIn, colCostOut, colBalanceCost, colDesc
+                colUnitPrice, colCostIn, colCostOut, colBalanceCost, colDesc
             })
 
             dgvKardex.RightToLeft = RightToLeft.Yes

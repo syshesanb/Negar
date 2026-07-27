@@ -124,6 +124,7 @@ Namespace Negar.Business
 
                 If Not dtRaw.Columns.Contains("CostOut") Then dtRaw.Columns.Add("CostOut", GetType(Decimal))
                 If Not dtRaw.Columns.Contains("Balance") Then dtRaw.Columns.Add("Balance", GetType(Decimal))
+                If Not dtRaw.Columns.Contains("UnitPrice") Then dtRaw.Columns.Add("UnitPrice", GetType(Decimal))
                 If Not dtRaw.Columns.Contains("BalanceCost") Then dtRaw.Columns.Add("BalanceCost", GetType(Decimal))
 
                 Dim dtFiltered As DataTable = dtRaw.Clone()
@@ -175,6 +176,11 @@ Namespace Negar.Business
 
                     row("Balance") = balance
                     row("BalanceCost") = Math.Round(balanceCost, 0)
+                    If balance > 0 Then
+                        row("UnitPrice") = Math.Round(balanceCost / balance, 0)
+                    Else
+                        row("UnitPrice") = 0D
+                    End If
 
                     Dim keepRow As Boolean = True
                     If cleanFrom.Length = 10 AndAlso pDate10 < cleanFrom Then
@@ -198,8 +204,12 @@ Namespace Negar.Business
                 dt.Columns.Add("WarehouseName", GetType(String))
                 dt.Columns.Add("TransactionType", GetType(String))
                 dt.Columns.Add("QuantityIn", GetType(Decimal))
+                dt.Columns.Add("CostIn", GetType(Decimal))
                 dt.Columns.Add("QuantityOut", GetType(Decimal))
+                dt.Columns.Add("CostOut", GetType(Decimal))
                 dt.Columns.Add("Balance", GetType(Decimal))
+                dt.Columns.Add("UnitPrice", GetType(Decimal))
+                dt.Columns.Add("BalanceCost", GetType(Decimal))
                 dt.Columns.Add("Description", GetType(String))
                 Return dt
             End Try
