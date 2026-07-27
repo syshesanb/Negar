@@ -57,8 +57,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.pnlHeader.Controls.Add(Me.txtInvoiceNo)
             Me.pnlHeader.Controls.Add(Me.lblInvoiceDate)
             Me.pnlHeader.Controls.Add(Me.txtInvoiceDate)
+            Me.pnlHeader.Controls.Add(Me.btnPickDate)
             Me.pnlHeader.Controls.Add(Me.lblVendor)
             Me.pnlHeader.Controls.Add(Me.txtVendorName)
+            Me.pnlHeader.Controls.Add(Me.btnPickVendor)
+            Me.pnlHeader.Controls.Add(Me.lblWarehouse)
+            Me.pnlHeader.Controls.Add(Me.cmbWarehouse)
             Me.pnlHeader.Dock = DockStyle.Top
             Me.pnlHeader.Location = New Point(0, 0)
             Me.pnlHeader.Name = "pnlHeader"
@@ -68,41 +72,76 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.lblTitle.AutoSize = True
             Me.lblTitle.Font = New Font("B Yekan", 12.0!, FontStyle.Bold)
             Me.lblTitle.ForeColor = Color.White
-            Me.lblTitle.Location = New Point(790, 15)
+            Me.lblTitle.Location = New Point(800, 15)
             Me.lblTitle.Text = "فاکتور خرید کالا"
 
             ' lblInvoiceNo
             Me.lblInvoiceNo.AutoSize = True
             Me.lblInvoiceNo.ForeColor = Color.White
-            Me.lblInvoiceNo.Location = New Point(720, 20)
+            Me.lblInvoiceNo.Location = New Point(745, 19)
             Me.lblInvoiceNo.Text = "شماره:"
 
             ' txtInvoiceNo
-            Me.txtInvoiceNo.Location = New Point(630, 17)
+            Me.txtInvoiceNo.Location = New Point(665, 17)
             Me.txtInvoiceNo.Name = "txtInvoiceNo"
-            Me.txtInvoiceNo.Size = New Size(85, 27)
+            Me.txtInvoiceNo.Size = New Size(75, 27)
 
             ' lblInvoiceDate
             Me.lblInvoiceDate.AutoSize = True
             Me.lblInvoiceDate.ForeColor = Color.White
-            Me.lblInvoiceDate.Location = New Point(575, 20)
+            Me.lblInvoiceDate.Location = New Point(620, 19)
             Me.lblInvoiceDate.Text = "تاریخ:"
 
             ' txtInvoiceDate
-            Me.txtInvoiceDate.Location = New Point(470, 17)
+            Me.txtInvoiceDate.Location = New Point(535, 17)
             Me.txtInvoiceDate.Name = "txtInvoiceDate"
-            Me.txtInvoiceDate.Size = New Size(100, 27)
+            Me.txtInvoiceDate.Size = New Size(82, 27)
+
+            ' btnPickDate
+            Me.btnPickDate.BackColor = Color.White
+            Me.btnPickDate.FlatStyle = FlatStyle.Flat
+            Me.btnPickDate.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+            Me.btnPickDate.ForeColor = Color.Black
+            Me.btnPickDate.Location = New Point(505, 17)
+            Me.btnPickDate.Name = "btnPickDate"
+            Me.btnPickDate.Size = New Size(28, 27)
+            Me.btnPickDate.Text = "..."
+            Me.btnPickDate.UseVisualStyleBackColor = False
 
             ' lblVendor
             Me.lblVendor.AutoSize = True
             Me.lblVendor.ForeColor = Color.White
-            Me.lblVendor.Location = New Point(380, 20)
-            Me.lblVendor.Text = "فروشنده/تامین‌کننده:"
+            Me.lblVendor.Location = New Point(440, 19)
+            Me.lblVendor.Text = "فروشنده:"
 
             ' txtVendorName
-            Me.txtVendorName.Location = New Point(150, 17)
+            Me.txtVendorName.Location = New Point(280, 17)
             Me.txtVendorName.Name = "txtVendorName"
-            Me.txtVendorName.Size = New Size(220, 27)
+            Me.txtVendorName.Size = New Size(155, 27)
+
+            ' btnPickVendor
+            Me.btnPickVendor.BackColor = Color.White
+            Me.btnPickVendor.FlatStyle = FlatStyle.Flat
+            Me.btnPickVendor.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+            Me.btnPickVendor.ForeColor = Color.Black
+            Me.btnPickVendor.Location = New Point(250, 17)
+            Me.btnPickVendor.Name = "btnPickVendor"
+            Me.btnPickVendor.Size = New Size(28, 27)
+            Me.btnPickVendor.Text = "..."
+            Me.btnPickVendor.UseVisualStyleBackColor = False
+
+            ' lblWarehouse
+            Me.lblWarehouse.AutoSize = True
+            Me.lblWarehouse.ForeColor = Color.White
+            Me.lblWarehouse.Location = New Point(195, 19)
+            Me.lblWarehouse.Text = "انبار:"
+
+            ' cmbWarehouse
+            Me.cmbWarehouse.DropDownStyle = ComboBoxStyle.DropDownList
+            Me.cmbWarehouse.FormattingEnabled = True
+            Me.cmbWarehouse.Location = New Point(15, 17)
+            Me.cmbWarehouse.Name = "cmbWarehouse"
+            Me.cmbWarehouse.Size = New Size(175, 27)
 
             ' pnlProductAdd
             Me.pnlProductAdd.BackColor = Color.FromArgb(245, 246, 250)
@@ -276,8 +315,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents txtInvoiceNo As TextBox
         Friend WithEvents lblInvoiceDate As Label
         Friend WithEvents txtInvoiceDate As TextBox
+        Friend WithEvents btnPickDate As Button
         Friend WithEvents lblVendor As Label
         Friend WithEvents txtVendorName As TextBox
+        Friend WithEvents btnPickVendor As Button
+        Friend WithEvents lblWarehouse As Label
+        Friend WithEvents cmbWarehouse As ComboBox
 
         Friend WithEvents pnlProductAdd As Panel
         Friend WithEvents lblSearch As Label

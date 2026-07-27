@@ -4,8 +4,10 @@ Option Explicit On
 Imports System
 Imports System.Data
 Imports System.Drawing
+Imports System.Linq
 Imports System.Collections.Generic
 Imports System.Windows.Forms
+Imports Microsoft.VisualBasic
 Imports Negar.Business
 Imports Negar.Data
 
@@ -18,9 +20,163 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             InitializeComponent()
         End Sub
 
+        Private isFormattingDate As Boolean = False
+
         Private Sub AnbarMiniKharidForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
             txtInvoiceDate.Text = PersianDateHelper.ToPersian(DateTime.Now)
             GenerateNextInvoiceNumber()
+            LoadWarehouses()
+        End Sub
+
+        Private Sub LoadWarehouses()
+            Try
+                Dim compId = SessionContext.CurrentCompanyID
+                Dim dt As DataTable
+                If compId.HasValue Then
+                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses WHERE (CompanyID = ? OR CompanyID IS NULL) ORDER BY WarehouseID", compId.Value)
+                Else
+                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses ORDER BY WarehouseID")
+                End If
+
+                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                    cmbWarehouse.DataSource = dt
+                    cmbWarehouse.DisplayMember = "WarehouseName"
+                    cmbWarehouse.ValueMember = "WarehouseID"
+                    cmbWarehouse.SelectedIndex = 0
+                Else
+                    cmbWarehouse.Items.Clear()
+                    cmbWarehouse.Items.Add("انبار اصلی")
+                    cmbWarehouse.SelectedIndex = 0
+                End If
+            Catch ex As Exception
+                Console.WriteLine("Error loading warehouses: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub btnPickDate_Click(sender As Object, e As EventArgs) Handles btnPickDate.Click
+            Using cal As New PersianCalendarForm(txtInvoiceDate.Text)
+                If cal.ShowDialog() = DialogResult.OK AndAlso Not String.IsNullOrEmpty(cal.SelectedDate) Then
+                    txtInvoiceDate.Text = cal.SelectedDate
+                End If
+            End Using
+        End Sub
+
+        Private Sub txtInvoiceDate_TextChanged(sender As Object, e As EventArgs) Handles txtInvoiceDate.TextChanged
+            If isFormattingDate Then Return
+            isFormattingDate = True
+            Try
+                Dim textVal = txtInvoiceDate.Text
+                Dim digitsOnly As String = New String(textVal.Where(Function(c) Char.IsDigit(c)).ToArray())
+                If digitsOnly.Length > 8 Then
+                    digitsOnly = digitsOnly.Substring(0, 8)
+                End If
+
+                Dim formatted As String = digitsOnly
+                If digitsOnly.Length >= 7 Then
+                    formatted = digitsOnly.Substring(0, 4) & "/" & digitsOnly.Substring(4, 2) & "/" & digitsOnly.Substring(6)
+                ElseIf digitsOnly.Length >= 5 Then
+                    formatted = digitsOnly.Substring(0, 4) & "/" & digitsOnly.Substring(4)
+                End If
+
+                Dim selStart As Integer = txtInvoiceDate.SelectionStart
+                Dim oldLen As Integer = txtInvoiceDate.Text.Length
+                txtInvoiceDate.Text = formatted
+                Dim newLen As Integer = txtInvoiceDate.Text.Length
+                txtInvoiceDate.SelectionStart = Math.Max(0, Math.Min(newLen, selStart + (newLen - oldLen)))
+            Finally
+                isFormattingDate = False
+            End Try
+        End Sub
+
+        Private Sub btnPickVendor_Click(sender As Object, e As EventArgs) Handles btnPickVendor.Click
+            ShowVendorSelector()
+        End Sub
+
+        Private Sub ShowVendorSelector()
+            Dim compId = SessionContext.CurrentCompanyID
+            Dim dtVendors As DataTable
+            If compId.HasValue Then
+                dtVendors = Sql.ExecuteTable("SELECT PersonID, PersonCode, (CASE WHEN PersonType='حقوقی' THEN CompanyName ELSE (FirstName || ' ' || LastName) END) AS DisplayName, RoleType, Mobile, Phone FROM Persons WHERE (CompanyID = ? OR CompanyID IS NULL) AND IsActive = 1 AND RoleType IN ('فروشنده', 'هر دو') ORDER BY PersonCode", compId.Value)
+            Else
+                dtVendors = Sql.ExecuteTable("SELECT PersonID, PersonCode, (CASE WHEN PersonType='حقوقی' THEN CompanyName ELSE (FirstName || ' ' || LastName) END) AS DisplayName, RoleType, Mobile, Phone FROM Persons WHERE IsActive = 1 AND RoleType IN ('فروشنده', 'هر دو') ORDER BY PersonCode")
+            End If
+
+            If dtVendors Is Nothing OrElse dtVendors.Rows.Count = 0 Then
+                MessageBox.Show("هیچ فروشنده/تامین‌کننده‌ای در سیستم ثبت نشده است.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            Using dlg As New Form()
+                dlg.Text = "انتخاب فروشنده / تامین‌کننده"
+                dlg.Size = New Size(650, 420)
+                dlg.StartPosition = FormStartPosition.CenterParent
+                dlg.RightToLeft = RightToLeft.Yes
+                dlg.RightToLeftLayout = True
+                dlg.Font = New Font("Tahoma", 9.0!)
+
+                Dim pnlTop As New Panel() With {.Dock = DockStyle.Top, .Height = 45}
+                Dim lblFilter As New Label() With {.Text = "جستجو:", .AutoSize = True, .Location = New Point(580, 12)}
+                Dim txtFilter As New TextBox() With {.Location = New Point(180, 9), .Size = New Size(390, 26)}
+                pnlTop.Controls.Add(lblFilter)
+                pnlTop.Controls.Add(txtFilter)
+
+                Dim dgv As New DataGridView() With {
+                    .Dock = DockStyle.Fill,
+                    .ReadOnly = True,
+                    .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                    .MultiSelect = False,
+                    .AllowUserToAddRows = False,
+                    .RowHeadersVisible = False,
+                    .DataSource = dtVendors
+                }
+                dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(242, 248, 255)
+
+                If dgv.Columns.Contains("PersonID") Then dgv.Columns("PersonID").Visible = False
+                If dgv.Columns.Contains("PersonCode") Then dgv.Columns("PersonCode").HeaderText = "کد"
+                If dgv.Columns.Contains("DisplayName") Then dgv.Columns("DisplayName").HeaderText = "نام فروشنده / شرکت"
+                If dgv.Columns.Contains("RoleType") Then dgv.Columns("RoleType").HeaderText = "نقش"
+                If dgv.Columns.Contains("Mobile") Then dgv.Columns("Mobile").HeaderText = "همراه"
+                If dgv.Columns.Contains("Phone") Then dgv.Columns("Phone").HeaderText = "تلفن"
+
+                Dim pnlBottom As New Panel() With {.Dock = DockStyle.Bottom, .Height = 45}
+                Dim btnSelect As New Button() With {.Text = "انتخاب", .BackColor = Color.FromArgb(46, 204, 113), .ForeColor = Color.White, .FlatStyle = FlatStyle.Flat, .Location = New Point(15, 8), .Size = New Size(100, 30)}
+                Dim btnCancel As New Button() With {.Text = "انصراف", .DialogResult = DialogResult.Cancel, .Location = New Point(125, 8), .Size = New Size(90, 30)}
+                pnlBottom.Controls.Add(btnSelect)
+                pnlBottom.Controls.Add(btnCancel)
+
+                dlg.Controls.Add(dgv)
+                dlg.Controls.Add(pnlTop)
+                dlg.Controls.Add(pnlBottom)
+
+                Dim applyFilter = Sub()
+                                      Dim f = txtFilter.Text.Trim().Replace("'", "''")
+                                      If String.IsNullOrEmpty(f) Then
+                                          dtVendors.DefaultView.RowFilter = ""
+                                      Else
+                                          dtVendors.DefaultView.RowFilter = $"PersonCode LIKE '%{f}%' OR DisplayName LIKE '%{f}%' OR Mobile LIKE '%{f}%'"
+                                      End If
+                                  End Sub
+
+                AddHandler txtFilter.TextChanged, Sub(s, ev) applyFilter()
+                AddHandler btnSelect.Click, Sub(s, ev)
+                                                If dgv.CurrentRow IsNot Nothing Then
+                                                    Dim drv = DirectCast(dgv.CurrentRow.DataBoundItem, DataRowView)
+                                                    txtVendorName.Text = Convert.ToString(drv.Row("DisplayName"))
+                                                    dlg.DialogResult = DialogResult.OK
+                                                    dlg.Close()
+                                                End If
+                                            End Sub
+                AddHandler dgv.CellDoubleClick, Sub(s, ev)
+                                                    If ev.RowIndex >= 0 Then
+                                                        Dim drv = DirectCast(dgv.Rows(ev.RowIndex).DataBoundItem, DataRowView)
+                                                        txtVendorName.Text = Convert.ToString(drv.Row("DisplayName"))
+                                                        dlg.DialogResult = DialogResult.OK
+                                                        dlg.Close()
+                                                    End If
+                                                End Sub
+
+                dlg.ShowDialog()
+            End Using
         End Sub
 
         Private Sub GenerateNextInvoiceNumber()
@@ -258,8 +414,13 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 lines.Add(New Tuple(Of Integer, Decimal, Decimal, Decimal, Decimal)(pId, qty, price, 0D, 0D))
             Next
 
+            Dim targetWarehouseId As Integer = defaultWarehouseId
+            If cmbWarehouse.SelectedValue IsNot Nothing AndAlso IsNumeric(cmbWarehouse.SelectedValue) Then
+                targetWarehouseId = Convert.ToInt32(cmbWarehouse.SelectedValue)
+            End If
+
             Try
-                Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, defaultWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", "فاکتور خرید نسخه مینی")
+                Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", "فاکتور خرید نسخه مینی")
                 MessageBox.Show("فاکتور خرید با موفقیت ثبت شد." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
                 dgvItems.Rows.Clear()
