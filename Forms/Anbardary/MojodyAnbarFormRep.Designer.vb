@@ -281,7 +281,7 @@ Namespace Negar.Forms
             Me.lblKardexTitle.Font = New Font("Tahoma", 10.0!, FontStyle.Bold)
             Me.lblKardexTitle.ForeColor = Color.FromArgb(20, 70, 130)
             Me.lblKardexTitle.BackColor = Color.FromArgb(215, 232, 252)
-            Me.lblKardexTitle.RightToLeft = RightToLeft.Yes
+            Me.lblKardexTitle.RightToLeft = RightToLeft.No
             Me.lblKardexTitle.TextAlign = ContentAlignment.MiddleRight
             Me.lblKardexTitle.Padding = New Padding(10, 0, 10, 0)
             Me.lblKardexTitle.Name = "lblKardexTitle"
@@ -293,6 +293,7 @@ Namespace Negar.Forms
             Me.lblKardexCount.Font = New Font("Tahoma", 9.0!)
             Me.lblKardexCount.ForeColor = Color.FromArgb(30, 80, 140)
             Me.lblKardexCount.BackColor = Color.FromArgb(235, 248, 255)
+            Me.lblKardexCount.RightToLeft = RightToLeft.No
             Me.lblKardexCount.TextAlign = ContentAlignment.MiddleRight
             Me.lblKardexCount.Padding = New Padding(10, 0, 10, 0)
             Me.lblKardexCount.Name = "lblKardexCount"
