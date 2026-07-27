@@ -73,7 +73,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             '
             Me.lblSearch.AutoSize = True
             Me.lblSearch.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblSearch.Location = New System.Drawing.Point(925, 17)
+            Me.lblSearch.Location = New System.Drawing.Point(920, 17)
             Me.lblSearch.Name = "lblSearch"
             Me.lblSearch.Size = New System.Drawing.Size(48, 14)
             Me.lblSearch.TabIndex = 0
@@ -82,16 +82,16 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             'txtSearch
             '
             Me.txtSearch.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.txtSearch.Location = New System.Drawing.Point(795, 14)
+            Me.txtSearch.Location = New System.Drawing.Point(810, 14)
             Me.txtSearch.Name = "txtSearch"
-            Me.txtSearch.Size = New System.Drawing.Size(125, 21)
+            Me.txtSearch.Size = New System.Drawing.Size(105, 21)
             Me.txtSearch.TabIndex = 1
             '
             'lblCategory
             '
             Me.lblCategory.AutoSize = True
             Me.lblCategory.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblCategory.Location = New System.Drawing.Point(740, 17)
+            Me.lblCategory.Location = New System.Drawing.Point(755, 17)
             Me.lblCategory.Name = "lblCategory"
             Me.lblCategory.Size = New System.Drawing.Size(50, 14)
             Me.lblCategory.TabIndex = 2
@@ -102,16 +102,16 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.cmbCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
             Me.cmbCategory.Font = New System.Drawing.Font("Tahoma", 8.5!)
             Me.cmbCategory.FormattingEnabled = True
-            Me.cmbCategory.Location = New System.Drawing.Point(620, 14)
+            Me.cmbCategory.Location = New System.Drawing.Point(645, 14)
             Me.cmbCategory.Name = "cmbCategory"
-            Me.cmbCategory.Size = New System.Drawing.Size(115, 21)
+            Me.cmbCategory.Size = New System.Drawing.Size(105, 21)
             Me.cmbCategory.TabIndex = 3
             '
             'lblFromDate
             '
             Me.lblFromDate.AutoSize = True
             Me.lblFromDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblFromDate.Location = New System.Drawing.Point(575, 17)
+            Me.lblFromDate.Location = New System.Drawing.Point(595, 17)
             Me.lblFromDate.Name = "lblFromDate"
             Me.lblFromDate.Size = New System.Drawing.Size(42, 14)
             Me.lblFromDate.TabIndex = 4
@@ -120,17 +120,17 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             'txtFromDate
             '
             Me.txtFromDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.txtFromDate.Location = New System.Drawing.Point(500, 14)
+            Me.txtFromDate.Location = New System.Drawing.Point(523, 14)
             Me.txtFromDate.Name = "txtFromDate"
-            Me.txtFromDate.Size = New System.Drawing.Size(72, 21)
+            Me.txtFromDate.Size = New System.Drawing.Size(68, 21)
             Me.txtFromDate.TabIndex = 5
             '
             'btnPickFromDate
             '
             Me.btnPickFromDate.Font = New System.Drawing.Font("Tahoma", 8.0!)
-            Me.btnPickFromDate.Location = New System.Drawing.Point(475, 14)
+            Me.btnPickFromDate.Location = New System.Drawing.Point(500, 14)
             Me.btnPickFromDate.Name = "btnPickFromDate"
-            Me.btnPickFromDate.Size = New System.Drawing.Size(22, 21)
+            Me.btnPickFromDate.Size = New System.Drawing.Size(21, 21)
             Me.btnPickFromDate.TabIndex = 6
             Me.btnPickFromDate.Text = "..."
             Me.btnPickFromDate.UseVisualStyleBackColor = True
@@ -139,7 +139,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             '
             Me.lblToDate.AutoSize = True
             Me.lblToDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.lblToDate.Location = New System.Drawing.Point(430, 17)
+            Me.lblToDate.Location = New System.Drawing.Point(450, 17)
             Me.lblToDate.Name = "lblToDate"
             Me.lblToDate.Size = New System.Drawing.Size(41, 14)
             Me.lblToDate.TabIndex = 7
@@ -148,17 +148,17 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             'txtToDate
             '
             Me.txtToDate.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.txtToDate.Location = New System.Drawing.Point(355, 14)
+            Me.txtToDate.Location = New System.Drawing.Point(378, 14)
             Me.txtToDate.Name = "txtToDate"
-            Me.txtToDate.Size = New System.Drawing.Size(72, 21)
+            Me.txtToDate.Size = New System.Drawing.Size(68, 21)
             Me.txtToDate.TabIndex = 8
             '
             'btnPickToDate
             '
             Me.btnPickToDate.Font = New System.Drawing.Font("Tahoma", 8.0!)
-            Me.btnPickToDate.Location = New System.Drawing.Point(330, 14)
+            Me.btnPickToDate.Location = New System.Drawing.Point(355, 14)
             Me.btnPickToDate.Name = "btnPickToDate"
-            Me.btnPickToDate.Size = New System.Drawing.Size(22, 21)
+            Me.btnPickToDate.Size = New System.Drawing.Size(21, 21)
             Me.btnPickToDate.TabIndex = 9
             Me.btnPickToDate.Text = "..."
             Me.btnPickToDate.UseVisualStyleBackColor = True
@@ -169,9 +169,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnFilter.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnFilter.ForeColor = System.Drawing.Color.White
-            Me.btnFilter.Location = New System.Drawing.Point(342, 11)
+            Me.btnFilter.Location = New System.Drawing.Point(285, 11)
             Me.btnFilter.Name = "btnFilter"
-            Me.btnFilter.Size = New System.Drawing.Size(62, 27)
+            Me.btnFilter.Size = New System.Drawing.Size(65, 27)
             Me.btnFilter.TabIndex = 10
             Me.btnFilter.Text = "جستجو"
             Me.btnFilter.UseVisualStyleBackColor = False
@@ -179,9 +179,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             'btnClearFilter
             '
             Me.btnClearFilter.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.btnClearFilter.Location = New System.Drawing.Point(289, 11)
+            Me.btnClearFilter.Location = New System.Drawing.Point(235, 11)
             Me.btnClearFilter.Name = "btnClearFilter"
-            Me.btnClearFilter.Size = New System.Drawing.Size(48, 27)
+            Me.btnClearFilter.Size = New System.Drawing.Size(45, 27)
             Me.btnClearFilter.TabIndex = 11
             Me.btnClearFilter.Text = "همه"
             Me.btnClearFilter.UseVisualStyleBackColor = True
@@ -192,9 +192,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnAdd.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnAdd.ForeColor = System.Drawing.Color.White
-            Me.btnAdd.Location = New System.Drawing.Point(204, 11)
+            Me.btnAdd.Location = New System.Drawing.Point(180, 11)
             Me.btnAdd.Name = "btnAdd"
-            Me.btnAdd.Size = New System.Drawing.Size(80, 27)
+            Me.btnAdd.Size = New System.Drawing.Size(50, 27)
             Me.btnAdd.TabIndex = 12
             Me.btnAdd.Text = "+ هزینه"
             Me.btnAdd.UseVisualStyleBackColor = False
@@ -205,9 +205,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnEdit.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnEdit.ForeColor = System.Drawing.Color.White
-            Me.btnEdit.Location = New System.Drawing.Point(124, 11)
+            Me.btnEdit.Location = New System.Drawing.Point(120, 11)
             Me.btnEdit.Name = "btnEdit"
-            Me.btnEdit.Size = New System.Drawing.Size(75, 27)
+            Me.btnEdit.Size = New System.Drawing.Size(55, 27)
             Me.btnEdit.TabIndex = 13
             Me.btnEdit.Text = "ویرایش"
             Me.btnEdit.UseVisualStyleBackColor = False
@@ -218,9 +218,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnDelete.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnDelete.ForeColor = System.Drawing.Color.White
-            Me.btnDelete.Location = New System.Drawing.Point(67, 11)
+            Me.btnDelete.Location = New System.Drawing.Point(65, 11)
             Me.btnDelete.Name = "btnDelete"
-            Me.btnDelete.Size = New System.Drawing.Size(52, 27)
+            Me.btnDelete.Size = New System.Drawing.Size(50, 27)
             Me.btnDelete.TabIndex = 14
             Me.btnDelete.Text = "حذف"
             Me.btnDelete.UseVisualStyleBackColor = False
@@ -233,7 +233,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnPrint.ForeColor = System.Drawing.Color.White
             Me.btnPrint.Location = New System.Drawing.Point(10, 11)
             Me.btnPrint.Name = "btnPrint"
-            Me.btnPrint.Size = New System.Drawing.Size(52, 27)
+            Me.btnPrint.Size = New System.Drawing.Size(50, 27)
             Me.btnPrint.TabIndex = 15
             Me.btnPrint.Text = "چاپ"
             Me.btnPrint.UseVisualStyleBackColor = False
