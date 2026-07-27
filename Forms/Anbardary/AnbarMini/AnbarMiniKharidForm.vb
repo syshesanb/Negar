@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -54,9 +54,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Dim compId = SessionContext.CurrentCompanyID
             Dim dt As DataTable
             If compId.HasValue Then
-                dt = Sql.ExecuteTable("SELECT ProductID, Code, Name, PurchasePrice FROM Products WHERE (CompanyID = ? OR CompanyID IS NULL) AND (Barcode = ? OR Code = ? OR Name LIKE ?)", compId.Value, term, term, "%" & term & "%")
+                dt = Sql.ExecuteTable("SELECT ProductID, ProductCode AS Code, ProductName AS Name, PurchasePrice FROM Products WHERE (CompanyID = ? OR CompanyID IS NULL) AND (Barcode = ? OR ProductCode = ? OR ProductName LIKE ?)", compId.Value, term, term, "%" & term & "%")
             Else
-                dt = Sql.ExecuteTable("SELECT ProductID, Code, Name, PurchasePrice FROM Products WHERE Barcode = ? OR Code = ? OR Name LIKE ?", term, term, "%" & term & "%")
+                dt = Sql.ExecuteTable("SELECT ProductID, ProductCode AS Code, ProductName AS Name, PurchasePrice FROM Products WHERE Barcode = ? OR ProductCode = ? OR ProductName LIKE ?", term, term, "%" & term & "%")
             End If
             If dt Is Nothing OrElse dt.Rows.Count = 0 Then
                 MessageBox.Show("کالای مورد نظر یافت نشد.", "هشدار", MessageBoxButtons.OK, MessageBoxIcon.Warning)
