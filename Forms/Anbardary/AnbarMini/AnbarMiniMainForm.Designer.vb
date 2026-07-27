@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -19,6 +19,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabPOS = New TabPage()
             Me.tabPurchase = New TabPage()
             Me.tabProducts = New TabPage()
+            Me.tabWarehouses = New TabPage()
             Me.tabGroups = New TabPage()
             Me.tabInventory = New TabPage()
             Me.tabsMini.SuspendLayout()
@@ -28,6 +29,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabsMini.Controls.Add(Me.tabPOS)
             Me.tabsMini.Controls.Add(Me.tabPurchase)
             Me.tabsMini.Controls.Add(Me.tabProducts)
+            Me.tabsMini.Controls.Add(Me.tabWarehouses)
             Me.tabsMini.Controls.Add(Me.tabGroups)
             Me.tabsMini.Controls.Add(Me.tabInventory)
             Me.tabsMini.Dock = DockStyle.Fill
@@ -57,6 +59,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabProducts.Name = "tabProducts"
             Me.tabProducts.Size = New Size(992, 607)
             Me.tabProducts.Text = "🏷️ لیست کالاها"
+
+            ' tabWarehouses
+            Me.tabWarehouses.Location = New Point(4, 39)
+            Me.tabWarehouses.Name = "tabWarehouses"
+            Me.tabWarehouses.Size = New Size(992, 607)
+            Me.tabWarehouses.Text = "🏢 لیست انبارها"
 
             ' tabGroups
             Me.tabGroups.Location = New Point(4, 39)
@@ -91,6 +99,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents tabPOS As TabPage
         Friend WithEvents tabPurchase As TabPage
         Friend WithEvents tabProducts As TabPage
+        Friend WithEvents tabWarehouses As TabPage
         Friend WithEvents tabGroups As TabPage
         Friend WithEvents tabInventory As TabPage
     End Class

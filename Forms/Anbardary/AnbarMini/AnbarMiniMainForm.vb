@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -14,6 +14,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             HostForm(tabPOS, New AnbarMiniForooshForm())
             HostForm(tabPurchase, New AnbarMiniKharidForm())
             HostForm(tabProducts, New AnbardaryNamKala1Form())
+            HostForm(tabWarehouses, New AnbardaryNamAnbar1Form())
             HostForm(tabGroups, New AnbardaryGoroohKala1Form())
             HostForm(tabInventory, New MojodyAnbarFormRep())
         End Sub
