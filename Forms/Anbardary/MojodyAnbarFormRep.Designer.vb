@@ -45,8 +45,10 @@ Namespace Negar.Forms
             Me.cmbKardexWarehouse = New ComboBox()
             Me.lblKardexFromLabel = New Label()
             Me.txtKardexFrom = New TextBox()
+            Me.btnPickKardexFrom = New Button()
             Me.lblKardexToLabel = New Label()
             Me.txtKardexTo = New TextBox()
+            Me.btnPickKardexTo = New Button()
             Me.btnKardexLoad = New Button()
             Me.btnPrintKardex = New Button()
             Me.lblKardexTitle = New Label()
@@ -180,59 +182,75 @@ Namespace Negar.Forms
             Me.pnlKardexTop.Name = "pnlKardexTop"
             Me.pnlKardexTop.BackColor = Color.FromArgb(235, 248, 255)
 
-            Me.lblKardexProductLabel.Text = "کالا :"
-            Me.lblKardexProductLabel.Location = New Point(8, 14)
-            Me.lblKardexProductLabel.Size = New Size(42, 20)
-            Me.lblKardexProductLabel.Font = New Font("Tahoma", 9.0!)
-            Me.lblKardexProductLabel.TextAlign = ContentAlignment.MiddleRight
-
-            Me.cmbKardexProduct.Location = New Point(54, 11)
-            Me.cmbKardexProduct.Size = New Size(240, 24)
+            Me.cmbKardexProduct.Location = New Point(8, 11)
+            Me.cmbKardexProduct.Size = New Size(160, 24)
             Me.cmbKardexProduct.Font = New Font("Tahoma", 9.0!)
             Me.cmbKardexProduct.RightToLeft = RightToLeft.Yes
             Me.cmbKardexProduct.DropDownStyle = ComboBoxStyle.DropDownList
             Me.cmbKardexProduct.Name = "cmbKardexProduct"
 
-            Me.lblKardexWarehouseLabel.Text = "انبار :"
-            Me.lblKardexWarehouseLabel.Location = New Point(302, 14)
-            Me.lblKardexWarehouseLabel.Size = New Size(42, 20)
-            Me.lblKardexWarehouseLabel.Font = New Font("Tahoma", 9.0!)
-            Me.lblKardexWarehouseLabel.TextAlign = ContentAlignment.MiddleRight
+            Me.lblKardexProductLabel.Text = "کالا:"
+            Me.lblKardexProductLabel.Location = New Point(172, 14)
+            Me.lblKardexProductLabel.Size = New Size(40, 20)
+            Me.lblKardexProductLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblKardexProductLabel.TextAlign = ContentAlignment.MiddleRight
 
-            Me.cmbKardexWarehouse.Location = New Point(348, 11)
-            Me.cmbKardexWarehouse.Size = New Size(180, 24)
+            Me.cmbKardexWarehouse.Location = New Point(215, 11)
+            Me.cmbKardexWarehouse.Size = New Size(140, 24)
             Me.cmbKardexWarehouse.Font = New Font("Tahoma", 9.0!)
             Me.cmbKardexWarehouse.RightToLeft = RightToLeft.Yes
             Me.cmbKardexWarehouse.DropDownStyle = ComboBoxStyle.DropDownList
             Me.cmbKardexWarehouse.Name = "cmbKardexWarehouse"
 
-            Me.lblKardexFromLabel.Text = "از تاریخ:"
-            Me.lblKardexFromLabel.Location = New Point(536, 14)
-            Me.lblKardexFromLabel.Size = New Size(65, 20)
-            Me.lblKardexFromLabel.Font = New Font("Tahoma", 9.0!)
-            Me.lblKardexFromLabel.TextAlign = ContentAlignment.MiddleRight
+            Me.lblKardexWarehouseLabel.Text = "انبار:"
+            Me.lblKardexWarehouseLabel.Location = New Point(358, 14)
+            Me.lblKardexWarehouseLabel.Size = New Size(40, 20)
+            Me.lblKardexWarehouseLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblKardexWarehouseLabel.TextAlign = ContentAlignment.MiddleRight
 
-            Me.txtKardexFrom.Location = New Point(605, 11)
-            Me.txtKardexFrom.Size = New Size(105, 24)
+            Me.txtKardexFrom.Location = New Point(402, 11)
+            Me.txtKardexFrom.Size = New Size(85, 24)
             Me.txtKardexFrom.Font = New Font("Tahoma", 9.0!)
             Me.txtKardexFrom.RightToLeft = RightToLeft.Yes
             Me.txtKardexFrom.Name = "txtKardexFrom"
 
-            Me.lblKardexToLabel.Text = "تا تاریخ:"
-            Me.lblKardexToLabel.Location = New Point(716, 14)
-            Me.lblKardexToLabel.Size = New Size(65, 20)
-            Me.lblKardexToLabel.Font = New Font("Tahoma", 9.0!)
-            Me.lblKardexToLabel.TextAlign = ContentAlignment.MiddleRight
+            Me.btnPickKardexFrom.Text = "..."
+            Me.btnPickKardexFrom.Location = New Point(490, 11)
+            Me.btnPickKardexFrom.Size = New Size(26, 24)
+            Me.btnPickKardexFrom.Font = New Font("Tahoma", 8.0!, FontStyle.Bold)
+            Me.btnPickKardexFrom.BackColor = Color.White
+            Me.btnPickKardexFrom.FlatStyle = FlatStyle.Flat
+            Me.btnPickKardexFrom.Name = "btnPickKardexFrom"
 
-            Me.txtKardexTo.Location = New Point(785, 11)
-            Me.txtKardexTo.Size = New Size(105, 24)
+            Me.lblKardexFromLabel.Text = "از تاریخ:"
+            Me.lblKardexFromLabel.Location = New Point(520, 14)
+            Me.lblKardexFromLabel.Size = New Size(52, 20)
+            Me.lblKardexFromLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblKardexFromLabel.TextAlign = ContentAlignment.MiddleRight
+
+            Me.txtKardexTo.Location = New Point(578, 11)
+            Me.txtKardexTo.Size = New Size(85, 24)
             Me.txtKardexTo.Font = New Font("Tahoma", 9.0!)
             Me.txtKardexTo.RightToLeft = RightToLeft.Yes
             Me.txtKardexTo.Name = "txtKardexTo"
 
+            Me.btnPickKardexTo.Text = "..."
+            Me.btnPickKardexTo.Location = New Point(666, 11)
+            Me.btnPickKardexTo.Size = New Size(26, 24)
+            Me.btnPickKardexTo.Font = New Font("Tahoma", 8.0!, FontStyle.Bold)
+            Me.btnPickKardexTo.BackColor = Color.White
+            Me.btnPickKardexTo.FlatStyle = FlatStyle.Flat
+            Me.btnPickKardexTo.Name = "btnPickKardexTo"
+
+            Me.lblKardexToLabel.Text = "تا تاریخ:"
+            Me.lblKardexToLabel.Location = New Point(696, 14)
+            Me.lblKardexToLabel.Size = New Size(52, 20)
+            Me.lblKardexToLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblKardexToLabel.TextAlign = ContentAlignment.MiddleRight
+
             Me.btnKardexLoad.Text = "نمایش کاردکس"
-            Me.btnKardexLoad.Location = New Point(896, 10)
-            Me.btnKardexLoad.Size = New Size(125, 26)
+            Me.btnKardexLoad.Location = New Point(755, 10)
+            Me.btnKardexLoad.Size = New Size(110, 26)
             Me.btnKardexLoad.Font = New Font("Tahoma", 9.0!)
             Me.btnKardexLoad.BackColor = Color.FromArgb(0, 115, 180)
             Me.btnKardexLoad.ForeColor = Color.White
@@ -240,8 +258,8 @@ Namespace Negar.Forms
             Me.btnKardexLoad.Name = "btnKardexLoad"
 
             Me.btnPrintKardex.Text = "چاپ"
-            Me.btnPrintKardex.Location = New Point(1027, 10)
-            Me.btnPrintKardex.Size = New Size(88, 26)
+            Me.btnPrintKardex.Location = New Point(870, 10)
+            Me.btnPrintKardex.Size = New Size(65, 26)
             Me.btnPrintKardex.Font = New Font("Tahoma", 9.0!)
             Me.btnPrintKardex.BackColor = Color.FromArgb(100, 55, 145)
             Me.btnPrintKardex.ForeColor = Color.White
@@ -249,10 +267,10 @@ Namespace Negar.Forms
             Me.btnPrintKardex.Name = "btnPrintKardex"
 
             Me.pnlKardexTop.Controls.AddRange(New Control() {
-                Me.lblKardexProductLabel, Me.cmbKardexProduct,
-                Me.lblKardexWarehouseLabel, Me.cmbKardexWarehouse,
-                Me.lblKardexFromLabel, Me.txtKardexFrom,
-                Me.lblKardexToLabel, Me.txtKardexTo,
+                Me.cmbKardexProduct, Me.lblKardexProductLabel,
+                Me.cmbKardexWarehouse, Me.lblKardexWarehouseLabel,
+                Me.txtKardexFrom, Me.btnPickKardexFrom, Me.lblKardexFromLabel,
+                Me.txtKardexTo, Me.btnPickKardexTo, Me.lblKardexToLabel,
                 Me.btnKardexLoad, Me.btnPrintKardex
             })
 
@@ -421,8 +439,10 @@ Namespace Negar.Forms
         Friend WithEvents cmbKardexWarehouse As ComboBox
         Friend WithEvents lblKardexFromLabel As Label
         Friend WithEvents txtKardexFrom As TextBox
+        Friend WithEvents btnPickKardexFrom As Button
         Friend WithEvents lblKardexToLabel As Label
         Friend WithEvents txtKardexTo As TextBox
+        Friend WithEvents btnPickKardexTo As Button
         Friend WithEvents btnKardexLoad As Button
         Friend WithEvents btnPrintKardex As Button
         Friend WithEvents lblKardexTitle As Label

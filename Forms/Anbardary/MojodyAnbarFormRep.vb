@@ -292,6 +292,42 @@ Namespace Negar.Forms
             lblGrandTotalValue.Text = grandTotal.ToString("N0") & " ریال"
         End Sub
 
+        Private isFormattingKardexDate As Boolean = False
+        Private Sub FormatKardexDateTextBox(txt As TextBox)
+            If isFormattingKardexDate Then Return
+            Dim digitsOnly = System.Text.RegularExpressions.Regex.Replace(txt.Text, "[^\d]", "")
+            If digitsOnly.Length = 8 Then
+                isFormattingKardexDate = True
+                txt.Text = digitsOnly.Substring(0, 4) & "/" & digitsOnly.Substring(4, 2) & "/" & digitsOnly.Substring(6, 2)
+                txt.SelectionStart = txt.Text.Length
+                isFormattingKardexDate = False
+            End If
+        End Sub
+
+        Private Sub txtKardexFrom_TextChanged(sender As Object, e As EventArgs) Handles txtKardexFrom.TextChanged
+            FormatKardexDateTextBox(txtKardexFrom)
+        End Sub
+
+        Private Sub txtKardexTo_TextChanged(sender As Object, e As EventArgs) Handles txtKardexTo.TextChanged
+            FormatKardexDateTextBox(txtKardexTo)
+        End Sub
+
+        Private Sub btnPickKardexFrom_Click(sender As Object, e As EventArgs) Handles btnPickKardexFrom.Click
+            Using calForm As New PersianCalendarForm()
+                If calForm.ShowDialog(Me) = DialogResult.OK Then
+                    txtKardexFrom.Text = calForm.SelectedDate
+                End If
+            End Using
+        End Sub
+
+        Private Sub btnPickKardexTo_Click(sender As Object, e As EventArgs) Handles btnPickKardexTo.Click
+            Using calForm As New PersianCalendarForm()
+                If calForm.ShowDialog(Me) = DialogResult.OK Then
+                    txtKardexTo.Text = calForm.SelectedDate
+                End If
+            End Using
+        End Sub
+
         Private Sub LoadKardex()
             Try
                 Dim drv = TryCast(cmbKardexProduct.SelectedItem, DataRowView)

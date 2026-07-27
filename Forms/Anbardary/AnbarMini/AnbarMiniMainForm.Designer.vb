@@ -84,7 +84,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabInventory.Location = New Point(4, 39)
             Me.tabInventory.Name = "tabInventory"
             Me.tabInventory.Size = New Size(992, 607)
-            Me.tabInventory.Text = "📊 گزارش موجودی"
+            Me.tabInventory.Text = "📊 گزارش"
 
             ' Form Setup
             Me.AutoScaleDimensions = New SizeF(8.0!, 19.0!)
