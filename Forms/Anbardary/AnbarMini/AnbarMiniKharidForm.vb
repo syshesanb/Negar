@@ -18,6 +18,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
 
         Private ReadOnly invoiceService As New InvoiceService()
         Private ReadOnly defaultWarehouseId As Integer = 1
+        Private _editingInvoiceId As Integer? = Nothing
 
         Public Sub New()
             InitializeComponent()
@@ -30,6 +31,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         End Sub
 
         Public Sub ResetForm()
+            _editingInvoiceId = Nothing
+            lblTitle.Text = "فاکتور خرید کالا"
+            btnSave.Text = "ثبت فاکتور خرید"
             txtInvoiceDate.Text = PersianDateHelper.ToPersian(DateTime.Now)
             txtVendorName.Clear()
             txtProductSearch.Clear()
@@ -40,6 +44,62 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             GenerateNextInvoiceNumber()
             LoadWarehouses()
             RecalculateTotal()
+        End Sub
+
+        Public Sub LoadInvoiceForEdit(invoiceId As Integer)
+            Try
+                Dim hdr = invoiceService.GetPurchaseInvoiceById(invoiceId)
+                If hdr Is Nothing Then
+                    MessageBox.Show("فاکتور مورد نظر یافت نشد.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return
+                End If
+
+                _editingInvoiceId = invoiceId
+                txtInvoiceNo.Text = Convert.ToString(hdr("InvoiceNumber"))
+
+                If Not hdr.IsNull("InvoiceDate") Then
+                    Try
+                        Dim dtVal = Convert.ToDateTime(hdr("InvoiceDate"))
+                        txtInvoiceDate.Text = PersianDateHelper.ToPersian(dtVal)
+                    Catch
+                        txtInvoiceDate.Text = Convert.ToString(hdr("InvoiceDate"))
+                    End Try
+                End If
+
+                txtVendorName.Text = If(hdr.IsNull("VendorName"), "", Convert.ToString(hdr("VendorName")))
+                txtDescription.Text = If(hdr.IsNull("Description"), "", Convert.ToString(hdr("Description")))
+
+                LoadWarehouses()
+                If Not hdr.IsNull("WarehouseID") Then
+                    Try
+                        cmbWarehouse.SelectedValue = Convert.ToInt32(hdr("WarehouseID"))
+                    Catch
+                    End Try
+                End If
+
+                lblTitle.Text = "ویرایش فاکتور خرید (" & txtInvoiceNo.Text & ")"
+                btnSave.Text = "ثبت تغییرات"
+
+                ' Load Invoice Details Items into DataGridView
+                dgvItems.Rows.Clear()
+                Dim dtDetails = invoiceService.GetPurchaseInvoiceDetails(invoiceId)
+                If dtDetails IsNot Nothing Then
+                    For Each dRow As DataRow In dtDetails.Rows
+                        Dim pid = Convert.ToInt32(dRow("ProductID"))
+                        Dim pCode = If(dRow.Table.Columns.Contains("ProductCode"), Convert.ToString(dRow("ProductCode")), "")
+                        Dim pName = Convert.ToString(dRow("ProductName"))
+                        Dim qty = Convert.ToDecimal(dRow("Quantity"))
+                        Dim unitPrice = Convert.ToDecimal(dRow("UnitPrice"))
+                        Dim totalPrice = Convert.ToDecimal(dRow("TotalPrice"))
+
+                        dgvItems.Rows.Add(pid, pCode, pName, qty, unitPrice.ToString("N0"), totalPrice.ToString("N0"))
+                    Next
+                End If
+
+                RecalculateTotal()
+            Catch ex As Exception
+                MessageBox.Show("خطا در بارگذاری فاکتور خرید جهت ویرایش: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End Sub
 
         Private Sub cmbWarehouse_DropDown(sender As Object, e As EventArgs) Handles cmbWarehouse.DropDown
@@ -507,8 +567,14 @@ Namespace Negar.Forms.Anbardary.AnbarMini
 
             Try
                 Dim descText = If(String.IsNullOrWhiteSpace(txtDescription.Text), "فاکتور خرید نسخه مینی", txtDescription.Text.Trim())
-                Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
-                MessageBox.Show("فاکتور خرید با موفقیت ثبت شد." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                If _editingInvoiceId.HasValue AndAlso _editingInvoiceId.Value > 0 Then
+                    invoiceService.UpdatePurchaseInvoice(_editingInvoiceId.Value, txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
+                    MessageBox.Show("تغییرات فاکتور خرید با موفقیت ثبت گردید." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Else
+                    Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
+                    MessageBox.Show("فاکتور خرید با موفقیت ثبت شد." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
 
                 ResetForm()
                 RaiseEvent InvoiceSaved()
