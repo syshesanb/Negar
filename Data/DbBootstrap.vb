@@ -601,6 +601,33 @@ Namespace Negar.Data
                                     ") WHERE CompanyID IS NOT NULL AND WarehouseID IN (" &
                                     "  SELECT i.WarehouseID FROM SalesInvoices i JOIN Warehouses w ON i.WarehouseID = w.WarehouseID WHERE i.CompanyID <> w.CompanyID" &
                                     ")")
+
+                ' Backfill Inventory records from existing PurchaseInvoices and SalesInvoices
+                Dim dtPurchaseLines = Sql.ExecuteTable(
+                    "SELECT pi.CompanyID, pi.WarehouseID, pd.ProductID, SUM(pd.Quantity) AS TotalPurchased, AVG(pd.UnitPrice) AS AvgPrice " &
+                    "FROM PurchaseInvoiceDetails pd JOIN PurchaseInvoices pi ON pd.InvoiceID = pi.InvoiceID " &
+                    "GROUP BY pi.CompanyID, pi.WarehouseID, pd.ProductID")
+
+                If dtPurchaseLines IsNot Nothing Then
+                    For Each row As DataRow In dtPurchaseLines.Rows
+                        Dim pid = Convert.ToInt32(row("ProductID"))
+                        Dim wid = Convert.ToInt32(row("WarehouseID"))
+                        Dim purchasedQty = Convert.ToDecimal(row("TotalPurchased"))
+                        Dim avgPrice = Convert.ToDecimal(row("AvgPrice"))
+
+                        Dim soldQtyObj = Sql.ExecuteScalar(
+                            "SELECT SUM(sd.Quantity) FROM SalesInvoiceDetails sd JOIN SalesInvoices si ON sd.InvoiceID = si.InvoiceID " &
+                            "WHERE sd.ProductID = ? AND si.WarehouseID = ?", pid, wid)
+                        Dim soldQty As Decimal = 0D
+                        If soldQtyObj IsNot Nothing AndAlso Not Convert.IsDBNull(soldQtyObj) Then
+                            soldQty = Convert.ToDecimal(soldQtyObj)
+                        End If
+
+                        Dim finalStock = purchasedQty - soldQty
+                        Dim invSvc As New Negar.Business.InventoryService()
+                        invSvc.UpsertInventory(pid, wid, finalStock, avgPrice)
+                    Next
+                End If
             Catch ex As Exception
             End Try
 

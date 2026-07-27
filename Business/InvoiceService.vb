@@ -79,6 +79,15 @@ Namespace Negar.Business
                 Dim lineTotal = (line.Item2 * line.Item3) - line.Item4 + line.Item5
                 Sql.ExecuteNonQuery("INSERT INTO PurchaseInvoiceDetails (InvoiceID, ProductID, Quantity, UnitPrice, TotalPrice, Discount, Vat, ReceivedQuantity) VALUES (?, ?, ?, ?, ?, ?, ?, 0)",
                                     invoiceId, line.Item1, line.Item2, line.Item3, lineTotal, line.Item4, line.Item5)
+
+                ' Update stock level in Inventory
+                Dim quantityValue = Sql.ExecuteScalar("SELECT Quantity FROM Inventory WHERE ProductID = ? AND WarehouseID = ?", line.Item1, warehouseId)
+                Dim current As Decimal = 0D
+                If quantityValue IsNot Nothing AndAlso Not Convert.IsDBNull(quantityValue) Then
+                    current = Convert.ToDecimal(quantityValue)
+                End If
+                Dim invSvc As New InventoryService()
+                invSvc.UpsertInventory(line.Item1, warehouseId, current + line.Item2, line.Item3)
             Next
 
             logService.LogActivity(createdBy, "CreatePurchase", "PurchaseInvoice", invoiceId,
@@ -253,14 +262,13 @@ Namespace Negar.Business
                 Sql.ExecuteNonQuery("INSERT INTO PurchaseInvoiceDetails (InvoiceID, ProductID, Quantity, UnitPrice, TotalPrice, Discount, Vat, ReceivedQuantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                     invoiceId, pid, qty, line.Item3, lineTotal, line.Item4, line.Item5, rQty)
 
-                If rQty > 0 Then
-                    Dim quantityValue = Sql.ExecuteScalar("SELECT Quantity FROM Inventory WHERE ProductID = ? AND WarehouseID = ?", pid, warehouseId)
-                    Dim current As Decimal = 0D
-                    If quantityValue IsNot Nothing AndAlso Not Convert.IsDBNull(quantityValue) Then
-                        current = Convert.ToDecimal(quantityValue)
-                    End If
-                    inventoryService.UpsertInventory(pid, warehouseId, current + rQty, line.Item3)
+                Dim updateQty = If(rQty > 0, rQty, qty)
+                Dim quantityValue = Sql.ExecuteScalar("SELECT Quantity FROM Inventory WHERE ProductID = ? AND WarehouseID = ?", pid, warehouseId)
+                Dim current As Decimal = 0D
+                If quantityValue IsNot Nothing AndAlso Not Convert.IsDBNull(quantityValue) Then
+                    current = Convert.ToDecimal(quantityValue)
                 End If
+                inventoryService.UpsertInventory(pid, warehouseId, current + updateQty, line.Item3)
             Next
 
             logService.LogActivity(createdBy, "UpdatePurchase", "PurchaseInvoice", invoiceId,

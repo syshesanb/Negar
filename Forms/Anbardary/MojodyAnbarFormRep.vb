@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,6 +6,7 @@ Imports System.Data
 Imports System.Drawing
 Imports System.Drawing.Printing
 Imports System.Windows.Forms
+Imports Microsoft.VisualBasic
 Imports Negar.Business
 Imports Negar.Business.PersianDateHelper
 Imports Negar.Data
@@ -38,28 +39,28 @@ Namespace Negar.Forms
             ConfigureInventoryGrid()
             ConfigureKardexGrid()
 
-            ' بارگذاری انبارها برای هر سه کمبو
+            ' بارگذاری انبارها برای کمبو باکس‌ها
             Dim warehouses = catalogService.GetWarehouses()
 
-            cmbWarehouse.DataSource = warehouses.Copy()
+            Dim warehousesWithAll = warehouses.Copy()
+            Dim allRow = warehousesWithAll.NewRow()
+            allRow("WarehouseID") = 0
+            allRow("WarehouseName") = "همه انبارها"
+            warehousesWithAll.Rows.InsertAt(allRow, 0)
+
+            cmbWarehouse.DataSource = warehousesWithAll
             cmbWarehouse.DisplayMember = "WarehouseName"
             cmbWarehouse.ValueMember = "WarehouseID"
-            cmbWarehouse.SelectedIndex = -1
+            cmbWarehouse.SelectedIndex = 0
 
             cmbKardexWarehouse.DataSource = warehouses.Copy()
             cmbKardexWarehouse.DisplayMember = "WarehouseName"
             cmbKardexWarehouse.ValueMember = "WarehouseID"
             cmbKardexWarehouse.SelectedIndex = -1
 
-            cmbInvCountWarehouse.DataSource = warehouses.Copy()
+            cmbInvCountWarehouse.DataSource = warehousesWithAll.Copy()
             cmbInvCountWarehouse.DisplayMember = "WarehouseName"
             cmbInvCountWarehouse.ValueMember = "WarehouseID"
-            ' ردیف "همه انبارها" را در ابتدا اضافه کن
-            Dim allRow = warehouses.NewRow()
-            allRow("WarehouseID") = 0
-            allRow("WarehouseName") = "--- همه انبارها ---"
-            warehouses.Rows.InsertAt(allRow, 0)
-            cmbInvCountWarehouse.DataSource = warehouses.Copy()
             cmbInvCountWarehouse.SelectedIndex = 0
 
             ' بارگذاری کالاها برای کاردکس
@@ -71,7 +72,6 @@ Namespace Negar.Forms
 
             LoadInventory()
 
-            AddHandler _printDoc.PrintPage, AddressOf PrintDoc_PrintPage
             AddHandler _printDoc.PrintPage, AddressOf PrintDoc_PrintPage
         End Sub
 
@@ -97,11 +97,13 @@ Namespace Negar.Forms
 
             Dim cols() As Object = {
                 New With {.Name = "colCode", .Prop = "ProductCode", .Header = "کد کالا", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 240, .Align = DataGridViewContentAlignment.MiddleRight},
-                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 180, .Align = DataGridViewContentAlignment.MiddleRight},
+                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 220, .Align = DataGridViewContentAlignment.MiddleRight},
+                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 140, .Align = DataGridViewContentAlignment.MiddleRight},
+                New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "ورودی", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
+                New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "خروجی", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
                 New With {.Name = "colQty", .Prop = "Quantity", .Header = "موجودی", .Width = 100, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمامشده", .Width = 150, .Align = DataGridViewContentAlignment.MiddleCenter},
-                New With {.Name = "colLastUpdate", .Prop = "LastUpdate", .Header = "آخرین بهروزرسانی", .Width = 160, .Align = DataGridViewContentAlignment.MiddleCenter}
+                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمام‌شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter},
+                New With {.Name = "colLastUpdate", .Prop = "LastUpdate", .Header = "آخرین به‌روزرسانی", .Width = 150, .Align = DataGridViewContentAlignment.MiddleCenter}
             }
 
             For Each c In cols
@@ -199,8 +201,16 @@ Namespace Negar.Forms
         Private Sub LoadInventory()
             Try
                 Dim warehouseId As Integer? = Nothing
-                Dim drv = TryCast(cmbWarehouse.SelectedItem, DataRowView)
-                If drv IsNot Nothing Then warehouseId = Convert.ToInt32(drv("WarehouseID"))
+                If cmbWarehouse.SelectedValue IsNot Nothing AndAlso IsNumeric(cmbWarehouse.SelectedValue) Then
+                    Dim wId = Convert.ToInt32(cmbWarehouse.SelectedValue)
+                    If wId > 0 Then warehouseId = wId
+                Else
+                    Dim drv = TryCast(cmbWarehouse.SelectedItem, DataRowView)
+                    If drv IsNot Nothing AndAlso Not drv.Row.IsNull("WarehouseID") Then
+                        Dim wId = Convert.ToInt32(drv("WarehouseID"))
+                        If wId > 0 Then warehouseId = wId
+                    End If
+                End If
 
                 _inventoryTable = inventoryService.GetInventory(warehouseId)
                 dgvInventory.DataSource = _inventoryTable

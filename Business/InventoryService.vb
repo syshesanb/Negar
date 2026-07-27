@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -8,17 +8,45 @@ Imports Negar.Data
 Namespace Negar.Business
     Public Class InventoryService
         Public Function GetInventory(Optional warehouseId As Integer? = Nothing) As DataTable
-            Dim query As String =
-                "SELECT i.InventoryID, p.ProductCode, p.ProductName, w.WarehouseName, i.Quantity, i.AverageCost, i.LastUpdate " &
-                "FROM (Inventory AS i INNER JOIN Products AS p ON i.ProductID = p.ProductID) " &
-                "INNER JOIN Warehouses AS w ON i.WarehouseID = w.WarehouseID"
+            Dim compId = SessionContext.CurrentCompanyID
 
-            If warehouseId.HasValue Then
-                query &= " WHERE i.WarehouseID = ? ORDER BY p.ProductName"
-                Return Sql.ExecuteTable(query, warehouseId.Value)
+            Dim query As String =
+                "SELECT p.ProductID, p.ProductCode, p.ProductName, " &
+                "COALESCE(w.WarehouseName, 'فروشگاه') AS WarehouseName, " &
+                "COALESCE((SELECT SUM(pd.Quantity) FROM PurchaseInvoiceDetails pd JOIN PurchaseInvoices pi ON pd.InvoiceID = pi.InvoiceID WHERE pd.ProductID = p.ProductID " &
+                If(warehouseId.HasValue AndAlso warehouseId.Value > 0, "AND pi.WarehouseID = " & warehouseId.Value & " ", "") &
+                If(compId.HasValue, "AND pi.CompanyID = " & compId.Value & " ", "") & "), 0) AS TotalInput, " &
+                "COALESCE((SELECT SUM(sd.Quantity) FROM SalesInvoiceDetails sd JOIN SalesInvoices si ON sd.InvoiceID = si.InvoiceID WHERE sd.ProductID = p.ProductID " &
+                If(warehouseId.HasValue AndAlso warehouseId.Value > 0, "AND si.WarehouseID = " & warehouseId.Value & " ", "") &
+                If(compId.HasValue, "AND si.CompanyID = " & compId.Value & " ", "") & "), 0) AS TotalOutput, " &
+                "COALESCE(i.Quantity, " &
+                "(COALESCE((SELECT SUM(pd.Quantity) FROM PurchaseInvoiceDetails pd JOIN PurchaseInvoices pi ON pd.InvoiceID = pi.InvoiceID WHERE pd.ProductID = p.ProductID " &
+                If(warehouseId.HasValue AndAlso warehouseId.Value > 0, "AND pi.WarehouseID = " & warehouseId.Value & " ", "") &
+                If(compId.HasValue, "AND pi.CompanyID = " & compId.Value & " ", "") & "), 0) - " &
+                "COALESCE((SELECT SUM(sd.Quantity) FROM SalesInvoiceDetails sd JOIN SalesInvoices si ON sd.InvoiceID = si.InvoiceID WHERE sd.ProductID = p.ProductID " &
+                If(warehouseId.HasValue AndAlso warehouseId.Value > 0, "AND si.WarehouseID = " & warehouseId.Value & " ", "") &
+                If(compId.HasValue, "AND si.CompanyID = " & compId.Value & " ", "") & "), 0)) " &
+                ") AS Quantity, " &
+                "COALESCE(i.AverageCost, p.PurchasePrice, 0) AS AverageCost, " &
+                "COALESCE(i.LastUpdate, strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) AS LastUpdate " &
+                "FROM Products p " &
+                "LEFT JOIN Inventory i ON i.ProductID = p.ProductID " &
+                "LEFT JOIN Warehouses w ON w.WarehouseID = COALESCE(i.WarehouseID, p.DefaultWarehouseID, 1) "
+
+            Dim conditions As New System.Collections.Generic.List(Of String)()
+            If compId.HasValue Then
+                conditions.Add("p.CompanyID = " & compId.Value)
+            End If
+            If warehouseId.HasValue AndAlso warehouseId.Value > 0 Then
+                conditions.Add("(i.WarehouseID = " & warehouseId.Value & " OR (i.WarehouseID IS NULL AND (p.DefaultWarehouseID = " & warehouseId.Value & " OR w.WarehouseID = " & warehouseId.Value & ")))")
             End If
 
-            Return Sql.ExecuteTable(query & " ORDER BY p.ProductName")
+            If conditions.Count > 0 Then
+                query &= " WHERE " & String.Join(" AND ", conditions.ToArray())
+            End If
+
+            query &= " ORDER BY p.ProductCode, p.ProductName"
+            Return Sql.ExecuteTable(query)
         End Function
 
         Public Function GetKardex(productId As Integer, Optional warehouseId As Integer? = Nothing,
