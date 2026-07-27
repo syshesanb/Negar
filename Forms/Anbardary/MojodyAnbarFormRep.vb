@@ -103,7 +103,7 @@ Namespace Negar.Forms
                 New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "خروجی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
                 New With {.Name = "colQty", .Prop = "Quantity", .Header = "موجودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
                 New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمام‌شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
-                New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "ارزش موجودی", .Width = 150, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "بهای تمام شده موجودی", .Width = 160, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
                 New With {.Name = "colLastUpdate", .Prop = "PersianLastUpdate", .Header = "آخرین به‌روزرسانی", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = True}
             }
 
