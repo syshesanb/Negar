@@ -510,6 +510,24 @@ Namespace Negar.Forms
             Return SessionContext.CurrentCompanyID.HasValue AndAlso SessionContext.CurrentFiscalYearID.HasValue
         End Function
 
+        Private Sub MiTradeMini_Click(sender As Object, e As EventArgs) Handles miTradeMini.Click
+            If Not EnsureCompanyAndFiscalYearSelected() Then Return
+            SessionContext.CurrentEdition = AppEdition.Mini
+            OpenChild(New Anbardary.AnbarMini.AnbarMiniMainForm())
+        End Sub
+
+        Private Sub MiTradeMedium_Click(sender As Object, e As EventArgs) Handles miTradeMedium.Click
+            If Not EnsureCompanyAndFiscalYearSelected() Then Return
+            SessionContext.CurrentEdition = AppEdition.Medium
+            OpenChild(New AnbardaryMainForm())
+        End Sub
+
+        Private Sub MiTradeBig_Click(sender As Object, e As EventArgs) Handles miTradeBig.Click
+            If Not EnsureCompanyAndFiscalYearSelected() Then Return
+            SessionContext.CurrentEdition = AppEdition.Big
+            OpenChild(New AnbardaryMainForm())
+        End Sub
+
         Private Sub MiTradeWarehouseMain_Click(sender As Object, e As EventArgs) Handles miTradeWarehouseMain.Click
             If Not EnsureCompanyAndFiscalYearSelected() Then Return
             Select Case SessionContext.CurrentEdition
@@ -769,7 +787,9 @@ Namespace Negar.Forms
                     If canAccounting OrElse canReports Then AddDashButton("گزارشات و ترازهای حسابداری", AddressOf MiReportsAccounting_Click, "Reports")
 
                 Case "TradeWarehouse"
-                    If canTrade Then AddDashButton("فاکتورها، انبار و کالاها", AddressOf MiTradeWarehouseMain_Click, "TradeWarehouse")
+                    If canTrade Then AddDashButton("خرید و فروش – نسخه فروشگاه کوچک", AddressOf MiTradeMini_Click, "TradeWarehouse")
+                    If canTrade Then AddDashButton("خرید و فروش – نسخه فروشگاه متوسط", AddressOf MiTradeMedium_Click, "TradeWarehouse")
+                    If canTrade Then AddDashButton("خرید و فروش – نسخه فروشگاه بزرگ", AddressOf MiTradeBig_Click, "TradeWarehouse")
                     If canTrade OrElse canReports Then AddDashButton("گزارشات فاکتورها و موجودی انبار", AddressOf MiReportsTrade_Click, "Reports")
 
                 Case "BusinessShells"

@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -58,6 +58,9 @@ Namespace Negar.Forms
         Friend WithEvents miReportsAccounting As ToolStripMenuItem
 
         ' Sub-items for Trade & Warehousing
+        Friend WithEvents miTradeMini As ToolStripMenuItem
+        Friend WithEvents miTradeMedium As ToolStripMenuItem
+        Friend WithEvents miTradeBig As ToolStripMenuItem
         Friend WithEvents miTradeWarehouseMain As ToolStripMenuItem
         Friend WithEvents miReportsTrade As ToolStripMenuItem
 
@@ -138,6 +141,9 @@ Namespace Negar.Forms
             Me.miAccountingMain = New ToolStripMenuItem()
             Me.miReportsAccounting = New ToolStripMenuItem()
 
+            Me.miTradeMini = New ToolStripMenuItem()
+            Me.miTradeMedium = New ToolStripMenuItem()
+            Me.miTradeBig = New ToolStripMenuItem()
             Me.miTradeWarehouseMain = New ToolStripMenuItem()
             Me.miReportsTrade = New ToolStripMenuItem()
 
@@ -319,15 +325,30 @@ Namespace Negar.Forms
             Me.miReportsAccounting.Text = "گزارشات و ترازهای حسابداری"
 
             ' mTradeWarehouse
-            Me.mTradeWarehouse.DropDownItems.AddRange(New ToolStripItem() {Me.miTradeWarehouseMain, Me.miReportsTrade})
+            Me.mTradeWarehouse.DropDownItems.AddRange(New ToolStripItem() {Me.miTradeMini, Me.miTradeMedium, Me.miTradeBig, Me.miTradeWarehouseMain, Me.miReportsTrade})
             Me.mTradeWarehouse.Name = "mTradeWarehouse"
             Me.mTradeWarehouse.Size = New Size(136, 20)
             Me.mTradeWarehouse.Text = "خریدو فروش و انبارداری"
 
+            ' miTradeMini
+            Me.miTradeMini.Name = "miTradeMini"
+            Me.miTradeMini.Size = New Size(260, 22)
+            Me.miTradeMini.Text = "خرید و فروش – نسخه فروشگاه کوچک"
+
+            ' miTradeMedium
+            Me.miTradeMedium.Name = "miTradeMedium"
+            Me.miTradeMedium.Size = New Size(260, 22)
+            Me.miTradeMedium.Text = "خرید و فروش – نسخه فروشگاه متوسط"
+
+            ' miTradeBig
+            Me.miTradeBig.Name = "miTradeBig"
+            Me.miTradeBig.Size = New Size(260, 22)
+            Me.miTradeBig.Text = "خرید و فروش – نسخه فروشگاه بزرگ"
+
             ' miTradeWarehouseMain
             Me.miTradeWarehouseMain.Name = "miTradeWarehouseMain"
-            Me.miTradeWarehouseMain.Size = New Size(250, 22)
-            Me.miTradeWarehouseMain.Text = "فاکتورها، انبار و مدیریت کالاها"
+            Me.miTradeWarehouseMain.Size = New Size(260, 22)
+            Me.miTradeWarehouseMain.Text = "فاکتورها، انبار و مدیریت کالاها (جامع)"
 
             ' miReportsTrade
             Me.miReportsTrade.Name = "miReportsTrade"
