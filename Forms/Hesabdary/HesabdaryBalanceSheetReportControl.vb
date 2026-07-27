@@ -1,12 +1,12 @@
-Imports System
+﻿Imports System
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.Collections.Generic
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class HesabdaryBalanceSheetReportControl
         Inherits UserControl
 

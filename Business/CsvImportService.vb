@@ -9,9 +9,9 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.FileIO
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class CsvImportService
 
         Public Shared Sub CreateTemplate(type As String, savePath As String)

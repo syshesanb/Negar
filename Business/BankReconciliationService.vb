@@ -1,12 +1,12 @@
-Imports System
+﻿Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.IO
 Imports System.Linq
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class ColumnMapping
         Public Property DateIndex As Integer = -1
         Public Property RefIndex As Integer = -1

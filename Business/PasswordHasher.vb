@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Security.Cryptography
 Imports System.Text
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Module PasswordHasher
         Public Function Hash(input As String) As String
             Using sha = SHA256.Create()

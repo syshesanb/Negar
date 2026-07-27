@@ -1,4 +1,4 @@
-$files = Get-ChildItem -Path "c:\Sys_Hes_Anb\Forms" -Filter "*.Designer.vb" -Recurse
+﻿$files = Get-ChildItem -Path "c:\Negar\Forms" -Filter "*.Designer.vb" -Recurse
 foreach ($f in $files) {
     if ($f.Name -match "HesabdaryCodingForm") { continue }
     

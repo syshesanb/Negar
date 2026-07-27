@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,7 +6,7 @@ Imports System.Configuration
 Imports System.Data
 Imports System.Data.SQLite
 
-Namespace Sys_Hes_Anb.Data
+Namespace Negar.Data
     Public Module Db
         Public ReadOnly Property ConnectionString As String
             Get

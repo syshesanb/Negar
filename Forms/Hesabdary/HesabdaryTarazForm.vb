@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,9 +6,9 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class HesabdaryTarazForm
         Inherits Form
 
@@ -99,8 +99,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryTarazForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
-            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.AppendStatusBar(Me)
             If Me.dgvTrial IsNot Nothing Then Me.dgvTrial.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             dgvTrial.RowTemplate.Height = 26
             _showOnlyWithData = chkOnlyWithData.Checked
@@ -110,7 +110,7 @@ Namespace Sys_Hes_Anb.Forms
 
             LoadData()
 
-            Dim levelsObj = Sys_Hes_Anb.Data.Sql.ExecuteScalar("SELECT AccountLevels FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID)
+            Dim levelsObj = Negar.Data.Sql.ExecuteScalar("SELECT AccountLevels FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID)
             Dim levels As Integer = If(levelsObj IsNot Nothing AndAlso Not Convert.IsDBNull(levelsObj), Convert.ToInt32(levelsObj), 4)
             If levels < 2 Then levels = 2
             If levels > 5 Then levels = 5
@@ -803,7 +803,7 @@ Namespace Sys_Hes_Anb.Forms
             Try
                 Dim companyName As String = "مؤسسه حسابداری"
                 If SessionContext.CurrentCompanyID.HasValue Then
-                    Dim dtComp = Sys_Hes_Anb.Data.Sql.ExecuteTable("SELECT CompanyName FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID.Value)
+                    Dim dtComp = Negar.Data.Sql.ExecuteTable("SELECT CompanyName FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID.Value)
                     If dtComp.Rows.Count > 0 AndAlso Not dtComp.Rows(0).IsNull("CompanyName") Then
                         companyName = dtComp.Rows(0)("CompanyName").ToString()
                     End If

@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -7,7 +7,7 @@ Imports System.Drawing
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic.CompilerServices
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     <DesignerGenerated()>
     Partial Class LoginForm
         Inherits Form
@@ -50,7 +50,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.lblTitle.Dock = DockStyle.Top
             Me.lblTitle.Font = New Font("Tahoma", 14.0!, FontStyle.Bold)
             Me.lblTitle.Height = 50
-            Me.lblTitle.Text = "سیستم یکپارچه Sys_Hes_Anb"
+            Me.lblTitle.Text = "سیستم یکپارچه Negar"
             Me.lblTitle.TextAlign = ContentAlignment.MiddleCenter
             '
             'lblUser

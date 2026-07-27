@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.IO
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class BackupRestoreForm
         Public Enum OperationMode
             Backup
@@ -21,7 +21,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub BackupRestoreForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             If _mode = OperationMode.Backup Then
                 Me.Text = "پشتیبان‌گیری از اطلاعات سیستم"
                 lblTitle.Text = "پشتیبان‌گیری از دیتابیس و اطلاعات"

@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Collections.Generic
-Imports Sys_Hes_Anb.Models
+Imports Negar.Models
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Module SessionContext
         Public Property CurrentUser As UserAccount
         Public Property CurrentPermissions As HashSet(Of String) = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)

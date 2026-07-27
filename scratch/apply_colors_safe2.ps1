@@ -1,4 +1,4 @@
-$formsDir = "c:\Sys_Hes_Anb\Forms"
+﻿$formsDir = "c:\Negar\Forms"
 $designerFiles = Get-ChildItem -Path $formsDir -Filter "*.Designer.vb" -Recurse
 
 foreach ($designer in $designerFiles) {

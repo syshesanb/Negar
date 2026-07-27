@@ -6,9 +6,9 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class HesabdaryCodingForm
         Inherits Form
 
@@ -66,8 +66,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryCodingForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
-            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.AppendStatusBar(Me)
             Try
                 System.IO.File.WriteAllText(System.IO.Path.Combine(Application.StartupPath, "debug_load.txt"), "Form_Load started")
                 LoadAccountTypes()
@@ -90,7 +90,7 @@ Namespace Sys_Hes_Anb.Forms
 
                 LoadData()
                 
-                Dim levelsObj = Sys_Hes_Anb.Data.Sql.ExecuteScalar("SELECT AccountLevels FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID)
+                Dim levelsObj = Negar.Data.Sql.ExecuteScalar("SELECT AccountLevels FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID)
                 Dim levels As Integer = If(levelsObj IsNot Nothing AndAlso Not Convert.IsDBNull(levelsObj), Convert.ToInt32(levelsObj), 4)
                 If levels < 2 Then levels = 2
                 If levels > 5 Then levels = 5

@@ -1,12 +1,12 @@
-Imports System
+﻿Imports System
 Imports System.Data.SQLite
 
 Module Program
     Sub Main()
         Dim dbPaths = New String() {
-            "C:\Sys_Hes_Anb\Database\Sys_Hes_Anb.db",
-            "C:\Sys_Hes_Anb\bin\Debug\Database\Sys_Hes_Anb.db",
-            "C:\Sys_Hes_Anb\bin\Debug\Sys_Hes_Anb.db"
+            "C:\Negar\Database\Negar.db",
+            "C:\Negar\bin\Debug\Database\Negar.db",
+            "C:\Negar\bin\Debug\Negar.db"
         }
         
         For Each dbPath In dbPaths

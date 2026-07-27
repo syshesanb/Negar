@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,10 +6,10 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class HesabdaryDaftarShenavarForm
         Inherits Form
 
@@ -42,8 +42,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryDaftarShenavarForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
-            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.AppendStatusBar(Me)
             If Me.dgvLedger IsNot Nothing Then Me.dgvLedger.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             dgvLedger.RowTemplate.Height = 26
             cmbDescType.SelectedIndex = 0 ' پیش‌فرض: فقط شرح ردیف

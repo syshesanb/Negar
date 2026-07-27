@@ -1,13 +1,13 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Collections.Generic
 Imports System.Data
-Imports Sys_Hes_Anb.Data
-Imports Sys_Hes_Anb.Business
+Imports Negar.Data
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class UserService
         Private ReadOnly logService As New ActivityLogService()
 

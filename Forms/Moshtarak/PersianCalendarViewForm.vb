@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -8,9 +8,9 @@ Imports System.Drawing
 Imports System.Drawing.Drawing2D
 Imports System.Globalization
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class PersianCalendarViewForm
         Inherits Form
 

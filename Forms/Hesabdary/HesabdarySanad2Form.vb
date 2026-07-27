@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -8,9 +8,9 @@ Imports System.Drawing
 Imports System.IO
 Imports System.Linq
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class HesabdarySanad2Form
         Inherits Form
 
@@ -86,8 +86,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdarySanad2Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
-            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.AppendStatusBar(Me)
             If Me.dgvEntryNotes IsNot Nothing Then Me.dgvEntryNotes.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvLineNotes IsNot Nothing Then Me.dgvLineNotes.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvAttachments IsNot Nothing Then Me.dgvAttachments.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)

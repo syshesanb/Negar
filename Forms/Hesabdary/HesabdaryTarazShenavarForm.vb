@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,10 +6,10 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class HesabdaryTarazShenavarForm
         Inherits Form
 
@@ -104,8 +104,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryTarazShenavarForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
-            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.AppendStatusBar(Me)
             If Me.dgvTrial IsNot Nothing Then Me.dgvTrial.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             dgvTrial.RowTemplate.Height = 26
             _showOnlyWithData = chkOnlyWithData.Checked
@@ -786,7 +786,7 @@ Namespace Sys_Hes_Anb.Forms
             Try
                 Dim companyName As String = "مؤسسه حسابداری"
                 If SessionContext.CurrentCompanyID.HasValue Then
-                    Dim dtComp = Sys_Hes_Anb.Data.Sql.ExecuteTable("SELECT CompanyName FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID.Value)
+                    Dim dtComp = Negar.Data.Sql.ExecuteTable("SELECT CompanyName FROM Companies WHERE CompanyID = ?", SessionContext.CurrentCompanyID.Value)
                     If dtComp.Rows.Count > 0 AndAlso Not dtComp.Rows(0).IsNull("CompanyName") Then
                         companyName = dtComp.Rows(0)("CompanyName").ToString()
                     End If

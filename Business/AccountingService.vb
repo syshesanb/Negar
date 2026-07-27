@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,9 +6,9 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.IO
 Imports System.Data.SQLite
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class AccountingService
         Private ReadOnly logService As New ActivityLogService()
 
@@ -604,7 +604,7 @@ Namespace Sys_Hes_Anb.Business
         ' ========================
 
         Public Sub DebugSanad2()
-            Dim outPath = "C:\myproject\Sys_Hes_Anb\debugSanad2.txt"
+            Dim outPath = "C:\myproject\Negar\debugSanad2.txt"
             Dim lines As New List(Of String)()
             Dim ts = Function() DateTime.Now.ToString("HH:mm:ss.fff")
 

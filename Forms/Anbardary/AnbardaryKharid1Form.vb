@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,10 +6,10 @@ Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.Collections.Generic
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Business.PersianDateHelper
+Imports Negar.Business
+Imports Negar.Business.PersianDateHelper
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class AnbardaryKharid1Form
         Inherits Form
 
@@ -17,6 +17,8 @@ Namespace Sys_Hes_Anb.Forms
         Private _invoicesTable As DataTable
         Private filterTextBoxes As New Dictionary(Of String, TextBox)()
         Private filterTextBoxesResid As New Dictionary(Of String, TextBox)()
+        Private filterTextBoxesBargasht As New Dictionary(Of String, TextBox)()
+        Private filterTextBoxesResidBargasht As New Dictionary(Of String, TextBox)()
 
         Private Const ColNameReceipt As String = "colReceipt"
         Private Const ColNameEdit As String = "colEdit"
@@ -33,19 +35,29 @@ Namespace Sys_Hes_Anb.Forms
             ' Style DataGridViews
             If Me.dgvInvoices IsNot Nothing Then ApplyGridStyling(Me.dgvInvoices)
             If Me.dgvInvoicesResid IsNot Nothing Then ApplyGridStyling(Me.dgvInvoicesResid)
+            If Me.dgvInvoicesBargasht IsNot Nothing Then ApplyGridStyling(Me.dgvInvoicesBargasht)
+            If Me.dgvInvoicesResidBargasht IsNot Nothing Then ApplyGridStyling(Me.dgvInvoicesResidBargasht)
 
             ConfigureGridKharid(dgvInvoices)
             ConfigureGridResid(dgvInvoicesResid)
+            ConfigureGridBargasht(dgvInvoicesBargasht)
+            ConfigureGridResidBargasht(dgvInvoicesResidBargasht)
 
             LoadData()
 
             CreateFilterTextBoxes(dgvInvoices, pnlFilters, filterTextBoxes, AddressOf FilterTextBox_TextChanged)
             CreateFilterTextBoxes(dgvInvoicesResid, pnlFiltersResid, filterTextBoxesResid, AddressOf FilterTextBoxResid_TextChanged)
+            CreateFilterTextBoxes(dgvInvoicesBargasht, pnlFiltersBargasht, filterTextBoxesBargasht, AddressOf FilterTextBoxBargasht_TextChanged)
+            CreateFilterTextBoxes(dgvInvoicesResidBargasht, pnlFiltersResidBargasht, filterTextBoxesResidBargasht, AddressOf FilterTextBoxResidBargasht_TextChanged)
 
             AddHandler dgvInvoices.ColumnWidthChanged, AddressOf AlignSearchBoxes
             AddHandler dgvInvoices.Scroll, AddressOf DgvInvoices_Scroll
             AddHandler dgvInvoicesResid.ColumnWidthChanged, AddressOf AlignSearchBoxesResid
             AddHandler dgvInvoicesResid.Scroll, AddressOf DgvInvoicesResid_Scroll
+            AddHandler dgvInvoicesBargasht.ColumnWidthChanged, AddressOf AlignSearchBoxesBargasht
+            AddHandler dgvInvoicesBargasht.Scroll, AddressOf DgvInvoicesBargasht_Scroll
+            AddHandler dgvInvoicesResidBargasht.ColumnWidthChanged, AddressOf AlignSearchBoxesResidBargasht
+            AddHandler dgvInvoicesResidBargasht.Scroll, AddressOf DgvInvoicesResidBargasht_Scroll
             AddHandler Me.Resize, AddressOf AlignAllSearchBoxes
 
             AlignAllSearchBoxes()
@@ -111,7 +123,7 @@ Namespace Sys_Hes_Anb.Forms
             Dim colVendor As New DataGridViewTextBoxColumn()
             colVendor.Name = "VendorName"
             colVendor.DataPropertyName = "VendorName"
-            colVendor.HeaderText = "فروشنده / تامین‌کننده"
+            colVendor.HeaderText = "فروشنده / تامینکننده"
             colVendor.Width = 180
 
             Dim colWarehouse As New DataGridViewTextBoxColumn()
@@ -147,11 +159,79 @@ Namespace Sys_Hes_Anb.Forms
             })
         End Sub
 
-        Private Sub ConfigureGridResid(grid As DataGridView)
+        Private Sub ConfigureGridBargasht(grid As DataGridView)
             grid.AutoGenerateColumns = False
             grid.Columns.Clear()
             grid.AllowUserToResizeColumns = True
 
+            Dim colBtnViewBargasht As New DataGridViewButtonColumn()
+            colBtnViewBargasht.Name = "colBtnViewBargasht"
+            colBtnViewBargasht.HeaderText = "مشاهده"
+            colBtnViewBargasht.Text = "مشاهده برگشت از خریدها"
+            colBtnViewBargasht.UseColumnTextForButtonValue = True
+            colBtnViewBargasht.Width = 140
+            colBtnViewBargasht.FlatStyle = FlatStyle.Standard
+            colBtnViewBargasht.ReadOnly = True
+
+            Dim colId As New DataGridViewTextBoxColumn()
+            colId.Name = "InvoiceID"
+            colId.DataPropertyName = "InvoiceID"
+            colId.Visible = False
+
+            Dim colNum As New DataGridViewTextBoxColumn()
+            colNum.Name = "InvoiceNumber"
+            colNum.DataPropertyName = "InvoiceNumber"
+            colNum.HeaderText = "شماره سند / فاکتور"
+            colNum.Width = 140
+
+            Dim colType As New DataGridViewTextBoxColumn()
+            colType.Name = "InvoiceType"
+            colType.DataPropertyName = "InvoiceType"
+            colType.HeaderText = "نوع سند"
+            colType.Width = 130
+
+            Dim colDate As New DataGridViewTextBoxColumn()
+            colDate.Name = "PersianDate"
+            colDate.DataPropertyName = "PersianDate"
+            colDate.HeaderText = "تاریخ"
+            colDate.Width = 110
+
+            Dim colVendor As New DataGridViewTextBoxColumn()
+            colVendor.Name = "VendorName"
+            colVendor.DataPropertyName = "VendorName"
+            colVendor.HeaderText = "فروشنده / تامینکننده"
+            colVendor.Width = 180
+
+            Dim colTotal As New DataGridViewTextBoxColumn()
+            colTotal.Name = "TotalAmount"
+            colTotal.DataPropertyName = "TotalAmount"
+            colTotal.HeaderText = "مبلغ کل (ریال)"
+            colTotal.Width = 140
+            colTotal.DefaultCellStyle.Format = "N0"
+            colTotal.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+
+            Dim colPayment As New DataGridViewTextBoxColumn()
+            colPayment.Name = "PaymentType"
+            colPayment.DataPropertyName = "PaymentType"
+            colPayment.HeaderText = "تسویه"
+            colPayment.Width = 100
+
+            Dim colDesc As New DataGridViewTextBoxColumn()
+            colDesc.Name = "Description"
+            colDesc.DataPropertyName = "Description"
+            colDesc.HeaderText = "توضیحات"
+            colDesc.Width = 200
+
+            grid.Columns.AddRange(New DataGridViewColumn() {
+                colBtnViewBargasht, colId, colNum, colType, colDate,
+                colVendor, colTotal, colPayment, colDesc
+            })
+        End Sub
+
+        Private Sub ConfigureGridResid(grid As DataGridView)
+            grid.AutoGenerateColumns = False
+            grid.Columns.Clear()
+            grid.AllowUserToResizeColumns = True
 
             Dim colBtnViewReceipts As New DataGridViewButtonColumn()
             colBtnViewReceipts.Name = "colBtnViewReceipts"
@@ -161,6 +241,15 @@ Namespace Sys_Hes_Anb.Forms
             colBtnViewReceipts.Width = 100
             colBtnViewReceipts.FlatStyle = FlatStyle.Standard
             colBtnViewReceipts.ReadOnly = True
+
+            Dim colBtnCreateInvoice As New DataGridViewButtonColumn()
+            colBtnCreateInvoice.Name = "colBtnCreateInvoice"
+            colBtnCreateInvoice.HeaderText = "صدور فاکتور"
+            colBtnCreateInvoice.Text = "صدور فاکتور خرید"
+            colBtnCreateInvoice.UseColumnTextForButtonValue = True
+            colBtnCreateInvoice.Width = 110
+            colBtnCreateInvoice.FlatStyle = FlatStyle.Standard
+            colBtnCreateInvoice.ReadOnly = True
 
 
             Dim colId As New DataGridViewTextBoxColumn()
@@ -189,13 +278,82 @@ Namespace Sys_Hes_Anb.Forms
             Dim colVendor As New DataGridViewTextBoxColumn()
             colVendor.Name = "VendorName"
             colVendor.DataPropertyName = "VendorName"
-            colVendor.HeaderText = "فروشنده / تامین‌کننده"
+            colVendor.HeaderText = "فروشنده / تامینکننده"
             colVendor.Width = 180
 
             Dim colWarehouse As New DataGridViewTextBoxColumn()
             colWarehouse.Name = "WarehouseName"
             colWarehouse.DataPropertyName = "WarehouseName"
             colWarehouse.HeaderText = "انبار مقصد"
+            colWarehouse.Width = 140
+            colWarehouse.Visible = True
+
+            Dim colReceiptStatus As New DataGridViewTextBoxColumn()
+            colReceiptStatus.Name = "ReceiptStatus"
+            colReceiptStatus.DataPropertyName = "ReceiptStatus"
+            colReceiptStatus.HeaderText = "وضعیت رسید"
+            colReceiptStatus.Width = 110
+            colReceiptStatus.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+            Dim colDesc As New DataGridViewTextBoxColumn()
+            colDesc.Name = "Description"
+            colDesc.DataPropertyName = "Description"
+            colDesc.HeaderText = "توضیحات رسید انبار"
+            colDesc.Width = 200
+
+            grid.Columns.AddRange(New DataGridViewColumn() {
+                colBtnViewReceipts, colBtnCreateInvoice, colId, colNum, colType, colDate,
+                colVendor, colWarehouse, colReceiptStatus, colDesc
+            })
+        End Sub
+
+        Private Sub ConfigureGridResidBargasht(grid As DataGridView)
+            grid.AutoGenerateColumns = False
+            grid.Columns.Clear()
+            grid.AllowUserToResizeColumns = True
+
+            Dim colBtnViewReceipts As New DataGridViewButtonColumn()
+            colBtnViewReceipts.Name = "colBtnViewReceipts"
+            colBtnViewReceipts.HeaderText = "مشاهده رسیدها"
+            colBtnViewReceipts.Text = "مشاهده رسیدها"
+            colBtnViewReceipts.UseColumnTextForButtonValue = True
+            colBtnViewReceipts.Width = 100
+            colBtnViewReceipts.FlatStyle = FlatStyle.Standard
+            colBtnViewReceipts.ReadOnly = True
+
+            Dim colId As New DataGridViewTextBoxColumn()
+            colId.Name = "InvoiceID"
+            colId.DataPropertyName = "InvoiceID"
+            colId.Visible = False
+
+            Dim colNum As New DataGridViewTextBoxColumn()
+            colNum.Name = "InvoiceNumber"
+            colNum.DataPropertyName = "InvoiceNumber"
+            colNum.HeaderText = "شماره سند / فاکتور"
+            colNum.Width = 140
+
+            Dim colType As New DataGridViewTextBoxColumn()
+            colType.Name = "InvoiceType"
+            colType.DataPropertyName = "InvoiceType"
+            colType.HeaderText = "نوع سند"
+            colType.Width = 130
+
+            Dim colDate As New DataGridViewTextBoxColumn()
+            colDate.Name = "PersianDate"
+            colDate.DataPropertyName = "PersianDate"
+            colDate.HeaderText = "تاریخ"
+            colDate.Width = 110
+
+            Dim colVendor As New DataGridViewTextBoxColumn()
+            colVendor.Name = "VendorName"
+            colVendor.DataPropertyName = "VendorName"
+            colVendor.HeaderText = "فروشنده / تامینکننده"
+            colVendor.Width = 180
+
+            Dim colWarehouse As New DataGridViewTextBoxColumn()
+            colWarehouse.Name = "WarehouseName"
+            colWarehouse.DataPropertyName = "WarehouseName"
+            colWarehouse.HeaderText = "انبار مبدأ"
             colWarehouse.Width = 140
             colWarehouse.Visible = True
 
@@ -269,9 +427,40 @@ Namespace Sys_Hes_Anb.Forms
             AlignSearchBoxesResid()
         End Sub
 
+        Private Sub DgvInvoicesBargasht_Scroll(sender As Object, e As ScrollEventArgs)
+            AlignSearchBoxesBargasht()
+        End Sub
+
+        Private Sub DgvInvoicesResidBargasht_Scroll(sender As Object, e As ScrollEventArgs)
+            AlignSearchBoxesResidBargasht()
+        End Sub
+
+        Private Sub DgvInvoicesBargasht_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvInvoicesBargasht.CellFormatting
+            If e.RowIndex < 0 Then Return
+            If dgvInvoicesBargasht.Columns(e.ColumnIndex).Name = "PaymentType" Then
+                Dim val = Convert.ToString(e.Value)
+                Select Case val
+                    Case "تسویه نشده"
+                        e.CellStyle.ForeColor = Color.Red
+                        e.CellStyle.BackColor = Color.FromArgb(255, 235, 235)
+                        e.CellStyle.Font = New Font(dgvInvoicesBargasht.Font, FontStyle.Bold)
+                    Case "تسویه ناقص"
+                        e.CellStyle.ForeColor = Color.DarkOrange
+                        e.CellStyle.BackColor = Color.FromArgb(255, 250, 220)
+                        e.CellStyle.Font = New Font(dgvInvoicesBargasht.Font, FontStyle.Bold)
+                    Case "تسویه کامل"
+                        e.CellStyle.ForeColor = Color.DarkGreen
+                        e.CellStyle.BackColor = Color.FromArgb(235, 255, 235)
+                        e.CellStyle.Font = New Font(dgvInvoicesBargasht.Font, FontStyle.Bold)
+                End Select
+            End If
+        End Sub
+
         Private Sub AlignAllSearchBoxes()
             AlignSearchBoxes()
             AlignSearchBoxesResid()
+            AlignSearchBoxesBargasht()
+            AlignSearchBoxesResidBargasht()
         End Sub
 
         Private Sub AlignSearchBoxes()
@@ -280,6 +469,14 @@ Namespace Sys_Hes_Anb.Forms
 
         Private Sub AlignSearchBoxesResid()
             AlignSearchBoxesForGrid(dgvInvoicesResid, pnlFiltersResid, filterTextBoxesResid)
+        End Sub
+
+        Private Sub AlignSearchBoxesBargasht()
+            AlignSearchBoxesForGrid(dgvInvoicesBargasht, pnlFiltersBargasht, filterTextBoxesBargasht)
+        End Sub
+
+        Private Sub AlignSearchBoxesResidBargasht()
+            AlignSearchBoxesForGrid(dgvInvoicesResidBargasht, pnlFiltersResidBargasht, filterTextBoxesResidBargasht)
         End Sub
 
         Private Sub AlignSearchBoxesForGrid(grid As DataGridView, panel As Panel, dict As Dictionary(Of String, TextBox))
@@ -315,6 +512,14 @@ Namespace Sys_Hes_Anb.Forms
 
         Private Sub FilterTextBoxResid_TextChanged(sender As Object, e As EventArgs)
             ApplyFilters(dgvInvoicesResid, filterTextBoxesResid)
+        End Sub
+
+        Private Sub FilterTextBoxBargasht_TextChanged(sender As Object, e As EventArgs)
+            ApplyFilters(dgvInvoicesBargasht, filterTextBoxesBargasht)
+        End Sub
+
+        Private Sub FilterTextBoxResidBargasht_TextChanged(sender As Object, e As EventArgs)
+            ApplyFilters(dgvInvoicesResidBargasht, filterTextBoxesResidBargasht)
         End Sub
 
         Private Sub ApplyFilters(grid As DataGridView, dict As Dictionary(Of String, TextBox))
@@ -375,13 +580,26 @@ Namespace Sys_Hes_Anb.Forms
                 End If
 
                 Dim dvKharid As New DataView(_invoicesTable)
+                dvKharid.RowFilter = "InvoiceType = 'فاکتور خرید'"
+
                 Dim dvResid As New DataView(_invoicesTable)
+                dvResid.RowFilter = "InvoiceType = 'فاکتور خرید' OR InvoiceType = 'رسید ورود به انبار'"
+
+                Dim dvBargasht As New DataView(_invoicesTable)
+                dvBargasht.RowFilter = "InvoiceType = 'فاکتور خرید'"
+
+                Dim dvResidBargasht As New DataView(_invoicesTable)
+                dvResidBargasht.RowFilter = "InvoiceType = 'برگشت از خرید'"
 
                 dgvInvoices.DataSource = dvKharid
                 dgvInvoicesResid.DataSource = dvResid
+                dgvInvoicesBargasht.DataSource = dvBargasht
+                dgvInvoicesResidBargasht.DataSource = dvResidBargasht
 
                 ApplyFilters(dgvInvoices, filterTextBoxes)
                 ApplyFilters(dgvInvoicesResid, filterTextBoxesResid)
+                ApplyFilters(dgvInvoicesBargasht, filterTextBoxesBargasht)
+                ApplyFilters(dgvInvoicesResidBargasht, filterTextBoxesResidBargasht)
                 AlignAllSearchBoxes()
             Catch ex As Exception
                 MessageBox.Show("خطا در بارگذاری لیست اسناد خرید: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -416,6 +634,25 @@ Namespace Sys_Hes_Anb.Forms
             End If
         End Sub
 
+        Private Sub DgvInvoicesBargasht_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvInvoicesBargasht.CellDoubleClick
+            If e.RowIndex >= 0 Then
+                Dim invoiceId = Convert.ToInt32(dgvInvoicesBargasht.Rows(e.RowIndex).Cells("InvoiceID").Value)
+                Using frm As New AnbardaryBargashtHistoryForm(invoiceId)
+                    frm.ShowDialog()
+                    LoadData()
+                End Using
+            End If
+        End Sub
+
+        Private Sub DgvInvoicesResidBargasht_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvInvoicesResidBargasht.CellDoubleClick
+            If e.RowIndex >= 0 Then
+                Dim invoiceId = Convert.ToInt32(dgvInvoicesResidBargasht.Rows(e.RowIndex).Cells("InvoiceID").Value)
+                Using frm As New AnbardaryReceiptsHistoryForm(invoiceId)
+                    frm.ShowDialog()
+                End Using
+            End If
+        End Sub
+
         Private Sub DgvInvoices_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvInvoices.CellContentClick
             If e.RowIndex >= 0 Then
                 Dim colName = dgvInvoices.Columns(e.ColumnIndex).Name
@@ -427,11 +664,48 @@ Namespace Sys_Hes_Anb.Forms
             End If
         End Sub
 
+        Private Sub DgvInvoicesBargasht_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvInvoicesBargasht.CellContentClick
+            If e.RowIndex >= 0 Then
+                Dim colName = dgvInvoicesBargasht.Columns(e.ColumnIndex).Name
+                If colName = "colBtnViewBargasht" Then
+                    Dim invoiceId = Convert.ToInt32(dgvInvoicesBargasht.Rows(e.RowIndex).Cells("InvoiceID").Value)
+                    Using frm As New AnbardaryBargashtHistoryForm(invoiceId)
+                        frm.ShowDialog()
+                        LoadData()
+                    End Using
+                End If
+            End If
+        End Sub
+
         Private Sub DgvInvoicesResid_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvInvoicesResid.CellContentClick
             If e.RowIndex >= 0 Then
                 Dim colName = dgvInvoicesResid.Columns(e.ColumnIndex).Name
                 If colName = "colBtnViewReceipts" Then
                     Dim invoiceId = Convert.ToInt32(dgvInvoicesResid.Rows(e.RowIndex).Cells("InvoiceID").Value)
+                    Using frm As New AnbardaryReceiptsHistoryForm(invoiceId)
+                        frm.ShowDialog()
+                    End Using
+                ElseIf colName = "colBtnCreateInvoice" Then
+                    Dim receiptId = Convert.ToInt32(dgvInvoicesResid.Rows(e.RowIndex).Cells("InvoiceID").Value)
+                    Dim docType = Convert.ToString(dgvInvoicesResid.Rows(e.RowIndex).Cells("InvoiceType").Value)
+                    If docType = "رسید ورود به انبار" Then
+                        Using frm As New AnbardaryKharid2Form(receiptId, "فاکتور خرید", True)
+                            If frm.ShowDialog() = DialogResult.OK Then
+                                LoadData()
+                            End If
+                        End Using
+                    Else
+                        MessageBox.Show("این سند یک فاکتور خرید مرجع است. جهت مشاهده رسیدهای انبار مربوطه دکمه «مشاهده رسیدها» را کلیک کنید.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End If
+                End If
+            End If
+        End Sub
+
+        Private Sub DgvInvoicesResidBargasht_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvInvoicesResidBargasht.CellContentClick
+            If e.RowIndex >= 0 Then
+                Dim colName = dgvInvoicesResidBargasht.Columns(e.ColumnIndex).Name
+                If colName = "colBtnViewReceipts" Then
+                    Dim invoiceId = Convert.ToInt32(dgvInvoicesResidBargasht.Rows(e.RowIndex).Cells("InvoiceID").Value)
                     Using frm As New AnbardaryReceiptsHistoryForm(invoiceId)
                         frm.ShowDialog()
                     End Using
@@ -446,7 +720,7 @@ Namespace Sys_Hes_Anb.Forms
             End If
 
             Dim invoiceId = Convert.ToInt32(grid.CurrentRow.Cells("InvoiceID").Value)
-            Dim docType = If(grid Is dgvInvoicesResid, "رسید ورود به انبار", "فاکتور خرید")
+            Dim docType = If(grid Is dgvInvoicesResid, "رسید ورود به انبار", Convert.ToString(grid.CurrentRow.Cells("InvoiceType").Value))
             Using frm As New AnbardaryKharid2Form(invoiceId, docType)
                 If frm.ShowDialog() = DialogResult.OK Then
                     LoadData()
@@ -477,11 +751,17 @@ Namespace Sys_Hes_Anb.Forms
             End If
         End Sub
 
-        Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click, btnRefreshResid.Click
+        Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click, btnRefreshResid.Click, btnRefreshBargasht.Click, btnRefreshResidBargasht.Click
             For Each txt In filterTextBoxes.Values
                 txt.Clear()
             Next
             For Each txt In filterTextBoxesResid.Values
+                txt.Clear()
+            Next
+            For Each txt In filterTextBoxesBargasht.Values
+                txt.Clear()
+            Next
+            For Each txt In filterTextBoxesResidBargasht.Values
                 txt.Clear()
             Next
             LoadData()

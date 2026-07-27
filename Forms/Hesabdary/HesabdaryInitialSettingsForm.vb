@@ -5,10 +5,10 @@ Imports System
 Imports System.Data
 Imports System.Collections.Generic
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class HesabdaryInitialSettingsForm
         Inherits Form
 

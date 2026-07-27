@@ -7,9 +7,9 @@ Imports System.Windows.Forms
 Imports System.Drawing
 Imports System.Data
 Imports Microsoft.VisualBasic
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
 
     Public Class CheckManagementForm
         Inherits Form

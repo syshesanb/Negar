@@ -1,13 +1,13 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Drawing
 Imports System.Globalization
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Module ThemeHelper
         Public Sub ApplyFormTheme(frm As Form)
             If String.IsNullOrEmpty(SessionContext.CurrentFormThemeColorHex) Then

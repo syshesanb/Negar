@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Globalization
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Module PersianDateHelper
         Private ReadOnly _pc As New PersianCalendar()
 

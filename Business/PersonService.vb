@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
 Imports System.Collections.Generic
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class PersonService
 
         Public Function GetAll(Optional filterRole As String = "همه", Optional filterType As String = "همه", Optional searchKeyword As String = "") As DataTable

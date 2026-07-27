@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -7,9 +7,9 @@ Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.Collections.Generic
 Imports System.IO
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class AnbardaryNamKala2Form
         Inherits Form
 
@@ -47,15 +47,15 @@ Namespace Sys_Hes_Anb.Forms
             ' Select defaults
             If cmbProductType.Items.Count > 0 Then cmbProductType.SelectedIndex = 0
             If cmbTrackingType.Items.Count > 0 Then cmbTrackingType.SelectedIndex = 0
-            txtGroup.Text = "--- بدون گروه ---"
-            txtBaseUoM.Text = "--- بدون واحد ---"
-            txtSecondaryUoM.Text = "--- بدون واحد ---"
+            txtGroup.Text = "--- ╪ذ╪»┘ê┘ ┌»╪▒┘ê┘ç ---"
+            txtBaseUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
+            txtSecondaryUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
 
             ' Update dynamic formula labels based on PurchasePricingMethod
-            Dim purchaseMethod = _settingsService.GetSettingValue("PurchasePricingMethod", "روش FIFO")
-            lblConsumerFormulaProduct.Text = "قیمت مصرف‌کننده : قیمت خرید بر اساس " & purchaseMethod & " + "
-            lblColleagueFormulaProduct.Text = "قیمت همکار : قیمت خرید بر اساس " & purchaseMethod & " + "
-            lblWholesaleFormulaProduct.Text = "قیمت عمده‌فروشی : قیمت خرید بر اساس " & purchaseMethod & " + "
+            Dim purchaseMethod = _settingsService.GetSettingValue("PurchasePricingMethod", "╪▒┘ê╪┤ FIFO")
+            lblConsumerFormulaProduct.Text = "┘é█î┘à╪ز ┘à╪╡╪▒┘ظî┌ر┘┘╪»┘ç : ┘é█î┘à╪ز ╪«╪▒█î╪» ╪ذ╪▒ ╪د╪│╪د╪│ " & purchaseMethod & " + "
+            lblColleagueFormulaProduct.Text = "┘é█î┘à╪ز ┘ç┘à┌ر╪د╪▒ : ┘é█î┘à╪ز ╪«╪▒█î╪» ╪ذ╪▒ ╪د╪│╪د╪│ " & purchaseMethod & " + "
+            lblWholesaleFormulaProduct.Text = "┘é█î┘à╪ز ╪╣┘à╪»┘çظî┘╪▒┘ê╪┤█î : ┘é█î┘à╪ز ╪«╪▒█î╪» ╪ذ╪▒ ╪د╪│╪د╪│ " & purchaseMethod & " + "
 
             If _selectedId.HasValue Then
                 LoadProductData(_selectedId.Value)
@@ -141,18 +141,18 @@ Namespace Sys_Hes_Anb.Forms
                         If pgRow IsNot Nothing Then
                             txtGroup.Text = $"{Convert.ToString(pgRow("GroupCode"))} - {Convert.ToString(pgRow("GroupName"))}"
                         Else
-                            txtGroup.Text = "--- بدون گروه ---"
+                            txtGroup.Text = "--- ╪ذ╪»┘ê┘ ┌»╪▒┘ê┘ç ---"
                             _selectedGroupId = 0
                         End If
                     Else
                         _selectedGroupId = 0
-                        txtGroup.Text = "--- بدون گروه ---"
+                        txtGroup.Text = "--- ╪ذ╪»┘ê┘ ┌»╪▒┘ê┘ç ---"
                     End If
 
                     ' Select ProductType
                     Dim pTypeVal = Convert.ToString(row("ProductType"))
                     If Not String.IsNullOrEmpty(pTypeVal) Then
-                        If pTypeVal = "دارایی ثابت" Then pTypeVal = "دارایی شرکت"
+                        If pTypeVal = "╪»╪د╪▒╪د█î█î ╪س╪د╪ذ╪ز" Then pTypeVal = "╪»╪د╪▒╪د█î█î ╪┤╪▒┌ر╪ز"
                         cmbProductType.SelectedItem = pTypeVal
                     End If
 
@@ -167,12 +167,12 @@ Namespace Sys_Hes_Anb.Forms
                         Else
                             _selectedBaseUomId = 0
                             _selectedBaseUomName = ""
-                            txtBaseUoM.Text = "--- بدون واحد ---"
+                            txtBaseUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
                         End If
                     Else
                         _selectedBaseUomId = 0
                         _selectedBaseUomName = ""
-                        txtBaseUoM.Text = "--- بدون واحد ---"
+                        txtBaseUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
                     End If
 
                     ' Load SecondaryUoM
@@ -186,12 +186,12 @@ Namespace Sys_Hes_Anb.Forms
                         Else
                             _selectedSecondaryUomId = 0
                             _selectedSecondaryUomName = ""
-                            txtSecondaryUoM.Text = "--- بدون واحد ---"
+                            txtSecondaryUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
                         End If
                     Else
                         _selectedSecondaryUomId = 0
                         _selectedSecondaryUomName = ""
-                        txtSecondaryUoM.Text = "--- بدون واحد ---"
+                        txtSecondaryUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
                     End If
 
                     ' Physical and Appearance attributes
@@ -255,7 +255,7 @@ Namespace Sys_Hes_Anb.Forms
                     End If
                 End If
             Catch ex As Exception
-                MessageBox.Show("خطا در بارگذاری اطلاعات کالا: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("╪«╪╖╪د ╪»╪▒ ╪ذ╪د╪▒┌»╪░╪د╪▒█î ╪د╪╖┘╪د╪╣╪د╪ز ┌ر╪د┘╪د: " & ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
@@ -295,8 +295,8 @@ Namespace Sys_Hes_Anb.Forms
         Private Sub BrowseImage(slot As Integer, picBox As PictureBox)
             Try
                 Using ofd As New OpenFileDialog()
-                    ofd.Filter = "فایل‌های تصویری (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp"
-                    ofd.Title = $"انتخاب تصویر کالا - شماره {slot}"
+                    ofd.Filter = "┘╪د█î┘ظî┘ç╪د█î ╪ز╪╡┘ê█î╪▒█î (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp"
+                    ofd.Title = $"╪د┘╪ز╪«╪د╪ذ ╪ز╪╡┘ê█î╪▒ ┌ر╪د┘╪د - ╪┤┘à╪د╪▒┘ç {slot}"
                     If ofd.ShowDialog() = DialogResult.OK Then
                         LoadImageToBox(picBox, ofd.FileName)
                         _imagePaths(slot) = ofd.FileName
@@ -304,7 +304,7 @@ Namespace Sys_Hes_Anb.Forms
                     End If
                 End Using
             Catch ex As Exception
-                MessageBox.Show("خطا در انتخاب تصویر: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("╪«╪╖╪د ╪»╪▒ ╪د┘╪ز╪«╪د╪ذ ╪ز╪╡┘ê█î╪▒: " & ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
@@ -370,13 +370,13 @@ Namespace Sys_Hes_Anb.Forms
                         If _selectedGroupId > 0 Then
                             txtGroup.Text = $"{frm.SelectedGroupCode} - {frm.SelectedGroupName}"
                         Else
-                            txtGroup.Text = "--- بدون گروه ---"
+                            txtGroup.Text = "--- ╪ذ╪»┘ê┘ ┌»╪▒┘ê┘ç ---"
                             _selectedGroupId = 0
                         End If
                     End If
                 End Using
             Catch ex As Exception
-                MessageBox.Show("خطا در باز کردن انتخابگر گروه‌ها: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("╪«╪╖╪د ╪»╪▒ ╪ذ╪د╪▓ ┌ر╪▒╪»┘ ╪د┘╪ز╪«╪د╪ذ┌»╪▒ ┌»╪▒┘ê┘çظî┘ç╪د: " & ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
@@ -389,14 +389,14 @@ Namespace Sys_Hes_Anb.Forms
                         If _selectedBaseUomId > 0 Then
                             txtBaseUoM.Text = $"{frm.SelectedUoMName} ({frm.SelectedCategoryName})"
                         Else
-                            txtBaseUoM.Text = "--- بدون واحد ---"
+                            txtBaseUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
                             _selectedBaseUomId = 0
                             _selectedBaseUomName = ""
                         End If
                     End If
                 End Using
             Catch ex As Exception
-                MessageBox.Show("خطا در باز کردن فرم انتخاب واحد اندازه‌گیری: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("╪«╪╖╪د ╪»╪▒ ╪ذ╪د╪▓ ┌ر╪▒╪»┘ ┘╪▒┘à ╪د┘╪ز╪«╪د╪ذ ┘ê╪د╪ص╪» ╪د┘╪»╪د╪▓┘çظî┌»█î╪▒█î: " & ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
@@ -409,20 +409,20 @@ Namespace Sys_Hes_Anb.Forms
                         If _selectedSecondaryUomId > 0 Then
                             txtSecondaryUoM.Text = $"{frm.SelectedUoMName} ({frm.SelectedCategoryName})"
                         Else
-                            txtSecondaryUoM.Text = "--- بدون واحد ---"
+                            txtSecondaryUoM.Text = "--- ╪ذ╪»┘ê┘ ┘ê╪د╪ص╪» ---"
                             _selectedSecondaryUomId = 0
                             _selectedSecondaryUomName = ""
                         End If
                     End If
                 End Using
             Catch ex As Exception
-                MessageBox.Show("خطا در باز کردن فرم انتخاب واحد اندازه‌گیری: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("╪«╪╖╪د ╪»╪▒ ╪ذ╪د╪▓ ┌ر╪▒╪»┘ ┘╪▒┘à ╪د┘╪ز╪«╪د╪ذ ┘ê╪د╪ص╪» ╪د┘╪»╪د╪▓┘çظî┌»█î╪▒█î: " & ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
         Private Sub BtnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
             If String.IsNullOrWhiteSpace(txtName.Text) Then
-                MessageBox.Show("نام کالا الزامی است.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show("┘╪د┘à ┌ر╪د┘╪د ╪د┘╪▓╪د┘à█î ╪د╪│╪ز.", "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 txtName.Focus()
                 Return
             End If
@@ -461,8 +461,8 @@ Namespace Sys_Hes_Anb.Forms
                     secondaryUomId = _selectedSecondaryUomId
                 End If
 
-                Dim productType = If(cmbProductType.SelectedItem IsNot Nothing, cmbProductType.SelectedItem.ToString(), "کالا")
-                Dim trackingType = If(cmbTrackingType.SelectedItem IsNot Nothing, cmbTrackingType.SelectedItem.ToString(), "عادی")
+                Dim productType = If(cmbProductType.SelectedItem IsNot Nothing, cmbProductType.SelectedItem.ToString(), "┌ر╪د┘╪د")
+                Dim trackingType = If(cmbTrackingType.SelectedItem IsNot Nothing, cmbTrackingType.SelectedItem.ToString(), "╪╣╪د╪»█î")
 
                 ' Step 1: Initial Save to obtain product ID
                 Dim savedId = _service.SaveProduct(
@@ -593,23 +593,23 @@ Namespace Sys_Hes_Anb.Forms
                         _selectedDefaultWarehouseId)
                 End If
 
-                MessageBox.Show("اطلاعات کالا با موفقیت ذخیره شد.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("╪د╪╖┘╪د╪╣╪د╪ز ┌ر╪د┘╪د ╪ذ╪د ┘à┘ê┘┘é█î╪ز ╪░╪«█î╪▒┘ç ╪┤╪».", "┘à┘ê┘┘é█î╪ز", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Me.DialogResult = DialogResult.OK
                 Me.Close()
             Catch ex As Exception
-                MessageBox.Show("خطا در ذخیره اطلاعات: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("╪«╪╖╪د ╪»╪▒ ╪░╪«█î╪▒┘ç ╪د╪╖┘╪د╪╣╪د╪ز: " & ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
         Private Sub BtnSelectDefaultWarehouse_Click(sender As Object, e As EventArgs) Handles btnSelectDefaultWarehouse.Click
             Dim warehouses = _service.GetWarehouses()
             If warehouses Is Nothing OrElse warehouses.Rows.Count = 0 Then
-                MessageBox.Show("هیچ انباری در سیستم تعریف نشده است.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("┘ç█î┌ ╪د┘╪ذ╪د╪▒█î ╪»╪▒ ╪│█î╪│╪ز┘à ╪ز╪╣╪▒█î┘ ┘╪┤╪»┘ç ╪د╪│╪ز.", "╪د╪╖┘╪د╪╣", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
             Using dlg As New Form()
-                dlg.Text = "انتخاب انبار پیش فرض"
+                dlg.Text = "╪د┘╪ز╪«╪د╪ذ ╪د┘╪ذ╪د╪▒ ┘╛█î╪┤ ┘╪▒╪╢"
                 dlg.Size = New Size(450, 350)
                 dlg.StartPosition = FormStartPosition.CenterParent
                 dlg.RightToLeft = RightToLeft.Yes

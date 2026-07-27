@@ -1,8 +1,8 @@
-Imports System
+﻿Imports System
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class WarehouseLocationEditForm
         Inherits Form
 

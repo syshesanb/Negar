@@ -1,13 +1,13 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms.Controls
+Namespace Negar.Forms.Controls
     Public Class VendorsCustomersControl
         Inherits UserControl
 

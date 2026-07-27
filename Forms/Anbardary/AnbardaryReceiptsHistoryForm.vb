@@ -1,13 +1,13 @@
-Imports System
+﻿Imports System
 Imports System.Windows.Forms
 Imports System.Drawing
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class AnbardaryReceiptsHistoryForm
         Inherits Form
 
         Private _invoiceId As Integer
-        Private _invoiceService As New Sys_Hes_Anb.Business.InvoiceService()
+        Private _invoiceService As New Negar.Business.InvoiceService()
         Private dgvReceipts As DataGridView
 
         Public Sub New(invoiceId As Integer)
@@ -172,7 +172,7 @@ Namespace Sys_Hes_Anb.Forms
         
         Private Sub dgvReceipts_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs)
             If dgvReceipts.Columns(e.ColumnIndex).Name = "ReceiptDate" AndAlso e.Value IsNot Nothing AndAlso TypeOf e.Value Is DateTime Then
-                e.Value = Sys_Hes_Anb.Business.PersianDateHelper.ToPersian(DirectCast(e.Value, DateTime))
+                e.Value = Negar.Business.PersianDateHelper.ToPersian(DirectCast(e.Value, DateTime))
                 e.FormattingApplied = True
             End If
         End Sub
@@ -304,7 +304,7 @@ Namespace Sys_Hes_Anb.Forms
                     g.DrawLine(Pens.Black, leftMargin, y, rightMargin, y)
                     y += 8
                     g.DrawString("امضای مسئول انبار: ____________________", smallFont, Brushes.Black, New Rectangle(leftMargin, y, pageWidth \ 2, 22), rtlFmt)
-                    g.DrawString("تاریخ چاپ: " & Sys_Hes_Anb.Business.PersianDateHelper.ToPersian(DateTime.Today), smallFont, Brushes.Black, New Rectangle(leftMargin + pageWidth \ 2, y, pageWidth \ 2, 22), rtlFmt)
+                    g.DrawString("تاریخ چاپ: " & Negar.Business.PersianDateHelper.ToPersian(DateTime.Today), smallFont, Brushes.Black, New Rectangle(leftMargin + pageWidth \ 2, y, pageWidth \ 2, 22), rtlFmt)
                 End Sub
 
                 Using dlg As New PrintPreviewDialog()

@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,10 +6,10 @@ Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class DataMigrationForm
         Inherits Form
 

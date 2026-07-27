@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -9,9 +9,9 @@ Imports System.Data
 Imports System.Data.OleDb
 Imports System.Data.SQLite
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Data
+Namespace Negar.Data
     Public Module DbBootstrap
         Private Sub EnsureTemFormTableAndSeed()
             Try
@@ -209,8 +209,8 @@ Namespace Sys_Hes_Anb.Data
                 Throw New InvalidOperationException("DataDirectory is not configured.")
             End If
 
-            Dim dbFile = Path.Combine(dataDir, "Sys_Hes_Anb.db")
-            Dim accdbFile = Path.Combine(dataDir, "Sys_Hes_Anb.accdb")
+            Dim dbFile = Path.Combine(dataDir, "Negar.db")
+            Dim accdbFile = Path.Combine(dataDir, "Negar.accdb")
             Log("dbFile=" & dbFile)
 
             Dim isNewDb As Boolean = Not File.Exists(dbFile)

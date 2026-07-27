@@ -1,5 +1,5 @@
-$dllPath = "c:\Sys_Hes_Anb\bin\Debug\System.Data.SQLite.dll"
-$dbPath = "c:\Sys_Hes_Anb\bin\Debug\Database\Sys_Hes_Anb.dat"
+﻿$dllPath = "c:\Negar\bin\Debug\System.Data.SQLite.dll"
+$dbPath = "c:\Negar\bin\Debug\Database\Negar.dat"
 if (Test-Path $dllPath) {
     [System.Reflection.Assembly]::LoadFrom($dllPath) | Out-Null
     $connString = "Data Source=$dbPath;Version=3;"

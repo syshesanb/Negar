@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,9 +6,9 @@ Imports System.Data
 Imports System.Drawing
 Imports System.Drawing.Imaging
 Imports System.IO
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
 
     Public Class AttachmentService
 

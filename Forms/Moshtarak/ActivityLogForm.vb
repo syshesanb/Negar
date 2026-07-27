@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class ActivityLogForm
         Inherits Form
 
@@ -16,7 +16,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub ActivityLogForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             If Me.dgvLog IsNot Nothing Then Me.dgvLog.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             LoadLog()
         End Sub

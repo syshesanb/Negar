@@ -1,4 +1,4 @@
-Imports System
+﻿Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -6,10 +6,10 @@ Imports System.IO
 Imports System.Linq
 Imports System.Text
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Public Class HesabdaryMogBankForm
         Private ReadOnly recService As New BankReconciliationService()
         Private ReadOnly service As New AccountingService()
@@ -94,8 +94,8 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryMogBankForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
-            Sys_Hes_Anb.Business.ThemeHelper.AppendStatusBar(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.AppendStatusBar(Me)
             If Me.dgvBanks IsNot Nothing Then Me.dgvBanks.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvImportPreview IsNot Nothing Then Me.dgvImportPreview.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvBank_All IsNot Nothing Then Me.dgvBank_All.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)

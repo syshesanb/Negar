@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,7 +6,7 @@ Imports System.Data.SQLite
 Imports System.IO
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Data
+Namespace Negar.Data
     Public Module DbEncryptionService
         Private Const MasterPassword As String = "SysHesAnb_Secure_Db_Key_2026_@Sec!"
 
@@ -48,7 +48,7 @@ Namespace Sys_Hes_Anb.Data
             If String.IsNullOrWhiteSpace(dataDir) Then
                 dataDir = Path.Combine(Application.StartupPath, "Database")
             End If
-            Dim currentDbFile As String = Path.Combine(dataDir, "Sys_Hes_Anb.db")
+            Dim currentDbFile As String = Path.Combine(dataDir, "Negar.db")
 
             If Not File.Exists(currentDbFile) Then
                 Throw New FileNotFoundException("فایل دیتابیس سیستم یافت نشد.", currentDbFile)

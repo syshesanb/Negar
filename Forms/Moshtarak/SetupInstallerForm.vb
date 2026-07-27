@@ -1,13 +1,13 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Diagnostics
 Imports System.IO
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class SetupInstallerForm
         Private _sourceDirectory As String
 
@@ -21,7 +21,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub SetupInstallerForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
         End Sub
 
@@ -48,7 +48,7 @@ Namespace Sys_Hes_Anb.Forms
 
             If Not Directory.Exists(_sourceDirectory) Then
                 ' اگر پوشه app_files وجود نداشت، خود پوشه فعلی را منبع فرض می‌کنیم
-                If File.Exists(Path.Combine(Application.StartupPath, "Sys_Hes_Anb.exe")) Then
+                If File.Exists(Path.Combine(Application.StartupPath, "Negar.exe")) Then
                     _sourceDirectory = Application.StartupPath
                 Else
                     MessageBox.Show("فایلهای منبع نصب یافت نشدند.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -73,7 +73,7 @@ Namespace Sys_Hes_Anb.Forms
                 CopyDirectoryRecursive(_sourceDirectory, targetDir)
 
                 If chkCreateShortcut.Checked Then
-                    CreateDesktopShortcut(Path.Combine(targetDir, "Sys_Hes_Anb.exe"), "سیستم حسابداری و انبارداری")
+                    CreateDesktopShortcut(Path.Combine(targetDir, "Negar.exe"), "سیستم حسابداری و انبارداری")
                 End If
 
                 lblStatus.Text = "نصب با موفقیت انجام شد."
@@ -81,7 +81,7 @@ Namespace Sys_Hes_Anb.Forms
 
                 Dim res = MessageBox.Show("نصب نرم‌افزار در مسیر زیر با موفقیت به پایان رسید:" & Environment.NewLine & targetDir & Environment.NewLine & Environment.NewLine & "آیا می‌خواهید نرم‌افزار هم‌اکنون اجرا شود؟", "موفقیت در نصب", MessageBoxButtons.YesNo, MessageBoxIcon.Information)
                 If res = DialogResult.Yes Then
-                    Dim exePath = Path.Combine(targetDir, "Sys_Hes_Anb.exe")
+                    Dim exePath = Path.Combine(targetDir, "Negar.exe")
                     If File.Exists(exePath) Then
                         Process.Start(exePath)
                     End If
@@ -107,7 +107,7 @@ Namespace Sys_Hes_Anb.Forms
 
             For Each fileInDir As FileInfo In dir.GetFiles()
                 ' نادیده گرفتن فایلهای موقت یا دیتابیس اکسس یا خود فایل نصب کننده
-                If String.Equals(fileInDir.Name, "Setup_Sys_Hes_Anb.exe", StringComparison.OrdinalIgnoreCase) Then Continue For
+                If String.Equals(fileInDir.Name, "Setup_Negar.exe", StringComparison.OrdinalIgnoreCase) Then Continue For
                 If String.Equals(fileInDir.Extension, ".tmp", StringComparison.OrdinalIgnoreCase) Then Continue For
                 If String.Equals(fileInDir.Extension, ".accdb", StringComparison.OrdinalIgnoreCase) Then Continue For
                 If String.Equals(fileInDir.Extension, ".laccdb", StringComparison.OrdinalIgnoreCase) Then Continue For

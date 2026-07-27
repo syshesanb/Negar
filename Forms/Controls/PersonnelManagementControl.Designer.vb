@@ -1,4 +1,4 @@
-Namespace Sys_Hes_Anb.Forms.Controls
+﻿Namespace Negar.Forms.Controls
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class PersonnelManagementControl
     Inherits System.Windows.Forms.UserControl

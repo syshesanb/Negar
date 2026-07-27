@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,7 +6,7 @@ Imports System.Drawing
 Imports System.Drawing.Drawing2D
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Module AppIconHelper
         Private _cachedIcon As Icon = Nothing
 

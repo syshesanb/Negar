@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,7 +6,7 @@ Imports System.Drawing
 Imports System.Globalization
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
 
     ''' تقویم شمسی کوچک جهت انتخاب تاریخ — نتیجه از طریق SelectedDate برگشت داده می‌شود
     Public Class PersianCalendarForm

@@ -1,7 +1,7 @@
-Imports System
+﻿Imports System
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class PersonnelManagementForm
         Inherits Form
 

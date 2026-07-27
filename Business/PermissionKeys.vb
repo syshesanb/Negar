@@ -1,9 +1,9 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Module PermissionKeys
         Public Const ManageUsers As String = "ManageUsers"
         Public Const ManageBasicUsers As String = "ManageBasicUsers"

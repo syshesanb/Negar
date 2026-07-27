@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,17 +6,17 @@ Imports System.Data
 Imports System.Drawing
 Imports System.IO
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class ThemeSelectionForm
         Inherits Form
 
         Private _service As New SettingsService()
 
         Private Sub ThemeSelectionForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             LoadThemes()
         End Sub
 

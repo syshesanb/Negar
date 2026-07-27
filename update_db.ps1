@@ -1,4 +1,4 @@
-$connStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Sys_Hes_Anb\bin\Debug\Database\Sys_Hes_Anb.accdb;Persist Security Info=False;"
+﻿$connStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Negar\bin\Debug\Database\Negar.accdb;Persist Security Info=False;"
 $conn = New-Object System.Data.OleDb.OleDbConnection($connStr)
 $conn.Open()
 

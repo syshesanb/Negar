@@ -1,7 +1,7 @@
-Imports System.Data
-Imports Sys_Hes_Anb.Data
+﻿Imports System.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class PersonnelService
         ' departmentFilter: 0 = All, 1 = System, 2 = Accounting, 3 = Warehousing
         Public Function GetPersonnel(Optional departmentFilter As Integer = 0) As DataTable

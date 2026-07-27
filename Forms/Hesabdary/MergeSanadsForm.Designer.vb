@@ -1,7 +1,7 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
     Partial Class MergeSanadsForm
         Inherits System.Windows.Forms.Form

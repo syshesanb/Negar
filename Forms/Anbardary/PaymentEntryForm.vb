@@ -5,10 +5,10 @@ Imports System.Collections.Generic
 Imports System.Windows.Forms
 Imports System.Drawing
 Imports System.Data
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Business.PersianDateHelper
+Imports Negar.Business
+Imports Negar.Business.PersianDateHelper
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
 
     Public Class PaymentEntryForm
         Inherits Form

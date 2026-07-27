@@ -1,8 +1,8 @@
-Imports System
+﻿Imports System
 Imports System.Data
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class ProductGroupService
 
         ''' <summary>

@@ -1,4 +1,4 @@
-$formsDir = "c:\Sys_Hes_Anb\Forms"
+﻿$formsDir = "c:\Negar\Forms"
 $vbFiles = Get-ChildItem -Path $formsDir -Filter "*.vb" -Recurse | Where-Object { $_.Name -notmatch "\.Designer\.vb" }
 
 foreach ($vb in $vbFiles) {
@@ -11,7 +11,7 @@ foreach ($vb in $vbFiles) {
         
         # Match any Form Load method
         if ($line -match "Sub .*_Load\(sender As Object, e As EventArgs\)") {
-            $injectLine = "            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)"
+            $injectLine = "            Negar.Business.ThemeHelper.ApplyFormTheme(Me)"
             $found = $false
             
             # Check if already injected

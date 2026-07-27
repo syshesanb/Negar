@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9D74B5F7-7F3D-4FB8-9E1A-6B5DE2D3D01B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>Sys_Hes_Anb.Program</StartupObject>
+    <StartupObject>Negar.Program</StartupObject>
     <RootNamespace>
     </RootNamespace>
-    <AssemblyName>Sys_Hes_Anb</AssemblyName>
+    <AssemblyName>Negar</AssemblyName>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
@@ -183,6 +183,9 @@
     <Compile Include="Forms\Anbardary\AnbardaryReceiptsHistoryForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryBargashtHistoryForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Anbardary\AnbardaryKharid2Form.Designer.vb">
       <DependentUpon>AnbardaryKharid2Form.vb</DependentUpon>
     </Compile>
@@ -314,6 +317,18 @@
     </Compile>
     <Compile Include="Forms\Anbardary\AnbardaryForoosh2Form.Designer.vb">
       <DependentUpon>AnbardaryForoosh2Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryTransfer1Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryTransfer1Form.Designer.vb">
+      <DependentUpon>AnbardaryTransfer1Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryTransfer2Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Anbardary\AnbardaryTransfer2Form.Designer.vb">
+      <DependentUpon>AnbardaryTransfer2Form.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\Anbardary\MojodyAnbarFormRep.vb">
       <SubType>Form</SubType>

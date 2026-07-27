@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -9,9 +9,9 @@ Imports System.Drawing
 Imports System.Drawing.Drawing2D
 Imports System.IO
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class SettingsService
         Public Function GetSettings() As DataTable
             Return Sql.ExecuteTable("SELECT SettingID, SettingKey, SettingValue, SettingCategory FROM AppSettings ORDER BY SettingCategory, SettingKey")
@@ -159,7 +159,7 @@ Namespace Sys_Hes_Anb.Business
                     Directory.CreateDirectory(entesharDir)
                 End If
 
-                Dim packageDir As String = Path.Combine(entesharDir, "Setup_Sys_Hes_Anb")
+                Dim packageDir As String = Path.Combine(entesharDir, "Setup_Negar")
                 If Directory.Exists(packageDir) Then
                     Try
                         Directory.Delete(packageDir, True)
@@ -180,18 +180,18 @@ Namespace Sys_Hes_Anb.Business
                 If Not Directory.Exists(appFilesDbDir) Then
                     Directory.CreateDirectory(appFilesDbDir)
                 End If
-                Dim cleanDbPath As String = Path.Combine(appFilesDbDir, "Sys_Hes_Anb.db")
+                Dim cleanDbPath As String = Path.Combine(appFilesDbDir, "Negar.db")
                 CreateCleanDatabase(cleanDbPath, projectRoot, managerRow, managerPassword)
 
-                Dim cleanDatPath As String = Path.Combine(appFilesDbDir, "Sys_Hes_Anb.dat")
+                Dim cleanDatPath As String = Path.Combine(appFilesDbDir, "Negar.dat")
                 Data.AesDbService.EncryptFile(cleanDbPath, cleanDatPath)
                 If File.Exists(cleanDatPath) AndAlso New FileInfo(cleanDatPath).Length > 0 Then
                     If File.Exists(cleanDbPath) Then File.Delete(cleanDbPath)
                 End If
 
-                ' 5. ایجاد فایل نصبی اصلی Setup_Sys_Hes_Anb.exe در پوشه Enteshar
-                Dim setupExeSource As String = Path.Combine(sourceBinDir, "Sys_Hes_Anb.exe")
-                Dim setupExeTarget As String = Path.Combine(packageDir, "Setup_Sys_Hes_Anb.exe")
+                ' 5. ایجاد فایل نصبی اصلی Setup_Negar.exe در پوشه Enteshar
+                Dim setupExeSource As String = Path.Combine(sourceBinDir, "Negar.exe")
+                Dim setupExeTarget As String = Path.Combine(packageDir, "Setup_Negar.exe")
                 If File.Exists(setupExeSource) Then
                     File.Copy(setupExeSource, setupExeTarget, True)
                 End If
@@ -231,7 +231,7 @@ Namespace Sys_Hes_Anb.Business
                 sbReadme.AppendLine(rlm & "--------------------------------------------------")
                 sbReadme.AppendLine(rlm)
                 sbReadme.AppendLine(rlm & "دستورالعمل نصب:")
-                sbReadme.AppendLine(rlm & "جهت نصب نرم‌افزار روی هر کامپیوتر دیگر، کافی است فایل Setup_Sys_Hes_Anb.exe را اجرا کنید.")
+                sbReadme.AppendLine(rlm & "جهت نصب نرم‌افزار روی هر کامپیوتر دیگر، کافی است فایل Setup_Negar.exe را اجرا کنید.")
                 sbReadme.AppendLine(rlm & "پس از تعیین مسیر نصب توسط نصب‌کننده، نرم‌افزار به همراه دیتابیس خام و مجوزهای تعیین‌شده مستقر خواهد شد.")
                 sbReadme.AppendLine(rlm)
                 sbReadme.AppendLine(rlm & "نکته بسیار مهم:")
@@ -435,7 +435,7 @@ Namespace Sys_Hes_Anb.Business
             Try
                 Dim dataDir = Convert.ToString(AppDomain.CurrentDomain.GetData("DataDirectory"))
                 If String.IsNullOrWhiteSpace(dataDir) Then Return
-                Dim dbFile = Path.Combine(dataDir, "Sys_Hes_Anb.db")
+                Dim dbFile = Path.Combine(dataDir, "Negar.db")
                 If Not File.Exists(dbFile) Then Return
 
                 Dim connStr As String = "Data Source=" & dbFile & ";Version=3;"
@@ -569,7 +569,7 @@ Namespace Sys_Hes_Anb.Business
                     Directory.CreateDirectory(entesharDir)
                 End If
 
-                Dim packageDir As String = Path.Combine(entesharDir, "Update_Sys_Hes_Anb")
+                Dim packageDir As String = Path.Combine(entesharDir, "Update_Negar")
                 If Directory.Exists(packageDir) Then
                     Try
                         Directory.Delete(packageDir, True)
@@ -591,16 +591,16 @@ Namespace Sys_Hes_Anb.Business
                 End If
                 Dim runtimeDb = AesDbService.GetRuntimeDbFilePath()
                 If File.Exists(runtimeDb) Then
-                    AesDbService.EncryptFile(runtimeDb, Path.Combine(devDbTargetDir, "Sys_Hes_Anb.dat"))
+                    AesDbService.EncryptFile(runtimeDb, Path.Combine(devDbTargetDir, "Negar.dat"))
                 Else
                     Dim devDbSource = AesDbService.GetEncryptedFilePath()
                     If File.Exists(devDbSource) Then
-                        File.Copy(devDbSource, Path.Combine(devDbTargetDir, "Sys_Hes_Anb.dat"), True)
+                        File.Copy(devDbSource, Path.Combine(devDbTargetDir, "Negar.dat"), True)
                     End If
                 End If
 
-                Dim exeSource As String = Path.Combine(sourceBinDir, "Sys_Hes_Anb.exe")
-                Dim updateExeTarget As String = Path.Combine(packageDir, "Update_Sys_Hes_Anb.exe")
+                Dim exeSource As String = Path.Combine(sourceBinDir, "Negar.exe")
+                Dim updateExeTarget As String = Path.Combine(packageDir, "Update_Negar.exe")
                 If File.Exists(exeSource) Then
                     File.Copy(exeSource, updateExeTarget, True)
                 End If
@@ -629,7 +629,7 @@ Namespace Sys_Hes_Anb.Business
                 sb.AppendLine(rlm & "==================================================")
                 sb.AppendLine(rlm)
                 sb.AppendLine(rlm & "دستورالعمل به‌روزرسانی:")
-                sb.AppendLine(rlm & "جهت به‌روزرسانی سیستم مشتری، کافی است فایل Update_Sys_Hes_Anb.exe را در سیستم مقصد اجرا کنید.")
+                sb.AppendLine(rlm & "جهت به‌روزرسانی سیستم مشتری، کافی است فایل Update_Negar.exe را در سیستم مقصد اجرا کنید.")
                 sb.AppendLine(rlm & "۱. قبل از شروع کپی، سیستم به طور خودکار یک بک‌آپ کامل از دیتابیس فعلی مشتری تهیه خواهد کرد.")
                 sb.AppendLine(rlm & "۲. فایل‌های جدید جایگزین شده و تمامی اسکریپت‌های جدید ارتقای ساختار دیتابیس اعمال می‌شوند.")
                 sb.AppendLine(rlm & "۳. اطلاعات قبلی مشتری ۱۰۰٪ محفوظ می‌ماند.")

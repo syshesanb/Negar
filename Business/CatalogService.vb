@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class CatalogService
         Public Function GetProducts() As DataTable
             Return Sql.ExecuteTable("SELECT p.ProductID, p.ProductCode, p.ProductName, p.Unit, p.DefaultPrice, p.Category, p.IsActive, p.DefaultWarehouseID, w.WarehouseName AS DefaultWarehouseName, p.TaxPercent FROM Products p LEFT JOIN Warehouses w ON p.DefaultWarehouseID = w.WarehouseID ORDER BY p.ProductName")

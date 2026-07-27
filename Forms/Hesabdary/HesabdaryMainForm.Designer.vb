@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -7,7 +7,7 @@ Imports System.Drawing
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic.CompilerServices
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     <DesignerGenerated()>
     Partial Class HesabdaryMainForm
         Inherits Form
@@ -15,7 +15,7 @@ Namespace Sys_Hes_Anb.Forms
         Private components As IContainer
         Friend WithEvents tabs As TabControl
         Friend WithEvents tabPersonnel As TabPage
-        Friend WithEvents ctrlPersonnel As Sys_Hes_Anb.Forms.Controls.PersonnelManagementControl
+        Friend WithEvents ctrlPersonnel As Negar.Forms.Controls.PersonnelManagementControl
         Friend WithEvents tabSettings As TabPage
         Friend WithEvents tabAccounts As TabPage
         Friend WithEvents tabShenavar As TabPage
@@ -44,7 +44,7 @@ Namespace Sys_Hes_Anb.Forms
             Me.components = New Container()
             Me.tabs = New TabControl()
             Me.tabPersonnel = New TabPage()
-            Me.ctrlPersonnel = New Sys_Hes_Anb.Forms.Controls.PersonnelManagementControl()
+            Me.ctrlPersonnel = New Negar.Forms.Controls.PersonnelManagementControl()
             Me.tabSettings = New TabPage()
             Me.tabAccounts = New TabPage()
             Me.tabShenavar = New TabPage()

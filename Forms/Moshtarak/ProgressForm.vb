@@ -1,9 +1,9 @@
-Imports System
+﻿Imports System
 Imports System.Drawing
 Imports System.Drawing.Drawing2D
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class ProgressForm
         Inherits Form
 

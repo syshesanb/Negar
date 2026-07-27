@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Models
+Imports Negar.Business
+Imports Negar.Models
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class LoginForm
         Inherits Form
 
@@ -19,7 +19,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub LoginForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
         End Sub
 

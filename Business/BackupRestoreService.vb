@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -9,9 +9,9 @@ Imports System.IO.Compression
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Module BackupRestoreService
 
         ' =========================================================
@@ -143,7 +143,7 @@ Namespace Sys_Hes_Anb.Business
             If String.IsNullOrWhiteSpace(dataDir) Then
                 dataDir = Path.Combine(Application.StartupPath, "Database")
             End If
-            Dim dbFile As String = Path.Combine(dataDir, "Sys_Hes_Anb.db")
+            Dim dbFile As String = Path.Combine(dataDir, "Negar.db")
 
             If Not File.Exists(dbFile) Then
                 Throw New FileNotFoundException("فایل دیتابیس سیستم یافت نشد.", dbFile)
@@ -160,7 +160,7 @@ Namespace Sys_Hes_Anb.Business
 
             Try
                 Dim password As String = GeneratePasswordForDate(DateTime.Now)
-                WriteEncryptedZip(tempCopyDb, "Sys_Hes_Anb.db", targetZipPath, password)
+                WriteEncryptedZip(tempCopyDb, "Negar.db", targetZipPath, password)
             Finally
                 If File.Exists(tempCopyDb) Then
                     Try
@@ -206,7 +206,7 @@ Namespace Sys_Hes_Anb.Business
                 If String.IsNullOrWhiteSpace(dataDir) Then
                     dataDir = Path.Combine(Application.StartupPath, "Database")
                 End If
-                Dim currentDbFile As String = Path.Combine(dataDir, "Sys_Hes_Anb.db")
+                Dim currentDbFile As String = Path.Combine(dataDir, "Negar.db")
 
                 ' ایجاد پشتیبان اضطراری از دیتابیس قبل از جایگزینی
                 Dim emergencyBackup As String = currentDbFile & ".emg"

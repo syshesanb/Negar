@@ -1,8 +1,8 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
-Namespace Sys_Hes_Anb.Models
+Namespace Negar.Models
     Public Class ProductItem
         Public Property ProductID As Integer
         Public Property ProductCode As String

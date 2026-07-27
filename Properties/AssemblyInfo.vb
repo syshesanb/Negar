@@ -1,11 +1,11 @@
-Imports System
+﻿Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
-<Assembly: AssemblyTitle("Sys_Hes_Anb")>
+<Assembly: AssemblyTitle("Negar")>
 <Assembly: AssemblyDescription("Integrated desktop management system")>
 <Assembly: AssemblyCompany("Rayanegostar")>
-<Assembly: AssemblyProduct("Sys_Hes_Anb")>
+<Assembly: AssemblyProduct("Negar")>
 <Assembly: AssemblyCopyright("Copyright © 2026")>
 <Assembly: AssemblyTrademark("")>
 <Assembly: ComVisible(False)>

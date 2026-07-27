@@ -1,4 +1,4 @@
-Imports System.Data.SQLite
+﻿Imports System.Data.SQLite
 Imports System.IO
 
 Module CheckMappings
@@ -6,10 +6,10 @@ Module CheckMappings
         Try
             Dim dbPath As String = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database.sqlite") ' Let's find the correct path
             If Not File.Exists(dbPath) Then
-                dbPath = "c:\Sys_Hes_Anb\bin\Debug\Database.sqlite"
+                dbPath = "c:\Negar\bin\Debug\Database.sqlite"
             End If
             If Not File.Exists(dbPath) Then
-                dbPath = "c:\Sys_Hes_Anb\Hesabdary.db"
+                dbPath = "c:\Negar\Hesabdary.db"
             End If
             
             Dim connStr = "Data Source=" & dbPath & ";Version=3;"

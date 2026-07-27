@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
 Imports System.Collections.Generic
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class InvoiceService
         Private ReadOnly logService As New ActivityLogService()
 
@@ -111,7 +111,11 @@ Namespace Sys_Hes_Anb.Business
             Dim dt = Sql.ExecuteTable(
                 "SELECT InvoiceID, InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, WarehouseID " &
                 "FROM SalesInvoices WHERE InvoiceID = ?", invoiceId)
-            If dt.Rows.Count > 0 Then Return dt.Rows(0)
+            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                If Not dt.Columns.Contains("Description") Then dt.Columns.Add("Description", GetType(String))
+                If Not dt.Columns.Contains("VendorInvoiceNumber") Then dt.Columns.Add("VendorInvoiceNumber", GetType(String))
+                Return dt.Rows(0)
+            End If
             Return Nothing
         End Function
 

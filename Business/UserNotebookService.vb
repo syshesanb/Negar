@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class UserNotebookService
         Public Function GetUserNotes(userId As Integer) As DataTable
             Dim query As String = "SELECT NoteID, UserID, NoteDate, MainSubject, SubSubject1, SubSubject2, NoteContent, EditHistory FROM UserNotes WHERE UserID = ? ORDER BY NoteDate DESC, NoteID DESC"

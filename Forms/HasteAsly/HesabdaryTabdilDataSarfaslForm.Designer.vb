@@ -5,7 +5,7 @@ Imports System.ComponentModel
 Imports System.Drawing
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     <Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
     Partial Class HesabdaryTabdilDataSarfaslForm
         Inherits Form

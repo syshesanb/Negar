@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,12 +6,12 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Business.PersianDateHelper
-Imports Sys_Hes_Anb.Forms.Moshtarak
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Business.PersianDateHelper
+Imports Negar.Forms.Moshtarak
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class AnbardaryKharid2Form
         Inherits Form
 
@@ -53,6 +53,14 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private _editReceiptId As Integer? = Nothing
+        Private _parentInvoiceId As Integer? = Nothing
+
+        Public Sub New(invoiceId As Integer, docType As String, isNewBargasht As Boolean)
+            InitializeComponent()
+            _parentInvoiceId = invoiceId
+            _defaultDocType = docType
+        End Sub
+
         Public Sub New(invoiceId As Integer, receiptId As Integer)
             InitializeComponent()
             _editInvoiceId = invoiceId
@@ -97,7 +105,7 @@ Namespace Sys_Hes_Anb.Forms
             AddHandler cmbTaxEntryMode.SelectedIndexChanged, AddressOf CmbTaxEntryMode_SelectedIndexChanged
             AddHandler txtTotalVatInput.TextChanged, AddressOf TxtTotalVatInput_TextChanged
 
-            ' مقداردهی پیش‌فرض تاریخ ثبت سیستم و کامبوباکس مالیات
+            ' مقداردهی پیشفرض تاریخ ثبت سیستم و کامبوباکس مالیات
             txtSystemDate.Text = ToPersian(DateTime.Today)
             If cmbTaxEntryMode.Items.Count > 0 Then
                 cmbTaxEntryMode.SelectedIndex = 0
@@ -106,6 +114,11 @@ Namespace Sys_Hes_Anb.Forms
             If _editInvoiceId.HasValue Then
                 Me.Text = "ویرایش " & _defaultDocType
                 LoadInvoiceForEdit(_editInvoiceId.Value)
+                btnSaveAndContinue.Visible = False
+            ElseIf _parentInvoiceId.HasValue Then
+                Me.Text = "ثبت " & _defaultDocType & " جدید"
+                LoadInvoiceForEdit(_parentInvoiceId.Value)
+                txtEntryReference.Text = "PINV-RETURN-" & DateTime.Now.ToString("yyyyMMddHHmmss")
                 btnSaveAndContinue.Visible = False
             Else
                 Me.Text = "ثبت " & _defaultDocType & " جدید"
@@ -122,6 +135,52 @@ Namespace Sys_Hes_Anb.Forms
                 dgvEntryLines.Columns("colReceivedQty").Visible = False
                 dgvEntryLines.Columns("colReceiptQty").Visible = False
                 dgvEntryLines.Columns("colRemainingQty").Visible = False
+                dgvEntryLines.Columns("colReturnQty").Visible = False
+            ElseIf _defaultDocType = "برگشت از خرید" Then
+                If dgvEntryLines.Columns.Contains("colBtnWarehouse") Then dgvEntryLines.Columns("colBtnWarehouse").Visible = False
+                If dgvEntryLines.Columns.Contains("colWarehouse") Then dgvEntryLines.Columns("colWarehouse").Visible = False
+                If pnlViewShenavar IsNot Nothing Then pnlViewShenavar.Visible = False
+
+                If dgvEntryLines.Columns.Contains("colBtnKala") Then dgvEntryLines.Columns("colBtnKala").Visible = False
+                If dgvEntryLines.Columns.Contains("colBtnUnit") Then dgvEntryLines.Columns("colBtnUnit").Visible = False
+
+                If dgvEntryLines.Columns.Contains("colKalaCode") Then dgvEntryLines.Columns("colKalaCode").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colKalaName") Then dgvEntryLines.Columns("colKalaName").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colUnit") Then dgvEntryLines.Columns("colUnit").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colQty") Then dgvEntryLines.Columns("colQty").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colUnitPrice") Then dgvEntryLines.Columns("colUnitPrice").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colLineTotal") Then dgvEntryLines.Columns("colLineTotal").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colDiscount") Then dgvEntryLines.Columns("colDiscount").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colLineTotalAfterDiscount") Then dgvEntryLines.Columns("colLineTotalAfterDiscount").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colVat") Then dgvEntryLines.Columns("colVat").ReadOnly = True
+                If dgvEntryLines.Columns.Contains("colTotalPrice") Then dgvEntryLines.Columns("colTotalPrice").ReadOnly = True
+
+                dgvEntryLines.Columns("colReceivedQty").Visible = False
+                dgvEntryLines.Columns("colReceiptQty").Visible = False
+                dgvEntryLines.Columns("colRemainingQty").Visible = False
+                dgvEntryLines.Columns("colReturnQty").Visible = True
+                dgvEntryLines.Columns("colReturnQty").ReadOnly = False
+
+                ' فیلدهای سرصفحه ریداونلی شوند
+                If btnSelectVendor IsNot Nothing Then btnSelectVendor.Visible = False
+                If txtEntryReference IsNot Nothing Then txtEntryReference.ReadOnly = True
+                If txtVendorInvoiceNumber IsNot Nothing Then txtVendorInvoiceNumber.ReadOnly = True
+                If txtDateSanad IsNot Nothing Then txtDateSanad.ReadOnly = True
+                If btnCalDate IsNot Nothing Then btnCalDate.Visible = False
+                If txtSystemDate IsNot Nothing Then txtSystemDate.ReadOnly = True
+                If btnCalSystemDate IsNot Nothing Then btnCalSystemDate.Visible = False
+                If cmbTaxEntryMode IsNot Nothing Then cmbTaxEntryMode.Enabled = False
+                If txtEntryDescription IsNot Nothing Then txtEntryDescription.ReadOnly = True
+                If txtTotalVatInput IsNot Nothing Then txtTotalVatInput.ReadOnly = True
+
+                ' پنل دکمهها: فقط "ثبت برگشت از خرید و خروج"، "پاک کردن جستجوها" و "خروج" نمایش داده شوند
+                btnSaveEntry.Text = "ثبت برگشت از خرید و خروج"
+                If btnSaveAndContinue IsNot Nothing Then btnSaveAndContinue.Visible = False
+                If btnAddLine IsNot Nothing Then btnAddLine.Visible = False
+                If btnDeleteRow IsNot Nothing Then btnDeleteRow.Visible = False
+                If btnCopyBelow IsNot Nothing Then btnCopyBelow.Visible = False
+                If btnCopyAbove IsNot Nothing Then btnCopyAbove.Visible = False
+                If btnCopyToPos IsNot Nothing Then btnCopyToPos.Visible = False
             Else
                 If dgvEntryLines.Columns.Contains("colBtnWarehouse") Then dgvEntryLines.Columns("colBtnWarehouse").Visible = True
                 If dgvEntryLines.Columns.Contains("colWarehouse") Then dgvEntryLines.Columns("colWarehouse").Visible = True
@@ -138,37 +197,28 @@ Namespace Sys_Hes_Anb.Forms
                 dgvEntryLines.Columns("colReceivedQty").Visible = True
                 dgvEntryLines.Columns("colReceiptQty").Visible = True
                 dgvEntryLines.Columns("colRemainingQty").Visible = True
-                
-                If dgvEntryLines.Columns.Contains("colBtnKala") Then dgvEntryLines.Columns("colBtnKala").Visible = False
-                If dgvEntryLines.Columns.Contains("colBtnUnit") Then dgvEntryLines.Columns("colBtnUnit").Visible = False
-                If dgvEntryLines.Columns.Contains("colKalaCode") Then dgvEntryLines.Columns("colKalaCode").ReadOnly = True
-                If dgvEntryLines.Columns.Contains("colKalaName") Then dgvEntryLines.Columns("colKalaName").ReadOnly = True
-                If dgvEntryLines.Columns.Contains("colUnit") Then dgvEntryLines.Columns("colUnit").ReadOnly = True
+                dgvEntryLines.Columns("colReturnQty").Visible = False
 
-                pnlTotalsRow.Visible = False
-                pnlJamSanad.Visible = False
-                lblTaxEntryMode.Visible = False
-                cmbTaxEntryMode.Visible = False
-                btnSaveEntry.Text = "ثبت رسید انبار و خروج"
-                If btnSaveAndContinue IsNot Nothing Then btnSaveAndContinue.Text = "ثبت رسید انبار و ادامه"
-                lblEntryDesc.Text = "شرح رسید انبار:"
-                
-                ' در حالت رسید انبار: دکمه انتخاب فروشنده مخفی و فیلدهای سرصفحه ریداونلی شوند
-                If btnSelectVendor IsNot Nothing Then btnSelectVendor.Visible = False
-                If txtVendorInvoiceNumber IsNot Nothing Then txtVendorInvoiceNumber.ReadOnly = True
-                If txtDateSanad IsNot Nothing Then txtDateSanad.ReadOnly = True
-                If btnCalDate IsNot Nothing Then btnCalDate.Visible = False
+                ' اگر رسید انبار به صورت مستقل ثبت میشود (بدون فاکتور مرجع)، امکان انتخاب کالا و واحد فعال باشد
+                Dim isIndependentReceipt As Boolean = Not _editInvoiceId.HasValue
+
+                If dgvEntryLines.Columns.Contains("colBtnKala") Then dgvEntryLines.Columns("colBtnKala").Visible = isIndependentReceipt
+                If dgvEntryLines.Columns.Contains("colBtnUnit") Then dgvEntryLines.Columns("colBtnUnit").Visible = isIndependentReceipt
+                If dgvEntryLines.Columns.Contains("colKalaCode") Then dgvEntryLines.Columns("colKalaCode").ReadOnly = Not isIndependentReceipt
+                If dgvEntryLines.Columns.Contains("colKalaName") Then dgvEntryLines.Columns("colKalaName").ReadOnly = Not isIndependentReceipt
+                If dgvEntryLines.Columns.Contains("colUnit") Then dgvEntryLines.Columns("colUnit").ReadOnly = Not isIndependentReceipt
+
+                ' در حالت رسید انبار مستقل، دکمه انتخاب فروشنده فعال باشد
+                If btnSelectVendor IsNot Nothing Then btnSelectVendor.Visible = isIndependentReceipt
+                If txtVendorInvoiceNumber IsNot Nothing Then txtVendorInvoiceNumber.ReadOnly = Not isIndependentReceipt
+                If txtDateSanad IsNot Nothing Then txtDateSanad.ReadOnly = False
+                If btnCalDate IsNot Nothing Then btnCalDate.Visible = True
                 If txtSystemDate IsNot Nothing Then txtSystemDate.ReadOnly = True
                 If btnCalSystemDate IsNot Nothing Then btnCalSystemDate.Visible = False
-                
-                ' مخفی کردن بار وضعیت (وضعیت: فاکتور تخفیف)
-                If lblTaeazLabel IsNot Nothing Then lblTaeazLabel.Visible = False
-                If lblSanadLabel IsNot Nothing Then lblSanadLabel.Visible = False
-                If lblSanadStatus IsNot Nothing Then lblSanadStatus.Visible = False
-                
-                ' شرح رسید انبار هم ریداونلی باشد
-                If txtEntryDescription IsNot Nothing Then txtEntryDescription.ReadOnly = True
-                
+
+                ' شرح رسید انبار
+                If txtEntryDescription IsNot Nothing Then txtEntryDescription.ReadOnly = False
+
                 ' در حالت رسید انبار تب تسویه معنی ندارد
                 If tabPageTasvieh IsNot Nothing AndAlso tabMain.TabPages.Contains(tabPageTasvieh) Then
                     tabMain.TabPages.Remove(tabPageTasvieh)
@@ -207,9 +257,10 @@ Namespace Sys_Hes_Anb.Forms
             table.Columns.Add("ReceivedQuantity", GetType(Decimal))
             table.Columns.Add("ReceiptQuantity", GetType(Decimal))
             table.Columns.Add("RemainingQuantity", GetType(Decimal))
+            table.Columns.Add("ReturnQuantity", GetType(Decimal))
 
             For i = 1 To TotalPreloadedRows
-                table.Rows.Add(i, 0, "", "", 0, "", "", 0D, 0D, 0D, 0D, 0D, 0D, 0D, "", 0, 0D, 0D, 0D)
+                table.Rows.Add(i, 0, "", "", 0, "", "", 0D, 0D, 0D, 0D, 0D, 0D, 0D, "", 0, 0D, 0D, 0D, 0D)
             Next
 
             AddHandler table.ColumnChanged, AddressOf Table_ColumnChanged
@@ -314,6 +365,15 @@ Namespace Sys_Hes_Anb.Forms
             colRemainingQty.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             colRemainingQty.DefaultCellStyle.BackColor = Color.FromArgb(235, 235, 235)
 
+            Dim colReturnQty As New DataGridViewTextBoxColumn()
+            colReturnQty.Name = "colReturnQty"
+            colReturnQty.DataPropertyName = "ReturnQuantity"
+            colReturnQty.HeaderText = "تعداد /" & Environment.NewLine & "مقدار برگشتی"
+            colReturnQty.Width = 100
+            colReturnQty.DefaultCellStyle.Format = "N2"
+            colReturnQty.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colReturnQty.DefaultCellStyle.BackColor = Color.LightPink
+
             Dim colUnitPrice As New DataGridViewTextBoxColumn()
             colUnitPrice.Name = "colUnitPrice"
             colUnitPrice.DataPropertyName = "UnitPrice"
@@ -373,7 +433,7 @@ Namespace Sys_Hes_Anb.Forms
 
             dgvEntryLines.Columns.AddRange(New DataGridViewColumn() {
                 colLineNo, colBtnKala, colKalaCode, colKalaName, colBtnWarehouse, colWarehouse,
-                colBtnUnit, colUnit, colQty, colReceivedQty, colReceiptQty, colRemainingQty, colUnitPrice, colLineTotal, colDiscount, colLineTotalAfterDiscount, colVat, colTotalPrice, colDesc
+                colBtnUnit, colUnit, colQty, colReturnQty, colReceivedQty, colReceiptQty, colRemainingQty, colUnitPrice, colLineTotal, colDiscount, colLineTotalAfterDiscount, colVat, colTotalPrice, colDesc
             })
         End Sub
 
@@ -500,7 +560,7 @@ Namespace Sys_Hes_Anb.Forms
             totalsTextBoxes.Clear()
             pnlTotalsRow.Controls.Clear()
 
-            ' تکست‌باکس‌های جمع زنده برای ستون‌های خاص
+            ' تکستباکسهای جمع زنده برای ستونهای خاص
             Dim targetCols = New String() {"colLineTotal", "colDiscount", "colLineTotalAfterDiscount", "colVat", "colTotalPrice"}
             For Each colName In targetCols
                 Dim txt As New TextBox()
@@ -550,7 +610,7 @@ Namespace Sys_Hes_Anb.Forms
                 pnlSerch.ResumeLayout()
             End If
 
-            ' ۲. تراز تکست‌باکس‌های جمع زنده زیر گرید
+            ' ۲. تراز تکستباکسهای جمع زنده زیر گرید
             If pnlTotalsRow IsNot Nothing Then
                 pnlTotalsRow.SuspendLayout()
                 For Each kvp In totalsTextBoxes
@@ -616,7 +676,7 @@ Namespace Sys_Hes_Anb.Forms
                 End If
                 RecalculateProratedTax()
             Else
-                ' غیرفعال‌سازی مالیات کل فاکتور و فعال‌سازی ویرایش دستی سطر
+                ' غیرفعالسازی مالیات کل فاکتور و فعالسازی ویرایش دستی سطر
                 txtTotalVatInput.Enabled = False
                 txtTotalVatInput.Text = "0"
                 If dgvEntryLines.Columns.Contains("colVat") Then
@@ -758,7 +818,7 @@ Namespace Sys_Hes_Anb.Forms
 
                 _isLoading = True
 
-                If _defaultDocType <> "رسید ورود به انبار" Then
+                If _defaultDocType <> "رسید ورود به انبار" AndAlso _defaultDocType <> "برگشت از خرید" Then
                     _defaultDocType = Convert.ToString(hdr("InvoiceType"))
                 End If
                 
@@ -767,6 +827,11 @@ Namespace Sys_Hes_Anb.Forms
                     txtVendorInvoiceNumber.Text = "عطف به فاکتور: " & Convert.ToString(hdr("InvoiceNumber"))
                     txtDateSanad.Text = ToPersian(DateTime.Today)
                     txtEntryDescription.Text = "رسید انبار برای فاکتور خرید " & Convert.ToString(hdr("InvoiceNumber"))
+                ElseIf _defaultDocType = "برگشت از خرید" Then
+                    txtEntryReference.Text = Convert.ToString(hdr("InvoiceNumber"))
+                    txtVendorInvoiceNumber.Text = If(hdr.Table.Columns.Contains("VendorInvoiceNumber"), Convert.ToString(hdr("VendorInvoiceNumber")), "")
+                    txtDateSanad.Text = ToPersian(DateTime.Today)
+                    txtEntryDescription.Text = "برگشت از خرید برای فاکتور خرید " & Convert.ToString(hdr("InvoiceNumber"))
                 Else
                     txtEntryReference.Text = Convert.ToString(hdr("InvoiceNumber"))
                     txtVendorInvoiceNumber.Text = If(hdr.Table.Columns.Contains("VendorInvoiceNumber"), Convert.ToString(hdr("VendorInvoiceNumber")), "")
@@ -1003,6 +1068,33 @@ Namespace Sys_Hes_Anb.Forms
                 End Try
             End If
 
+            If _defaultDocType = "برگشت از خرید" Then
+                If Not _editInvoiceId.HasValue AndAlso Not _parentInvoiceId.HasValue Then
+                    MessageBox.Show("سند خرید مرجع یافت نشد.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return False
+                End If
+
+                For i As Integer = 0 To table.Rows.Count - 1
+                    Dim row = table.Rows(i)
+                    If row.RowState <> DataRowState.Deleted Then
+                        Dim returnQty = Convert.ToDecimal(If(row.IsNull("ReturnQuantity"), 0D, row("ReturnQuantity")))
+                        Dim invQty = Convert.ToDecimal(If(row.IsNull("Quantity"), 0D, row("Quantity")))
+                        Dim pName = Convert.ToString(If(row.IsNull("ProductName"), "", row("ProductName")))
+
+                        If returnQty > invQty Then
+                            Dim msg = "مجموع تعداد برگشت از خرید برای کالای «" & pName & "» بیشتر از تعداد این کالا در فاکتور خرید میباشند."
+                            MessageBox.Show(msg, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            Try
+                                dgvEntryLines.CurrentCell = dgvEntryLines.Rows(i).Cells("colReturnQty")
+                                dgvEntryLines.BeginEdit(True)
+                            Catch
+                            End Try
+                            Return False
+                        End If
+                    End If
+                Next
+            End If
+
             Dim lines As New List(Of Tuple(Of Integer, Decimal, Decimal, Decimal, Decimal))()
             For Each row As DataRow In table.Rows
                 If row.RowState <> DataRowState.Deleted Then
@@ -1022,7 +1114,7 @@ Namespace Sys_Hes_Anb.Forms
                 Return False
             End If
 
-            Dim warehouseId = 1 ' انبار پیش‌فرض
+            Dim warehouseId = 1 ' انبار پیشفرض
 
             Dim taxModeIdx = cmbTaxEntryMode.SelectedIndex
             Dim totalVatVal As Decimal = 0D
@@ -1199,7 +1291,7 @@ Namespace Sys_Hes_Anb.Forms
         Private Sub SelectUnitForLine(rowIndex As Integer)
             Dim uoms = _uomService.GetActive()
             If uoms Is Nothing OrElse uoms.Rows.Count = 0 Then
-                MessageBox.Show("هیچ واحد اندازه‌گیری تعریف نشده است.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("هیچ واحد اندازهگیری تعریف نشده است.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
@@ -1239,7 +1331,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub BtnSelectVendor_Click(sender As Object, e As EventArgs) Handles btnSelectVendor.Click
-            Using dlg As New Sys_Hes_Anb.Forms.Moshtarak.ShenavarTreePickerForm()
+            Using dlg As New Negar.Forms.Moshtarak.ShenavarTreePickerForm()
                 If dlg.ShowDialog() = DialogResult.OK Then
                     SelectedVendorID = dlg.SelectedShenavarID
                     SelectedVendorCode = dlg.SelectedAccountCode
@@ -1250,7 +1342,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         ' ─────────────────────────────────────────────
-        '  کنترل‌ها و منطق تب تسویه فاکتور خرید
+        '  کنترلها و منطق تب تسویه فاکتور خرید
         ' ─────────────────────────────────────────────
         Private dgvPayments As DataGridView
         Private lblTasviehSummary As Label
@@ -1275,7 +1367,7 @@ Namespace Sys_Hes_Anb.Forms
                                                    .BackgroundColor = Color.White, .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                                                    .RightToLeft = RightToLeft.Yes}
             
-            ' ستون‌های دکمه‌ای حذف و ویرایش پرداخت
+            ' ستونهای دکمهای حذف و ویرایش پرداخت
             If Not dgvPayments.Columns.Contains("colEditPay") Then
                 Dim colEdit As New DataGridViewButtonColumn() With {.Name = "colEditPay", .HeaderText = "ویرایش", .Text = "ویرایش", .UseColumnTextForButtonValue = True, .Width = 65}
                 dgvPayments.Columns.Add(colEdit)
@@ -1295,7 +1387,7 @@ Namespace Sys_Hes_Anb.Forms
 
         Private Sub LoadInvoicePayments()
             If Not _editInvoiceId.HasValue OrElse dgvPayments Is Nothing Then
-                lblTasviehSummary.Text = "برای ثبت و مشاهده پرداخت‌ها، ابتدا فاکتور خرید را ذخیره کنید."
+                lblTasviehSummary.Text = "برای ثبت و مشاهده پرداختها، ابتدا فاکتور خرید را ذخیره کنید."
                 btnAddPayment.Enabled = _editInvoiceId.HasValue
                 Return
             End If
@@ -1303,7 +1395,7 @@ Namespace Sys_Hes_Anb.Forms
             btnAddPayment.Enabled = True
             Dim dt = _paymentService.GetPaymentsForInvoice(_editInvoiceId.Value)
             
-            ' پر کردن گرید (نگه‌داشتن ستون‌های دکمه‌ای در ابتدای گرید)
+            ' پر کردن گرید (نگهداشتن ستونهای دکمهای در ابتدای گرید)
             Dim colEdit = dgvPayments.Columns("colEditPay")
             Dim colDel = dgvPayments.Columns("colDeletePay")
             dgvPayments.DataSource = dt
@@ -1314,7 +1406,7 @@ Namespace Sys_Hes_Anb.Forms
                 dgvPayments.Columns.Insert(1, colDel)
             End If
 
-            ' نام ستون‌های فارسی
+            ' نام ستونهای فارسی
             Dim colNames = New Dictionary(Of String, String) From {
                 {"PaymentID", "شناسه"}, {"PaymentDate", "تاریخ پرداخت"}, {"PaymentType", "نوع پرداخت"},
                 {"Amount", "مبلغ (ریال)"}, {"DueDate", "سررسید بدهی"}, {"Description", "شرح"},
@@ -1325,7 +1417,7 @@ Namespace Sys_Hes_Anb.Forms
                 If col.Name = "Amount" Then col.DefaultCellStyle.Format = "N0"
             Next
 
-            ' به‌روزرسانی خلاصه
+            ' بهروزرسانی خلاصه
             Dim grandTotal = CalculateGrandTotalSum()
             Dim totalPaid = _paymentService.GetTotalPaid(_editInvoiceId.Value)
             Dim remaining = grandTotal - totalPaid

@@ -6,9 +6,9 @@ Imports System.Data
 Imports System.Drawing
 Imports System.Collections.Generic
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class ShenavarCodingForm
         Inherits Form
 

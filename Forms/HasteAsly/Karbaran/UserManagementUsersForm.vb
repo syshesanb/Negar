@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class UserManagementUsersForm
         Inherits Form
 
@@ -46,15 +46,15 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub UserManagementUsersForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             If Me.dgvUsers IsNot Nothing Then Me.dgvUsers.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             LoadUserTypes()
             LoadUsers()
             ClearEditorForNewUser()
             If _ordinaryOnly Then
-                Text = "کاربران عادی"
+                Text = "┌ر╪د╪▒╪ذ╪▒╪د┘ ╪╣╪د╪»█î"
             Else
-                Text = "مدیریت کاربران"
+                Text = "┘à╪»█î╪▒█î╪ز ┌ر╪د╪▒╪ذ╪▒╪د┘"
             End If
         End Sub
 
@@ -62,10 +62,10 @@ Namespace Sys_Hes_Anb.Forms
             cmbUserType.DataSource = Nothing
             cmbUserType.Items.Clear()
             If Not _ordinaryOnly Then
-                cmbUserType.Items.Add(New ComboOption("ابر مدیر", "SuperAdmin"))
-                cmbUserType.Items.Add(New ComboOption("مدیر میانی", "Manager"))
+                cmbUserType.Items.Add(New ComboOption("╪د╪ذ╪▒ ┘à╪»█î╪▒", "SuperAdmin"))
+                cmbUserType.Items.Add(New ComboOption("┘à╪»█î╪▒ ┘à█î╪د┘█î", "Manager"))
             End If
-            cmbUserType.Items.Add(New ComboOption("کاربر عادی", "User"))
+            cmbUserType.Items.Add(New ComboOption("┌ر╪د╪▒╪ذ╪▒ ╪╣╪د╪»█î", "User"))
             If cmbUserType.Items.Count > 0 Then
                 cmbUserType.SelectedIndex = 0
             End If
@@ -172,7 +172,7 @@ Namespace Sys_Hes_Anb.Forms
 
         Private Sub BtnSaveUser_Click(sender As Object, e As EventArgs) Handles btnSaveUser.Click
             If String.IsNullOrWhiteSpace(txtUsername.Text) Then
-                MessageBox.Show("نام کاربری نمی‌تواند خالی باشد.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show("┘╪د┘à ┌ر╪د╪▒╪ذ╪▒█î ┘┘à█îظî╪ز┘ê╪د┘╪» ╪«╪د┘█î ╪ذ╪د╪┤╪».", "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
 
@@ -183,7 +183,7 @@ Namespace Sys_Hes_Anb.Forms
 
             If _ordinaryOnly Then
                 If Not String.Equals(GetSelectedUserType(), "User", StringComparison.OrdinalIgnoreCase) Then
-                    MessageBox.Show("در این بخش فقط امکان ایجاد کاربر عادی وجود دارد.")
+                    MessageBox.Show("╪»╪▒ ╪د█î┘ ╪ذ╪«╪┤ ┘┘é╪╖ ╪د┘à┌ر╪د┘ ╪د█î╪ش╪د╪» ┌ر╪د╪▒╪ذ╪▒ ╪╣╪د╪»█î ┘ê╪ش┘ê╪» ╪»╪د╪▒╪».")
                     Return
                 End If
             End If
@@ -204,28 +204,28 @@ Namespace Sys_Hes_Anb.Forms
                 _selectedUserId = userId
                 LoadUsers()
                 LoadUserToEditor(userId)
-                MessageBox.Show("کاربر با موفقیت ذخیره شد.")
+                MessageBox.Show("┌ر╪د╪▒╪ذ╪▒ ╪ذ╪د ┘à┘ê┘┘é█î╪ز ╪░╪«█î╪▒┘ç ╪┤╪».")
             Catch ex As InvalidOperationException
-                MessageBox.Show(ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show(ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Catch ex As Exception
-                MessageBox.Show("خطا در ذخیره کاربر: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("╪«╪╖╪د ╪»╪▒ ╪░╪«█î╪▒┘ç ┌ر╪د╪▒╪ذ╪▒: " & ex.Message, "╪«╪╖╪د", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
         Private Sub BtnDeleteUser_Click(sender As Object, e As EventArgs) Handles btnDeleteUser.Click
             If Not _selectedUserId.HasValue Then
-                MessageBox.Show("ابتدا یک کاربر را انتخاب کنید.")
+                MessageBox.Show("╪د╪ذ╪ز╪»╪د █î┌ر ┌ر╪د╪▒╪ذ╪▒ ╪▒╪د ╪د┘╪ز╪«╪د╪ذ ┌ر┘█î╪».")
                 Return
             End If
 
-            If MessageBox.Show("کاربر انتخاب شده حذف شود؟", "تایید", MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then
+            If MessageBox.Show("┌ر╪د╪▒╪ذ╪▒ ╪د┘╪ز╪«╪د╪ذ ╪┤╪»┘ç ╪ص╪░┘ ╪┤┘ê╪»╪ا", "╪ز╪د█î█î╪»", MessageBoxButtons.YesNo, MessageBoxIcon.Question) <> DialogResult.Yes Then
                 Return
             End If
 
             service.DeleteUser(_selectedUserId.Value)
             ClearEditorForNewUser()
             LoadUsers()
-            MessageBox.Show("کاربر حذف شد.")
+            MessageBox.Show("┌ر╪د╪▒╪ذ╪▒ ╪ص╪░┘ ╪┤╪».")
         End Sub
     End Class
 End Namespace

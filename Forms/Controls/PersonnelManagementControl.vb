@@ -1,8 +1,8 @@
-Imports System
+ï»¿Imports System
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms.Controls
+Namespace Negar.Forms.Controls
     Public Class PersonnelManagementControl
         Private _service As New PersonnelService()
         Private _departmentFilter As Integer = 0
@@ -17,9 +17,9 @@ Namespace Sys_Hes_Anb.Forms.Controls
             
             ' Populate ComboBox
             cmbDepartment.Items.Clear()
-            cmbDepartment.Items.Add("˜á ÓíÓÊã")
-            cmbDepartment.Items.Add("ÈÎÔ ÍÓÇÈÏÇÑí")
-            cmbDepartment.Items.Add("ÈÎÔ ÇäÈÇÑÏÇÑí æ ÝÑæÔ")
+            cmbDepartment.Items.Add("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½")
+            cmbDepartment.Items.Add("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")
+            cmbDepartment.Items.Add("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½")
             
             If _departmentFilter > 0 Then
                 ' Department specific view

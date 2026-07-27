@@ -1,8 +1,8 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
-Namespace Sys_Hes_Anb.Models
+Namespace Negar.Models
     Public Class AccountingEntry
         Public Property EntryID As Integer
         Public Property EntryDate As DateTime

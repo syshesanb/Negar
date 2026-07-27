@@ -1,19 +1,19 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.IO
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb
+Namespace Negar
     Public Module Program
         <STAThread()>
         Public Sub Main()
             Try
-                System.IO.File.WriteAllText("C:\Sys_Hes_Anb\debug_main.txt", "Main started with args: " & String.Join(", ", Environment.GetCommandLineArgs()))
+                System.IO.File.WriteAllText("C:\Negar\debug_main.txt", "Main started with args: " & String.Join(", ", Environment.GetCommandLineArgs()))
             Catch ex As Exception
                 Try
-                    System.IO.File.WriteAllText("C:\Sys_Hes_Anb\debug_main_error.txt", ex.ToString())
+                    System.IO.File.WriteAllText("C:\Negar\debug_main_error.txt", ex.ToString())
                 Catch
                 End Try
             End Try
@@ -31,7 +31,7 @@ Namespace Sys_Hes_Anb
 
             Dim dbFolder As String
             Dim devDbFolder = Path.Combine(Application.StartupPath, "..", "..", "Database")
-            If Directory.Exists(devDbFolder) AndAlso File.Exists(Path.Combine(Application.StartupPath, "..", "..", "Sys_Hes_Anb.vbproj")) Then
+            If Directory.Exists(devDbFolder) AndAlso File.Exists(Path.Combine(Application.StartupPath, "..", "..", "Negar.vbproj")) Then
                 dbFolder = Path.GetFullPath(devDbFolder)
             Else
                 dbFolder = Path.Combine(Application.StartupPath, "Database")
@@ -47,7 +47,7 @@ Namespace Sys_Hes_Anb
                 Business.MigrationService.ApplyPendingMigrations()
             Catch ex As Exception
                 MessageBox.Show("Database initialization warning:" & Environment.NewLine & ex.Message,
-                                "Sys_Hes_Anb",
+                                "Negar",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Warning)
             End Try

@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -6,7 +6,7 @@ Imports System.Drawing
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic.CompilerServices
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     <DesignerGenerated()>
     Partial Class ActivityLogForm
         Inherits Form

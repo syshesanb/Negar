@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
 Imports System.Data.SQLite
 
-Namespace Sys_Hes_Anb.Data
+Namespace Negar.Data
     Public Module Sql
         Public Function ExecuteTable(sql As String, ParamArray values() As Object) As DataTable
             Dim table As New DataTable()

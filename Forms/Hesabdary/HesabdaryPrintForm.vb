@@ -1,4 +1,4 @@
-Imports System
+﻿Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -6,10 +6,10 @@ Imports System.Drawing.Drawing2D
 Imports System.Drawing.Printing
 Imports System.Linq
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class HesabdaryPrintForm
         Inherits Form
 
@@ -113,7 +113,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub HesabdaryPrintForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             Using progress As New ProgressForm()
                 progress.ShowAndCenter(Me)
                 progress.UpdateProgress(10, "بارگذاری مشخصات چاپگرها...")
@@ -166,7 +166,7 @@ Namespace Sys_Hes_Anb.Forms
             If Not SessionContext.CurrentCompanyID.HasValue Then Return
             Try
                 Dim companyId = SessionContext.CurrentCompanyID.Value
-                Dim dt = Sys_Hes_Anb.Data.Sql.ExecuteTable("SELECT LogoImage, Signatory1Title, Signatory1Name, Signatory2Title, Signatory2Name, Signatory3Title, Signatory3Name, LogoPosition FROM Companies WHERE CompanyID = ?", companyId)
+                Dim dt = Negar.Data.Sql.ExecuteTable("SELECT LogoImage, Signatory1Title, Signatory1Name, Signatory2Title, Signatory2Name, Signatory3Title, Signatory3Name, LogoPosition FROM Companies WHERE CompanyID = ?", companyId)
                 If dt.Rows.Count > 0 Then
                     Dim row = dt.Rows(0)
 

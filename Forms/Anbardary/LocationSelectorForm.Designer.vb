@@ -1,9 +1,9 @@
-Imports System.ComponentModel
+﻿Imports System.ComponentModel
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic.CompilerServices
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     <DesignerGenerated()>
     Partial Class LocationSelectorForm
         Inherits System.Windows.Forms.Form

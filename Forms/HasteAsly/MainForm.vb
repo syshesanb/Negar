@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -8,11 +8,11 @@ Imports System.Drawing
 Imports System.Globalization
 Imports System.IO
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
-Imports Sys_Hes_Anb.Models
+Imports Negar.Business
+Imports Negar.Data
+Imports Negar.Models
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class MainForm
         Inherits Form
 
@@ -73,7 +73,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
             UpdateStatusBar()
             clockTimer.Start()
@@ -620,7 +620,7 @@ Namespace Sys_Hes_Anb.Forms
                     Using sfd As New SaveFileDialog()
                         sfd.Title = "مسیر ذخیره خروجی دیتابیس بدون رمز جهت بازرسی"
                         sfd.Filter = "فایل دیتابیس اسکیوال‌لایت (*.db)|*.db"
-                        sfd.FileName = "Sys_Hes_Anb_unlocked.db"
+                        sfd.FileName = "Negar_unlocked.db"
                         If sfd.ShowDialog(Me) = DialogResult.OK Then
                             Try
                                 AesDbService.ExportDecryptedDatabase(ofd.FileName, sfd.FileName)

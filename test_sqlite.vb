@@ -1,13 +1,13 @@
-Imports System
+﻿Imports System
 Imports System.Data
 Imports System.Data.SQLite
 Imports System.Collections.Generic
 
 Module TestSQLiteParams
     Sub Main()
-        Dim dbPath As String = "c:\Sys_Hes_Anb\bin\Debug\Database.sqlite"
+        Dim dbPath As String = "c:\Negar\bin\Debug\Database.sqlite"
         If Not System.IO.File.Exists(dbPath) Then
-            dbPath = "c:\Sys_Hes_Anb\Hesabdary.db"
+            dbPath = "c:\Negar\Hesabdary.db"
         End If
 
         Dim connStr = "Data Source=" & dbPath & ";Version=3;"

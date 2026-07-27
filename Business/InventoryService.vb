@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class InventoryService
         Public Function GetInventory(Optional warehouseId As Integer? = Nothing) As DataTable
             Dim query As String =
@@ -19,6 +19,67 @@ Namespace Sys_Hes_Anb.Business
             End If
 
             Return Sql.ExecuteTable(query & " ORDER BY p.ProductName")
+        End Function
+
+        Public Function GetKardex(productId As Integer, Optional warehouseId As Integer? = Nothing,
+                                  Optional fromDate As String = Nothing, Optional toDate As String = Nothing) As DataTable
+            Try
+                Dim conditions As New System.Collections.Generic.List(Of String)()
+                Dim parms As New System.Collections.Generic.List(Of Object)()
+
+                conditions.Add("il.ProductID = ?")
+                parms.Add(productId)
+
+                If warehouseId.HasValue Then
+                    conditions.Add("il.WarehouseID = ?")
+                    parms.Add(warehouseId.Value)
+                End If
+                If Not String.IsNullOrEmpty(fromDate) Then
+                    conditions.Add("DATE(il.TransactionDate) >= ?")
+                    parms.Add(fromDate)
+                End If
+                If Not String.IsNullOrEmpty(toDate) Then
+                    conditions.Add("DATE(il.TransactionDate) <= ?")
+                    parms.Add(toDate)
+                End If
+
+                Dim whereClause = If(conditions.Count > 0, " WHERE " & String.Join(" AND ", conditions.ToArray()), "")
+                Dim query =
+                    "SELECT il.LedgerID, il.TransactionDate, " &
+                    "COALESCE(w.WarehouseName, '---') AS WarehouseName, " &
+                    "COALESCE(il.TransactionType, '') AS TransactionType, " &
+                    "CASE WHEN il.Quantity > 0 THEN il.Quantity ELSE 0 END AS QuantityIn, " &
+                    "CASE WHEN il.Quantity < 0 THEN ABS(il.Quantity) ELSE 0 END AS QuantityOut, " &
+                    "COALESCE(il.Description, '') AS Description " &
+                    "FROM InventoryLedger il " &
+                    "LEFT JOIN Warehouses w ON w.WarehouseID = il.WarehouseID" &
+                    whereClause &
+                    " ORDER BY il.TransactionDate, il.LedgerID"
+
+                Dim dt = Sql.ExecuteTable(query, parms.ToArray())
+
+                ' محاسبه موجودی تجمعی
+                If Not dt.Columns.Contains("Balance") Then dt.Columns.Add("Balance", GetType(Decimal))
+                Dim balance As Decimal = 0
+                For Each row As DataRow In dt.Rows
+                    Dim qIn = Convert.ToDecimal(row("QuantityIn"))
+                    Dim qOut = Convert.ToDecimal(row("QuantityOut"))
+                    balance += qIn - qOut
+                    row("Balance") = balance
+                Next
+                Return dt
+            Catch ex As Exception
+                Dim dt As New DataTable()
+                dt.Columns.Add("LedgerID", GetType(Integer))
+                dt.Columns.Add("TransactionDate", GetType(String))
+                dt.Columns.Add("WarehouseName", GetType(String))
+                dt.Columns.Add("TransactionType", GetType(String))
+                dt.Columns.Add("QuantityIn", GetType(Decimal))
+                dt.Columns.Add("QuantityOut", GetType(Decimal))
+                dt.Columns.Add("Balance", GetType(Decimal))
+                dt.Columns.Add("Description", GetType(String))
+                Return dt
+            End Try
         End Function
 
         Public Sub UpsertInventory(productId As Integer, warehouseId As Integer, quantity As Decimal, averageCost As Decimal)

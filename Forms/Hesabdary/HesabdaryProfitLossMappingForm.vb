@@ -3,12 +3,12 @@ Imports System.Data
 Imports System.Data.SQLite
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
-Imports Sys_Hes_Anb.Models
+Imports Negar.Business
+Imports Negar.Data
+Imports Negar.Models
 Imports System.Collections.Generic
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class HesabdaryProfitLossMappingForm
         Inherits Form
 

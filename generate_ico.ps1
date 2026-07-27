@@ -1,4 +1,4 @@
-Add-Type -AssemblyName System.Drawing
+﻿Add-Type -AssemblyName System.Drawing
 $bmp = New-Object System.Drawing.Bitmap(64, 64)
 $g = [System.Drawing.Graphics]::FromImage($bmp)
 $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
@@ -18,7 +18,7 @@ $g.FillRectangle($b2, 14, 50, 23, 6)
 
 $h = $bmp.GetHicon()
 $ico = [System.Drawing.Icon]::FromHandle($h)
-$fs = New-Object System.IO.FileStream('C:\Sys_Hes_Anb\app.ico', [System.IO.FileMode]::Create)
+$fs = New-Object System.IO.FileStream('C:\Negar\app.ico', [System.IO.FileMode]::Create)
 $ico.Save($fs)
 $fs.Close()
 $bmp.Dispose()

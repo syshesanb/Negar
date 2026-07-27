@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,9 +6,9 @@ Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
 Imports System.Collections.Generic
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class AnbardaryNamKala1Form
         Inherits Form
 

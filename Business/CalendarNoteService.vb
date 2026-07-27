@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Collections.Generic
 Imports System.Data
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class CalendarNoteService
         Public Function GetNote(userId As Integer, persianDate As String) As DataRow
             Dim dt = Sql.ExecuteTable("SELECT CalendarNoteID, UserID, PersianDate, NoteText, ReminderTime, IsReminder FROM CalendarNotes WHERE UserID = ? AND PersianDate = ?", userId, persianDate)

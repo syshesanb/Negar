@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class CompanyFiscalYearForm
         Inherits Form
 
@@ -102,7 +102,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub CompanyFiscalYearForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             If Me.dgvCompanies IsNot Nothing Then Me.dgvCompanies.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvFiscalYears IsNot Nothing Then Me.dgvFiscalYears.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvSelectCompanies IsNot Nothing Then Me.dgvSelectCompanies.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)

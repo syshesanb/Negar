@@ -1,7 +1,7 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class AccountingEntryLine
         Public Property AccountID As Integer
         Public Property DebitAmount As Decimal

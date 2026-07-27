@@ -1,7 +1,7 @@
-$dllPath = "c:\Sys_Hes_Anb\bin\Debug\System.Data.SQLite.dll"
-$dbPath = "c:\Sys_Hes_Anb\bin\Debug\Sys_Hes_Anb.db"
+﻿$dllPath = "c:\Negar\bin\Debug\System.Data.SQLite.dll"
+$dbPath = "c:\Negar\bin\Debug\Negar.db"
 if (-not (Test-Path $dbPath)) {
-    $dbPath = "c:\Sys_Hes_Anb\Database\Sys_Hes_Anb.db"
+    $dbPath = "c:\Negar\Database\Negar.db"
 }
 
 if (Test-Path $dllPath) {

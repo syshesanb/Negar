@@ -1,14 +1,14 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Diagnostics
 Imports System.IO
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class UpdateInstallerForm
         Private _updateSourceDir As String
 
@@ -22,11 +22,11 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub UpdateInstallerForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
-            ' مسیر پیشنهاد شده: اگر برنامه نصب شده در C:\Sys_Hes_Anb وجود داشت
-            If Directory.Exists("C:\Sys_Hes_Anb") Then
-                txtTargetDir.Text = "C:\Sys_Hes_Anb"
+            ' مسیر پیشنهاد شده: اگر برنامه نصب شده در C:\Negar وجود داشت
+            If Directory.Exists("C:\Negar") Then
+                txtTargetDir.Text = "C:\Negar"
             Else
                 txtTargetDir.Text = Application.StartupPath
             End If
@@ -54,7 +54,7 @@ Namespace Sys_Hes_Anb.Forms
             End If
 
             If Not Directory.Exists(_updateSourceDir) Then
-                If File.Exists(Path.Combine(Application.StartupPath, "Sys_Hes_Anb.exe")) Then
+                If File.Exists(Path.Combine(Application.StartupPath, "Negar.exe")) Then
                     _updateSourceDir = Application.StartupPath
                 Else
                     MessageBox.Show("فایلهای منبع به‌روزرسانی یافت نشدند.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -74,20 +74,20 @@ Namespace Sys_Hes_Anb.Forms
                 Application.DoEvents()
 
                 Dim clientDbFolder = Path.Combine(targetDir, "Database")
-                Dim clientDatPath = Path.Combine(clientDbFolder, "Sys_Hes_Anb.dat")
+                Dim clientDatPath = Path.Combine(clientDbFolder, "Negar.dat")
                 If File.Exists(clientDatPath) Then
                     Dim backupDir = Path.Combine(clientDbFolder, "Backups")
                     If Not Directory.Exists(backupDir) Then
                         Directory.CreateDirectory(backupDir)
                     End If
-                    Dim backupFileName = "Sys_Hes_Anb_backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & ".dat"
+                    Dim backupFileName = "Negar_backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & ".dat"
                     File.Copy(clientDatPath, Path.Combine(backupDir, backupFileName), True)
                 End If
 
                 ' خواندن تنظیمات درباره... و ارتباط با ما از دیتابیس توسعه‌دهنده (دیتابیس رمزگذاری‌شده .dat)
                 Dim devAboutText As String = ""
                 Dim devContactText As String = ""
-                Dim devDatPath = Path.Combine(_updateSourceDir, "Database", "Sys_Hes_Anb.dat")
+                Dim devDatPath = Path.Combine(_updateSourceDir, "Database", "Negar.dat")
 
                 If File.Exists(devDatPath) Then
                     Dim tempDevDb = Path.Combine(Path.GetTempPath(), "temp_dev_" & Guid.NewGuid().ToString() & ".db")
@@ -131,7 +131,7 @@ Namespace Sys_Hes_Anb.Forms
 
                 Dim res = MessageBox.Show("نرم‌افزار با موفقیت به نسخه جدید ارتقا یافت و اطلاعات قبلی شما ۱۰۰٪ محفوظ ماند." & Environment.NewLine & Environment.NewLine & "آیا می‌خواهید نرم‌افزار هم‌اکنون اجرا شود؟", "موفقیت در به‌روزرسانی", MessageBoxButtons.YesNo, MessageBoxIcon.Information)
                 If res = DialogResult.Yes Then
-                    Dim exePath = Path.Combine(targetDir, "Sys_Hes_Anb.exe")
+                    Dim exePath = Path.Combine(targetDir, "Negar.exe")
                     If File.Exists(exePath) Then
                         Process.Start(exePath)
                     End If
@@ -224,8 +224,8 @@ Namespace Sys_Hes_Anb.Forms
                 If String.Equals(fileInDir.Extension, ".ldb", StringComparison.OrdinalIgnoreCase) Then Continue For
                 If String.Equals(fileInDir.Extension, ".log", StringComparison.OrdinalIgnoreCase) Then Continue For
                 If String.Equals(fileInDir.Extension, ".tmp", StringComparison.OrdinalIgnoreCase) Then Continue For
-                If String.Equals(fileInDir.Name, "Update_Sys_Hes_Anb.exe", StringComparison.OrdinalIgnoreCase) Then Continue For
-                If String.Equals(fileInDir.Name, "Setup_Sys_Hes_Anb.exe", StringComparison.OrdinalIgnoreCase) Then Continue For
+                If String.Equals(fileInDir.Name, "Update_Negar.exe", StringComparison.OrdinalIgnoreCase) Then Continue For
+                If String.Equals(fileInDir.Name, "Setup_Negar.exe", StringComparison.OrdinalIgnoreCase) Then Continue For
 
                 Dim temppath As String = Path.Combine(targetDir, fileInDir.Name)
                 fileInDir.CopyTo(temppath, True)

@@ -1,10 +1,10 @@
-Imports System
+﻿Imports System
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Public Class HesabdaryReport1Form
         Inherits Form
 

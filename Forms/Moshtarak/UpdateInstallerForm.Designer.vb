@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -7,7 +7,7 @@ Imports System.Drawing
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic.CompilerServices
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     <DesignerGenerated()>
     Partial Class UpdateInstallerForm
         Inherits Form
@@ -70,7 +70,7 @@ Namespace Sys_Hes_Anb.Forms
             ' txtTargetDir
             Me.txtTargetDir.Location = New Point(110, 107)
             Me.txtTargetDir.Size = New Size(300, 22)
-            Me.txtTargetDir.Text = "C:\Sys_Hes_Anb"
+            Me.txtTargetDir.Text = "C:\Negar"
 
             ' btnBrowse
             Me.btnBrowse.Location = New Point(20, 105)

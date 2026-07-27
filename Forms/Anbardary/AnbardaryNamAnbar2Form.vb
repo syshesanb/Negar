@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -10,9 +10,9 @@ Imports System.Windows.Forms
 Imports System.Collections.Generic
 Imports System.Linq
 Imports Microsoft.VisualBasic
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class AnbardaryNamAnbar2Form
         Inherits Form
 

@@ -1,4 +1,4 @@
-# Sys_Hes_Anb
+﻿# Negar
 
 یک پروژه دسکتاپی یکپارچه WinForms با VB.NET و Microsoft Access برای مدیریت کاربران، کالا، انبار، خرید و فروش، حسابداری و تنظیمات.
 
@@ -24,10 +24,10 @@
 
 ## راه‌اندازی
 
-1. در Access یک فایل با نام `Sys_Hes_Anb.accdb` بسازید.
+1. در Access یک فایل با نام `Negar.accdb` بسازید.
 2. اسکریپت `Database/CreateSchema.sql` را برای ساخت جدول‌ها اجرا کنید.
 3. رشته اتصال در `App.config` را مطابق مسیر دیتابیس تنظیم کنید.
-4. پروژه `Sys_Hes_Anb.sln` را در Visual Studio 2015 باز کنید.
+4. پروژه `Negar.sln` را در Visual Studio 2015 باز کنید.
 
 ## کاربر پیش‌فرض
 

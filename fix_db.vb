@@ -1,9 +1,9 @@
-Imports System
+﻿Imports System
 Imports System.Data.SQLite
 
 Module FixDB
     Sub Main()
-        Dim dbPath = "C:\Sys_Hes_Anb\bin\Debug\Data\Hesabdary.db"
+        Dim dbPath = "C:\Negar\bin\Debug\Data\Hesabdary.db"
         Dim connStr = "Data Source=" & dbPath & ";Version=3;"
         Using conn As New SQLiteConnection(connStr)
             conn.Open()

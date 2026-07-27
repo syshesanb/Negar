@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -8,7 +8,7 @@ Imports System.Security.Cryptography
 Imports System.Text
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Data
+Namespace Negar.Data
     Public Module AesDbService
         Private ReadOnly AesKey As Byte() = Encoding.UTF8.GetBytes("SysHesAnb_Aes256_MasterKey_2026!") ' 32 bytes
         Private ReadOnly AesIV As Byte() = Encoding.UTF8.GetBytes("SysHesAnb_IV2026")               ' 16 bytes
@@ -25,11 +25,11 @@ Namespace Sys_Hes_Anb.Data
         End Function
 
         Public Function GetEncryptedFilePath() As String
-            Return Path.Combine(GetDataDirectory(), "Sys_Hes_Anb.dat")
+            Return Path.Combine(GetDataDirectory(), "Negar.dat")
         End Function
 
         Public Function GetRuntimeDbFilePath() As String
-            Return Path.Combine(GetDataDirectory(), "Sys_Hes_Anb.db")
+            Return Path.Combine(GetDataDirectory(), "Negar.db")
         End Function
 
         Public Sub EncryptFile(inputFile As String, outputFile As String)

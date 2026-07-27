@@ -1,11 +1,11 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Drawing
 Imports System.Windows.Forms
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class InfoWindowForm
         Public Sub New(titleText As String, infoText As String, parentForm As Form)
             InitializeComponent()
@@ -21,7 +21,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub InfoWindowForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             If pnlBottom IsNot Nothing AndAlso btnClose IsNot Nothing Then
                 btnClose.Location = New Point((pnlBottom.Width - btnClose.Width) \ 2, (pnlBottom.Height - btnClose.Height) \ 2)
             End If

@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.ComponentModel
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Business
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Partial Class AnbardaryMainForm
         Inherits AppBaseForm
 
@@ -39,7 +39,7 @@ Namespace Sys_Hes_Anb.Forms
                 progress.UpdateProgress(50, "بارگذاری تعریف انبارها...")
 
                 If tabs.TabPages.Contains(tabWarehouses) Then HostForm(tabWarehouses, New AnbardaryNamAnbar1Form())
-                If tabs.TabPages.Contains(tabVendorsCustomers) Then HostControl(tabVendorsCustomers, New Sys_Hes_Anb.Forms.Controls.VendorsCustomersControl())
+                If tabs.TabPages.Contains(tabVendorsCustomers) Then HostControl(tabVendorsCustomers, New Negar.Forms.Controls.VendorsCustomersControl())
                 progress.UpdateProgress(70, "بارگذاری فاکتورهای خرید...")
 
                 If tabs.TabPages.Contains(tabPurchase) Then HostForm(tabPurchase, New AnbardaryKharid1Form())
@@ -48,7 +48,7 @@ Namespace Sys_Hes_Anb.Forms
                 If tabs.TabPages.Contains(tabSales) Then HostForm(tabSales, New AnbardaryForoosh1Form())
                 progress.UpdateProgress(92, "بارگذاری انتقال کالا بین انبارها...")
 
-                If tabs.TabPages.Contains(tabTransfer) Then HostForm(tabTransfer, New Form())
+                If tabs.TabPages.Contains(tabTransfer) Then HostForm(tabTransfer, New AnbardaryTransfer1Form())
                 progress.UpdateProgress(95, "بارگذاری گزارش موجودی انبار...")
 
                 If tabs.TabPages.Contains(tabInventory) Then HostForm(tabInventory, New MojodyAnbarFormRep())

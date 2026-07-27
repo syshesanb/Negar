@@ -1,9 +1,9 @@
-Imports System
+﻿Imports System
 Imports System.Data
 Imports System.Data.SQLite
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Forms
-Imports Sys_Hes_Anb.Business
+Imports Negar.Forms
+Imports Negar.Business
 
 Module TestForm
     Sub Main()
@@ -36,7 +36,7 @@ Module TestForm
             End If
             
             ' Check DB
-            Dim dbPath As String = "c:\Sys_Hes_Anb\Database\Sys_Hes_Anb.db"
+            Dim dbPath As String = "c:\Negar\Database\Negar.db"
             Dim connStr = "Data Source=" & dbPath & ";Version=3;"
             Using conn As New SQLiteConnection(connStr)
                 conn.Open()

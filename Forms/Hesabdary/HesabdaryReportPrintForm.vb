@@ -1,14 +1,14 @@
-Imports System
+﻿Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
 Imports System.Drawing.Drawing2D
 Imports System.Drawing.Printing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class HesabdaryReportPrintForm
         Inherits Form
 
@@ -91,7 +91,7 @@ End Class
 
         Private Sub HesabdaryReportPrintForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
             SetupRangeFilterUI()
-            Sys_Hes_Anb.Business.ThemeHelper.ApplyFormTheme(Me)
+            Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             Using progress As New ProgressForm()
                 progress.ShowAndCenter(Me)
                 progress.UpdateProgress(10, "بارگذاری مشخصات چاپگرها...")

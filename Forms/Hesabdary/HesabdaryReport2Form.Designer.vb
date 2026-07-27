@@ -1,4 +1,4 @@
-﻿Namespace Sys_Hes_Anb.Forms
+﻿Namespace Negar.Forms
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
     Partial Class HesabdaryReport2Form
         Inherits System.Windows.Forms.Form

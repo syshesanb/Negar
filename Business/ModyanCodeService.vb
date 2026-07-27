@@ -1,12 +1,12 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
 Imports System.Data
 Imports System.Collections.Generic
-Imports Sys_Hes_Anb.Data
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class ModyanCodeService
         Public Function GetModyanCodes() As DataTable
             Return Sql.ExecuteTable("SELECT CodeID, ModyanCode, Description, CategoryName, TaxRate, IsActive FROM ModyanCodes ORDER BY CategoryName, ModyanCode")

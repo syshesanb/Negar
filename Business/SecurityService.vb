@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,10 +6,10 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.Net
 Imports System.Net.Sockets
-Imports Sys_Hes_Anb.Data
-Imports Sys_Hes_Anb.Models
+Imports Negar.Data
+Imports Negar.Models
 
-Namespace Sys_Hes_Anb.Business
+Namespace Negar.Business
     Public Class SecurityService
         Public Function Authenticate(username As String, password As String) As UserAccount
             Dim hashed = PasswordHasher.Hash(password)

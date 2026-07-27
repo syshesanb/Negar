@@ -1,4 +1,4 @@
-Option Strict Off
+﻿Option Strict Off
 Option Explicit On
 
 Imports System
@@ -6,12 +6,12 @@ Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
-Imports Sys_Hes_Anb.Business
-Imports Sys_Hes_Anb.Business.PersianDateHelper
-Imports Sys_Hes_Anb.Forms.Moshtarak
-Imports Sys_Hes_Anb.Data
+Imports Negar.Business
+Imports Negar.Business.PersianDateHelper
+Imports Negar.Forms.Moshtarak
+Imports Negar.Data
 
-Namespace Sys_Hes_Anb.Forms
+Namespace Negar.Forms
     Public Class AnbardaryForoosh2Form
         Inherits Form
 
@@ -42,6 +42,18 @@ Namespace Sys_Hes_Anb.Forms
         Public Sub New(invoiceId As Integer)
             InitializeComponent()
             _editInvoiceId = invoiceId
+        End Sub
+
+        Public Sub New(invoiceId As Integer, docType As String)
+            InitializeComponent()
+            _editInvoiceId = invoiceId
+            _defaultDocType = docType
+        End Sub
+
+        Public Sub New(invoiceId As Integer, docType As String, isFromReceipt As Boolean)
+            InitializeComponent()
+            _editInvoiceId = invoiceId
+            _defaultDocType = docType
         End Sub
 
         Private Sub AnbardaryForoosh2Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -467,8 +479,8 @@ Namespace Sys_Hes_Anb.Forms
                     txtDateSanad.Text = ToPersian(Convert.ToDateTime(hdr("InvoiceDate")))
                 End If
 
-                lblSarfaslValue.Text = Convert.ToString(hdr("CustomerName"))
-                txtEntryDescription.Text = Convert.ToString(hdr("Description"))
+                lblSarfaslValue.Text = If(hdr.Table.Columns.Contains("CustomerName"), Convert.ToString(hdr("CustomerName")), "")
+                txtEntryDescription.Text = If(hdr.Table.Columns.Contains("Description"), Convert.ToString(hdr("Description")), "")
 
                 Dim dtDetails = _invoiceService.GetSalesInvoiceDetails(invoiceId)
                 
@@ -589,14 +601,14 @@ Namespace Sys_Hes_Anb.Forms
                         Dim warehouseId = Convert.ToInt32(If(row.IsNull("WarehouseID"), 1, row("WarehouseID")))
                         If warehouseId <= 0 Then warehouseId = 1
                         
-                        Dim availableQtyVal = Sys_Hes_Anb.Data.Sql.ExecuteScalar("SELECT Quantity FROM Inventory WHERE ProductID = ? AND WarehouseID = ?", pid, warehouseId)
+                        Dim availableQtyVal = Negar.Data.Sql.ExecuteScalar("SELECT Quantity FROM Inventory WHERE ProductID = ? AND WarehouseID = ?", pid, warehouseId)
                         Dim availableQty As Decimal = 0D
                         If availableQtyVal IsNot Nothing AndAlso Not Convert.IsDBNull(availableQtyVal) Then
                             availableQty = Convert.ToDecimal(availableQtyVal)
                         End If
 
                         If _editInvoiceId.HasValue Then
-                            Dim oldQtyVal = Sys_Hes_Anb.Data.Sql.ExecuteScalar("SELECT Quantity FROM SalesInvoiceDetails WHERE InvoiceID = ? AND ProductID = ?", _editInvoiceId.Value, pid)
+                            Dim oldQtyVal = Negar.Data.Sql.ExecuteScalar("SELECT Quantity FROM SalesInvoiceDetails WHERE InvoiceID = ? AND ProductID = ?", _editInvoiceId.Value, pid)
                             If oldQtyVal IsNot Nothing AndAlso Not Convert.IsDBNull(oldQtyVal) Then
                                 availableQty += Convert.ToDecimal(oldQtyVal)
                             End If
@@ -788,7 +800,7 @@ Namespace Sys_Hes_Anb.Forms
         Private Sub SelectUnitForLine(rowIndex As Integer)
             Dim uoms = _uomService.GetActive()
             If uoms Is Nothing OrElse uoms.Rows.Count = 0 Then
-                MessageBox.Show("هیچ واحد اندازه‌گیری تعریف نشده است.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("هیچ واحد اندازهگیری تعریف نشده است.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
@@ -828,7 +840,7 @@ Namespace Sys_Hes_Anb.Forms
         End Sub
 
         Private Sub BtnSelectVendor_Click(sender As Object, e As EventArgs) Handles btnSelectVendor.Click
-            Using dlg As New Sys_Hes_Anb.Forms.Moshtarak.ShenavarTreePickerForm()
+            Using dlg As New Negar.Forms.Moshtarak.ShenavarTreePickerForm()
                 If dlg.ShowDialog() = DialogResult.OK Then
                     SelectedCustomerID = dlg.SelectedShenavarID
                     SelectedCustomerCode = dlg.SelectedAccountCode

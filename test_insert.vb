@@ -1,11 +1,11 @@
-Imports System
+﻿Imports System
 Imports System.Data
 Imports System.Data.SQLite
 Imports System.Collections.Generic
 
 Module TestInsert
     Sub Main()
-        Dim dbPath As String = "c:\Sys_Hes_Anb\Database\Sys_Hes_Anb.db"
+        Dim dbPath As String = "c:\Negar\Database\Negar.db"
         Dim connStr = "Data Source=" & dbPath & ";Version=3;"
         
         Try
