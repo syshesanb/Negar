@@ -245,7 +245,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.colQuantity.Name = "colQuantity"
 
             ' colUnitPrice
-            Me.colUnitPrice.HeaderText = "قیمت خرید (ریال)"
+            Me.colUnitPrice.HeaderText = "قیمت خرید واحد (ریال)"
             Me.colUnitPrice.Name = "colUnitPrice"
 
             ' colTotalPrice
@@ -267,7 +267,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.lblTotalText.Font = New Font("B Yekan", 11.0!, FontStyle.Bold)
             Me.lblTotalText.ForeColor = Color.White
             Me.lblTotalText.Location = New Point(830, 22)
-            Me.lblTotalText.Text = "جمع کل خرید:"
+            Me.lblTotalText.Text = "جمع کل فاکتور:"
 
             ' lblTotalAmount
             Me.lblTotalAmount.AutoSize = True

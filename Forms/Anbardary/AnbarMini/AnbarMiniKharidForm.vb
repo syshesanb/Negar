@@ -399,6 +399,61 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             End Using
         End Sub
 
+        Private isRecalculating As Boolean = False
+
+        Private Sub RecalculateRowAndGrandTotal(row As DataGridViewRow)
+            If isRecalculating OrElse row Is Nothing OrElse row.IsNewRow Then Return
+            isRecalculating = True
+            Try
+                Dim qty As Decimal = 0D
+                Dim price As Decimal = 0D
+                Dim qtyStr = Convert.ToString(row.Cells("colQuantity").Value)
+                Dim priceStr = Convert.ToString(row.Cells("colUnitPrice").Value)
+
+                If Not String.IsNullOrWhiteSpace(qtyStr) Then
+                    Decimal.TryParse(qtyStr.Replace(",", ""), qty)
+                End If
+                If Not String.IsNullOrWhiteSpace(priceStr) Then
+                    Decimal.TryParse(priceStr.Replace(",", ""), price)
+                End If
+
+                Dim rowTotal = qty * price
+                row.Cells("colTotalPrice").Value = rowTotal.ToString("N0")
+
+                RecalculateTotal()
+            Finally
+                isRecalculating = False
+            End Try
+        End Sub
+
+        Private Sub dgvItems_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvItems.CellValueChanged
+            If e.RowIndex >= 0 AndAlso e.RowIndex < dgvItems.Rows.Count Then
+                Dim colName = dgvItems.Columns(e.ColumnIndex).Name
+                If colName = "colQuantity" OrElse colName = "colUnitPrice" Then
+                    RecalculateRowAndGrandTotal(dgvItems.Rows(e.RowIndex))
+                End If
+            End If
+        End Sub
+
+        Private Sub dgvItems_CurrentCellDirtyStateChanged(sender As Object, e As EventArgs) Handles dgvItems.CurrentCellDirtyStateChanged
+            If dgvItems.IsCurrentCellDirty Then
+                dgvItems.CommitEdit(DataGridViewDataErrorContexts.Commit)
+            End If
+        End Sub
+
+        Private Sub dgvItems_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvItems.CellEndEdit
+            If e.RowIndex >= 0 AndAlso e.RowIndex < dgvItems.Rows.Count Then
+                Dim row = dgvItems.Rows(e.RowIndex)
+                Dim colName = dgvItems.Columns(e.ColumnIndex).Name
+                If colName = "colUnitPrice" Then
+                    Dim price As Decimal = 0D
+                    If Decimal.TryParse(Convert.ToString(row.Cells("colUnitPrice").Value).Replace(",", ""), price) Then
+                        row.Cells("colUnitPrice").Value = price.ToString("N0")
+                    End If
+                End If
+            End If
+        End Sub
+
         Private Sub RecalculateTotal()
             Dim grandTotal As Decimal = 0D
             For Each row As DataGridViewRow In dgvItems.Rows
