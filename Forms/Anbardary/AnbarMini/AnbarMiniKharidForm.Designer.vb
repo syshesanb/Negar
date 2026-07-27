@@ -257,6 +257,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.pnlFooter.Controls.Add(Me.lblTotalText)
             Me.pnlFooter.Controls.Add(Me.lblTotalAmount)
             Me.pnlFooter.Controls.Add(Me.btnSave)
+            Me.pnlFooter.Controls.Add(Me.btnCancel)
             Me.pnlFooter.Dock = DockStyle.Bottom
             Me.pnlFooter.Location = New Point(0, 530)
             Me.pnlFooter.Name = "pnlFooter"
@@ -286,6 +287,17 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnSave.Size = New Size(160, 45)
             Me.btnSave.Text = "ثبت فاکتور خرید"
             Me.btnSave.UseVisualStyleBackColor = False
+
+            ' btnCancel
+            Me.btnCancel.BackColor = Color.FromArgb(108, 122, 137)
+            Me.btnCancel.FlatStyle = FlatStyle.Flat
+            Me.btnCancel.Font = New Font("B Yekan", 11.0!, FontStyle.Bold)
+            Me.btnCancel.ForeColor = Color.White
+            Me.btnCancel.Location = New Point(200, 12)
+            Me.btnCancel.Name = "btnCancel"
+            Me.btnCancel.Size = New Size(140, 45)
+            Me.btnCancel.Text = "بازگشت به لیست"
+            Me.btnCancel.UseVisualStyleBackColor = False
 
             ' Form Setup
             Me.AutoScaleDimensions = New SizeF(8.0!, 19.0!)
@@ -348,5 +360,6 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents lblTotalText As Label
         Friend WithEvents lblTotalAmount As Label
         Friend WithEvents btnSave As Button
+        Friend WithEvents btnCancel As Button
     End Class
 End Namespace

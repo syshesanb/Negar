@@ -13,6 +13,9 @@ Imports Negar.Data
 
 Namespace Negar.Forms.Anbardary.AnbarMini
     Public Class AnbarMiniKharidForm
+        Public Event InvoiceSaved()
+        Public Event InvoiceCancelled()
+
         Private ReadOnly invoiceService As New InvoiceService()
         Private ReadOnly defaultWarehouseId As Integer = 1
 
@@ -23,9 +26,19 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Private isFormattingDate As Boolean = False
 
         Private Sub AnbarMiniKharidForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            ResetForm()
+        End Sub
+
+        Public Sub ResetForm()
             txtInvoiceDate.Text = PersianDateHelper.ToPersian(DateTime.Now)
+            txtVendorName.Clear()
+            txtProductSearch.Clear()
+            txtUnitPrice.Clear()
+            numQuantity.Value = 1
+            dgvItems.Rows.Clear()
             GenerateNextInvoiceNumber()
             LoadWarehouses()
+            RecalculateTotal()
         End Sub
 
         Private Sub cmbWarehouse_DropDown(sender As Object, e As EventArgs) Handles cmbWarehouse.DropDown
@@ -495,12 +508,15 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", "فاکتور خرید نسخه مینی")
                 MessageBox.Show("فاکتور خرید با موفقیت ثبت شد." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                dgvItems.Rows.Clear()
-                GenerateNextInvoiceNumber()
-                RecalculateTotal()
+                ResetForm()
+                RaiseEvent InvoiceSaved()
             Catch ex As Exception
                 MessageBox.Show("خطا در ثبت فاکتور خرید: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
+        End Sub
+
+        Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
+            RaiseEvent InvoiceCancelled()
         End Sub
     End Class
 End Namespace
