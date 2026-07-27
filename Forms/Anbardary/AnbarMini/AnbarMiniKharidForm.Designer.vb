@@ -47,6 +47,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.lblTotalText = New Label()
             Me.lblTotalAmount = New Label()
             Me.btnSave = New Button()
+            Me.btnCancel = New Button()
             Me.pnlHeader.SuspendLayout()
             Me.pnlProductAdd.SuspendLayout()
             CType(Me.numQuantity, ISupportInitialize).BeginInit()
