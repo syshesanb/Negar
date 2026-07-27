@@ -31,6 +31,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.lblBuyPrice = New Label()
             Me.txtUnitPrice = New TextBox()
             Me.btnAdd = New Button()
+            Me.btnBrowseProduct = New Button()
             Me.dgvItems = New DataGridView()
             Me.colProductID = New DataGridViewTextBoxColumn()
             Me.colCode = New DataGridViewTextBoxColumn()

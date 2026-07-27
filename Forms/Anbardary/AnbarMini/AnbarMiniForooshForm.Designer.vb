@@ -27,6 +27,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.lblScan = New Label()
             Me.txtBarcodeScan = New TextBox()
             Me.btnAddProduct = New Button()
+            Me.btnBrowseProduct = New Button()
             Me.dgvCart = New DataGridView()
             Me.colProductID = New DataGridViewTextBoxColumn()
             Me.colCode = New DataGridViewTextBoxColumn()
