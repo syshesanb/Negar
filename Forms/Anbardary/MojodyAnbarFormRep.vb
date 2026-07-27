@@ -95,16 +95,20 @@ Namespace Negar.Forms
             dgvInventory.AutoGenerateColumns = False
             dgvInventory.Columns.Clear()
 
+            dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing
+            dgvInventory.ColumnHeadersHeight = 44
+            dgvInventory.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
+
             Dim cols() As Object = {
-                New With {.Name = "colCode", .Prop = "ProductCode", .Header = "کد کالا", .Width = 90, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = False},
-                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 200, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "", .AutoFit = False},
-                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 130, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "", .AutoFit = False},
-                New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "ورودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
-                New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "خروجی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
-                New With {.Name = "colQty", .Prop = "Quantity", .Header = "موجودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
-                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمام‌شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
-                New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "بهای تمام شده موجودی", .Width = 160, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
-                New With {.Name = "colLastUpdate", .Prop = "PersianLastUpdate", .Header = "آخرین به‌روزرسانی", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = True}
+                New With {.Name = "colCode", .Prop = "ProductCode", .Header = "کد" & vbCrLf & "کالا", .Width = 70, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = False},
+                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 180, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "", .AutoFit = False},
+                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 120, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "", .AutoFit = False},
+                New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "تعداد" & vbCrLf & "ورودی", .Width = 75, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "تعداد" & vbCrLf & "خروجی", .Width = 75, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colQty", .Prop = "Quantity", .Header = "تعداد" & vbCrLf & "موجودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای" & vbCrLf & "تمام شده", .Width = 120, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "بهای تمام شده" & vbCrLf & "موجودی", .Width = 130, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colLastUpdate", .Prop = "PersianLastUpdate", .Header = "آخرین" & vbCrLf & "به‌روزرسانی", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = True}
             }
 
             For Each c In cols
