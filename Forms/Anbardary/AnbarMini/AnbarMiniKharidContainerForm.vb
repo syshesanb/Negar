@@ -314,7 +314,13 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         End Sub
 
         Private Sub OpenInvoiceForView(rowIndex As Integer)
-            ShowEditView()
+            If rowIndex >= 0 AndAlso rowIndex < dgvInvoices.Rows.Count Then
+                Dim invId = Convert.ToInt32(dgvInvoices.Rows(rowIndex).Cells("InvoiceID").Value)
+                pnlListContainer.Visible = False
+                pnlEditContainer.Visible = True
+                pnlEditContainer.BringToFront()
+                kharidForm.LoadInvoiceForEdit(invId)
+            End If
         End Sub
     End Class
 End Namespace

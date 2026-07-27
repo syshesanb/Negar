@@ -146,7 +146,7 @@ Namespace Negar.Business
 
         Public Function GetPurchaseInvoiceDetails(invoiceId As Integer) As DataTable
             Return Sql.ExecuteTable(
-                "SELECT d.DetailID, d.ProductID, " &
+                "SELECT d.DetailID, d.ProductID, COALESCE(p.ProductCode, '') AS ProductCode, " &
                 "COALESCE(p.ProductName, '(کالای حذف شده)') AS ProductName, " &
                 "COALESCE(p.Unit, 'عدد') AS Unit, " &
                 "d.Quantity, d.UnitPrice, d.TotalPrice, COALESCE(d.Discount, 0) AS Discount, COALESCE(d.Vat, 0) AS Vat, " &
