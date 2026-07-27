@@ -34,10 +34,12 @@ Namespace Negar.Forms
 
             ApplyGridStyle(dgvInventory)
             ApplyGridStyle(dgvKardex)
+            ApplyGridStyle(dgvProfitLoss)
             ApplyGridStyle(dgvInvCount)
 
             ConfigureInventoryGrid()
             ConfigureKardexGrid()
+            ConfigureProfitLossGrid()
 
             ' بارگذاری انبارها برای کمبو باکس‌ها
             Dim warehouses = catalogService.GetWarehouses()
@@ -236,6 +238,177 @@ Namespace Negar.Forms
             })
 
             dgvKardex.RightToLeft = RightToLeft.Yes
+        End Sub
+
+        Private Sub ConfigureProfitLossGrid()
+            dgvProfitLoss.AutoGenerateColumns = False
+            dgvProfitLoss.Columns.Clear()
+
+            dgvProfitLoss.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing
+            dgvProfitLoss.ColumnHeadersHeight = 44
+            dgvProfitLoss.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
+
+            Dim rowNum As New DataGridViewTextBoxColumn()
+            rowNum.Name = "rowNum"
+            rowNum.HeaderText = "ردیف"
+            rowNum.Width = 45
+            rowNum.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+            Dim colDate As New DataGridViewTextBoxColumn()
+            colDate.Name = "colDate"
+            colDate.DataPropertyName = "TransactionDate"
+            colDate.HeaderText = "تاریخ"
+            colDate.Width = 105
+            colDate.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+            Dim colWarehouse As New DataGridViewTextBoxColumn()
+            colWarehouse.Name = "colWarehouse"
+            colWarehouse.DataPropertyName = "WarehouseName"
+            colWarehouse.HeaderText = "انبار"
+            colWarehouse.Width = 120
+            colWarehouse.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+
+            Dim colType As New DataGridViewTextBoxColumn()
+            colType.Name = "colType"
+            colType.DataPropertyName = "TransactionType"
+            colType.HeaderText = "نوع عملیات"
+            colType.Width = 140
+            colType.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+
+            Dim colQty As New DataGridViewTextBoxColumn()
+            colQty.Name = "colQty"
+            colQty.DataPropertyName = "Quantity"
+            colQty.HeaderText = "تعداد" & vbCrLf & "فروخته شده"
+            colQty.Width = 80
+            colQty.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colQty.DefaultCellStyle.Format = "N0"
+
+            Dim colSalesAmt As New DataGridViewTextBoxColumn()
+            colSalesAmt.Name = "colSalesAmt"
+            colSalesAmt.DataPropertyName = "SalesAmount"
+            colSalesAmt.HeaderText = "مبلغ" & vbCrLf & "فروش"
+            colSalesAmt.Width = 120
+            colSalesAmt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colSalesAmt.DefaultCellStyle.Format = "N0"
+
+            Dim colCOGS As New DataGridViewTextBoxColumn()
+            colCOGS.Name = "colCOGS"
+            colCOGS.DataPropertyName = "CostOfGoodsSold"
+            colCOGS.HeaderText = "بهای تمام شده" & vbCrLf & "کالای فروش رفته"
+            colCOGS.Width = 135
+            colCOGS.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colCOGS.DefaultCellStyle.Format = "N0"
+
+            Dim colGrossProfit As New DataGridViewTextBoxColumn()
+            colGrossProfit.Name = "colGrossProfit"
+            colGrossProfit.DataPropertyName = "GrossProfit"
+            colGrossProfit.HeaderText = "سود" & vbCrLf & "ناخالص"
+            colGrossProfit.Width = 120
+            colGrossProfit.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            colGrossProfit.DefaultCellStyle.Format = "N0"
+
+            Dim colProfitMargin As New DataGridViewTextBoxColumn()
+            colProfitMargin.Name = "colProfitMargin"
+            colProfitMargin.DataPropertyName = "ProfitMargin"
+            colProfitMargin.HeaderText = "درصد" & vbCrLf & "سود"
+            colProfitMargin.Width = 75
+            colProfitMargin.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colProfitMargin.DefaultCellStyle.Format = "0.0'%'"
+
+            Dim colDesc As New DataGridViewTextBoxColumn()
+            colDesc.Name = "colDesc"
+            colDesc.DataPropertyName = "Description"
+            colDesc.HeaderText = "توضیحات"
+            colDesc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            colDesc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+
+            dgvProfitLoss.Columns.AddRange(New DataGridViewColumn() {
+                rowNum, colDate, colWarehouse, colType, colQty, colSalesAmt,
+                colCOGS, colGrossProfit, colProfitMargin, colDesc
+            })
+
+            dgvProfitLoss.RightToLeft = RightToLeft.Yes
+        End Sub
+
+        Private Sub LoadProfitLossDropdowns()
+            Try
+                ' Load Products
+                Dim dtProd = catalogService.GetProducts()
+                Dim dtProdWithAll = dtProd.Clone()
+                Dim allProdRow = dtProdWithAll.NewRow()
+                allProdRow("ProductID") = 0
+                allProdRow("ProductName") = "همه کالاها"
+                dtProdWithAll.Rows.Add(allProdRow)
+                For Each r As DataRow In dtProd.Rows
+                    dtProdWithAll.ImportRow(r)
+                Next
+                cmbProfitLossProduct.DataSource = dtProdWithAll
+                cmbProfitLossProduct.DisplayMember = "ProductName"
+                cmbProfitLossProduct.ValueMember = "ProductID"
+                cmbProfitLossProduct.SelectedIndex = 0
+
+                ' Load Warehouses
+                Dim dtWh = catalogService.GetWarehouses()
+                Dim dtWhWithAll = dtWh.Clone()
+                Dim allWhRow = dtWhWithAll.NewRow()
+                allWhRow("WarehouseID") = 0
+                allWhRow("WarehouseName") = "همه انبارها"
+                dtWhWithAll.Rows.Add(allWhRow)
+                For Each r As DataRow In dtWh.Rows
+                    dtWhWithAll.ImportRow(r)
+                Next
+                cmbProfitLossWarehouse.DataSource = dtWhWithAll
+                cmbProfitLossWarehouse.DisplayMember = "WarehouseName"
+                cmbProfitLossWarehouse.ValueMember = "WarehouseID"
+                cmbProfitLossWarehouse.SelectedIndex = 0
+            Catch
+            End Try
+        End Sub
+
+        Private Sub LoadProfitLossData()
+            Try
+                Dim productId As Integer? = Nothing
+                If cmbProfitLossProduct.SelectedValue IsNot Nothing AndAlso IsNumeric(cmbProfitLossProduct.SelectedValue) Then
+                    Dim pId = Convert.ToInt32(cmbProfitLossProduct.SelectedValue)
+                    If pId > 0 Then productId = pId
+                End If
+
+                Dim warehouseId As Integer? = Nothing
+                If cmbProfitLossWarehouse.SelectedValue IsNot Nothing AndAlso IsNumeric(cmbProfitLossWarehouse.SelectedValue) Then
+                    Dim wId = Convert.ToInt32(cmbProfitLossWarehouse.SelectedValue)
+                    If wId > 0 Then warehouseId = wId
+                End If
+
+                Dim fromDate = txtProfitLossFrom.Text.Trim()
+                Dim toDate = txtProfitLossTo.Text.Trim()
+
+                Dim prodName As String = "همه کالاها"
+                If productId.HasValue AndAlso cmbProfitLossProduct.SelectedItem IsNot Nothing Then
+                    prodName = cmbProfitLossProduct.Text
+                End If
+                lblProfitLossTitle.Text = "گزارش سود و زیان کالا: " & prodName
+
+                Dim dt = inventoryService.GetProductProfitLoss(productId, warehouseId, fromDate, toDate)
+                dgvProfitLoss.DataSource = dt
+
+                Dim grandTotalProfit As Decimal = 0D
+                For idx As Integer = 0 To dgvProfitLoss.Rows.Count - 1
+                    Dim row = dgvProfitLoss.Rows(idx)
+                    row.Cells("rowNum").Value = (idx + 1).ToString()
+                    If Not row.IsNewRow Then
+                        grandTotalProfit += Convert.ToDecimal(If(row.Cells("colGrossProfit").Value Is DBNull.Value, 0, row.Cells("colGrossProfit").Value))
+                    End If
+                Next
+
+                lblProfitLossGrandTotalValue.Text = String.Format("{0:N0} ریال", grandTotalProfit)
+                If grandTotalProfit >= 0 Then
+                    lblProfitLossGrandTotalValue.ForeColor = Color.FromArgb(46, 204, 113)
+                Else
+                    lblProfitLossGrandTotalValue.ForeColor = Color.FromArgb(231, 76, 60)
+                End If
+            Catch ex As Exception
+                MessageBox.Show("خطا در بارگذاری گزارش سود و زیان: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End Sub
 
         Private Sub LoadKardexProducts()
@@ -783,6 +956,57 @@ Namespace Negar.Forms
             If s.Length <= maxLen Then Return s
             Return s.Substring(0, maxLen - 1) & "..."
         End Function
+
+        Private Sub btnProfitLossLoad_Click(sender As Object, e As EventArgs) Handles btnProfitLossLoad.Click
+            LoadProfitLossData()
+        End Sub
+
+        Private isFormattingProfitLossDate As Boolean = False
+        Private Sub FormatProfitLossDateTextBox(txt As TextBox)
+            If isFormattingProfitLossDate Then Return
+            Dim digitsOnly = System.Text.RegularExpressions.Regex.Replace(txt.Text, "[^\d]", "")
+            If digitsOnly.Length = 8 Then
+                isFormattingProfitLossDate = True
+                txt.Text = digitsOnly.Substring(0, 4) & "/" & digitsOnly.Substring(4, 2) & "/" & digitsOnly.Substring(6, 2)
+                txt.SelectionStart = txt.Text.Length
+                isFormattingProfitLossDate = False
+            End If
+        End Sub
+
+        Private Sub txtProfitLossFrom_TextChanged(sender As Object, e As EventArgs) Handles txtProfitLossFrom.TextChanged
+            FormatProfitLossDateTextBox(txtProfitLossFrom)
+        End Sub
+
+        Private Sub txtProfitLossTo_TextChanged(sender As Object, e As EventArgs) Handles txtProfitLossTo.TextChanged
+            FormatProfitLossDateTextBox(txtProfitLossTo)
+        End Sub
+
+        Private Sub btnPickProfitLossFrom_Click(sender As Object, e As EventArgs) Handles btnPickProfitLossFrom.Click
+            Using calendar As New PersianCalendarForm()
+                If calendar.ShowDialog(Me) = DialogResult.OK Then
+                    txtProfitLossFrom.Text = calendar.SelectedDate
+                End If
+            End Using
+        End Sub
+
+        Private Sub btnPickProfitLossTo_Click(sender As Object, e As EventArgs) Handles btnPickProfitLossTo.Click
+            Using calendar As New PersianCalendarForm()
+                If calendar.ShowDialog(Me) = DialogResult.OK Then
+                    txtProfitLossTo.Text = calendar.SelectedDate
+                End If
+            End Using
+        End Sub
+
+        Private Sub tabMain_SelectedIndexChanged(sender As Object, e As EventArgs) Handles tabMain.SelectedIndexChanged
+            If tabMain.SelectedTab Is tabProfitLoss Then
+                If cmbProfitLossProduct.Items.Count = 0 Then
+                    LoadProfitLossDropdowns()
+                End If
+                If dgvProfitLoss.Rows.Count = 0 Then
+                    LoadProfitLossData()
+                End If
+            End If
+        End Sub
 
     End Class
 End Namespace

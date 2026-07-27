@@ -54,10 +54,30 @@ Namespace Negar.Forms
             Me.lblKardexTitle = New Label()
             Me.lblKardexCount = New Label()
             Me.dgvKardex = New DataGridView()
+            Me.tabProfitLoss = New TabPage()
+            Me.pnlProfitLossTop = New Panel()
+            Me.lblProfitLossProductLabel = New Label()
+            Me.cmbProfitLossProduct = New ComboBox()
+            Me.lblProfitLossWarehouseLabel = New Label()
+            Me.cmbProfitLossWarehouse = New ComboBox()
+            Me.lblProfitLossFromLabel = New Label()
+            Me.txtProfitLossFrom = New TextBox()
+            Me.btnPickProfitLossFrom = New Button()
+            Me.lblProfitLossToLabel = New Label()
+            Me.txtProfitLossTo = New TextBox()
+            Me.btnPickProfitLossTo = New Button()
+            Me.btnProfitLossLoad = New Button()
+            Me.btnPrintProfitLoss = New Button()
+            Me.lblProfitLossTitle = New Label()
+            Me.dgvProfitLoss = New DataGridView()
+            Me.pnlProfitLossFooter = New Panel()
+            Me.lblProfitLossGrandTotalText = New Label()
+            Me.lblProfitLossGrandTotalValue = New Label()
 
             Me.tabMain.SuspendLayout()
             CType(Me.dgvInventory, ISupportInitialize).BeginInit()
             CType(Me.dgvKardex, ISupportInitialize).BeginInit()
+            CType(Me.dgvProfitLoss, ISupportInitialize).BeginInit()
             Me.SuspendLayout()
 
             ' ---------- tabMain ----------
@@ -68,6 +88,7 @@ Namespace Negar.Forms
             Me.tabMain.RightToLeftLayout = True
             Me.tabMain.TabPages.Add(Me.tabInventory)
             Me.tabMain.TabPages.Add(Me.tabKardex)
+            Me.tabMain.TabPages.Add(Me.tabProfitLoss)
 
             ' ---------- tabInventory ----------
             Me.tabInventory.Text = "   موجودی انبار   "
@@ -305,6 +326,155 @@ Namespace Negar.Forms
             Me.dgvKardex.ReadOnly = True
             Me.dgvKardex.RightToLeft = RightToLeft.Yes
 
+            ' ---------- tabProfitLoss (سود و زیان) ----------
+            Me.tabProfitLoss.Text = "   سود و زیان   "
+            Me.tabProfitLoss.Name = "tabProfitLoss"
+            Me.tabProfitLoss.RightToLeft = RightToLeft.Yes
+            Me.tabProfitLoss.Controls.Add(Me.dgvProfitLoss)
+            Me.tabProfitLoss.Controls.Add(Me.pnlProfitLossFooter)
+            Me.tabProfitLoss.Controls.Add(Me.lblProfitLossTitle)
+            Me.tabProfitLoss.Controls.Add(Me.pnlProfitLossTop)
+
+            ' ---------- pnlProfitLossTop ----------
+            Me.pnlProfitLossTop.Dock = DockStyle.Top
+            Me.pnlProfitLossTop.Height = 48
+            Me.pnlProfitLossTop.Name = "pnlProfitLossTop"
+            Me.pnlProfitLossTop.BackColor = Color.FromArgb(245, 240, 255)
+
+            Me.cmbProfitLossProduct.Location = New Point(8, 11)
+            Me.cmbProfitLossProduct.Size = New Size(160, 24)
+            Me.cmbProfitLossProduct.Font = New Font("Tahoma", 9.0!)
+            Me.cmbProfitLossProduct.RightToLeft = RightToLeft.Yes
+            Me.cmbProfitLossProduct.DropDownStyle = ComboBoxStyle.DropDownList
+            Me.cmbProfitLossProduct.Name = "cmbProfitLossProduct"
+
+            Me.lblProfitLossProductLabel.Text = "کالا:"
+            Me.lblProfitLossProductLabel.Location = New Point(172, 14)
+            Me.lblProfitLossProductLabel.Size = New Size(40, 20)
+            Me.lblProfitLossProductLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblProfitLossProductLabel.TextAlign = ContentAlignment.MiddleRight
+
+            Me.cmbProfitLossWarehouse.Location = New Point(215, 11)
+            Me.cmbProfitLossWarehouse.Size = New Size(140, 24)
+            Me.cmbProfitLossWarehouse.Font = New Font("Tahoma", 9.0!)
+            Me.cmbProfitLossWarehouse.RightToLeft = RightToLeft.Yes
+            Me.cmbProfitLossWarehouse.DropDownStyle = ComboBoxStyle.DropDownList
+            Me.cmbProfitLossWarehouse.Name = "cmbProfitLossWarehouse"
+
+            Me.lblProfitLossWarehouseLabel.Text = "انبار:"
+            Me.lblProfitLossWarehouseLabel.Location = New Point(358, 14)
+            Me.lblProfitLossWarehouseLabel.Size = New Size(40, 20)
+            Me.lblProfitLossWarehouseLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblProfitLossWarehouseLabel.TextAlign = ContentAlignment.MiddleRight
+
+            Me.txtProfitLossFrom.Location = New Point(402, 11)
+            Me.txtProfitLossFrom.Size = New Size(85, 24)
+            Me.txtProfitLossFrom.Font = New Font("Tahoma", 9.0!)
+            Me.txtProfitLossFrom.RightToLeft = RightToLeft.Yes
+            Me.txtProfitLossFrom.Name = "txtProfitLossFrom"
+
+            Me.btnPickProfitLossFrom.Text = "..."
+            Me.btnPickProfitLossFrom.Location = New Point(490, 11)
+            Me.btnPickProfitLossFrom.Size = New Size(26, 24)
+            Me.btnPickProfitLossFrom.Font = New Font("Tahoma", 8.0!, FontStyle.Bold)
+            Me.btnPickProfitLossFrom.BackColor = Color.White
+            Me.btnPickProfitLossFrom.FlatStyle = FlatStyle.Flat
+            Me.btnPickProfitLossFrom.Name = "btnPickProfitLossFrom"
+
+            Me.lblProfitLossFromLabel.Text = "از تاریخ:"
+            Me.lblProfitLossFromLabel.Location = New Point(520, 14)
+            Me.lblProfitLossFromLabel.Size = New Size(52, 20)
+            Me.lblProfitLossFromLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblProfitLossFromLabel.TextAlign = ContentAlignment.MiddleRight
+
+            Me.txtProfitLossTo.Location = New Point(578, 11)
+            Me.txtProfitLossTo.Size = New Size(85, 24)
+            Me.txtProfitLossTo.Font = New Font("Tahoma", 9.0!)
+            Me.txtProfitLossTo.RightToLeft = RightToLeft.Yes
+            Me.txtProfitLossTo.Name = "txtProfitLossTo"
+
+            Me.btnPickProfitLossTo.Text = "..."
+            Me.btnPickProfitLossTo.Location = New Point(666, 11)
+            Me.btnPickProfitLossTo.Size = New Size(26, 24)
+            Me.btnPickProfitLossTo.Font = New Font("Tahoma", 8.0!, FontStyle.Bold)
+            Me.btnPickProfitLossTo.BackColor = Color.White
+            Me.btnPickProfitLossTo.FlatStyle = FlatStyle.Flat
+            Me.btnPickProfitLossTo.Name = "btnPickProfitLossTo"
+
+            Me.lblProfitLossToLabel.Text = "تا تاریخ:"
+            Me.lblProfitLossToLabel.Location = New Point(696, 14)
+            Me.lblProfitLossToLabel.Size = New Size(52, 20)
+            Me.lblProfitLossToLabel.Font = New Font("Tahoma", 9.0!)
+            Me.lblProfitLossToLabel.TextAlign = ContentAlignment.MiddleRight
+
+            Me.btnProfitLossLoad.Text = "نمایش گزارش"
+            Me.btnProfitLossLoad.Location = New Point(755, 10)
+            Me.btnProfitLossLoad.Size = New Size(110, 26)
+            Me.btnProfitLossLoad.Font = New Font("Tahoma", 9.0!)
+            Me.btnProfitLossLoad.BackColor = Color.FromArgb(40, 140, 90)
+            Me.btnProfitLossLoad.ForeColor = Color.White
+            Me.btnProfitLossLoad.FlatStyle = FlatStyle.Flat
+            Me.btnProfitLossLoad.Name = "btnProfitLossLoad"
+
+            Me.btnPrintProfitLoss.Text = "چاپ"
+            Me.btnPrintProfitLoss.Location = New Point(870, 10)
+            Me.btnPrintProfitLoss.Size = New Size(65, 26)
+            Me.btnPrintProfitLoss.Font = New Font("Tahoma", 9.0!)
+            Me.btnPrintProfitLoss.BackColor = Color.FromArgb(100, 55, 145)
+            Me.btnPrintProfitLoss.ForeColor = Color.White
+            Me.btnPrintProfitLoss.FlatStyle = FlatStyle.Flat
+            Me.btnPrintProfitLoss.Name = "btnPrintProfitLoss"
+
+            Me.pnlProfitLossTop.Controls.AddRange(New Control() {
+                Me.cmbProfitLossProduct, Me.lblProfitLossProductLabel,
+                Me.cmbProfitLossWarehouse, Me.lblProfitLossWarehouseLabel,
+                Me.txtProfitLossFrom, Me.btnPickProfitLossFrom, Me.lblProfitLossFromLabel,
+                Me.txtProfitLossTo, Me.btnPickProfitLossTo, Me.lblProfitLossToLabel,
+                Me.btnProfitLossLoad, Me.btnPrintProfitLoss
+            })
+
+            ' ---------- lblProfitLossTitle ----------
+            Me.lblProfitLossTitle.Text = "گزارش سود و زیان"
+            Me.lblProfitLossTitle.Dock = DockStyle.Top
+            Me.lblProfitLossTitle.Height = 26
+            Me.lblProfitLossTitle.Font = New Font("Tahoma", 10.0!, FontStyle.Bold)
+            Me.lblProfitLossTitle.ForeColor = Color.FromArgb(20, 70, 130)
+            Me.lblProfitLossTitle.BackColor = Color.FromArgb(230, 225, 245)
+            Me.lblProfitLossTitle.RightToLeft = RightToLeft.No
+            Me.lblProfitLossTitle.TextAlign = ContentAlignment.MiddleRight
+            Me.lblProfitLossTitle.Padding = New Padding(10, 0, 10, 0)
+            Me.lblProfitLossTitle.Name = "lblProfitLossTitle"
+
+            ' ---------- dgvProfitLoss ----------
+            Me.dgvProfitLoss.Dock = DockStyle.Fill
+            Me.dgvProfitLoss.Name = "dgvProfitLoss"
+            Me.dgvProfitLoss.AllowUserToAddRows = False
+            Me.dgvProfitLoss.ReadOnly = True
+            Me.dgvProfitLoss.RightToLeft = RightToLeft.Yes
+
+            ' ---------- pnlProfitLossFooter ----------
+            Me.pnlProfitLossFooter.Dock = DockStyle.Bottom
+            Me.pnlProfitLossFooter.Height = 45
+            Me.pnlProfitLossFooter.Name = "pnlProfitLossFooter"
+            Me.pnlProfitLossFooter.BackColor = Color.FromArgb(34, 49, 63)
+
+            Me.lblProfitLossGrandTotalText.Text = "جمع کل سود ناخالص:"
+            Me.lblProfitLossGrandTotalText.Font = New Font("Tahoma", 10.0!, FontStyle.Bold)
+            Me.lblProfitLossGrandTotalText.ForeColor = Color.White
+            Me.lblProfitLossGrandTotalText.Location = New Point(350, 12)
+            Me.lblProfitLossGrandTotalText.AutoSize = True
+            Me.lblProfitLossGrandTotalText.Name = "lblProfitLossGrandTotalText"
+
+            Me.lblProfitLossGrandTotalValue.Text = "۰ ریال"
+            Me.lblProfitLossGrandTotalValue.Font = New Font("Tahoma", 13.0!, FontStyle.Bold)
+            Me.lblProfitLossGrandTotalValue.ForeColor = Color.FromArgb(46, 204, 113)
+            Me.lblProfitLossGrandTotalValue.Location = New Point(100, 8)
+            Me.lblProfitLossGrandTotalValue.AutoSize = True
+            Me.lblProfitLossGrandTotalValue.Name = "lblProfitLossGrandTotalValue"
+
+            Me.pnlProfitLossFooter.Controls.Add(Me.lblProfitLossGrandTotalText)
+            Me.pnlProfitLossFooter.Controls.Add(Me.lblProfitLossGrandTotalValue)
+
             ' ---------- tabInventoryCount (انبارگردانی) ----------
             Me.tabInventoryCount = New TabPage()
             Me.pnlInventoryCountTop = New Panel()
@@ -450,6 +620,25 @@ Namespace Negar.Forms
         Friend WithEvents lblKardexTitle As Label
         Friend WithEvents lblKardexCount As Label
         Friend WithEvents dgvKardex As DataGridView
+        Friend WithEvents tabProfitLoss As TabPage
+        Friend WithEvents pnlProfitLossTop As Panel
+        Friend WithEvents lblProfitLossProductLabel As Label
+        Friend WithEvents cmbProfitLossProduct As ComboBox
+        Friend WithEvents lblProfitLossWarehouseLabel As Label
+        Friend WithEvents cmbProfitLossWarehouse As ComboBox
+        Friend WithEvents lblProfitLossFromLabel As Label
+        Friend WithEvents txtProfitLossFrom As TextBox
+        Friend WithEvents btnPickProfitLossFrom As Button
+        Friend WithEvents lblProfitLossToLabel As Label
+        Friend WithEvents txtProfitLossTo As TextBox
+        Friend WithEvents btnPickProfitLossTo As Button
+        Friend WithEvents btnProfitLossLoad As Button
+        Friend WithEvents btnPrintProfitLoss As Button
+        Friend WithEvents lblProfitLossTitle As Label
+        Friend WithEvents dgvProfitLoss As DataGridView
+        Friend WithEvents pnlProfitLossFooter As Panel
+        Friend WithEvents lblProfitLossGrandTotalText As Label
+        Friend WithEvents lblProfitLossGrandTotalValue As Label
         Friend WithEvents pnlInventoryCountTop As Panel
         Friend WithEvents lblInvCountWarehouseLabel As Label
         Friend WithEvents cmbInvCountWarehouse As ComboBox

@@ -215,6 +215,115 @@ Namespace Negar.Business
             End Try
         End Function
 
+        Public Function GetProductProfitLoss(Optional productId As Integer? = Nothing, Optional warehouseId As Integer? = Nothing,
+                                            Optional fromDate As String = Nothing, Optional toDate As String = Nothing) As DataTable
+            Try
+                Dim compId = SessionContext.CurrentCompanyID
+
+                Dim whCondition As String = ""
+                If warehouseId.HasValue AndAlso warehouseId.Value > 0 Then
+                    whCondition = " AND si.WarehouseID = " & warehouseId.Value & " "
+                End If
+
+                Dim compCondition As String = If(compId.HasValue, " AND si.CompanyID = " & compId.Value & " ", "")
+                Dim prodCondition As String = If(productId.HasValue AndAlso productId.Value > 0, " AND sd.ProductID = " & productId.Value & " ", "")
+
+                Dim query As String =
+                    "SELECT si.InvoiceDate AS TransactionDate, " &
+                    "sd.ProductID, p.ProductName, " &
+                    "COALESCE(w.WarehouseName, 'فروشگاه') AS WarehouseName, " &
+                    "'فاکتور فروش (' || si.InvoiceNumber || ')' AS TransactionType, " &
+                    "sd.Quantity AS Quantity, " &
+                    "(sd.Quantity * sd.UnitPrice) AS SalesAmount, " &
+                    "COALESCE(sd.CostAtSaleTime, 0) AS CostAtSaleTime, " &
+                    "COALESCE(si.CustomerName, '') || CASE WHEN si.Description IS NOT NULL AND si.Description <> '' THEN ' - ' || si.Description ELSE '' END AS Description " &
+                    "FROM SalesInvoiceDetails sd " &
+                    "JOIN SalesInvoices si ON sd.InvoiceID = si.InvoiceID " &
+                    "JOIN Products p ON sd.ProductID = p.ProductID " &
+                    "LEFT JOIN Warehouses w ON w.WarehouseID = si.WarehouseID " &
+                    "WHERE 1=1 " & whCondition & compCondition & prodCondition &
+                    "ORDER BY si.InvoiceDate ASC"
+
+                Dim dtRaw = Sql.ExecuteTable(query)
+
+                If Not dtRaw.Columns.Contains("CostOfGoodsSold") Then dtRaw.Columns.Add("CostOfGoodsSold", GetType(Decimal))
+                If Not dtRaw.Columns.Contains("GrossProfit") Then dtRaw.Columns.Add("GrossProfit", GetType(Decimal))
+                If Not dtRaw.Columns.Contains("ProfitMargin") Then dtRaw.Columns.Add("ProfitMargin", GetType(Decimal))
+
+                Dim dtFiltered As DataTable = dtRaw.Clone()
+
+                Dim cleanFrom = If(Not String.IsNullOrEmpty(fromDate), fromDate.Trim(), "")
+                Dim cleanTo = If(Not String.IsNullOrEmpty(toDate), toDate.Trim(), "")
+
+                For Each row As DataRow In dtRaw.Rows
+                    Dim pId = Convert.ToInt32(row("ProductID"))
+                    Dim qty = Convert.ToDecimal(If(row.IsNull("Quantity"), 0, row("Quantity")))
+                    Dim salesAmt = Convert.ToDecimal(If(row.IsNull("SalesAmount"), 0, row("SalesAmount")))
+                    Dim costAtSale = Convert.ToDecimal(If(row.IsNull("CostAtSaleTime"), 0, row("CostAtSaleTime")))
+
+                    If costAtSale <= 0 Then
+                        Dim avgCostObj = Sql.ExecuteScalar("SELECT COALESCE(AverageCost, PurchasePrice, 0) FROM Inventory i LEFT JOIN Products p ON i.ProductID = p.ProductID WHERE i.ProductID = ?", pId)
+                        If avgCostObj IsNot Nothing AndAlso Not Convert.IsDBNull(avgCostObj) Then
+                            costAtSale = Convert.ToDecimal(avgCostObj)
+                        End If
+                    End If
+
+                    Dim cogs As Decimal = Math.Round(qty * costAtSale, 0)
+                    Dim profit As Decimal = salesAmt - cogs
+                    Dim margin As Decimal = 0D
+                    If salesAmt > 0 Then
+                        margin = Math.Round((profit / salesAmt) * 100, 1)
+                    End If
+
+                    row("CostOfGoodsSold") = cogs
+                    row("GrossProfit") = profit
+                    row("ProfitMargin") = margin
+
+                    Dim pDate As String = ""
+                    If Not row.IsNull("TransactionDate") Then
+                        Try
+                            Dim rawStr = Convert.ToString(row("TransactionDate"))
+                            Dim d As DateTime
+                            If DateTime.TryParse(rawStr, d) Then
+                                pDate = PersianDateHelper.ToPersian(d)
+                            Else
+                                pDate = rawStr
+                            End If
+                        Catch
+                            pDate = Convert.ToString(row("TransactionDate"))
+                        End Try
+                    End If
+
+                    Dim pDate10 = If(pDate.Length >= 10, pDate.Substring(0, 10), pDate)
+
+                    Dim keepRow As Boolean = True
+                    If cleanFrom.Length = 10 AndAlso pDate10 < cleanFrom Then keepRow = False
+                    If cleanTo.Length = 10 AndAlso pDate10 > cleanTo Then keepRow = False
+
+                    If keepRow Then
+                        Dim nr = dtFiltered.NewRow()
+                        nr.ItemArray = row.ItemArray
+                        dtFiltered.Rows.Add(nr)
+                    End If
+                Next
+
+                Return dtFiltered
+            Catch ex As Exception
+                Dim dt As New DataTable()
+                dt.Columns.Add("TransactionDate", GetType(String))
+                dt.Columns.Add("ProductName", GetType(String))
+                dt.Columns.Add("WarehouseName", GetType(String))
+                dt.Columns.Add("TransactionType", GetType(String))
+                dt.Columns.Add("Quantity", GetType(Decimal))
+                dt.Columns.Add("SalesAmount", GetType(Decimal))
+                dt.Columns.Add("CostOfGoodsSold", GetType(Decimal))
+                dt.Columns.Add("GrossProfit", GetType(Decimal))
+                dt.Columns.Add("ProfitMargin", GetType(Decimal))
+                dt.Columns.Add("Description", GetType(String))
+                Return dt
+            End Try
+        End Function
+
         Public Sub UpsertInventory(productId As Integer, warehouseId As Integer, quantity As Decimal, averageCost As Decimal)
             Dim exists = Convert.ToInt32(If(Sql.ExecuteScalar("SELECT COUNT(*) FROM Inventory WHERE ProductID = ? AND WarehouseID = ?", productId, warehouseId), 0))
             If exists > 0 Then
