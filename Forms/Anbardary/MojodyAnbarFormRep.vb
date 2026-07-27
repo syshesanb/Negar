@@ -96,15 +96,15 @@ Namespace Negar.Forms
             dgvInventory.Columns.Clear()
 
             Dim cols() As Object = {
-                New With {.Name = "colCode", .Prop = "ProductCode", .Header = "کد کالا", .Width = 90, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = ""},
-                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 200, .Align = DataGridViewContentAlignment.MiddleRight, .Format = ""},
-                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 130, .Align = DataGridViewContentAlignment.MiddleRight, .Format = ""},
-                New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "ورودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0"},
-                New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "خروجی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0"},
-                New With {.Name = "colQty", .Prop = "Quantity", .Header = "موجودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0"},
-                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمام‌شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleRight, .Format = "N0"},
-                New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "ارزش موجودی", .Width = 150, .Align = DataGridViewContentAlignment.MiddleRight, .Format = "N0"},
-                New With {.Name = "colLastUpdate", .Prop = "LastUpdate", .Header = "آخرین به‌روزرسانی", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = ""}
+                New With {.Name = "colCode", .Prop = "ProductCode", .Header = "کد کالا", .Width = 90, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = False},
+                New With {.Name = "colName", .Prop = "ProductName", .Header = "نام کالا", .Width = 200, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "", .AutoFit = False},
+                New With {.Name = "colWarehouse", .Prop = "WarehouseName", .Header = "انبار", .Width = 130, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "", .AutoFit = False},
+                New With {.Name = "colTotalIn", .Prop = "TotalInput", .Header = "ورودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colTotalOut", .Prop = "TotalOutput", .Header = "خروجی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colQty", .Prop = "Quantity", .Header = "موجودی", .Width = 80, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colAvgCost", .Prop = "AverageCost", .Header = "میانگین بهای تمام‌شده", .Width = 140, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colTotalValue", .Prop = "TotalValue", .Header = "ارزش موجودی", .Width = 150, .Align = DataGridViewContentAlignment.MiddleLeft, .Format = "N0", .AutoFit = False},
+                New With {.Name = "colLastUpdate", .Prop = "PersianLastUpdate", .Header = "آخرین به‌روزرسانی", .Width = 140, .Align = DataGridViewContentAlignment.MiddleCenter, .Format = "", .AutoFit = True}
             }
 
             For Each c In cols
@@ -116,6 +116,9 @@ Namespace Negar.Forms
                 col.DefaultCellStyle.Alignment = c.Align
                 If Not String.IsNullOrEmpty(c.Format) Then
                     col.DefaultCellStyle.Format = c.Format
+                End If
+                If c.AutoFit Then
+                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
                 End If
                 col.ReadOnly = True
                 dgvInventory.Columns.Add(col)
@@ -221,6 +224,27 @@ Namespace Negar.Forms
                     If Not _inventoryTable.Columns.Contains("TotalValue") Then
                         _inventoryTable.Columns.Add("TotalValue", GetType(Decimal), "Quantity * AverageCost")
                     End If
+                    If Not _inventoryTable.Columns.Contains("PersianLastUpdate") Then
+                        _inventoryTable.Columns.Add("PersianLastUpdate", GetType(String))
+                    End If
+
+                    For Each row As DataRow In _inventoryTable.Rows
+                        If Not row.IsNull("LastUpdate") Then
+                            Try
+                                Dim rawVal = Convert.ToString(row("LastUpdate"))
+                                Dim dtVal As DateTime
+                                If DateTime.TryParse(rawVal, dtVal) Then
+                                    row("PersianLastUpdate") = PersianDateHelper.ToPersian(dtVal) & "  " & dtVal.ToString("HH:mm")
+                                Else
+                                    row("PersianLastUpdate") = rawVal
+                                End If
+                            Catch
+                                row("PersianLastUpdate") = Convert.ToString(row("LastUpdate"))
+                            End Try
+                        Else
+                            row("PersianLastUpdate") = ""
+                        End If
+                    Next
                 End If
 
                 dgvInventory.DataSource = _inventoryTable
