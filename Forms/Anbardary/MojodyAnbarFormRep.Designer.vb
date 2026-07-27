@@ -68,6 +68,7 @@ Namespace Negar.Forms
             Me.btnPickProfitLossTo = New Button()
             Me.btnProfitLossLoad = New Button()
             Me.btnPrintProfitLoss = New Button()
+            Me.btnPrintProfitLossStatement = New Button()
             Me.lblProfitLossTitle = New Label()
             Me.dgvProfitLoss = New DataGridView()
             Me.pnlProfitLossFooter = New Panel()
@@ -416,21 +417,30 @@ Namespace Negar.Forms
             Me.btnProfitLossLoad.FlatStyle = FlatStyle.Flat
             Me.btnProfitLossLoad.Name = "btnProfitLossLoad"
 
-            Me.btnPrintProfitLoss.Text = "چاپ"
+            Me.btnPrintProfitLoss.Text = "چاپ عملکرد"
             Me.btnPrintProfitLoss.Location = New Point(870, 10)
-            Me.btnPrintProfitLoss.Size = New Size(65, 26)
+            Me.btnPrintProfitLoss.Size = New Size(95, 26)
             Me.btnPrintProfitLoss.Font = New Font("Tahoma", 9.0!)
             Me.btnPrintProfitLoss.BackColor = Color.FromArgb(100, 55, 145)
             Me.btnPrintProfitLoss.ForeColor = Color.White
             Me.btnPrintProfitLoss.FlatStyle = FlatStyle.Flat
             Me.btnPrintProfitLoss.Name = "btnPrintProfitLoss"
 
+            Me.btnPrintProfitLossStatement.Text = "چاپ سود و زیان"
+            Me.btnPrintProfitLossStatement.Location = New Point(972, 10)
+            Me.btnPrintProfitLossStatement.Size = New Size(115, 26)
+            Me.btnPrintProfitLossStatement.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+            Me.btnPrintProfitLossStatement.BackColor = Color.FromArgb(0, 120, 215)
+            Me.btnPrintProfitLossStatement.ForeColor = Color.White
+            Me.btnPrintProfitLossStatement.FlatStyle = FlatStyle.Flat
+            Me.btnPrintProfitLossStatement.Name = "btnPrintProfitLossStatement"
+
             Me.pnlProfitLossTop.Controls.AddRange(New Control() {
                 Me.cmbProfitLossProduct, Me.lblProfitLossProductLabel,
                 Me.cmbProfitLossWarehouse, Me.lblProfitLossWarehouseLabel,
                 Me.txtProfitLossFrom, Me.btnPickProfitLossFrom, Me.lblProfitLossFromLabel,
                 Me.txtProfitLossTo, Me.btnPickProfitLossTo, Me.lblProfitLossToLabel,
-                Me.btnProfitLossLoad, Me.btnPrintProfitLoss
+                Me.btnProfitLossLoad, Me.btnPrintProfitLoss, Me.btnPrintProfitLossStatement
             })
 
             ' ---------- lblProfitLossTitle ----------
@@ -634,6 +644,7 @@ Namespace Negar.Forms
         Friend WithEvents btnPickProfitLossTo As Button
         Friend WithEvents btnProfitLossLoad As Button
         Friend WithEvents btnPrintProfitLoss As Button
+        Friend WithEvents btnPrintProfitLossStatement As Button
         Friend WithEvents lblProfitLossTitle As Label
         Friend WithEvents dgvProfitLoss As DataGridView
         Friend WithEvents pnlProfitLossFooter As Panel

@@ -668,8 +668,227 @@ lblKardexCount.Text = String.Format("تعداد تراکنشها: {0}", If(_kard
         End Sub
 
         Private Sub BtnPrintProfitLoss_Click(sender As Object, e As EventArgs) Handles btnPrintProfitLoss.Click
-            Dim title = If(String.IsNullOrWhiteSpace(lblProfitLossTitle.Text), "گزارش سود و زیان کالا", lblProfitLossTitle.Text)
+            Dim title = If(String.IsNullOrWhiteSpace(lblProfitLossTitle.Text), "گزارش عملکرد سود و زیان کالا", lblProfitLossTitle.Text)
             PrintGridReport(title, dgvProfitLoss, "جمع کل سود ناخالص:", lblProfitLossGrandTotalValue.Text, excludeCols:={"colDesc"}, isLandscape:=True)
+        End Sub
+
+        Private Sub BtnPrintProfitLossStatement_Click(sender As Object, e As EventArgs) Handles btnPrintProfitLossStatement.Click
+            If dgvProfitLoss Is Nothing OrElse dgvProfitLoss.Rows.Count = 0 Then
+                MessageBox.Show("هیچ داده‌ای برای محاسبه و چاپ صورت حساب سود و زیان وجود ندارد.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            ' ۱. محاسبه فروش، بهای تمام شده و سود ناخالص از دیتاگرید
+            Dim totalSales As Decimal = 0D
+            Dim totalCOGS As Decimal = 0D
+            Dim grossProfit As Decimal = 0D
+
+            For Each row As DataGridViewRow In dgvProfitLoss.Rows
+                If Not row.IsNewRow Then
+                    Dim salesVal = row.Cells("colSalesAmt").Value
+                    If salesVal IsNot Nothing AndAlso Not Convert.IsDBNull(salesVal) Then
+                        Dim v As Decimal = 0D
+                        Decimal.TryParse(Convert.ToString(salesVal), v)
+                        totalSales += v
+                    End If
+
+                    Dim cogsVal = row.Cells("colCOGS").Value
+                    If cogsVal IsNot Nothing AndAlso Not Convert.IsDBNull(cogsVal) Then
+                        Dim v As Decimal = 0D
+                        Decimal.TryParse(Convert.ToString(cogsVal), v)
+                        totalCOGS += v
+                    End If
+                End If
+            Next
+            grossProfit = totalSales - totalCOGS
+
+            ' ۲. استخراج مجموع هزینه‌ها از جدول Expenses بر اساس بازه تاریخ
+            Dim totalExpenses As Decimal = 0D
+            Dim expenseBreakdown As New DataTable()
+            Try
+                Dim expSql As String = "SELECT Category, SUM(Amount) AS CatTotal FROM Expenses WHERE 1=1"
+                Dim params As New List(Of Object)()
+                Dim fDate = txtProfitLossFrom.Text.Trim()
+                Dim tDate = txtProfitLossTo.Text.Trim()
+                If Not String.IsNullOrEmpty(fDate) Then
+                    expSql &= " AND ExpenseDate >= ?"
+                    params.Add(fDate)
+                End If
+                If Not String.IsNullOrEmpty(tDate) Then
+                    expSql &= " AND ExpenseDate <= ?"
+                    params.Add(tDate)
+                End If
+                expSql &= " GROUP BY Category ORDER BY CatTotal DESC"
+
+                expenseBreakdown = Sql.ExecuteTable(expSql, params.ToArray())
+                For Each r As DataRow In expenseBreakdown.Rows
+                    If Not r.IsNull("CatTotal") Then
+                        Dim v As Decimal = 0D
+                        Decimal.TryParse(Convert.ToString(r("CatTotal")), v)
+                        totalExpenses += v
+                    End If
+                Next
+            Catch
+            End Try
+
+            Dim netProfit As Decimal = grossProfit - totalExpenses
+
+            ' ۳. رسم سند صورت حساب سود و زیان
+            Dim doc As New PrintDocument()
+            doc.DefaultPageSettings.PaperSize = New PaperSize("A4", 827, 1169)
+            doc.DefaultPageSettings.Margins = New Margins(45, 45, 45, 45)
+
+            AddHandler doc.PrintPage, Sub(s, ev)
+                Dim g = ev.Graphics
+                g.SmoothingMode = SmoothingMode.HighQuality
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit
+
+                Dim leftX = ev.MarginBounds.Left
+                Dim rightX = ev.MarginBounds.Right
+                Dim topY = ev.MarginBounds.Top
+                Dim bottomY = ev.MarginBounds.Bottom
+                Dim pageWidth = rightX - leftX
+                Dim pageHeight = bottomY - topY
+
+                ' کادر دور صفحه
+                Using pBorder As New Pen(Color.Black, 2.0!)
+                    g.DrawRectangle(pBorder, leftX, topY, pageWidth, pageHeight)
+                End Using
+
+                ' سربرگ عنابی
+                Dim companyName = "شرکت " & SessionContext.CurrentCompanyName
+                Dim sfCenter As New StringFormat() With {.Alignment = StringAlignment.Center, .LineAlignment = StringAlignment.Center}
+                Dim sfRight As New StringFormat() With {.Alignment = StringAlignment.Far, .LineAlignment = StringAlignment.Center}
+                Dim sfLeft As New StringFormat() With {.Alignment = StringAlignment.Near, .LineAlignment = StringAlignment.Center}
+
+                Using brMaroon As New SolidBrush(Color.FromArgb(160, 0, 0))
+                    Dim compRect As New Rectangle(leftX, topY + 15, pageWidth, 25)
+                    Using fComp As New Font("Tahoma", 13.0!, FontStyle.Bold)
+                        g.DrawString(companyName, fComp, brMaroon, compRect, sfCenter)
+                    End Using
+
+                    Dim titleRect As New Rectangle(leftX, topY + 42, pageWidth, 28)
+                    Using fTitle As New Font("Tahoma", 12.0!, FontStyle.Bold)
+                        g.DrawString("صورت حساب سود و زیان (عملکرد دوره)", fTitle, brMaroon, titleRect, sfCenter)
+                    End Using
+                End Using
+
+                ' تاریخ گزارش
+                Using fBold As New Font("Tahoma", 9.0!, FontStyle.Bold)
+                    Dim printDateStr = "تاریخ چاپ: " & PersianDateHelper.ToPersian(DateTime.Now)
+                    g.DrawString(printDateStr, fBold, Brushes.Black, rightX - 15, topY + 22, sfRight)
+
+                    Dim dateRangeStr As String = "دوره: کل اسناد"
+                    If Not String.IsNullOrEmpty(txtProfitLossFrom.Text) OrElse Not String.IsNullOrEmpty(txtProfitLossTo.Text) Then
+                        dateRangeStr = String.Format("از: {0} تا: {1}", If(String.IsNullOrEmpty(txtProfitLossFrom.Text), "-", txtProfitLossFrom.Text), If(String.IsNullOrEmpty(txtProfitLossTo.Text), "-", txtProfitLossTo.Text))
+                    End If
+                    g.DrawString(dateRangeStr, fBold, Brushes.Black, leftX + 15, topY + 22, sfLeft)
+                End Using
+
+                ' جدول اصلی صورت حساب سود و زیان (Financial Statement Table)
+                Dim currY = topY + 90
+                Dim tableWidth = pageWidth - 40
+                Dim tableLeft = leftX + 20
+
+                ' عنوان جدول
+                Dim rectHead = New Rectangle(tableLeft, currY, tableWidth, 32)
+                Using brHeaderBg As New SolidBrush(Color.FromArgb(210, 236, 245))
+                    g.FillRectangle(brHeaderBg, rectHead)
+                End Using
+                g.DrawRectangle(Pens.Black, rectHead)
+                Using fHead As New Font("Tahoma", 10.0!, FontStyle.Bold)
+                    g.DrawString("خلاصه صورت حساب سود و زیان", fHead, Brushes.Black, rectHead, sfCenter)
+                End Using
+                currY += 32
+
+                ' ردیف‌های صورت مالی
+                Dim items = New List(Of Tuple(Of String, String, Color, Boolean))()
+                items.Add(Tuple.Create("درآمد حاصل از فروش کالاها و خدمات", totalSales.ToString("N0") & " ریال", Color.White, False))
+                items.Add(Tuple.Create("کسر می‌شود: بهای تمام شده کالای فروش رفته (COGS)", "(" & totalCOGS.ToString("N0") & ") ریال", Color.FromArgb(248, 248, 248), False))
+                
+                Dim grossProfitColor = If(grossProfit >= 0, Color.FromArgb(220, 248, 225), Color.FromArgb(253, 227, 227))
+                Dim grossTitle = If(grossProfit >= 0, "سود ناخالص دوره", "زیان ناخالص دوره")
+                items.Add(Tuple.Create("═ " & grossTitle, grossProfit.ToString("N0") & " ریال", grossProfitColor, True))
+
+                items.Add(Tuple.Create("کسر می‌شود: مجموع هزینه‌های جاری، اداری و عمومی", "(" & totalExpenses.ToString("N0") & ") ریال", Color.FromArgb(248, 248, 248), False))
+
+                Dim netProfitColor = If(netProfit >= 0, Color.FromArgb(254, 248, 165), Color.FromArgb(255, 200, 200))
+                Dim netTitle = If(netProfit >= 0, "★ سود خالص دوره (قبل از مالیات)", "★ زیان خالص دوره")
+                items.Add(Tuple.Create("══ " & netTitle, netProfit.ToString("N0") & " ریال", netProfitColor, True))
+
+                Using fItem As New Font("Tahoma", 9.0!, FontStyle.Regular), fItemBold As New Font("Tahoma", 9.5!, FontStyle.Bold)
+                    For Each item In items
+                        Dim rowHeight = If(item.Item4, 32, 28)
+                        Dim rectRow = New Rectangle(tableLeft, currY, tableWidth, rowHeight)
+
+                        Using brRow As New SolidBrush(item.Item3)
+                            g.FillRectangle(brRow, rectRow)
+                        End Using
+                        g.DrawRectangle(Pens.Black, rectRow)
+
+                        Dim fontToUse = If(item.Item4, fItemBold, fItem)
+                        
+                        Dim rTitle = New Rectangle(tableLeft + (tableWidth \ 2), currY, (tableWidth \ 2) - 15, rowHeight)
+                        g.DrawString(item.Item1, fontToUse, Brushes.Black, rTitle, sfRight)
+
+                        Dim rVal = New Rectangle(tableLeft + 15, currY, (tableWidth \ 2) - 15, rowHeight)
+                        g.DrawString(item.Item2, fontToUse, Brushes.Black, rVal, sfLeft)
+
+                        currY += rowHeight
+                    Next
+                End Using
+
+                ' جدول تفکیک هزینه‌ها (جدول دوم)
+                currY += 25
+                If expenseBreakdown IsNot Nothing AndAlso expenseBreakdown.Rows.Count > 0 Then
+                    Dim rectExpHead = New Rectangle(tableLeft, currY, tableWidth, 28)
+                    Using brExpHeaderBg As New SolidBrush(Color.FromArgb(220, 230, 245))
+                        g.FillRectangle(brExpHeaderBg, rectExpHead)
+                    End Using
+                    g.DrawRectangle(Pens.Black, rectExpHead)
+                    Using fHead As New Font("Tahoma", 9.0!, FontStyle.Bold)
+                        g.DrawString("تفکیک سرفصل‌های هزینه در این دوره", fHead, Brushes.Black, rectExpHead, sfCenter)
+                    End Using
+                    currY += 28
+
+                    Using fSub As New Font("Tahoma", 8.5!, FontStyle.Regular)
+                        For Each r As DataRow In expenseBreakdown.Rows
+                            Dim catName = If(r.IsNull("Category") OrElse String.IsNullOrEmpty(Convert.ToString(r("Category"))), "سایر هزینه‌ها", Convert.ToString(r("Category")))
+                            Dim catTotal As Decimal = 0D
+                            If Not r.IsNull("CatTotal") Then Decimal.TryParse(Convert.ToString(r("CatTotal")), catTotal)
+
+                            Dim rectCat = New Rectangle(tableLeft, currY, tableWidth, 24)
+                            g.DrawRectangle(Pens.Black, rectCat)
+
+                            Dim rCatName = New Rectangle(tableLeft + (tableWidth \ 2), currY, (tableWidth \ 2) - 15, 24)
+                            g.DrawString("• " & catName, fSub, Brushes.Black, rCatName, sfRight)
+
+                            Dim rCatVal = New Rectangle(tableLeft + 15, currY, (tableWidth \ 2) - 15, 24)
+                            g.DrawString(catTotal.ToString("N0") & " ریال", fSub, Brushes.Black, rCatVal, sfLeft)
+
+                            currY += 24
+                        Next
+                    End Using
+                End If
+
+                ' امضاداران پایین صفحه
+                Dim sigY = bottomY - 40
+                Dim sigColWidth = pageWidth \ 3
+                Using fSig As New Font("Tahoma", 9.0!, FontStyle.Bold)
+                    Dim rectSig1 = New Rectangle(rightX - sigColWidth, sigY, sigColWidth, 30)
+                    g.DrawString("تهیه کننده (حسابدار):", fSig, Brushes.Black, rectSig1, sfCenter)
+
+                    Dim rectSig2 = New Rectangle(rightX - (sigColWidth * 2), sigY, sigColWidth, 30)
+                    g.DrawString("تأیید کننده (مدیر مالی):", fSig, Brushes.Black, rectSig2, sfCenter)
+
+                    Dim rectSig3 = New Rectangle(leftX, sigY, sigColWidth, 30)
+                    g.DrawString("تصویب کننده (مدیر عامل):", fSig, Brushes.Black, rectSig3, sfCenter)
+                End Using
+            End Sub
+
+            Using dlg As New ReportPrintPreviewForm(doc, "پیش‌نمایش و تنظیمات چاپ - صورت حساب سود و زیان")
+                dlg.ShowDialog(Me)
+            End Using
         End Sub
 
         Private Sub BtnGenerateInvCount_Click(sender As Object, e As EventArgs) Handles btnGenerateInvCount.Click
