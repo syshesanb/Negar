@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -28,6 +28,20 @@ Namespace Negar
                 Application.Run(New Forms.UpdateInstallerForm())
                 Return
             End If
+
+            ' تعیین نسخه فعال نرم‌افزار نگار (Mini / Medium / Big)
+            Try
+                Dim configEdition = System.Configuration.ConfigurationManager.AppSettings("AppEdition")
+                If String.Equals(configEdition, "Medium", StringComparison.OrdinalIgnoreCase) OrElse exeName.IndexOf("Medium", StringComparison.OrdinalIgnoreCase) >= 0 Then
+                    Business.SessionContext.CurrentEdition = Models.AppEdition.Medium
+                ElseIf String.Equals(configEdition, "Big", StringComparison.OrdinalIgnoreCase) OrElse exeName.IndexOf("Big", StringComparison.OrdinalIgnoreCase) >= 0 Then
+                    Business.SessionContext.CurrentEdition = Models.AppEdition.Big
+                Else
+                    Business.SessionContext.CurrentEdition = Models.AppEdition.Mini
+                End If
+            Catch
+                Business.SessionContext.CurrentEdition = Models.AppEdition.Mini
+            End Try
 
             Dim dbFolder As String
             Dim devDbFolder = Path.Combine(Application.StartupPath, "..", "..", "Database")

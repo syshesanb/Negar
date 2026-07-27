@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -512,7 +512,12 @@ Namespace Negar.Forms
 
         Private Sub MiTradeWarehouseMain_Click(sender As Object, e As EventArgs) Handles miTradeWarehouseMain.Click
             If Not EnsureCompanyAndFiscalYearSelected() Then Return
-            OpenChild(New AnbardaryMainForm())
+            Select Case SessionContext.CurrentEdition
+                Case AppEdition.Mini
+                    OpenChild(New Anbardary.AnbarMini.AnbarMiniMainForm())
+                Case Else
+                    OpenChild(New AnbardaryMainForm())
+            End Select
         End Sub
 
         Private Sub MiReportsTrade_Click(sender As Object, e As EventArgs) Handles miReportsTrade.Click
