@@ -14,6 +14,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             HostForm(tabPOS, New AnbarMiniForooshContainerForm())
             HostForm(tabPurchase, New AnbarMiniKharidContainerForm())
             HostForm(tabParties, New AnbardaryVendorsCustomersForm())
+            HostForm(tabExpenses, New AnbarMiniExpensesForm())
             HostForm(tabProducts, New AnbardaryNamKala1Form())
             HostForm(tabWarehouses, New AnbardaryNamAnbar1Form())
             HostForm(tabGroups, New AnbardaryGoroohKala1Form())

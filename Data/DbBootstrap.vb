@@ -196,6 +196,8 @@ Namespace Negar.Data
                 Log("bootstrap:cod-standard-ok")
                 EnsurePersonsTable()
                 Log("bootstrap:persons-ok")
+                EnsureExpensesTable()
+                Log("bootstrap:expenses-ok")
             Catch ex As Exception
                 Log("bootstrap:error:" & ex.Message & Environment.NewLine & ex.StackTrace)
                 Throw
@@ -1176,6 +1178,26 @@ Namespace Negar.Data
                 End Try
             Catch ex As Exception
                 Log("EnsureCodStandardTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsureExpensesTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS Expenses (" &
+                    "ExpenseID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "ExpenseDate TEXT, " &
+                    "ExpenseTitle TEXT NOT NULL, " &
+                    "Category TEXT, " &
+                    "Amount REAL DEFAULT 0, " &
+                    "PaidTo TEXT, " &
+                    "PaymentMethod TEXT, " &
+                    "ReferenceNo TEXT, " &
+                    "Description TEXT, " &
+                    "CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP);"
+                )
+            Catch ex As Exception
+                Log("EnsureExpensesTable error: " & ex.Message)
             End Try
         End Sub
 

@@ -19,6 +19,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabPOS = New TabPage()
             Me.tabPurchase = New TabPage()
             Me.tabParties = New TabPage()
+            Me.tabExpenses = New TabPage()
             Me.tabProducts = New TabPage()
             Me.tabWarehouses = New TabPage()
             Me.tabGroups = New TabPage()
@@ -30,13 +31,14 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabsMini.Controls.Add(Me.tabPOS)
             Me.tabsMini.Controls.Add(Me.tabPurchase)
             Me.tabsMini.Controls.Add(Me.tabParties)
+            Me.tabsMini.Controls.Add(Me.tabExpenses)
             Me.tabsMini.Controls.Add(Me.tabProducts)
             Me.tabsMini.Controls.Add(Me.tabWarehouses)
             Me.tabsMini.Controls.Add(Me.tabGroups)
             Me.tabsMini.Controls.Add(Me.tabInventory)
             Me.tabsMini.Dock = DockStyle.Fill
             Me.tabsMini.Font = New Font("B Yekan", 10.0!)
-            Me.tabsMini.ItemSize = New Size(140, 35)
+            Me.tabsMini.ItemSize = New Size(130, 35)
             Me.tabsMini.Location = New Point(0, 0)
             Me.tabsMini.Name = "tabsMini"
             Me.tabsMini.SelectedIndex = 0
@@ -61,6 +63,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabParties.Name = "tabParties"
             Me.tabParties.Size = New Size(992, 607)
             Me.tabParties.Text = "👥 لیست فروشنده و خریدار"
+
+            ' tabExpenses
+            Me.tabExpenses.Location = New Point(4, 39)
+            Me.tabExpenses.Name = "tabExpenses"
+            Me.tabExpenses.Size = New Size(992, 607)
+            Me.tabExpenses.Text = "💸 هزینه‌ها"
 
             ' tabProducts
             Me.tabProducts.Location = New Point(4, 39)
@@ -107,6 +115,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents tabPOS As TabPage
         Friend WithEvents tabPurchase As TabPage
         Friend WithEvents tabParties As TabPage
+        Friend WithEvents tabExpenses As TabPage
         Friend WithEvents tabProducts As TabPage
         Friend WithEvents tabWarehouses As TabPage
         Friend WithEvents tabGroups As TabPage
