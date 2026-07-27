@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -19,6 +19,7 @@ Namespace Negar
             End Try
             Application.EnableVisualStyles()
             Application.SetCompatibleTextRenderingDefault(False)
+            Application.AddMessageFilter(New GlobalCalculatorMessageFilter())
 
             Dim exeName As String = Path.GetFileName(Application.ExecutablePath)
             If exeName.StartsWith("Setup", StringComparison.OrdinalIgnoreCase) Then
@@ -90,4 +91,37 @@ Namespace Negar
             End Using
         End Sub
     End Module
+
+    Public Class GlobalCalculatorMessageFilter
+        Implements IMessageFilter
+
+        Private Const WM_KEYDOWN As Integer = &H100
+        Private Const WM_SYSKEYDOWN As Integer = &H104
+
+        Public Function PreFilterMessage(ByRef m As Message) As Boolean Implements IMessageFilter.PreFilterMessage
+            If m.Msg = WM_KEYDOWN OrElse m.Msg = WM_SYSKEYDOWN Then
+                Dim rawKey As Keys = CType(m.WParam.ToInt32(), Keys)
+                Dim keyData As Keys = rawKey Or Control.ModifierKeys
+
+                ' کلید F12 یا F10 یا کلید ترکیبی Ctrl + Shift + C
+                If rawKey = Keys.F12 OrElse rawKey = Keys.F10 OrElse keyData = (Keys.Control Or Keys.Shift Or Keys.C) Then
+                    OpenCalculator()
+                    Return True
+                End If
+            End If
+            Return False
+        End Function
+
+        Private Shared Sub OpenCalculator()
+            Try
+                System.Diagnostics.Process.Start("calc.exe")
+            Catch ex As Exception
+                Try
+                    System.Diagnostics.Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "calc.exe"))
+                Catch
+                    MessageBox.Show("امکان باز کردن ماشین حساب وجود ندارد.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                End Try
+            End Try
+        End Sub
+    End Class
 End Namespace
