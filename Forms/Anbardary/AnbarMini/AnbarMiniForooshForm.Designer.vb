@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -111,6 +111,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.pnlScan.Controls.Add(Me.lblScan)
             Me.pnlScan.Controls.Add(Me.txtBarcodeScan)
             Me.pnlScan.Controls.Add(Me.btnAddProduct)
+            Me.pnlScan.Controls.Add(Me.btnBrowseProduct)
             Me.pnlScan.Dock = DockStyle.Top
             Me.pnlScan.Location = New Point(0, 60)
             Me.pnlScan.Name = "pnlScan"
@@ -134,11 +135,21 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnAddProduct.BackColor = Color.FromArgb(52, 152, 219)
             Me.btnAddProduct.FlatStyle = FlatStyle.Flat
             Me.btnAddProduct.ForeColor = Color.White
-            Me.btnAddProduct.Location = New Point(110, 9)
+            Me.btnAddProduct.Location = New Point(115, 9)
             Me.btnAddProduct.Name = "btnAddProduct"
-            Me.btnAddProduct.Size = New Size(110, 32)
+            Me.btnAddProduct.Size = New Size(105, 32)
             Me.btnAddProduct.Text = "افزودن (Enter)"
             Me.btnAddProduct.UseVisualStyleBackColor = False
+
+            ' btnBrowseProduct
+            Me.btnBrowseProduct.BackColor = Color.FromArgb(39, 174, 96)
+            Me.btnBrowseProduct.FlatStyle = FlatStyle.Flat
+            Me.btnBrowseProduct.ForeColor = Color.White
+            Me.btnBrowseProduct.Location = New Point(10, 9)
+            Me.btnBrowseProduct.Name = "btnBrowseProduct"
+            Me.btnBrowseProduct.Size = New Size(100, 32)
+            Me.btnBrowseProduct.Text = "جستجو (F2)"
+            Me.btnBrowseProduct.UseVisualStyleBackColor = False
 
             ' dgvCart
             Me.dgvCart.AllowUserToAddRows = False
@@ -292,6 +303,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents lblScan As Label
         Friend WithEvents txtBarcodeScan As TextBox
         Friend WithEvents btnAddProduct As Button
+        Friend WithEvents btnBrowseProduct As Button
 
         Friend WithEvents dgvCart As DataGridView
         Friend WithEvents colProductID As DataGridViewTextBoxColumn

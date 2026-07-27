@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -112,6 +112,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.pnlProductAdd.Controls.Add(Me.lblBuyPrice)
             Me.pnlProductAdd.Controls.Add(Me.txtUnitPrice)
             Me.pnlProductAdd.Controls.Add(Me.btnAdd)
+            Me.pnlProductAdd.Controls.Add(Me.btnBrowseProduct)
             Me.pnlProductAdd.Dock = DockStyle.Top
             Me.pnlProductAdd.Location = New Point(0, 60)
             Me.pnlProductAdd.Name = "pnlProductAdd"
@@ -154,10 +155,21 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnAdd.BackColor = Color.FromArgb(39, 174, 96)
             Me.btnAdd.FlatStyle = FlatStyle.Flat
             Me.btnAdd.ForeColor = Color.White
-            Me.btnAdd.Location = New Point(110, 10)
+            Me.btnAdd.Location = New Point(115, 10)
             Me.btnAdd.Name = "btnAdd"
-            Me.btnAdd.Size = New Size(105, 30)
+            Me.btnAdd.Size = New Size(100, 30)
             Me.btnAdd.Text = "+ افزودن"
+            Me.btnAdd.UseVisualStyleBackColor = False
+
+            ' btnBrowseProduct
+            Me.btnBrowseProduct.BackColor = Color.FromArgb(41, 128, 185)
+            Me.btnBrowseProduct.FlatStyle = FlatStyle.Flat
+            Me.btnBrowseProduct.ForeColor = Color.White
+            Me.btnBrowseProduct.Location = New Point(10, 10)
+            Me.btnBrowseProduct.Name = "btnBrowseProduct"
+            Me.btnBrowseProduct.Size = New Size(95, 30)
+            Me.btnBrowseProduct.Text = "جستجو (F2)"
+            Me.btnBrowseProduct.UseVisualStyleBackColor = False
             Me.btnAdd.UseVisualStyleBackColor = False
 
             ' dgvItems
@@ -274,6 +286,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents lblBuyPrice As Label
         Friend WithEvents txtUnitPrice As TextBox
         Friend WithEvents btnAdd As Button
+        Friend WithEvents btnBrowseProduct As Button
 
         Friend WithEvents dgvItems As DataGridView
         Friend WithEvents colProductID As DataGridViewTextBoxColumn
