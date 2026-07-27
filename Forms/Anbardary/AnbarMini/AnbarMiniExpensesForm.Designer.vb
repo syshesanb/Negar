@@ -169,9 +169,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnFilter.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnFilter.ForeColor = System.Drawing.Color.White
-            Me.btnFilter.Location = New System.Drawing.Point(260, 11)
+            Me.btnFilter.Location = New System.Drawing.Point(342, 11)
             Me.btnFilter.Name = "btnFilter"
-            Me.btnFilter.Size = New System.Drawing.Size(65, 27)
+            Me.btnFilter.Size = New System.Drawing.Size(62, 27)
             Me.btnFilter.TabIndex = 10
             Me.btnFilter.Text = "جستجو"
             Me.btnFilter.UseVisualStyleBackColor = False
@@ -179,9 +179,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             'btnClearFilter
             '
             Me.btnClearFilter.Font = New System.Drawing.Font("Tahoma", 8.5!)
-            Me.btnClearFilter.Location = New System.Drawing.Point(205, 11)
+            Me.btnClearFilter.Location = New System.Drawing.Point(289, 11)
             Me.btnClearFilter.Name = "btnClearFilter"
-            Me.btnClearFilter.Size = New System.Drawing.Size(50, 27)
+            Me.btnClearFilter.Size = New System.Drawing.Size(48, 27)
             Me.btnClearFilter.TabIndex = 11
             Me.btnClearFilter.Text = "همه"
             Me.btnClearFilter.UseVisualStyleBackColor = True
@@ -192,9 +192,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnAdd.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnAdd.ForeColor = System.Drawing.Color.White
-            Me.btnAdd.Location = New System.Drawing.Point(125, 11)
+            Me.btnAdd.Location = New System.Drawing.Point(204, 11)
             Me.btnAdd.Name = "btnAdd"
-            Me.btnAdd.Size = New System.Drawing.Size(75, 27)
+            Me.btnAdd.Size = New System.Drawing.Size(80, 27)
             Me.btnAdd.TabIndex = 12
             Me.btnAdd.Text = "+ هزینه"
             Me.btnAdd.UseVisualStyleBackColor = False
@@ -205,9 +205,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnEdit.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnEdit.ForeColor = System.Drawing.Color.White
-            Me.btnEdit.Location = New System.Drawing.Point(65, 11)
+            Me.btnEdit.Location = New System.Drawing.Point(124, 11)
             Me.btnEdit.Name = "btnEdit"
-            Me.btnEdit.Size = New System.Drawing.Size(55, 27)
+            Me.btnEdit.Size = New System.Drawing.Size(75, 27)
             Me.btnEdit.TabIndex = 13
             Me.btnEdit.Text = "ویرایش"
             Me.btnEdit.UseVisualStyleBackColor = False
@@ -218,9 +218,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnDelete.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnDelete.ForeColor = System.Drawing.Color.White
-            Me.btnDelete.Location = New System.Drawing.Point(12, 11)
+            Me.btnDelete.Location = New System.Drawing.Point(67, 11)
             Me.btnDelete.Name = "btnDelete"
-            Me.btnDelete.Size = New System.Drawing.Size(48, 27)
+            Me.btnDelete.Size = New System.Drawing.Size(52, 27)
             Me.btnDelete.TabIndex = 14
             Me.btnDelete.Text = "حذف"
             Me.btnDelete.UseVisualStyleBackColor = False
@@ -231,15 +231,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnPrint.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnPrint.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnPrint.ForeColor = System.Drawing.Color.White
-            Me.btnPrint.Location = New System.Drawing.Point(12, 11)
+            Me.btnPrint.Location = New System.Drawing.Point(10, 11)
             Me.btnPrint.Name = "btnPrint"
-            Me.btnPrint.Size = New System.Drawing.Size(48, 27)
+            Me.btnPrint.Size = New System.Drawing.Size(52, 27)
             Me.btnPrint.TabIndex = 15
             Me.btnPrint.Text = "چاپ"
             Me.btnPrint.UseVisualStyleBackColor = False
-            Me.btnDelete.Location = New System.Drawing.Point(65, 11)
-            Me.btnEdit.Location = New System.Drawing.Point(118, 11)
-            Me.btnAdd.Location = New System.Drawing.Point(178, 11)
             '
             'dgvExpenses
             '
