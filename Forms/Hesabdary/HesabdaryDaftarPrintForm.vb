@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -299,16 +299,17 @@ Namespace Negar.Forms
                     End If
                 End If
 
-                ' نام شرکت در بالای عنوان گزارش
-                Using fCompany As New Font("B Nazanin", 13.0!, FontStyle.Bold)
+                ' نام شرکت در بالای عنوان گزارش (مطابق نمونه تصویر: قرمز عنابی)
+                Using fCompany As New Font("B Nazanin", 13.0!, FontStyle.Bold),
+                      brRed As New SolidBrush(Color.FromArgb(160, 0, 0))
                     Dim rCompany = New Rectangle(leftX, currentY, pageWidth, 25)
-                    g.DrawString(SessionContext.CurrentCompanyName, fCompany, Brushes.Black, rCompany, sfCenter)
+                    g.DrawString(SessionContext.CurrentCompanyName, fCompany, brRed, rCompany, sfCenter)
                 End Using
 
                 currentY += 28
 
-                ' عنوان سربرگ
-                Using brRed As New SolidBrush(Color.FromArgb(180, 0, 0))
+                ' عنوان سربرگ (قرمز عنابی)
+                Using brRed As New SolidBrush(Color.FromArgb(160, 0, 0))
                     Dim rHeaderTitle = New Rectangle(leftX, currentY, pageWidth, 32)
                     g.DrawString(block.LedgerTitle, fMainHeader, brRed, rHeaderTitle, sfCenter)
                 End Using
@@ -318,44 +319,32 @@ Namespace Negar.Forms
                 ' سطر مشخصات بالای جدول: سمت راست زنجیره حساب‌ها و سمت چپ "صفحه: X"
                 Dim chain = block.AccountHierarchyChain
 
-                Dim hasChain = (chain IsNot Nothing AndAlso chain.Count > 0)
+                Dim printedCount As Integer = 0
+                Dim printLevel = Sub(lblPrefix As String, idx As Integer)
+                                     If chain IsNot Nothing AndAlso idx < chain.Count Then
+                                         Dim rLevel = New Rectangle(leftX, currentY, pageWidth, 20)
+                                         Dim levelText = String.Format("{0} : {1} - {2}", lblPrefix, chain(idx).Item1, chain(idx).Item2)
+                                         g.DrawString(levelText, fSubHeader, Brushes.Black, rLevel, sfRight)
 
-                Dim rPageTop = New Rectangle(leftX, currentY, 150, 25)
-                g.DrawString("صفحه: " & pageInfo.Value.PageNumberInBlock.ToString(), fSubHeader, Brushes.Black, rPageTop, sfLeft)
-
-                If hasChain Then
-                    Dim textHeight = 20
-                    Dim printedCount = 0
-
-                    Dim printLevel = Sub(lbl As String, idx As Integer)
-                                         If idx < chain.Count Then
-                                             Dim labelText = ": " & lbl
-                                             Dim valueText = chain(idx).Item1 & " _ " & chain(idx).Item2
-
-                                             Dim labelRect = New Rectangle(rightX - 80, currentY, 80, textHeight)
-                                             Dim valueRect = New Rectangle(leftX, currentY, pageWidth - 80, textHeight)
-
-                                             g.DrawString(labelText, fSubHeader, Brushes.Black, labelRect, sfRight)
-                                             g.DrawString(valueText, fSubHeader, Brushes.Black, valueRect, sfRight)
-
-                                             currentY += textHeight
-                                             printedCount += 1
+                                         Dim textHeight As Integer = 22
+                                         If idx = chain.Count - 1 Then
+                                             Dim pageStr = String.Format("صفحه : {0}", _currentPageIndex + 1)
+                                             g.DrawString(pageStr, fSubHeader, Brushes.Black, rLevel, sfLeft)
                                          End If
-                                     End Sub
 
-                    printLevel("گروه", 0)
-                    printLevel("کل", 1)
-                    printLevel("معین", 2)
-                    printLevel("تفضیلی1", 3)
-                    printLevel("تفضیلی2", 4)
-                    printLevel("تفضیلی3", 5)
+                                         currentY += textHeight
+                                         printedCount += 1
+                                     End If
+                                 End Sub
 
-                    If printedCount = 0 Then
-                        currentY += 25
-                    End If
-                Else
-                    Dim rAccName = New Rectangle(leftX, currentY, pageWidth, 25)
-                    g.DrawString("نام حساب :  " & block.AccountNameTitle, fSubHeader, Brushes.Black, rAccName, sfRight)
+                printLevel("گروه", 0)
+                printLevel("کل", 1)
+                printLevel("معین", 2)
+                printLevel("تفضیلی1", 3)
+                printLevel("تفضیلی2", 4)
+                printLevel("تفضیلی3", 5)
+
+                If printedCount = 0 Then
                     currentY += 25
                 End If
 
@@ -382,10 +371,10 @@ Namespace Negar.Forms
                     colWidths(cols(cols.Count - 1).Key) += (pageWidth - currentSum)
                 End If
 
-                ' ۳. رسم هدر جدول
+                ' ۳. رسم هدر جدول (آبی فیروزه‌ای ملایم مطابق تصویر)
                 Dim headerHeight = 34
                 Dim rectHeaderFull = New Rectangle(leftX, currentY, pageWidth, headerHeight)
-                Using brHeaderBg As New SolidBrush(Color.FromArgb(200, 230, 245))
+                Using brHeaderBg As New SolidBrush(Color.FromArgb(210, 236, 245))
                     g.FillRectangle(brHeaderBg, rectHeaderFull)
                 End Using
                 g.DrawRectangle(Pens.Black, rectHeaderFull)
@@ -414,8 +403,9 @@ Namespace Negar.Forms
                         Dim textPadding = New Rectangle(leftX + 5, currentY, pageWidth - 10, rowHeight)
                         g.DrawString(r.Description, fTableBold, Brushes.DarkBlue, textPadding, sfRight)
                     ElseIf r.IsSummary Then
+                        ' سطر جمع (زرد لیمویی ملایم مطابق تصویر)
                         Dim rectSumBg = New Rectangle(leftX, currentY, pageWidth, rowHeight)
-                        Using brBg As New SolidBrush(Color.FromArgb(255, 255, 200))
+                        Using brBg As New SolidBrush(Color.FromArgb(254, 248, 165))
                             g.FillRectangle(brBg, rectSumBg)
                         End Using
                         g.DrawRectangle(Pens.Black, rectSumBg)

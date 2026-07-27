@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -289,10 +289,12 @@ Namespace Negar.Forms
             Dim sizeCompName = g.MeasureString(companyName, fTitle, compWidth)
             Dim rectCompName As New Rectangle(leftX + compWidth, topY + 15, compWidth, CInt(sizeCompName.Height) + 5)
 
-            g.DrawString(companyName, fTitle, Brushes.DarkRed, rectCompName, sfCenter)
+            Using brMaroon As New SolidBrush(Color.FromArgb(160, 0, 0))
+                g.DrawString(companyName, fTitle, brMaroon, rectCompName, sfCenter)
 
-            Dim titleY = rectCompName.Bottom + 5
-            g.DrawString(titleText, fSubTitle, Brushes.DarkRed, leftX + (pageWidth \ 2), titleY, sfCenter)
+                Dim titleY = rectCompName.Bottom + 5
+                g.DrawString(titleText, fSubTitle, brMaroon, leftX + (pageWidth \ 2), titleY, sfCenter)
+            End Using
 
             ' هدر: فیلترها (بر اساس موقعیت لوگو)
             Dim filterText As String = ""
@@ -331,7 +333,7 @@ Namespace Negar.Forms
 
             ' هدر جدول
             Dim rectHeader As New Rectangle(leftX, tableStartY, pageWidth, headerHeight)
-            Using brHeader As New SolidBrush(Color.FromArgb(220, 230, 242))
+            Using brHeader As New SolidBrush(Color.FromArgb(210, 236, 245))
                 g.FillRectangle(brHeader, rectHeader)
             End Using
             g.DrawRectangle(Pens.Black, rectHeader)

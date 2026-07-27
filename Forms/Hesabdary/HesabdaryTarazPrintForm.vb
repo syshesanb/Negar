@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -253,7 +253,7 @@ Namespace Negar.Forms
                 End If
 
                 ' عناوین مرکزی با رنگ قرمز خرمایی (مطابق تصویر نمونه)
-                Using brRed As New SolidBrush(Color.FromArgb(180, 0, 0))
+                Using brRed As New SolidBrush(Color.FromArgb(160, 0, 0))
                     Dim rHeaderComp = New Rectangle(leftX, currentY, pageWidth, 28)
                     g.DrawString(_companyName, fTitleHeader, brRed, rHeaderComp, sfCenter)
 
@@ -283,10 +283,10 @@ Namespace Negar.Forms
                     colWidths(_columns(_columns.Count - 1).Key) += (pageWidth - currentSum)
                 End If
 
-                ' ۳. رسم هدر جدول (با رنگ آبی ملایم مطابق تصویر نمونه)
+                ' ۳. رسم هدر جدول (با رنگ آبی فیروزه‌ای ملایم مطابق تصویر نمونه)
                 Dim headerHeight = 28
                 Dim rectHeaderFull = New Rectangle(leftX, currentY, pageWidth, headerHeight)
-                Using brHeaderBg As New SolidBrush(Color.FromArgb(200, 230, 245))
+                Using brHeaderBg As New SolidBrush(Color.FromArgb(210, 236, 245))
                     g.FillRectangle(brHeaderBg, rectHeaderFull)
                 End Using
                 g.DrawRectangle(Pens.Black, rectHeaderFull)
@@ -352,7 +352,7 @@ Namespace Negar.Forms
                 If _currentPageIndex = _pages.Count - 1 Then
                     Dim totalRowHeight = 26
                     Dim rectTotalFull = New Rectangle(leftX, currentY, pageWidth, totalRowHeight)
-                    Using brTotalBg As New SolidBrush(Color.FromArgb(255, 255, 190)) ' زرد لیمویی ملایم
+                    Using brTotalBg As New SolidBrush(Color.FromArgb(254, 248, 165)) ' زرد لیمویی ملایم
                         g.FillRectangle(brTotalBg, rectTotalFull)
                     End Using
                     g.DrawRectangle(Pens.Black, rectTotalFull)

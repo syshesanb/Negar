@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -338,10 +338,12 @@ Namespace Negar.Forms
             Dim sizeCompName = g.MeasureString(companyName, fTitle, compWidth)
             Dim rectCompName As New Rectangle(leftX + compWidth, topY + 15, compWidth, CInt(sizeCompName.Height) + 5)
 
-            g.DrawString(companyName, fTitle, Brushes.DarkRed, rectCompName, sfCenter)
+            Using brMaroon As New SolidBrush(Color.FromArgb(160, 0, 0))
+                g.DrawString(companyName, fTitle, brMaroon, rectCompName, sfCenter)
 
-            Dim titleY = rectCompName.Bottom + 5
-            g.DrawString(titleText, fSubTitle, Brushes.DarkRed, leftX + (pageWidth \ 2), titleY, sfCenter)
+                Dim titleY = rectCompName.Bottom + 5
+                g.DrawString(titleText, fSubTitle, brMaroon, leftX + (pageWidth \ 2), titleY, sfCenter)
+            End Using
 
             ' هدر: شماره و تاریخ (همیشه در سمت راست)
             If String.Equals(_logoPosition, "Right", StringComparison.OrdinalIgnoreCase) Then
@@ -375,14 +377,14 @@ Namespace Negar.Forms
             colX(4) = colX(3) - colWidths(3)
             colX(5) = leftX ' ستون بستانکار به لبه چپ متصل می‌شود
 
-            ' هدر جدول
+            ' هدر جدول (آبی فیروزه‌ای ملایم مطابق تصویر)
             Dim rectHeader As New Rectangle(leftX, tableStartY, pageWidth, headerHeight)
-            Using brHeader As New SolidBrush(Color.FromArgb(220, 230, 242))
+            Using brHeader As New SolidBrush(Color.FromArgb(210, 236, 245))
                 g.FillRectangle(brHeader, rectHeader)
             End Using
             g.DrawRectangle(Pens.Black, rectHeader)
 
-            Dim headers = New String() {"کد حساب", "شرح", "مبلغ جزء", "بدهکار", "بستانکار"}
+            Dim headers = New String() {"کد حساب", "شــــــــرح", "مبلغ جزء", "بدهکار", "بستانکار"}
             For i = 0 To 4
                 Dim rectColHeader As New Rectangle(colX(i + 1), tableStartY, colWidths(i), headerHeight)
                 g.DrawRectangle(Pens.Black, rectColHeader)
@@ -449,9 +451,9 @@ Namespace Negar.Forms
                     g.DrawString(dr.CreditAmount.Value.ToString("N0"), fRegular, Brushes.Black, rCred, sfTextRight)
                 End If
 
-                ' رسم خط کمرنگ پایین سطر
-                Using pDash As New Pen(Color.LightGray) With {.DashStyle = DashStyle.Dash}
-                    g.DrawLine(pDash, leftX, currY + rowHeight, rightX, currY + rowHeight)
+                ' رسم خط نقطه‌چین پایین سطر (طرح تصویر نمونه)
+                Using pDot As New Pen(Color.LightGray) With {.DashStyle = DashStyle.Dot}
+                    g.DrawLine(pDot, leftX, currY + rowHeight, rightX, currY + rowHeight)
                 End Using
 
                 currY += rowHeight
@@ -461,8 +463,8 @@ Namespace Negar.Forms
             ' رسم خطوط افقی سطرها تا پایین فریم
             Dim remainingY = currY
             Do While remainingY < tableEndY
-                Using pDash As New Pen(Color.LightGray) With {.DashStyle = DashStyle.Dash}
-                    g.DrawLine(pDash, leftX, remainingY, rightX, remainingY)
+                Using pDot As New Pen(Color.LightGray) With {.DashStyle = DashStyle.Dot}
+                    g.DrawLine(pDot, leftX, remainingY, rightX, remainingY)
                 End Using
                 remainingY += rowHeight
             Loop
@@ -482,10 +484,10 @@ Namespace Negar.Forms
 
             ' ۶. ترسیم باکس جمع کل، شرح سند و امضاها در صفحه آخر
             If isLastPage Then
-                ' باکس جمع کل (زرد رنگ)
+                ' باکس جمع کل (زرد لیمویی ملایم مطابق تصویر)
                 Dim totalsHeight = 30
                 Dim rectTotals = New Rectangle(leftX, tableEndY, pageWidth, totalsHeight)
-                Using brTotals As New SolidBrush(Color.FromArgb(255, 255, 204))
+                Using brTotals As New SolidBrush(Color.FromArgb(254, 248, 165))
                     g.FillRectangle(brTotals, rectTotals)
                 End Using
                 g.DrawRectangle(Pens.Black, rectTotals)
@@ -497,10 +499,13 @@ Namespace Negar.Forms
                     .FormatFlags = StringFormatFlags.DirectionRightToLeft
                 }
 
-                ' متن جمع کل به حروف (راست‌چین در محدوده ستون‌های کد حساب، شرح و مبلغ جزء)
+                ' متن جمع کل به حروف
                 Dim totalsTextWidth = colWidths(0) + colWidths(1) + colWidths(2)
                 Dim rDescTot = New Rectangle(colX(3) + 5, tableEndY, totalsTextWidth - 10, totalsHeight)
-                Dim sumWords = "جمع : " & NumberToPersianWords(Convert.ToInt64(sumDebit)) & " ریال"
+                Dim sumWords = "جمع :"
+                If sumDebit > 0 Then
+                    sumWords &= " " & NumberToPersianWords(Convert.ToInt64(sumDebit)) & " ریال"
+                End If
                 g.DrawString(sumWords, fBold, Brushes.Black, rDescTot, sfTotalsWords)
 
                 ' مجموع بدهکار (راست‌چین)
@@ -515,32 +520,35 @@ Namespace Negar.Forms
                 g.DrawLine(Pens.Black, colX(3), tableEndY, colX(3), tableEndY + totalsHeight)
                 g.DrawLine(Pens.Black, colX(4), tableEndY, colX(4), tableEndY + totalsHeight)
 
-                ' باکس شرح سند (آبی ملایم)
+                ' باکس شرح سند (فیروزه‌ای ملایم مطابق تصویر)
                 Dim descBoxHeight = 45
                 Dim rectDesc = New Rectangle(leftX, tableEndY + totalsHeight, pageWidth, descBoxHeight)
-                Using brDesc As New SolidBrush(Color.FromArgb(230, 245, 255))
+                Using brDesc As New SolidBrush(Color.FromArgb(210, 236, 245))
                     g.FillRectangle(brDesc, rectDesc)
                 End Using
                 g.DrawRectangle(Pens.Black, rectDesc)
 
                 Dim rDescText = New Rectangle(leftX + 10, tableEndY + totalsHeight + 5, pageWidth - 20, descBoxHeight - 10)
-                g.DrawString("شرح سند : " & targetDoc.Description, fBold, Brushes.Black, rDescText, sfRight)
+                g.DrawString("شرح: " & targetDoc.Description, fBold, Brushes.Black, rDescText, sfRight)
 
-                ' بخش امضاها
+                ' بخش امضاها (مطابق نمونه تصویر: تهیه کننده / تأیید کننده / تصویب کننده)
                 Dim sigY = tableEndY + totalsHeight + descBoxHeight + 15
                 Dim sigColWidth = pageWidth \ 3
 
-                ' امضادار ۱ (راست)
+                ' تهیه کننده (راست)
                 Dim rectSig1 = New Rectangle(rightX - sigColWidth, sigY, sigColWidth, 40)
-                g.DrawString(_sig1Title & " : " & _sig1Name, fBold, Brushes.Black, rectSig1, sfCenter)
+                Dim sig1Text = If(String.IsNullOrWhiteSpace(_sig1Name), "تهیه کننده:", "تهیه کننده: " & _sig1Name)
+                g.DrawString(sig1Text, fBold, Brushes.Black, rectSig1, sfCenter)
 
-                ' امضادار ۲ (وسط)
+                ' تأیید کننده (وسط)
                 Dim rectSig2 = New Rectangle(rightX - (sigColWidth * 2), sigY, sigColWidth, 40)
-                g.DrawString(_sig2Title & " : " & _sig2Name, fBold, Brushes.Black, rectSig2, sfCenter)
+                Dim sig2Text = If(String.IsNullOrWhiteSpace(_sig2Name), "تأیید کننده:", "تأیید کننده: " & _sig2Name)
+                g.DrawString(sig2Text, fBold, Brushes.Black, rectSig2, sfCenter)
 
-                ' امضادار ۳ (چپ)
+                ' تصویب کننده (چپ)
                 Dim rectSig3 = New Rectangle(leftX, sigY, sigColWidth, 40)
-                g.DrawString(_sig3Title & " : " & _sig3Name, fBold, Brushes.Black, rectSig3, sfCenter)
+                Dim sig3Text = If(String.IsNullOrWhiteSpace(_sig3Name), "تصویب کننده:", "تصویب کننده: " & _sig3Name)
+                g.DrawString(sig3Text, fBold, Brushes.Black, rectSig3, sfCenter)
             Else
                 ' در صفحات میانی، پیامی درج می‌کنیم که ادامه در صفحه بعد است
                 Dim rectNextPage = New Rectangle(leftX, tableEndY, pageWidth, 30)
