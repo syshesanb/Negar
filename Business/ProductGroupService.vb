@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Data
 Imports Negar.Data
 
@@ -109,7 +109,7 @@ Namespace Negar.Business
             Try
                 Dim compId = SessionContext.CurrentCompanyID
                 If compId.HasValue Then
-                    Sql.ExecuteNonQuery("DELETE FROM ProductGroups WHERE GroupID = ? AND (CompanyID = ? OR CompanyID IS NULL)", groupId, compId.Value)
+                    Sql.ExecuteNonQuery("DELETE FROM ProductGroups WHERE GroupID = ? AND CompanyID = ?", groupId, compId.Value)
                 Else
                     Sql.ExecuteNonQuery("DELETE FROM ProductGroups WHERE GroupID = ?", groupId)
                 End If

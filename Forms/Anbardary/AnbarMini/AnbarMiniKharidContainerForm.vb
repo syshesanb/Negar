@@ -65,7 +65,6 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 .Height = 55,
                 .BackColor = Color.FromArgb(245, 246, 250)
             }
-            pnlListContainer.Controls.Add(pnlListHeader)
 
             lblListTitle = New Label() With {
                 .Text = "📋 لیست فاکتورهای خرید کالا",
@@ -121,24 +120,31 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 .MultiSelect = False,
                 .RowHeadersVisible = False,
                 .AutoGenerateColumns = False,
+                .EnableHeadersVisualStyles = False,
                 .RowTemplate = New DataGridViewRow() With {.Height = 32}
             }
 
             dgvInvoices.CellBorderStyle = DataGridViewCellBorderStyle.Single
-            dgvInvoices.GridColor = Color.FromArgb(220, 225, 230)
-            dgvInvoices.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(235, 240, 248)
+            dgvInvoices.GridColor = Color.FromArgb(200, 210, 225)
+            dgvInvoices.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(41, 128, 185)
+            dgvInvoices.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
             dgvInvoices.ColumnHeadersDefaultCellStyle.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
             dgvInvoices.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            dgvInvoices.ColumnHeadersHeight = 35
-            dgvInvoices.DefaultCellStyle.SelectionBackColor = Color.FromArgb(41, 128, 185)
+            dgvInvoices.ColumnHeadersHeight = 36
+            dgvInvoices.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+            dgvInvoices.DefaultCellStyle.SelectionBackColor = Color.FromArgb(52, 152, 219)
             dgvInvoices.DefaultCellStyle.SelectionForeColor = Color.White
-            dgvInvoices.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 248, 252)
+            dgvInvoices.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(242, 248, 255)
 
             SetupGridColumns()
-            pnlListContainer.Controls.Add(dgvInvoices)
-            pnlListHeader.BringToFront()
 
+            ' Docking controls correctly: DataGridView Fill, Header Panel Top
+            pnlListContainer.Controls.Add(dgvInvoices)
+            pnlListContainer.Controls.Add(pnlListHeader)
+
+            AddHandler dgvInvoices.RowPostPaint, AddressOf DgvInvoices_RowPostPaint
             AddHandler dgvInvoices.CellContentClick, AddressOf DgvInvoices_CellContentClick
+            AddHandler dgvInvoices.CellDoubleClick, AddressOf DgvInvoices_CellDoubleClick
             AddHandler Me.Load, AddressOf AnbarMiniKharidContainerForm_Load
             AddHandler Me.VisibleChanged, AddressOf AnbarMiniKharidContainerForm_VisibleChanged
         End Sub
@@ -146,56 +152,77 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Private Sub SetupGridColumns()
             dgvInvoices.Columns.Clear()
 
+            ' 1. Row Index Column
+            Dim colRowIdx As New DataGridViewTextBoxColumn() With {
+                .Name = "colRowIndex", .HeaderText = "ردیف",
+                .Width = 55, .ReadOnly = True
+            }
+            colRowIdx.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+            ' 2. Edit Button Column
+            Dim colEdit As New DataGridViewButtonColumn() With {
+                .Name = "colEdit", .HeaderText = "ویرایش",
+                .Text = "ویرایش", .UseColumnTextForButtonValue = True,
+                .Width = 65, .FlatStyle = FlatStyle.Flat
+            }
+
+            ' 3. Delete Button Column
+            Dim colDelete As New DataGridViewButtonColumn() With {
+                .Name = "colDelete", .HeaderText = "حذف",
+                .Text = "حذف", .UseColumnTextForButtonValue = True,
+                .Width = 60, .FlatStyle = FlatStyle.Flat
+            }
+
+            ' Hidden ID Column
             Dim colId As New DataGridViewTextBoxColumn() With {
                 .Name = "InvoiceID", .DataPropertyName = "InvoiceID", .Visible = False
             }
 
+            ' Data Columns
             Dim colNo As New DataGridViewTextBoxColumn() With {
                 .Name = "InvoiceNumber", .DataPropertyName = "InvoiceNumber",
-                .HeaderText = "شماره فاکتور", .Width = 120
+                .HeaderText = "شماره فاکتور", .Width = 110
             }
 
             Dim colDate As New DataGridViewTextBoxColumn() With {
                 .Name = "InvoiceDate", .DataPropertyName = "InvoiceDate",
-                .HeaderText = "تاریخ", .Width = 110
+                .HeaderText = "تاریخ", .Width = 100
             }
 
             Dim colVendor As New DataGridViewTextBoxColumn() With {
                 .Name = "VendorName", .DataPropertyName = "VendorName",
-                .HeaderText = "فروشنده / تامین‌کننده", .Width = 200
+                .HeaderText = "فروشنده / تامین‌کننده", .Width = 180
             }
 
             Dim colWh As New DataGridViewTextBoxColumn() With {
                 .Name = "WarehouseName", .DataPropertyName = "WarehouseName",
-                .HeaderText = "انبار مقصد", .Width = 140
+                .HeaderText = "انبار مقصد", .Width = 130
             }
 
             Dim colTotal As New DataGridViewTextBoxColumn() With {
                 .Name = "TotalAmount", .DataPropertyName = "TotalAmount",
-                .HeaderText = "مبلغ کل (ریال)", .Width = 150
+                .HeaderText = "مبلغ کل (ریال)", .Width = 130
             }
             colTotal.DefaultCellStyle.Format = "N0"
             colTotal.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
 
             Dim colPayType As New DataGridViewTextBoxColumn() With {
                 .Name = "PaymentType", .DataPropertyName = "PaymentType",
-                .HeaderText = "نوع پرداخت", .Width = 100
+                .HeaderText = "نوع پرداخت", .Width = 90
             }
 
             Dim colDesc As New DataGridViewTextBoxColumn() With {
                 .Name = "Description", .DataPropertyName = "Description",
-                .HeaderText = "توضیحات", .Width = 220
-            }
-
-            Dim colDelete As New DataGridViewButtonColumn() With {
-                .Name = "colDelete", .HeaderText = "حذف",
-                .Text = "حذف", .UseColumnTextForButtonValue = True,
-                .Width = 70, .FlatStyle = FlatStyle.Flat
+                .HeaderText = "توضیحات", .Width = 180
             }
 
             dgvInvoices.Columns.AddRange(New DataGridViewColumn() {
-                colId, colNo, colDate, colVendor, colWh, colTotal, colPayType, colDesc, colDelete
+                colRowIdx, colEdit, colDelete, colId, colNo, colDate, colVendor, colWh, colTotal, colPayType, colDesc
             })
+        End Sub
+
+        Private Sub DgvInvoices_RowPostPaint(sender As Object, e As DataGridViewRowPostPaintEventArgs)
+            dgvInvoices.Rows(e.RowIndex).Cells("colRowIndex").Value = (e.RowIndex + 1).ToString()
         End Sub
 
         Private Sub AnbarMiniKharidContainerForm_Load(sender As Object, e As EventArgs)
@@ -258,9 +285,18 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             ShowListView()
         End Sub
 
+        Private Sub DgvInvoices_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs)
+            If e.RowIndex >= 0 Then
+                OpenInvoiceForView(e.RowIndex)
+            End If
+        End Sub
+
         Private Sub DgvInvoices_CellContentClick(sender As Object, e As DataGridViewCellEventArgs)
             If e.RowIndex >= 0 Then
-                If dgvInvoices.Columns(e.ColumnIndex).Name = "colDelete" Then
+                Dim colName = dgvInvoices.Columns(e.ColumnIndex).Name
+                If colName = "colEdit" Then
+                    OpenInvoiceForView(e.RowIndex)
+                ElseIf colName = "colDelete" Then
                     Dim invId = Convert.ToInt32(dgvInvoices.Rows(e.RowIndex).Cells("InvoiceID").Value)
                     Dim invNo = Convert.ToString(dgvInvoices.Rows(e.RowIndex).Cells("InvoiceNumber").Value)
 
@@ -275,6 +311,10 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                     End If
                 End If
             End If
+        End Sub
+
+        Private Sub OpenInvoiceForView(rowIndex As Integer)
+            ShowEditView()
         End Sub
     End Class
 End Namespace

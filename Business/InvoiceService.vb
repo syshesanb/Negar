@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -21,7 +21,7 @@ Namespace Negar.Business
 
             Dim conditions As New List(Of String)()
             If SessionContext.CurrentCompanyID.HasValue Then
-                conditions.Add("(i.CompanyID = " & SessionContext.CurrentCompanyID.Value & " OR i.CompanyID IS NULL)")
+                conditions.Add("i.CompanyID = " & SessionContext.CurrentCompanyID.Value)
             End If
 
             If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
@@ -42,7 +42,7 @@ Namespace Negar.Business
 
             Dim conditions As New List(Of String)()
             If SessionContext.CurrentCompanyID.HasValue Then
-                conditions.Add("(CompanyID = " & SessionContext.CurrentCompanyID.Value & " OR CompanyID IS NULL)")
+                conditions.Add("CompanyID = " & SessionContext.CurrentCompanyID.Value)
             End If
 
             If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then

@@ -90,7 +90,7 @@ Namespace Negar.Business
                           "FROM Products p WHERE p.ProductID = ?"
             Dim compId = SessionContext.CurrentCompanyID
             If compId.HasValue Then
-                sqlText &= " AND (p.CompanyID = ? OR p.CompanyID IS NULL)"
+                sqlText &= " AND p.CompanyID = ?"
                 Dim dtComp = Sql.ExecuteTable(sqlText, productId, compId.Value)
                 If dtComp.Rows.Count > 0 Then Return dtComp.Rows(0)
                 Return Nothing
@@ -104,7 +104,7 @@ Namespace Negar.Business
         Public Sub DeleteProduct(productId As Integer)
             Dim compId = SessionContext.CurrentCompanyID
             If compId.HasValue Then
-                Sql.ExecuteNonQuery("DELETE FROM Products WHERE ProductID = ? AND (CompanyID = ? OR CompanyID IS NULL)", productId, compId.Value)
+                Sql.ExecuteNonQuery("DELETE FROM Products WHERE ProductID = ? AND CompanyID = ?", productId, compId.Value)
             Else
                 Sql.ExecuteNonQuery("DELETE FROM Products WHERE ProductID = ?", productId)
             End If
@@ -113,7 +113,7 @@ Namespace Negar.Business
         Public Function GetWarehouses() As DataTable
             Dim compId = SessionContext.CurrentCompanyID
             If compId.HasValue Then
-                Return Sql.ExecuteTable("SELECT *, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses WHERE CompanyID = ? OR CompanyID IS NULL ORDER BY WarehouseName", compId.Value)
+                Return Sql.ExecuteTable("SELECT *, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses WHERE CompanyID = ? ORDER BY WarehouseName", compId.Value)
             Else
                 Return Sql.ExecuteTable("SELECT *, WarehouseID || ' - ' || WarehouseName AS DisplayTitle FROM Warehouses ORDER BY WarehouseName")
             End If
