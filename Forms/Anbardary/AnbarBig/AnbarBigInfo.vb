@@ -1,4 +1,4 @@
-Namespace Negar.Forms.Anbardary.AnbarBig
+﻿Namespace Negar.Forms.Anbardary.AnbarBig
     ''' <summary>
     ''' کلاس راهنمای فرم‌های انبارداری نسخه بزرگ (شرکت‌های بزرگ)
     ''' </summary>

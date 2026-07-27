@@ -1,4 +1,4 @@
--- Migration script v001_ensure_schema_updates.sql
+﻿-- Migration script v001_ensure_schema_updates.sql
 -- این اسکریپت ساختار جداول را در دیتابیس‌های قبلی بروزرسانی می‌کند.
 
 CREATE TABLE IF NOT EXISTS AppSettings (

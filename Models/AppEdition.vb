@@ -1,4 +1,4 @@
-Namespace Negar.Models
+﻿Namespace Negar.Models
     ''' <summary>
     ''' نسخه‌های مختلف نرم‌افزار نگار
     ''' </summary>

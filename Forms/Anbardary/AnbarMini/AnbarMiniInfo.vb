@@ -1,4 +1,4 @@
-Namespace Negar.Forms.Anbardary.AnbarMini
+﻿Namespace Negar.Forms.Anbardary.AnbarMini
     ''' <summary>
     ''' کلاس راهنمای فرم‌های انبارداری نسخه مینی (یک انبار و یک فروشگاه)
     ''' </summary>
