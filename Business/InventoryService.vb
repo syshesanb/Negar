@@ -89,31 +89,59 @@ Namespace Negar.Business
                     ") t " &
                     "LEFT JOIN Warehouses w ON w.WarehouseID = t.WarehouseID "
 
-                Dim dateConditions As New System.Collections.Generic.List(Of String)()
-                If Not String.IsNullOrEmpty(fromDate) AndAlso fromDate.Trim().Length = 10 Then
-                    dateConditions.Add("t.TxDate >= '" & fromDate.Trim().Replace("'", "''") & "'")
-                End If
-                If Not String.IsNullOrEmpty(toDate) AndAlso toDate.Trim().Length = 10 Then
-                    dateConditions.Add("t.TxDate <= '" & toDate.Trim().Replace("'", "''") & " 23:59:59'")
-                End If
-
-                If dateConditions.Count > 0 Then
-                    query &= " WHERE " & String.Join(" AND ", dateConditions.ToArray())
-                End If
-
                 query &= " ORDER BY t.TxDate ASC"
 
-                Dim dt = Sql.ExecuteTable(query)
+                Dim dtRaw = Sql.ExecuteTable(query)
 
-                If Not dt.Columns.Contains("Balance") Then dt.Columns.Add("Balance", GetType(Decimal))
+                Dim dtFiltered As DataTable = dtRaw.Clone()
+                If Not dtFiltered.Columns.Contains("Balance") Then dtFiltered.Columns.Add("Balance", GetType(Decimal))
+
+                Dim cleanFrom = If(Not String.IsNullOrEmpty(fromDate), fromDate.Trim(), "")
+                Dim cleanTo = If(Not String.IsNullOrEmpty(toDate), toDate.Trim(), "")
+
                 Dim balance As Decimal = 0D
-                For Each row As DataRow In dt.Rows
+
+                For Each row As DataRow In dtRaw.Rows
+                    Dim pDate As String = ""
+                    If Not row.IsNull("TransactionDate") Then
+                        Try
+                            Dim rawStr = Convert.ToString(row("TransactionDate"))
+                            Dim d As DateTime
+                            If DateTime.TryParse(rawStr, d) Then
+                                pDate = PersianDateHelper.ToPersian(d)
+                            Else
+                                pDate = rawStr
+                            End If
+                        Catch
+                            pDate = Convert.ToString(row("TransactionDate"))
+                        End Try
+                    End If
+
+                    Dim pDate10 = If(pDate.Length >= 10, pDate.Substring(0, 10), pDate)
+
+                    Dim keepRow As Boolean = True
+                    If cleanFrom.Length = 10 AndAlso pDate10 < cleanFrom Then
+                        keepRow = False
+                    End If
+                    If cleanTo.Length = 10 AndAlso pDate10 > cleanTo Then
+                        keepRow = False
+                    End If
+
+                    If keepRow Then
+                        Dim nr = dtFiltered.NewRow()
+                        nr.ItemArray = row.ItemArray
+                        dtFiltered.Rows.Add(nr)
+                    End If
+                Next
+
+                For Each row As DataRow In dtFiltered.Rows
                     Dim qIn = Convert.ToDecimal(If(row.IsNull("QuantityIn"), 0, row("QuantityIn")))
                     Dim qOut = Convert.ToDecimal(If(row.IsNull("QuantityOut"), 0, row("QuantityOut")))
                     balance += qIn - qOut
                     row("Balance") = balance
                 Next
-                Return dt
+
+                Return dtFiltered
             Catch ex As Exception
                 Dim dt As New DataTable()
                 dt.Columns.Add("TransactionDate", GetType(String))
