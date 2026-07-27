@@ -16,13 +16,23 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Private pnlListContainer As Panel
         Private pnlEditContainer As Panel
         Private pnlListHeader As Panel
+        Private pnlListFooter As Panel
+        Private lblGrandTotalText As Label
+        Private lblGrandTotalValue As Label
         Private lblListTitle As Label
         Private btnNewInvoice As Button
         Private btnRefresh As Button
         Private lblSearch As Label
         Private txtSearch As TextBox
+        Private lblFromDate As Label
+        Private txtFromDate As TextBox
+        Private btnPickFromDate As Button
+        Private lblToDate As Label
+        Private txtToDate As TextBox
+        Private btnPickToDate As Button
         Private dgvInvoices As DataGridView
         Private dtInvoices As DataTable
+        Private isFormattingDate As Boolean = False
 
         Private WithEvents kharidForm As AnbarMiniKharidForm
 
@@ -71,7 +81,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 .Font = New Font("B Yekan", 11.0!, FontStyle.Bold),
                 .ForeColor = Color.FromArgb(44, 62, 80),
                 .AutoSize = True,
-                .Location = New Point(720, 15)
+                .Location = New Point(1000, 16)
             }
             pnlListHeader.Controls.Add(lblListTitle)
 
@@ -81,8 +91,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 .BackColor = Color.FromArgb(39, 174, 96),
                 .ForeColor = Color.White,
                 .FlatStyle = FlatStyle.Flat,
-                .Size = New Size(160, 36),
-                .Location = New Point(530, 9)
+                .Size = New Size(150, 36),
+                .Location = New Point(835, 9)
             }
             AddHandler btnNewInvoice.Click, AddressOf BtnNewInvoice_Click
             pnlListHeader.Controls.Add(btnNewInvoice)
@@ -92,24 +102,102 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 .Font = New Font("Tahoma", 9.0!),
                 .BackColor = Color.White,
                 .FlatStyle = FlatStyle.Flat,
-                .Size = New Size(85, 36),
-                .Location = New Point(435, 9)
+                .Size = New Size(70, 36),
+                .Location = New Point(758, 9)
             }
             AddHandler btnRefresh.Click, Sub(s, e) LoadInvoicesList()
             pnlListHeader.Controls.Add(btnRefresh)
 
+            ' Date Range Controls
+            lblFromDate = New Label() With {
+                .Text = "از تاریخ:",
+                .AutoSize = True,
+                .Location = New Point(695, 17),
+                .Font = New Font("Tahoma", 9.0!)
+            }
+            txtFromDate = New TextBox() With {
+                .Size = New Size(85, 26),
+                .Location = New Point(605, 14),
+                .Font = New Font("Tahoma", 9.0!)
+            }
+            AddHandler txtFromDate.TextChanged, AddressOf TxtDate_TextChanged
+            btnPickFromDate = New Button() With {
+                .Text = "...",
+                .Size = New Size(26, 26),
+                .Location = New Point(576, 14),
+                .FlatStyle = FlatStyle.Flat,
+                .BackColor = Color.White,
+                .Font = New Font("Tahoma", 8.0!, FontStyle.Bold)
+            }
+            AddHandler btnPickFromDate.Click, AddressOf BtnPickFromDate_Click
+
+            lblToDate = New Label() With {
+                .Text = "تا تاریخ:",
+                .AutoSize = True,
+                .Location = New Point(515, 17),
+                .Font = New Font("Tahoma", 9.0!)
+            }
+            txtToDate = New TextBox() With {
+                .Size = New Size(85, 26),
+                .Location = New Point(425, 14),
+                .Font = New Font("Tahoma", 9.0!)
+            }
+            AddHandler txtToDate.TextChanged, AddressOf TxtDate_TextChanged
+            btnPickToDate = New Button() With {
+                .Text = "...",
+                .Size = New Size(26, 26),
+                .Location = New Point(396, 14),
+                .FlatStyle = FlatStyle.Flat,
+                .BackColor = Color.White,
+                .Font = New Font("Tahoma", 8.0!, FontStyle.Bold)
+            }
+            AddHandler btnPickToDate.Click, AddressOf BtnPickToDate_Click
+
+            pnlListHeader.Controls.AddRange(New Control() {
+                lblFromDate, txtFromDate, btnPickFromDate,
+                lblToDate, txtToDate, btnPickToDate
+            })
+
+            ' Search Box
             lblSearch = New Label() With {
                 .Text = "جستجو:",
-                .AutoSize = True, .Location = New Point(365, 17)
+                .AutoSize = True,
+                .Location = New Point(335, 17),
+                .Font = New Font("Tahoma", 9.0!)
             }
             pnlListHeader.Controls.Add(lblSearch)
 
             txtSearch = New TextBox() With {
-                .Size = New Size(240, 27),
-                .Location = New Point(115, 14)
+                .Size = New Size(160, 26),
+                .Location = New Point(170, 14),
+                .Font = New Font("Tahoma", 9.0!)
             }
             AddHandler txtSearch.TextChanged, AddressOf TxtSearch_TextChanged
             pnlListHeader.Controls.Add(txtSearch)
+
+            ' Footer Panel for Grand Total Purchases
+            pnlListFooter = New Panel() With {
+                .Dock = DockStyle.Bottom,
+                .Height = 45,
+                .BackColor = Color.FromArgb(44, 62, 80)
+            }
+
+            lblGrandTotalText = New Label() With {
+                .Text = "جمع کل خرید:",
+                .Font = New Font("Tahoma", 10.0!, FontStyle.Bold),
+                .ForeColor = Color.White,
+                .AutoSize = True,
+                .Location = New Point(350, 12)
+            }
+            lblGrandTotalValue = New Label() With {
+                .Text = "۰ ریال",
+                .Font = New Font("Tahoma", 13.0!, FontStyle.Bold),
+                .ForeColor = Color.FromArgb(46, 204, 113),
+                .AutoSize = True,
+                .Location = New Point(100, 8)
+            }
+            pnlListFooter.Controls.Add(lblGrandTotalText)
+            pnlListFooter.Controls.Add(lblGrandTotalValue)
 
             ' DataGridView
             dgvInvoices = New DataGridView() With {
@@ -138,8 +226,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
 
             SetupGridColumns()
 
-            ' Docking controls correctly: DataGridView Fill, Header Panel Top
+            ' Docking controls: Fill (dgv), Bottom (footer), Top (header)
             pnlListContainer.Controls.Add(dgvInvoices)
+            pnlListContainer.Controls.Add(pnlListFooter)
             pnlListContainer.Controls.Add(pnlListHeader)
 
             AddHandler dgvInvoices.RowPostPaint, AddressOf DgvInvoices_RowPostPaint
@@ -185,9 +274,10 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             }
 
             Dim colDate As New DataGridViewTextBoxColumn() With {
-                .Name = "InvoiceDate", .DataPropertyName = "InvoiceDate",
-                .HeaderText = "تاریخ", .Width = 100
+                .Name = "InvoiceDate", .DataPropertyName = "PersianDate",
+                .HeaderText = "تاریخ", .Width = 130
             }
+            colDate.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
             Dim colVendor As New DataGridViewTextBoxColumn() With {
                 .Name = "VendorName", .DataPropertyName = "VendorName",
@@ -204,7 +294,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 .HeaderText = "مبلغ کل (ریال)", .Width = 130
             }
             colTotal.DefaultCellStyle.Format = "N0"
-            colTotal.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            colTotal.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
 
             Dim colPayType As New DataGridViewTextBoxColumn() With {
                 .Name = "PaymentType", .DataPropertyName = "PaymentType",
@@ -238,6 +328,25 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Private Sub LoadInvoicesList()
             Try
                 dtInvoices = invoiceService.GetPurchaseInvoices()
+                If dtInvoices IsNot Nothing Then
+                    If Not dtInvoices.Columns.Contains("PersianDate") Then
+                        dtInvoices.Columns.Add("PersianDate", GetType(String))
+                    End If
+
+                    For Each row As DataRow In dtInvoices.Rows
+                        If Not row.IsNull("InvoiceDate") Then
+                            Try
+                                Dim d = Convert.ToDateTime(row("InvoiceDate"))
+                                row("PersianDate") = PersianDateHelper.ToPersian(d) & "  " & d.ToString("HH:mm")
+                            Catch
+                                row("PersianDate") = Convert.ToString(row("InvoiceDate"))
+                            End Try
+                        Else
+                            row("PersianDate") = ""
+                        End If
+                    Next
+                End If
+
                 dgvInvoices.DataSource = dtInvoices
                 ApplyFilter()
             Catch ex As Exception
@@ -249,14 +358,90 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             ApplyFilter()
         End Sub
 
+        Private Sub TxtDate_TextChanged(sender As Object, e As EventArgs)
+            Dim txt = TryCast(sender, TextBox)
+            If txt IsNot Nothing Then
+                FormatDateTextBox(txt)
+            End If
+            ApplyFilter()
+        End Sub
+
+        Private Sub FormatDateTextBox(txt As TextBox)
+            If isFormattingDate Then Return
+            Dim digitsOnly = System.Text.RegularExpressions.Regex.Replace(txt.Text, "[^\d]", "")
+            If digitsOnly.Length = 8 Then
+                isFormattingDate = True
+                txt.Text = digitsOnly.Substring(0, 4) & "/" & digitsOnly.Substring(4, 2) & "/" & digitsOnly.Substring(6, 2)
+                txt.SelectionStart = txt.Text.Length
+                isFormattingDate = False
+            End If
+        End Sub
+
+        Private Sub BtnPickFromDate_Click(sender As Object, e As EventArgs)
+            Using calForm As New PersianCalendarForm()
+                If calForm.ShowDialog(Me) = DialogResult.OK Then
+                    txtFromDate.Text = calForm.SelectedDate
+                End If
+            End Using
+        End Sub
+
+        Private Sub BtnPickToDate_Click(sender As Object, e As EventArgs)
+            Using calForm As New PersianCalendarForm()
+                If calForm.ShowDialog(Me) = DialogResult.OK Then
+                    txtToDate.Text = calForm.SelectedDate
+                End If
+            End Using
+        End Sub
+
         Private Sub ApplyFilter()
             If dtInvoices Is Nothing Then Return
+
+            Dim filters As New System.Collections.Generic.List(Of String)()
+
+            ' Text Search Filter
             Dim f = txtSearch.Text.Trim().Replace("'", "''")
-            If String.IsNullOrEmpty(f) Then
-                dtInvoices.DefaultView.RowFilter = ""
-            Else
-                dtInvoices.DefaultView.RowFilter = $"InvoiceNumber LIKE '%{f}%' OR VendorName LIKE '%{f}%' OR WarehouseName LIKE '%{f}%'"
+            If Not String.IsNullOrEmpty(f) Then
+                filters.Add($"(InvoiceNumber LIKE '%{f}%' OR VendorName LIKE '%{f}%' OR WarehouseName LIKE '%{f}%')")
             End If
+
+            ' Date Range Filter (against PersianDate or InvoiceDate)
+            Dim fromDate = txtFromDate.Text.Trim().Replace("'", "''")
+            Dim toDate = txtToDate.Text.Trim().Replace("'", "''")
+
+            If Not String.IsNullOrEmpty(fromDate) AndAlso fromDate.Length = 10 Then
+                filters.Add($"PersianDate >= '{fromDate}'")
+            End If
+            If Not String.IsNullOrEmpty(toDate) AndAlso toDate.Length = 10 Then
+                filters.Add($"PersianDate <= '{toDate}  99:99'")
+            End If
+
+            If filters.Count > 0 Then
+                dtInvoices.DefaultView.RowFilter = String.Join(" AND ", filters.ToArray())
+            Else
+                dtInvoices.DefaultView.RowFilter = ""
+            End If
+
+            RecalculateTotalPurchases()
+        End Sub
+
+        Private Sub RecalculateTotalPurchases()
+            If dtInvoices Is Nothing Then
+                lblGrandTotalValue.Text = "۰ ریال"
+                Return
+            End If
+
+            Dim dv = dtInvoices.DefaultView
+            Dim totalSum As Decimal = 0D
+
+            For Each drv As DataRowView In dv
+                If Not drv.Row.IsNull("TotalAmount") Then
+                    Dim val As Decimal = 0D
+                    Decimal.TryParse(Convert.ToString(drv("TotalAmount")), val)
+                    totalSum += val
+                End If
+            Next
+
+            lblGrandTotalValue.Text = totalSum.ToString("N0") & " ریال"
         End Sub
 
         Private Sub BtnNewInvoice_Click(sender As Object, e As EventArgs)
