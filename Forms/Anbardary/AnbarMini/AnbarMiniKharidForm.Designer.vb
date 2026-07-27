@@ -44,6 +44,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.colUnitPrice = New DataGridViewTextBoxColumn()
             Me.colTotalPrice = New DataGridViewTextBoxColumn()
             Me.pnlFooter = New Panel()
+            Me.lblDescription = New Label()
+            Me.txtDescription = New TextBox()
             Me.lblTotalText = New Label()
             Me.lblTotalAmount = New Label()
             Me.btnSave = New Button()
@@ -255,6 +257,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
 
             ' pnlFooter
             Me.pnlFooter.BackColor = Color.FromArgb(44, 62, 80)
+            Me.pnlFooter.Controls.Add(Me.lblDescription)
+            Me.pnlFooter.Controls.Add(Me.txtDescription)
             Me.pnlFooter.Controls.Add(Me.lblTotalText)
             Me.pnlFooter.Controls.Add(Me.lblTotalAmount)
             Me.pnlFooter.Controls.Add(Me.btnSave)
@@ -264,18 +268,33 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.pnlFooter.Name = "pnlFooter"
             Me.pnlFooter.Size = New Size(950, 70)
 
+            ' lblDescription
+            Me.lblDescription.AutoSize = True
+            Me.lblDescription.Font = New Font("B Yekan", 10.0!, FontStyle.Bold)
+            Me.lblDescription.ForeColor = Color.White
+            Me.lblDescription.Location = New Point(870, 22)
+            Me.lblDescription.Text = "توضیحات:"
+
+            ' txtDescription
+            Me.txtDescription.Font = New Font("B Yekan", 9.0!)
+            Me.txtDescription.Location = New Point(680, 10)
+            Me.txtDescription.Multiline = True
+            Me.txtDescription.Name = "txtDescription"
+            Me.txtDescription.ScrollBars = ScrollBars.Vertical
+            Me.txtDescription.Size = New Size(185, 52)
+
             ' lblTotalText
             Me.lblTotalText.AutoSize = True
             Me.lblTotalText.Font = New Font("B Yekan", 11.0!, FontStyle.Bold)
             Me.lblTotalText.ForeColor = Color.White
-            Me.lblTotalText.Location = New Point(830, 22)
+            Me.lblTotalText.Location = New Point(555, 22)
             Me.lblTotalText.Text = "جمع کل فاکتور:"
 
             ' lblTotalAmount
             Me.lblTotalAmount.AutoSize = True
             Me.lblTotalAmount.Font = New Font("B Yekan", 15.0!, FontStyle.Bold)
             Me.lblTotalAmount.ForeColor = Color.FromArgb(46, 204, 113)
-            Me.lblTotalAmount.Location = New Point(620, 16)
+            Me.lblTotalAmount.Location = New Point(360, 16)
             Me.lblTotalAmount.Text = "۰ ریال"
 
             ' btnSave
@@ -283,9 +302,9 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnSave.FlatStyle = FlatStyle.Flat
             Me.btnSave.Font = New Font("B Yekan", 11.0!, FontStyle.Bold)
             Me.btnSave.ForeColor = Color.White
-            Me.btnSave.Location = New Point(30, 12)
+            Me.btnSave.Location = New Point(20, 12)
             Me.btnSave.Name = "btnSave"
-            Me.btnSave.Size = New Size(160, 45)
+            Me.btnSave.Size = New Size(155, 45)
             Me.btnSave.Text = "ثبت فاکتور خرید"
             Me.btnSave.UseVisualStyleBackColor = False
 
@@ -294,7 +313,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnCancel.FlatStyle = FlatStyle.Flat
             Me.btnCancel.Font = New Font("B Yekan", 11.0!, FontStyle.Bold)
             Me.btnCancel.ForeColor = Color.White
-            Me.btnCancel.Location = New Point(200, 12)
+            Me.btnCancel.Location = New Point(185, 12)
             Me.btnCancel.Name = "btnCancel"
             Me.btnCancel.Size = New Size(140, 45)
             Me.btnCancel.Text = "بازگشت به لیست"
@@ -358,6 +377,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents colTotalPrice As DataGridViewTextBoxColumn
 
         Friend WithEvents pnlFooter As Panel
+        Friend WithEvents lblDescription As Label
+        Friend WithEvents txtDescription As TextBox
         Friend WithEvents lblTotalText As Label
         Friend WithEvents lblTotalAmount As Label
         Friend WithEvents btnSave As Button

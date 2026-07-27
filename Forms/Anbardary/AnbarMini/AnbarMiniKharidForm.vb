@@ -34,6 +34,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             txtVendorName.Clear()
             txtProductSearch.Clear()
             txtUnitPrice.Clear()
+            txtDescription.Clear()
             numQuantity.Value = 1
             dgvItems.Rows.Clear()
             GenerateNextInvoiceNumber()
@@ -505,7 +506,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             End If
 
             Try
-                Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", "فاکتور خرید نسخه مینی")
+                Dim descText = If(String.IsNullOrWhiteSpace(txtDescription.Text), "فاکتور خرید نسخه مینی", txtDescription.Text.Trim())
+                Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
                 MessageBox.Show("فاکتور خرید با موفقیت ثبت شد." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
                 ResetForm()
