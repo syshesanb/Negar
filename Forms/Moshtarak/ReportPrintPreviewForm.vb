@@ -11,14 +11,17 @@ Namespace Negar.Forms
         Private ReadOnly _printDoc As PrintDocument
 
         Public Sub New(doc As PrintDocument, Optional title As String = "پیش‌نمایش و تنظیمات چاپ گزارش")
-            InitializeComponent()
             _printDoc = doc
-            Me.Text = title
-            lblTitle.Text = title
+            InitializeComponent()
+            If Not String.IsNullOrEmpty(title) Then
+                Me.Text = title
+                lblTitle.Text = title
+            End If
         End Sub
 
         Private Sub ReportPrintPreviewForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
             ThemeHelper.ApplyFormTheme(Me)
+            If _printDoc Is Nothing Then Return
 
             ' ۱. بارگذاری چاپگرهای سیستم
             cmbPrinter.Items.Clear()
@@ -27,15 +30,17 @@ Namespace Negar.Forms
             Next
 
             ' انتخاب چاپگر پیش‌فرض
-            Dim defaultPrinter = _printDoc.PrinterSettings.PrinterName
-            If cmbPrinter.Items.Contains(defaultPrinter) Then
-                cmbPrinter.SelectedItem = defaultPrinter
-            ElseIf cmbPrinter.Items.Count > 0 Then
-                cmbPrinter.SelectedIndex = 0
-            End If
+            If _printDoc.PrinterSettings IsNot Nothing Then
+                Dim defaultPrinter = _printDoc.PrinterSettings.PrinterName
+                If cmbPrinter.Items.Contains(defaultPrinter) Then
+                    cmbPrinter.SelectedItem = defaultPrinter
+                ElseIf cmbPrinter.Items.Count > 0 Then
+                    cmbPrinter.SelectedIndex = 0
+                End If
 
-            ' ۲. مقداردهی تعداد نسخه‌ها
-            numCopies.Value = Math.Max(1, _printDoc.PrinterSettings.Copies)
+                ' ۲. مقداردهی تعداد نسخه‌ها
+                numCopies.Value = Math.Max(1, _printDoc.PrinterSettings.Copies)
+            End If
 
             ' ۳. تنظیم سند برای پیش‌نمایش
             dialogPageSetup.Document = _printDoc
@@ -46,14 +51,16 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub cmbPrinter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbPrinter.SelectedIndexChanged
-            If cmbPrinter.SelectedItem IsNot Nothing Then
+            If _printDoc IsNot Nothing AndAlso _printDoc.PrinterSettings IsNot Nothing AndAlso cmbPrinter.SelectedItem IsNot Nothing Then
                 _printDoc.PrinterSettings.PrinterName = cmbPrinter.SelectedItem.ToString()
-                previewCtrl.InvalidatePreview()
+                If previewCtrl IsNot Nothing Then previewCtrl.InvalidatePreview()
             End If
         End Sub
 
         Private Sub numCopies_ValueChanged(sender As Object, e As EventArgs) Handles numCopies.ValueChanged
-            _printDoc.PrinterSettings.Copies = CShort(numCopies.Value)
+            If _printDoc IsNot Nothing AndAlso _printDoc.PrinterSettings IsNot Nothing Then
+                _printDoc.PrinterSettings.Copies = CShort(numCopies.Value)
+            End If
         End Sub
 
         ' دکمه تنظیمات درایور چاپگر (Printer Properties)
