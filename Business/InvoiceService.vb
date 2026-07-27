@@ -42,19 +42,19 @@ Namespace Negar.Business
 
             Dim conditions As New List(Of String)()
             If SessionContext.CurrentCompanyID.HasValue Then
-                conditions.Add("CompanyID = " & SessionContext.CurrentCompanyID.Value)
+                conditions.Add("i.CompanyID = " & SessionContext.CurrentCompanyID.Value)
             End If
 
             If Not String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
                 Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
-                conditions.Add("CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ")")
+                conditions.Add("i.CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ")")
             End If
 
-            Dim query = "SELECT InvoiceID, InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID FROM SalesInvoices "
+            Dim query = "SELECT i.InvoiceID, i.InvoiceNumber, i.InvoiceDate, i.CustomerName, i.TotalAmount, i.CreatedBy, i.WarehouseID, COALESCE(i.PaymentType, 'کارتخوان (POS)') AS PaymentType, COALESCE(i.Description, 'فاکتور فروش نسخه مینی') AS Description, COALESCE(w.WarehouseName, '---') AS WarehouseName FROM SalesInvoices i LEFT JOIN Warehouses w ON (i.WarehouseID = w.WarehouseID AND i.CompanyID = w.CompanyID) "
             If conditions.Count > 0 Then
                 query &= "WHERE " & String.Join(" AND ", conditions.ToArray()) & " "
             End If
-            query &= "ORDER BY InvoiceDate DESC"
+            query &= "ORDER BY i.InvoiceDate DESC, i.InvoiceID DESC"
 
             Return Sql.ExecuteTable(query)
         End Function
@@ -86,7 +86,7 @@ Namespace Negar.Business
             Return invoiceId
         End Function
 
-        Public Function SaveSalesInvoice(invoiceNumber As String, invoiceDate As DateTime, customerName As String, warehouseId As Integer, createdBy As Integer, lines As IEnumerable(Of Tuple(Of Integer, Decimal, Decimal))) As Integer
+        Public Function SaveSalesInvoice(invoiceNumber As String, invoiceDate As DateTime, customerName As String, warehouseId As Integer, createdBy As Integer, lines As IEnumerable(Of Tuple(Of Integer, Decimal, Decimal)), Optional paymentType As String = "کارتخوان (POS)", Optional description As String = "فاکتور فروش نسخه مینی") As Integer
             Dim total As Decimal = 0D
             For Each line In lines
                 total += line.Item2 * line.Item3
@@ -94,8 +94,8 @@ Namespace Negar.Business
 
             Dim compIdVal As Object = If(SessionContext.CurrentCompanyID.HasValue, SessionContext.CurrentCompanyID.Value, DBNull.Value)
 
-            Dim invoiceId = Sql.ExecuteIdentity("INSERT INTO SalesInvoices (InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID, CompanyID) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                                invoiceNumber, invoiceDate, customerName, total, createdBy, warehouseId, compIdVal)
+            Dim invoiceId = Sql.ExecuteIdentity("INSERT INTO SalesInvoices (InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, CreatedBy, WarehouseID, PaymentType, Description, CompanyID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                                invoiceNumber, invoiceDate, customerName, total, createdBy, warehouseId, paymentType, description, compIdVal)
 
             For Each line In lines
                 Dim lineTotal = line.Item2 * line.Item3
@@ -134,10 +134,9 @@ Namespace Negar.Business
 
         Public Function GetSalesInvoiceById(invoiceId As Integer) As DataRow
             Dim dt = Sql.ExecuteTable(
-                "SELECT InvoiceID, InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, WarehouseID " &
+                "SELECT InvoiceID, InvoiceNumber, InvoiceDate, CustomerName, TotalAmount, WarehouseID, COALESCE(PaymentType, 'کارتخوان (POS)') AS PaymentType, COALESCE(Description, '') AS Description " &
                 "FROM SalesInvoices WHERE InvoiceID = ?", invoiceId)
             If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                If Not dt.Columns.Contains("Description") Then dt.Columns.Add("Description", GetType(String))
                 If Not dt.Columns.Contains("VendorInvoiceNumber") Then dt.Columns.Add("VendorInvoiceNumber", GetType(String))
                 Return dt.Rows(0)
             End If
@@ -158,8 +157,9 @@ Namespace Negar.Business
 
         Public Function GetSalesInvoiceDetails(invoiceId As Integer) As DataTable
             Return Sql.ExecuteTable(
-                "SELECT d.DetailID, d.ProductID, " &
+                "SELECT d.DetailID, d.ProductID, COALESCE(p.ProductCode, '') AS ProductCode, " &
                 "COALESCE(p.ProductName, '(کالای حذف شده)') AS ProductName, " &
+                "COALESCE(p.Unit, 'عدد') AS Unit, " &
                 "d.Quantity, d.UnitPrice, d.TotalPrice " &
                 "FROM SalesInvoiceDetails d " &
                 "LEFT JOIN Products p ON p.ProductID = d.ProductID " &
@@ -271,7 +271,9 @@ Namespace Negar.Business
         Public Function UpdateSalesInvoice(invoiceId As Integer, invoiceNumber As String,
                                            invoiceDate As DateTime, customerName As String,
                                            warehouseId As Integer, createdBy As Integer,
-                                           lines As IEnumerable(Of Tuple(Of Integer, Decimal, Decimal))) As Integer
+                                           lines As IEnumerable(Of Tuple(Of Integer, Decimal, Decimal)),
+                                           Optional paymentType As String = "کارتخوان (POS)",
+                                           Optional description As String = "فاکتور فروش نسخه مینی") As Integer
             Dim oldHdr = GetSalesInvoiceById(invoiceId)
             If oldHdr IsNot Nothing AndAlso Not oldHdr.IsNull("WarehouseID") Then
                 Dim oldWarehouseId = Convert.ToInt32(oldHdr("WarehouseID"))
@@ -289,8 +291,8 @@ Namespace Negar.Business
             For Each line In lines : total += line.Item2 * line.Item3 : Next
 
             Sql.ExecuteNonQuery(
-                "UPDATE SalesInvoices SET InvoiceNumber=?, InvoiceDate=?, CustomerName=?, TotalAmount=?, WarehouseID=? WHERE InvoiceID=?",
-                invoiceNumber, invoiceDate, customerName, total, warehouseId, invoiceId)
+                "UPDATE SalesInvoices SET InvoiceNumber=?, InvoiceDate=?, CustomerName=?, TotalAmount=?, WarehouseID=?, PaymentType=?, Description=? WHERE InvoiceID=?",
+                invoiceNumber, invoiceDate, customerName, total, warehouseId, paymentType, description, invoiceId)
             Sql.ExecuteNonQuery("DELETE FROM SalesInvoiceDetails WHERE InvoiceID=?", invoiceId)
 
             Dim inventoryService As New InventoryService()

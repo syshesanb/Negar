@@ -11,7 +11,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         End Sub
 
         Private Sub AnbarMiniMainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            HostForm(tabPOS, New AnbarMiniForooshForm())
+            HostForm(tabPOS, New AnbarMiniForooshContainerForm())
             HostForm(tabPurchase, New AnbarMiniKharidContainerForm())
             HostForm(tabParties, New AnbardaryVendorsCustomersForm())
             HostForm(tabProducts, New AnbardaryNamKala1Form())

@@ -567,11 +567,13 @@ Namespace Negar.Data
             AddColumnIfMissing("SarfaslShenavar", "CreatedBy", "INTEGER")
             AddColumnIfMissing("Products", "DefaultWarehouseID", "INTEGER")
 
-            ' Ensure CompanyID columns for company data isolation
+            ' Ensure CompanyID, PaymentType, Description columns for company data isolation and sales notes
             AddColumnIfMissing("Products", "CompanyID", "INTEGER")
             AddColumnIfMissing("Warehouses", "CompanyID", "INTEGER")
             AddColumnIfMissing("PurchaseInvoices", "CompanyID", "INTEGER")
             AddColumnIfMissing("SalesInvoices", "CompanyID", "INTEGER")
+            AddColumnIfMissing("SalesInvoices", "PaymentType", "TEXT")
+            AddColumnIfMissing("SalesInvoices", "Description", "TEXT")
             AddColumnIfMissing("WarehouseReceipts", "CompanyID", "INTEGER")
 
             Try
