@@ -52,53 +52,70 @@ Namespace Negar.Business
         Public Function GetKardex(productId As Integer, Optional warehouseId As Integer? = Nothing,
                                   Optional fromDate As String = Nothing, Optional toDate As String = Nothing) As DataTable
             Try
-                Dim conditions As New System.Collections.Generic.List(Of String)()
-                Dim parms As New System.Collections.Generic.List(Of Object)()
+                Dim compId = SessionContext.CurrentCompanyID
 
-                conditions.Add("il.ProductID = ?")
-                parms.Add(productId)
+                Dim whPurCondition As String = ""
+                Dim whSalCondition As String = ""
 
-                If warehouseId.HasValue Then
-                    conditions.Add("il.WarehouseID = ?")
-                    parms.Add(warehouseId.Value)
-                End If
-                If Not String.IsNullOrEmpty(fromDate) Then
-                    conditions.Add("DATE(il.TransactionDate) >= ?")
-                    parms.Add(fromDate)
-                End If
-                If Not String.IsNullOrEmpty(toDate) Then
-                    conditions.Add("DATE(il.TransactionDate) <= ?")
-                    parms.Add(toDate)
+                If warehouseId.HasValue AndAlso warehouseId.Value > 0 Then
+                    whPurCondition = " AND pi.WarehouseID = " & warehouseId.Value & " "
+                    whSalCondition = " AND si.WarehouseID = " & warehouseId.Value & " "
                 End If
 
-                Dim whereClause = If(conditions.Count > 0, " WHERE " & String.Join(" AND ", conditions.ToArray()), "")
-                Dim query =
-                    "SELECT il.LedgerID, il.TransactionDate, " &
-                    "COALESCE(w.WarehouseName, '---') AS WarehouseName, " &
-                    "COALESCE(il.TransactionType, '') AS TransactionType, " &
-                    "CASE WHEN il.Quantity > 0 THEN il.Quantity ELSE 0 END AS QuantityIn, " &
-                    "CASE WHEN il.Quantity < 0 THEN ABS(il.Quantity) ELSE 0 END AS QuantityOut, " &
-                    "COALESCE(il.Description, '') AS Description " &
-                    "FROM InventoryLedger il " &
-                    "LEFT JOIN Warehouses w ON w.WarehouseID = il.WarehouseID" &
-                    whereClause &
-                    " ORDER BY il.TransactionDate, il.LedgerID"
+                Dim compPurCondition As String = If(compId.HasValue, " AND pi.CompanyID = " & compId.Value & " ", "")
+                Dim compSalCondition As String = If(compId.HasValue, " AND si.CompanyID = " & compId.Value & " ", "")
 
-                Dim dt = Sql.ExecuteTable(query, parms.ToArray())
+                Dim query As String =
+                    "SELECT t.TxDate AS TransactionDate, " &
+                    "COALESCE(w.WarehouseName, 'فروشگاه') AS WarehouseName, " &
+                    "t.TxType AS TransactionType, " &
+                    "t.QtyIn AS QuantityIn, " &
+                    "t.QtyOut AS QuantityOut, " &
+                    "t.TxDesc AS Description " &
+                    "FROM (" &
+                    "  SELECT pi.InvoiceDate AS TxDate, pi.WarehouseID AS WarehouseID, " &
+                    "  'فاکتور خرید (' || pi.InvoiceNumber || ')' AS TxType, " &
+                    "  pd.Quantity AS QtyIn, 0 AS QtyOut, " &
+                    "  COALESCE(pi.VendorName, '') || CASE WHEN pi.Description IS NOT NULL AND pi.Description <> '' THEN ' - ' || pi.Description ELSE '' END AS TxDesc " &
+                    "  FROM PurchaseInvoiceDetails pd JOIN PurchaseInvoices pi ON pd.InvoiceID = pi.InvoiceID " &
+                    "  WHERE pd.ProductID = " & productId & whPurCondition & compPurCondition &
+                    "  UNION ALL " &
+                    "  SELECT si.InvoiceDate AS TxDate, si.WarehouseID AS WarehouseID, " &
+                    "  'فاکتور فروش (' || si.InvoiceNumber || ')' AS TxType, " &
+                    "  0 AS QtyIn, sd.Quantity AS QtyOut, " &
+                    "  COALESCE(si.CustomerName, '') || CASE WHEN si.Description IS NOT NULL AND si.Description <> '' THEN ' - ' || si.Description ELSE '' END AS TxDesc " &
+                    "  FROM SalesInvoiceDetails sd JOIN SalesInvoices si ON sd.InvoiceID = si.InvoiceID " &
+                    "  WHERE sd.ProductID = " & productId & whSalCondition & compSalCondition &
+                    ") t " &
+                    "LEFT JOIN Warehouses w ON w.WarehouseID = t.WarehouseID "
 
-                ' محاسبه موجودی تجمعی
+                Dim dateConditions As New System.Collections.Generic.List(Of String)()
+                If Not String.IsNullOrEmpty(fromDate) AndAlso fromDate.Trim().Length = 10 Then
+                    dateConditions.Add("t.TxDate >= '" & fromDate.Trim().Replace("'", "''") & "'")
+                End If
+                If Not String.IsNullOrEmpty(toDate) AndAlso toDate.Trim().Length = 10 Then
+                    dateConditions.Add("t.TxDate <= '" & toDate.Trim().Replace("'", "''") & " 23:59:59'")
+                End If
+
+                If dateConditions.Count > 0 Then
+                    query &= " WHERE " & String.Join(" AND ", dateConditions.ToArray())
+                End If
+
+                query &= " ORDER BY t.TxDate ASC"
+
+                Dim dt = Sql.ExecuteTable(query)
+
                 If Not dt.Columns.Contains("Balance") Then dt.Columns.Add("Balance", GetType(Decimal))
-                Dim balance As Decimal = 0
+                Dim balance As Decimal = 0D
                 For Each row As DataRow In dt.Rows
-                    Dim qIn = Convert.ToDecimal(row("QuantityIn"))
-                    Dim qOut = Convert.ToDecimal(row("QuantityOut"))
+                    Dim qIn = Convert.ToDecimal(If(row.IsNull("QuantityIn"), 0, row("QuantityIn")))
+                    Dim qOut = Convert.ToDecimal(If(row.IsNull("QuantityOut"), 0, row("QuantityOut")))
                     balance += qIn - qOut
                     row("Balance") = balance
                 Next
                 Return dt
             Catch ex As Exception
                 Dim dt As New DataTable()
-                dt.Columns.Add("LedgerID", GetType(Integer))
                 dt.Columns.Add("TransactionDate", GetType(String))
                 dt.Columns.Add("WarehouseName", GetType(String))
                 dt.Columns.Add("TransactionType", GetType(String))

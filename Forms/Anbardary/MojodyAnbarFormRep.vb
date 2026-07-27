@@ -53,10 +53,10 @@ Namespace Negar.Forms
             cmbWarehouse.ValueMember = "WarehouseID"
             cmbWarehouse.SelectedIndex = 0
 
-            cmbKardexWarehouse.DataSource = warehouses.Copy()
+            cmbKardexWarehouse.DataSource = warehousesWithAll.Copy()
             cmbKardexWarehouse.DisplayMember = "WarehouseName"
             cmbKardexWarehouse.ValueMember = "WarehouseID"
-            cmbKardexWarehouse.SelectedIndex = -1
+            cmbKardexWarehouse.SelectedIndex = 0
 
             cmbInvCountWarehouse.DataSource = warehousesWithAll.Copy()
             cmbInvCountWarehouse.DisplayMember = "WarehouseName"
@@ -200,7 +200,11 @@ Namespace Negar.Forms
                 cmbKardexProduct.DataSource = dt
                 cmbKardexProduct.DisplayMember = "ProductName"
                 cmbKardexProduct.ValueMember = "ProductID"
-                cmbKardexProduct.SelectedIndex = -1
+                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                    cmbKardexProduct.SelectedIndex = 0
+                Else
+                    cmbKardexProduct.SelectedIndex = -1
+                End If
             Catch
             End Try
         End Sub
