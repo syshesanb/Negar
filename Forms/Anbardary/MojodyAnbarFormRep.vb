@@ -903,9 +903,7 @@ lblKardexCount.Text = String.Format("تعداد تراکنشها: {0}", If(_kard
                 If isLastPage Then rowIndex = 0
             End Sub
 
-            Using dlg As New PrintPreviewDialog()
-                dlg.Document = doc
-                dlg.WindowState = FormWindowState.Maximized
+            Using dlg As New ReportPrintPreviewForm(doc, "پیش‌نمایش و تنظیمات چاپ - " & reportTitle)
                 dlg.ShowDialog(Me)
             End Using
         End Sub
