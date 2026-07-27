@@ -2,9 +2,12 @@ Option Strict Off
 Option Explicit On
 
 Imports System
+Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
+Imports System.Drawing.Drawing2D
 Imports System.Drawing.Printing
+Imports System.Linq
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic
 Imports Negar.Business
@@ -73,8 +76,6 @@ Namespace Negar.Forms
             txtKardexTo.Text = ""
 
             LoadInventory()
-
-            AddHandler _printDoc.PrintPage, AddressOf PrintDoc_PrintPage
         End Sub
 
         Private Sub ApplyGridStyle(grid As DataGridView)
@@ -633,8 +634,7 @@ Namespace Negar.Forms
                         dgvKardex.Rows(i).Cells("colRowNum").Value = i + 1
                     End If
                 Next
-
-                lblKardexCount.Text = String.Format("تعداد تراکنشها: {0}", If(_kardexTable IsNot Nothing, _kardexTable.Rows.Count, 0))
+lblKardexCount.Text = String.Format("تعداد تراکنشها: {0}", If(_kardexTable IsNot Nothing, _kardexTable.Rows.Count, 0))
 
                 ' عنوان کاردکس
                 Dim productName = Convert.ToString(drv("ProductName"))
@@ -655,7 +655,7 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub BtnPrintInventory_Click(sender As Object, e As EventArgs) Handles btnPrintInventory.Click
-            PrintInventory()
+            PrintGridReport("گزارش موجودی انبار", dgvInventory, "جمع کل بهای تمام شده موجودی:", lblGrandTotalValue.Text)
         End Sub
 
         Private Sub BtnKardexLoad_Click(sender As Object, e As EventArgs) Handles btnKardexLoad.Click
@@ -663,7 +663,13 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub BtnPrintKardex_Click(sender As Object, e As EventArgs) Handles btnPrintKardex.Click
-            PrintKardex()
+            Dim title = If(String.IsNullOrWhiteSpace(lblKardexTitle.Text), "گزارش کاردکس کالا", lblKardexTitle.Text)
+            PrintGridReport(title, dgvKardex)
+        End Sub
+
+        Private Sub BtnPrintProfitLoss_Click(sender As Object, e As EventArgs) Handles btnPrintProfitLoss.Click
+            Dim title = If(String.IsNullOrWhiteSpace(lblProfitLossTitle.Text), "گزارش سود و زیان کالا", lblProfitLossTitle.Text)
+            PrintGridReport(title, dgvProfitLoss, "جمع کل سود ناخالص:", lblProfitLossGrandTotalValue.Text)
         End Sub
 
         Private Sub BtnGenerateInvCount_Click(sender As Object, e As EventArgs) Handles btnGenerateInvCount.Click
@@ -671,75 +677,216 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub BtnPrintInvCount_Click(sender As Object, e As EventArgs) Handles btnPrintInvCount.Click
-            PrintInvCount()
+            PrintGridReport("لیست انبار گردانی", dgvInvCount)
         End Sub
 
-        ' ===== چاپ موجودی انبار =====
+        ' ===== موتور چاپ گرافیکی پیشرفته (طرح و رنگ‌بندی استاندارد مطابق تصویر نمونه) =====
 
-        Private Sub PrintInventory()
-            If _inventoryTable Is Nothing OrElse _inventoryTable.Rows.Count = 0 Then
-                MessageBox.Show("دادهای برای چاپ وجود ندارد.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Private Sub PrintGridReport(reportTitle As String, grid As DataGridView, Optional totalLabel As String = Nothing, Optional totalValue As String = Nothing)
+            If grid Is Nothing OrElse grid.Rows.Count = 0 Then
+                MessageBox.Show("هیچ داده‌ای برای چاپ وجود ندارد.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
-            _printLines.Clear()
-            _printLines.Add("گزارش موجودی انبار")
-            _printLines.Add(String.Format("تاریخ چاپ: {0}", ToPersian(DateTime.Now)))
-            _printLines.Add(String.Concat(New String("-"c, 90)))
-            _printLines.Add(String.Format("{0,-20}{1,-35}{2,-25}{3,-12}", "کد کالا", "نام کالا", "انبار", "موجودی"))
-            _printLines.Add(String.Concat(New String("-"c, 90)))
+            Dim doc As New PrintDocument()
+            doc.DefaultPageSettings.PaperSize = New PaperSize("A4", 827, 1169)
+            doc.DefaultPageSettings.Margins = New Margins(40, 40, 40, 40)
 
-            For Each row As DataRow In _inventoryTable.Rows
-                _printLines.Add(String.Format("{0,-20}{1,-35}{2,-25}{3,-12}",
-                    Convert.ToString(row("ProductCode")),
-                    TruncateStr(Convert.ToString(row("ProductName")), 33),
-                    TruncateStr(Convert.ToString(row("WarehouseName")), 23),
-                    Convert.ToString(row("Quantity"))))
-            Next
-            _printLines.Add(String.Concat(New String("-"c, 90)))
+            Dim rowIndex As Integer = 0
 
-            _printDoc.DocumentName = "موجودی انبار"
-            _printLineIndex = 0
+            AddHandler doc.PrintPage, Sub(sender As Object, e As PrintPageEventArgs)
+                Dim g = e.Graphics
+                g.SmoothingMode = SmoothingMode.HighQuality
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit
+
+                Dim leftX = e.MarginBounds.Left
+                Dim rightX = e.MarginBounds.Right
+                Dim topY = e.MarginBounds.Top
+                Dim bottomY = e.MarginBounds.Bottom
+                Dim pageWidth = rightX - leftX
+                Dim pageHeight = bottomY - topY
+
+                ' ۱. کادر پررنگ دور صفحه
+                Using pBorder As New Pen(Color.Black, 2.0!)
+                    g.DrawRectangle(pBorder, leftX, topY, pageWidth, pageHeight)
+                End Using
+
+                ' ۲. سربرگ: نام شرکت و عنوان گزارش با رنگ قرمز عنابی (مطابق تصویر)
+                Dim companyName = "شرکت " & SessionContext.CurrentCompanyName
+                Dim sfCenter As New StringFormat() With {.Alignment = StringAlignment.Center, .LineAlignment = StringAlignment.Center}
+                Dim sfRight As New StringFormat() With {.Alignment = StringAlignment.Far, .LineAlignment = StringAlignment.Center}
+                Dim sfLeft As New StringFormat() With {.Alignment = StringAlignment.Near, .LineAlignment = StringAlignment.Center}
+
+                Using brMaroon As New SolidBrush(Color.FromArgb(160, 0, 0))
+                    Dim compRect As New Rectangle(leftX, topY + 12, pageWidth, 25)
+                    Using fComp As New Font("Tahoma", 13.0!, FontStyle.Bold)
+                        g.DrawString(companyName, fComp, brMaroon, compRect, sfCenter)
+                    End Using
+
+                    Dim titleRect As New Rectangle(leftX, topY + 38, pageWidth, 26)
+                    Using fTitle As New Font("Tahoma", 11.5!, FontStyle.Bold)
+                        g.DrawString(reportTitle, fTitle, brMaroon, titleRect, sfCenter)
+                    End Using
+                End Using
+
+                ' تاریخ و مشخصات در سمت راست
+                Using fBold As New Font("Tahoma", 9.0!, FontStyle.Bold)
+                    Dim printDateStr = "تاریخ: " & PersianDateHelper.ToPersian(DateTime.Now)
+                    g.DrawString(printDateStr, fBold, Brushes.Black, rightX - 15, topY + 22, sfRight)
+                End Using
+
+                ' ۳. استخراج ستون‌های مرئی جدول
+                Dim visibleCols As New List(Of DataGridViewColumn)()
+                For Each col As DataGridViewColumn In grid.Columns
+                    If col.Visible Then visibleCols.Add(col)
+                Next
+
+                If visibleCols.Count = 0 Then Return
+
+                ' محاسبه عرض نسبی ستون‌ها برای برازش کامل در عرض صفحه
+                Dim totalGridWidth As Integer = visibleCols.Sum(Function(c) Math.Max(c.Width, 40))
+                Dim colWidths As New List(Of Integer)()
+                For Each c In visibleCols
+                    Dim w = CInt((Math.Max(c.Width, 40) / CSng(totalGridWidth)) * pageWidth)
+                    colWidths.Add(w)
+                Next
+                Dim currentSum = colWidths.Sum()
+                If currentSum < pageWidth Then
+                    colWidths(colWidths.Count - 1) += (pageWidth - currentSum)
+                End If
+
+                ' مختصات افقی ستون‌ها از راست به چپ
+                Dim colX = New Integer(visibleCols.Count) {}
+                colX(0) = rightX
+                For i As Integer = 0 To visibleCols.Count - 1
+                    colX(i + 1) = colX(i) - colWidths(i)
+                Next
+
+                Dim tableStartY = topY + 80
+                Dim headerHeight = 32
+                Dim rowHeight = 24
+                Dim footerHeight = 40 ' ارتفاع امضاها
+                Dim totalsHeight = If(Not String.IsNullOrEmpty(totalValue), 28, 0)
+                Dim maxY = bottomY - footerHeight - totalsHeight - 10
+
+                ' رسم هدر جدول (آبی فیروزه‌ای ملایم مطابق تصویر نمونه)
+                Dim rectHeaderFull = New Rectangle(leftX, tableStartY, pageWidth, headerHeight)
+                Using brHeaderBg As New SolidBrush(Color.FromArgb(210, 236, 245))
+                    g.FillRectangle(brHeaderBg, rectHeaderFull)
+                End Using
+                g.DrawRectangle(Pens.Black, rectHeaderFull)
+
+                Using fTableHeader As New Font("Tahoma", 8.5!, FontStyle.Bold)
+                    For i As Integer = 0 To visibleCols.Count - 1
+                        Dim rectColHeader = New Rectangle(colX(i + 1), tableStartY, colWidths(i), headerHeight)
+                        g.DrawRectangle(Pens.Black, rectColHeader)
+
+                        Dim cleanHeader = visibleCols(i).HeaderText.Replace(vbCrLf, " ")
+                        g.DrawString(cleanHeader, fTableHeader, Brushes.Black, rectColHeader, sfCenter)
+                    Next
+                End Using
+
+                ' ۴. رسم ردیف‌های داده
+                Dim currY = tableStartY + headerHeight
+                Using fRow As New Font("Tahoma", 8.5!, FontStyle.Regular)
+                    While rowIndex < grid.Rows.Count AndAlso currY + rowHeight <= maxY
+                        Dim row = grid.Rows(rowIndex)
+                        If Not row.IsNewRow Then
+                            For i As Integer = 0 To visibleCols.Count - 1
+                                Dim col = visibleCols(i)
+                                Dim cellRect = New Rectangle(colX(i + 1), currY, colWidths(i), rowHeight)
+
+                                ' استخراج و قالب‌بندی مقدار سلول
+                                Dim cellText As String = ""
+                                Dim cellVal = row.Cells(col.Index).Value
+                                If cellVal IsNot Nothing AndAlso Not Convert.IsDBNull(cellVal) Then
+                                    If Not String.IsNullOrEmpty(col.DefaultCellStyle.Format) AndAlso IsNumeric(cellVal) Then
+                                        Dim dVal As Decimal = 0D
+                                        Decimal.TryParse(Convert.ToString(cellVal), dVal)
+                                        cellText = dVal.ToString(col.DefaultCellStyle.Format)
+                                    Else
+                                        cellText = Convert.ToString(cellVal)
+                                    End If
+                                End If
+
+                                ' رنگ پس‌زمینه اختصاصی سلول (مانند سبز و قرمز ملایم در سود و زیان)
+                                Dim cellBg = row.Cells(col.Index).Style.BackColor
+                                If cellBg.IsEmpty OrElse cellBg = Color.Empty Then cellBg = Color.White
+                                Using brCellBg As New SolidBrush(cellBg)
+                                    g.FillRectangle(brCellBg, cellRect)
+                                End Using
+
+                                ' تراز متن سلول
+                                Dim align = col.DefaultCellStyle.Alignment
+                                Dim sfCell As StringFormat = sfRight
+                                If align = DataGridViewContentAlignment.MiddleCenter Then
+                                    sfCell = sfCenter
+                                ElseIf align = DataGridViewContentAlignment.MiddleLeft OrElse align = DataGridViewContentAlignment.BottomLeft OrElse align = DataGridViewContentAlignment.TopLeft Then
+                                    sfCell = sfRight
+                                End If
+
+                                Dim textPaddingRect = New Rectangle(colX(i + 1) + 4, currY, colWidths(i) - 8, rowHeight)
+                                g.DrawString(cellText, fRow, Brushes.Black, textPaddingRect, sfCell)
+                                g.DrawRectangle(Pens.Black, cellRect)
+                            Next
+
+                            ' خط نقطه‌چین افقی
+                            Using pDot As New Pen(Color.LightGray) With {.DashStyle = DashStyle.Dot}
+                                g.DrawLine(pDot, leftX, currY + rowHeight, rightX, currY + rowHeight)
+                            End Using
+
+                            currY += rowHeight
+                        End If
+                        rowIndex += 1
+                    End While
+                End Using
+
+                ' کادر مشکی انتهای جدول
+                g.DrawRectangle(Pens.Black, leftX, tableStartY, pageWidth, currY - tableStartY)
+
+                ' ۵. سطر جمع کل (زرد لیمویی ملایم مطابق تصویر نمونه)
+                Dim isLastPage = (rowIndex >= grid.Rows.Count)
+                If isLastPage AndAlso Not String.IsNullOrEmpty(totalValue) Then
+                    Dim rectTotals = New Rectangle(leftX, currY, pageWidth, 28)
+                    Using brTotals As New SolidBrush(Color.FromArgb(254, 248, 165))
+                        g.FillRectangle(brTotals, rectTotals)
+                    End Using
+                    g.DrawRectangle(Pens.Black, rectTotals)
+
+                    Using fTotals As New Font("Tahoma", 9.0!, FontStyle.Bold)
+                        Dim rLabel = New Rectangle(leftX + (pageWidth \ 2), currY, (pageWidth \ 2) - 10, 28)
+                        Dim lblStr = If(Not String.IsNullOrEmpty(totalLabel), totalLabel, "جمع کل:")
+                        g.DrawString(lblStr, fTotals, Brushes.Black, rLabel, sfRight)
+
+                        Dim rValue = New Rectangle(leftX + 10, currY, (pageWidth \ 2) - 10, 28)
+                        g.DrawString(totalValue, fTotals, Brushes.Black, rValue, sfLeft)
+                    End Using
+
+                    currY += 28
+                End If
+
+                ' ۶. امضاداران پایین صفحه (تهیه کننده / تأیید کننده / تصویب کننده)
+                If isLastPage Then
+                    Dim sigY = bottomY - 35
+                    Dim sigColWidth = pageWidth \ 3
+                    Using fSig As New Font("Tahoma", 9.0!, FontStyle.Bold)
+                        Dim rectSig1 = New Rectangle(rightX - sigColWidth, sigY, sigColWidth, 30)
+                        g.DrawString("تهیه کننده:", fSig, Brushes.Black, rectSig1, sfCenter)
+
+                        Dim rectSig2 = New Rectangle(rightX - (sigColWidth * 2), sigY, sigColWidth, 30)
+                        g.DrawString("تأیید کننده:", fSig, Brushes.Black, rectSig2, sfCenter)
+
+                        Dim rectSig3 = New Rectangle(leftX, sigY, sigColWidth, 30)
+                        g.DrawString("تصویب کننده:", fSig, Brushes.Black, rectSig3, sfCenter)
+                    End Using
+                End If
+
+                e.HasMorePages = Not isLastPage
+                If isLastPage Then rowIndex = 0
+            End Sub
+
             Using dlg As New PrintPreviewDialog()
-                dlg.Document = _printDoc
-                dlg.WindowState = FormWindowState.Maximized
-                dlg.ShowDialog(Me)
-            End Using
-        End Sub
-
-        ' ===== چاپ کاردکس =====
-
-        Private Sub PrintKardex()
-            If _kardexTable Is Nothing OrElse _kardexTable.Rows.Count = 0 Then
-                MessageBox.Show("دادهای برای چاپ وجود ندارد.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return
-            End If
-
-            _printLines.Clear()
-            _printLines.Add(lblKardexTitle.Text)
-            _printLines.Add(String.Format("تاریخ چاپ: {0}", ToPersian(DateTime.Now)))
-            _printLines.Add(String.Concat(New String("-"c, 100)))
-            _printLines.Add(String.Format("{0,-5}{1,-14}{2,-22}{3,-22}{4,-10}{5,-10}{6,-10}", "ردیف", "تاریخ", "انبار", "نوع عملیات", "ورود", "خروج", "موجودی"))
-            _printLines.Add(String.Concat(New String("-"c, 100)))
-
-            Dim i As Integer = 1
-            For Each row As DataRow In _kardexTable.Rows
-                _printLines.Add(String.Format("{0,-5}{1,-14}{2,-22}{3,-22}{4,-10}{5,-10}{6,-10}",
-                    i,
-                    Convert.ToString(row("PersianDate")),
-                    TruncateStr(Convert.ToString(row("WarehouseName")), 20),
-                    TruncateStr(Convert.ToString(row("TransactionType")), 20),
-                    If(Convert.ToDecimal(row("QuantityIn")) > 0, Convert.ToString(row("QuantityIn")), "-"),
-                    If(Convert.ToDecimal(row("QuantityOut")) > 0, Convert.ToString(row("QuantityOut")), "-"),
-                    Convert.ToString(row("Balance"))))
-                i += 1
-            Next
-            _printLines.Add(String.Concat(New String("-"c, 100)))
-
-            _printDoc.DocumentName = "کاردکس کالا"
-            _printLineIndex = 0
-            Using dlg As New PrintPreviewDialog()
-                dlg.Document = _printDoc
+                dlg.Document = doc
                 dlg.WindowState = FormWindowState.Maximized
                 dlg.ShowDialog(Me)
             End Using
@@ -902,99 +1049,6 @@ Namespace Negar.Forms
             Catch ex As Exception
                 MessageBox.Show("خطا در تهیه لیست انبارگردانی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-        End Sub
-
-        Private Sub PrintInvCount()
-            If _invCountTable Is Nothing OrElse _invCountTable.Rows.Count = 0 Then
-                MessageBox.Show("ابتدا لیست انبارگردانی را تهیه کنید.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return
-            End If
-
-            Dim showQty = chkShowQty.Checked
-            Dim showLoc = chkShowLocation.Checked
-
-            _printLines.Clear()
-            _printLines.Add("لیست انبارگردانی")
-            _printLines.Add(String.Format("تاریخ چاپ: {0}", ToPersian(DateTime.Now)))
-
-            Dim drv = TryCast(cmbInvCountWarehouse.SelectedItem, DataRowView)
-            If drv IsNot Nothing Then
-                _printLines.Add(String.Format("انبار: {0}", Convert.ToString(drv("WarehouseName"))))
-            End If
-            _printLines.Add(String.Concat(New String("-"c, 110)))
-
-            ' سرستون
-            Dim header As String
-            If showLoc AndAlso showQty Then
-                header = String.Format("{0,-5}{1,-14}{2,-32}{3,-10}{4,-22}{5,-18}{6,-10}", "ردیف", "کد", "نام کالا", "واحد", "محل کالا", "موجودی سیستم", "شمارش")
-            ElseIf showLoc Then
-                header = String.Format("{0,-5}{1,-14}{2,-32}{3,-10}{4,-22}{5,-14}", "ردیف", "کد", "نام کالا", "واحد", "محل کالا", "شمارش")
-            ElseIf showQty Then
-                header = String.Format("{0,-5}{1,-14}{2,-38}{3,-10}{4,-18}{5,-14}", "ردیف", "کد", "نام کالا", "واحد", "موجودی سیستم", "شمارش")
-            Else
-                header = String.Format("{0,-5}{1,-14}{2,-45}{3,-10}{4,-18}", "ردیف", "کد", "نام کالا", "واحد", "شمارش")
-            End If
-            _printLines.Add(header)
-            _printLines.Add(String.Concat(New String("-"c, 110)))
-
-            Dim i As Integer = 1
-            For Each row As DataRow In _invCountTable.Rows
-                Dim line As String
-                If showLoc AndAlso showQty Then
-                    line = String.Format("{0,-5}{1,-14}{2,-32}{3,-10}{4,-22}{5,-18}{6,-10}",
-                        i, Convert.ToString(row("ProductCode")),
-                        TruncateStr(Convert.ToString(row("ProductName")), 30),
-                        Convert.ToString(row("Unit")),
-                        TruncateStr(Convert.ToString(row("LocationPath")), 20),
-                        Convert.ToString(row("SystemQty")), "")
-                ElseIf showLoc Then
-                    line = String.Format("{0,-5}{1,-14}{2,-32}{3,-10}{4,-22}{5,-14}",
-                        i, Convert.ToString(row("ProductCode")),
-                        TruncateStr(Convert.ToString(row("ProductName")), 30),
-                        Convert.ToString(row("Unit")),
-                        TruncateStr(Convert.ToString(row("LocationPath")), 20), "")
-                ElseIf showQty Then
-                    line = String.Format("{0,-5}{1,-14}{2,-38}{3,-10}{4,-18}{5,-14}",
-                        i, Convert.ToString(row("ProductCode")),
-                        TruncateStr(Convert.ToString(row("ProductName")), 36),
-                        Convert.ToString(row("Unit")),
-                        Convert.ToString(row("SystemQty")), "")
-                Else
-                    line = String.Format("{0,-5}{1,-14}{2,-45}{3,-10}{4,-18}",
-                        i, Convert.ToString(row("ProductCode")),
-                        TruncateStr(Convert.ToString(row("ProductName")), 43),
-                        Convert.ToString(row("Unit")), "")
-                End If
-                _printLines.Add(line)
-                i += 1
-            Next
-            _printLines.Add(String.Concat(New String("-"c, 110)))
-
-            _printDoc.DocumentName = "لیست انبارگردانی"
-            _printLineIndex = 0
-            Using dlg As New PrintPreviewDialog()
-                dlg.Document = _printDoc
-                dlg.WindowState = FormWindowState.Maximized
-                dlg.ShowDialog(Me)
-            End Using
-        End Sub
-
-        Private Sub PrintDoc_PrintPage(sender As Object, e As PrintPageEventArgs)
-            Dim font As New Font("Tahoma", 9.0!)
-            Dim lineHeight As Single = font.GetHeight(e.Graphics) + 2
-            Dim y As Single = e.MarginBounds.Top
-            Dim linesOnPage As Integer = 0
-
-            While _printLineIndex < _printLines.Count AndAlso linesOnPage < LinesPerPage
-                Dim line = _printLines(_printLineIndex)
-                e.Graphics.DrawString(line, font, Brushes.Black, e.MarginBounds.Left, y, StringFormat.GenericTypographic)
-                y += lineHeight
-                _printLineIndex += 1
-                linesOnPage += 1
-            End While
-
-            e.HasMorePages = (_printLineIndex < _printLines.Count)
-            font.Dispose()
         End Sub
 
         Private Function TruncateStr(s As String, maxLen As Integer) As String
