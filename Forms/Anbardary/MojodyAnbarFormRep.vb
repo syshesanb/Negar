@@ -669,7 +669,7 @@ lblKardexCount.Text = String.Format("تعداد تراکنشها: {0}", If(_kard
 
         Private Sub BtnPrintProfitLoss_Click(sender As Object, e As EventArgs) Handles btnPrintProfitLoss.Click
             Dim title = If(String.IsNullOrWhiteSpace(lblProfitLossTitle.Text), "گزارش سود و زیان کالا", lblProfitLossTitle.Text)
-            PrintGridReport(title, dgvProfitLoss, "جمع کل سود ناخالص:", lblProfitLossGrandTotalValue.Text)
+            PrintGridReport(title, dgvProfitLoss, "جمع کل سود ناخالص:", lblProfitLossGrandTotalValue.Text, excludeCols:={"colDesc"}, isLandscape:=True)
         End Sub
 
         Private Sub BtnGenerateInvCount_Click(sender As Object, e As EventArgs) Handles btnGenerateInvCount.Click
@@ -682,15 +682,22 @@ lblKardexCount.Text = String.Format("تعداد تراکنشها: {0}", If(_kard
 
         ' ===== موتور چاپ گرافیکی پیشرفته (طرح و رنگ‌بندی استاندارد مطابق تصویر نمونه) =====
 
-        Private Sub PrintGridReport(reportTitle As String, grid As DataGridView, Optional totalLabel As String = Nothing, Optional totalValue As String = Nothing)
+        Private Sub PrintGridReport(reportTitle As String, grid As DataGridView, Optional totalLabel As String = Nothing, Optional totalValue As String = Nothing, Optional excludeCols As IEnumerable(Of String) = Nothing, Optional isLandscape As Boolean = False)
             If grid Is Nothing OrElse grid.Rows.Count = 0 Then
                 MessageBox.Show("هیچ داده‌ای برای چاپ وجود ندارد.", "اطلاع", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
             Dim doc As New PrintDocument()
-            doc.DefaultPageSettings.PaperSize = New PaperSize("A4", 827, 1169)
-            doc.DefaultPageSettings.Margins = New Margins(40, 40, 40, 40)
+            If isLandscape Then
+                doc.DefaultPageSettings.Landscape = True
+                doc.DefaultPageSettings.PaperSize = New PaperSize("A4", 827, 1169)
+                doc.DefaultPageSettings.Margins = New Margins(40, 40, 40, 40)
+            Else
+                doc.DefaultPageSettings.Landscape = False
+                doc.DefaultPageSettings.PaperSize = New PaperSize("A4", 827, 1169)
+                doc.DefaultPageSettings.Margins = New Margins(40, 40, 40, 40)
+            End If
 
             Dim rowIndex As Integer = 0
 
@@ -735,10 +742,21 @@ lblKardexCount.Text = String.Format("تعداد تراکنشها: {0}", If(_kard
                     g.DrawString(printDateStr, fBold, Brushes.Black, rightX - 15, topY + 22, sfRight)
                 End Using
 
-                ' ۳. استخراج ستون‌های مرئی جدول
+                ' ۳. استخراج ستون‌های مرئی جدول (با استثنا کردن ستون‌های مشخص شده)
                 Dim visibleCols As New List(Of DataGridViewColumn)()
                 For Each col As DataGridViewColumn In grid.Columns
-                    If col.Visible Then visibleCols.Add(col)
+                    If col.Visible Then
+                        Dim isExcluded = False
+                        If excludeCols IsNot Nothing Then
+                            For Each exc In excludeCols
+                                If String.Equals(col.Name, exc, StringComparison.OrdinalIgnoreCase) OrElse String.Equals(col.DataPropertyName, exc, StringComparison.OrdinalIgnoreCase) Then
+                                    isExcluded = True
+                                    Exit For
+                                End If
+                            Next
+                        End If
+                        If Not isExcluded Then visibleCols.Add(col)
+                    End If
                 Next
 
                 If visibleCols.Count = 0 Then Return
