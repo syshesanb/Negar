@@ -51,7 +51,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 Dim compId = SessionContext.CurrentCompanyID
                 Dim dt As DataTable
                 If compId.HasValue Then
-                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses WHERE (CompanyID = ? OR CompanyID IS NULL) AND IsActive = 1 ORDER BY WarehouseID", compId.Value)
+                    dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses WHERE CompanyID = ? AND IsActive = 1 ORDER BY WarehouseID", compId.Value)
                 Else
                     dt = Sql.ExecuteTable("SELECT WarehouseID, WarehouseName FROM Warehouses WHERE IsActive = 1 ORDER BY WarehouseID")
                 End If

@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -585,6 +585,20 @@ Namespace Negar.Data
                     Sql.ExecuteNonQuery("UPDATE SalesInvoices SET CompanyID = ? WHERE CompanyID IS NULL", cid)
                     Sql.ExecuteNonQuery("UPDATE WarehouseReceipts SET CompanyID = ? WHERE CompanyID IS NULL", cid)
                 End If
+
+                ' Re-align PurchaseInvoices WarehouseID to match the invoice company's own warehouse
+                Sql.ExecuteNonQuery("UPDATE PurchaseInvoices SET WarehouseID = (" &
+                                    "  SELECT MIN(w.WarehouseID) FROM Warehouses w WHERE w.CompanyID = PurchaseInvoices.CompanyID" &
+                                    ") WHERE CompanyID IS NOT NULL AND WarehouseID IN (" &
+                                    "  SELECT i.WarehouseID FROM PurchaseInvoices i JOIN Warehouses w ON i.WarehouseID = w.WarehouseID WHERE i.CompanyID <> w.CompanyID" &
+                                    ")")
+
+                ' Re-align SalesInvoices WarehouseID to match the invoice company's own warehouse
+                Sql.ExecuteNonQuery("UPDATE SalesInvoices SET WarehouseID = (" &
+                                    "  SELECT MIN(w.WarehouseID) FROM Warehouses w WHERE w.CompanyID = SalesInvoices.CompanyID" &
+                                    ") WHERE CompanyID IS NOT NULL AND WarehouseID IN (" &
+                                    "  SELECT i.WarehouseID FROM SalesInvoices i JOIN Warehouses w ON i.WarehouseID = w.WarehouseID WHERE i.CompanyID <> w.CompanyID" &
+                                    ")")
             Catch ex As Exception
             End Try
 
