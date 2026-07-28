@@ -295,10 +295,15 @@ Namespace Negar.Forms.Payroll
                 .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 .MultiSelect = False,
                 .AllowUserToAddRows = False,
-                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                .AutoGenerateColumns = True,
+                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
+                .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing,
+                .ColumnHeadersHeight = 50,
                 .RowHeadersVisible = False,
                 .BackgroundColor = Color.White
             }
+            dgvAttendance.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
+            dgvAttendance.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             AddHandler dgvAttendance.DataBindingComplete, Sub(s, e) ApplyPersianGridHeaders(CType(s, DataGridView))
 
             tabAttendance.Controls.Add(dgvAttendance)
@@ -351,10 +356,15 @@ Namespace Negar.Forms.Payroll
                 .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 .MultiSelect = False,
                 .AllowUserToAddRows = False,
-                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                .AutoGenerateColumns = True,
+                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
+                .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing,
+                .ColumnHeadersHeight = 50,
                 .RowHeadersVisible = False,
                 .BackgroundColor = Color.White
             }
+            dgvCalculate.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
+            dgvCalculate.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             AddHandler dgvCalculate.DataBindingComplete, Sub(s, e) ApplyPersianGridHeaders(CType(s, DataGridView))
 
             tabCalculate.Controls.Add(dgvCalculate)
@@ -495,10 +505,15 @@ Namespace Negar.Forms.Payroll
                 .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 .MultiSelect = False,
                 .AllowUserToAddRows = False,
-                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                .AutoGenerateColumns = True,
+                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
+                .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing,
+                .ColumnHeadersHeight = 50,
                 .RowHeadersVisible = False,
                 .BackgroundColor = Color.White
             }
+            dgvReport.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
+            dgvReport.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             AddHandler dgvReport.DataBindingComplete, Sub(s, e) ApplyPersianGridHeaders(CType(s, DataGridView))
 
             tabReports.Controls.Add(dgvReport)
