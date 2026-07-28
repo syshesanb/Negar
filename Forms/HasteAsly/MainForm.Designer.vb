@@ -28,11 +28,7 @@ Namespace Negar.Forms
         Friend WithEvents mUtilities As ToolStripMenuItem
 
         ' Sub-items for Payroll
-        Friend WithEvents miPayrollPersonnel As ToolStripMenuItem
-        Friend WithEvents miPayrollAttendance As ToolStripMenuItem
-        Friend WithEvents miPayrollCalculate As ToolStripMenuItem
-        Friend WithEvents miPayrollDiskettes As ToolStripMenuItem
-        Friend WithEvents miPayrollBankFile As ToolStripMenuItem
+        Friend WithEvents miPayrollMain As ToolStripMenuItem
         Friend WithEvents miPayrollReports As ToolStripMenuItem
 
         ' Sub-items for System Management
@@ -125,11 +121,7 @@ Namespace Negar.Forms
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
-            Me.miPayrollPersonnel = New ToolStripMenuItem()
-            Me.miPayrollAttendance = New ToolStripMenuItem()
-            Me.miPayrollCalculate = New ToolStripMenuItem()
-            Me.miPayrollDiskettes = New ToolStripMenuItem()
-            Me.miPayrollBankFile = New ToolStripMenuItem()
+            Me.miPayrollMain = New ToolStripMenuItem()
             Me.miPayrollReports = New ToolStripMenuItem()
 
             Me.miSettingsMessages = New ToolStripMenuItem()
@@ -210,35 +202,15 @@ Namespace Negar.Forms
             Me.mainMenu.TabIndex = 1
 
             ' mPayroll
-            Me.mPayroll.DropDownItems.AddRange(New ToolStripItem() {Me.miPayrollPersonnel, Me.miPayrollAttendance, Me.miPayrollCalculate, Me.miPayrollDiskettes, Me.miPayrollBankFile, Me.miPayrollReports})
+            Me.mPayroll.DropDownItems.AddRange(New ToolStripItem() {Me.miPayrollMain, Me.miPayrollReports})
             Me.mPayroll.Name = "mPayroll"
             Me.mPayroll.Size = New Size(100, 20)
             Me.mPayroll.Text = "💳 حقوق و دستمزد"
 
-            ' miPayrollPersonnel
-            Me.miPayrollPersonnel.Name = "miPayrollPersonnel"
-            Me.miPayrollPersonnel.Size = New Size(240, 22)
-            Me.miPayrollPersonnel.Text = "👥 پرونده پرسنل و احکام حقوقی"
-
-            ' miPayrollAttendance
-            Me.miPayrollAttendance.Name = "miPayrollAttendance"
-            Me.miPayrollAttendance.Size = New Size(240, 22)
-            Me.miPayrollAttendance.Text = "🕒 کارکرد ماهانه و حضور و غیاب"
-
-            ' miPayrollCalculate
-            Me.miPayrollCalculate.Name = "miPayrollCalculate"
-            Me.miPayrollCalculate.Size = New Size(240, 22)
-            Me.miPayrollCalculate.Text = "🧮 محاسبه حقوق و صدور فیش"
-
-            ' miPayrollDiskettes
-            Me.miPayrollDiskettes.Name = "miPayrollDiskettes"
-            Me.miPayrollDiskettes.Size = New Size(240, 22)
-            Me.miPayrollDiskettes.Text = "🏛️ دیسکت‌های بیمه و مالیات"
-
-            ' miPayrollBankFile
-            Me.miPayrollBankFile.Name = "miPayrollBankFile"
-            Me.miPayrollBankFile.Size = New Size(240, 22)
-            Me.miPayrollBankFile.Text = "🏦 فایل پرداخت گروهی بانک"
+            ' miPayrollMain
+            Me.miPayrollMain.Name = "miPayrollMain"
+            Me.miPayrollMain.Size = New Size(240, 22)
+            Me.miPayrollMain.Text = "💳 سیستم جامع حقوق و دستمزد"
 
             ' miPayrollReports
             Me.miPayrollReports.Name = "miPayrollReports"

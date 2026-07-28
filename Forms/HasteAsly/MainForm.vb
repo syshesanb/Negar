@@ -883,7 +883,7 @@ Namespace Negar.Forms
             ShowDashboardCategory("Payroll")
         End Sub
 
-        Private Sub OpenPayrollMainForm(sender As Object, e As EventArgs) Handles mPayroll.Click, miPayrollPersonnel.Click, miPayrollAttendance.Click, miPayrollCalculate.Click, miPayrollDiskettes.Click, miPayrollBankFile.Click, miPayrollReports.Click
+        Private Sub OpenPayrollMainForm(sender As Object, e As EventArgs) Handles mPayroll.Click, miPayrollMain.Click, miPayrollReports.Click
             Try
                 Using dlg As New Negar.Forms.Payroll.PayrollMainForm()
                     dlg.ShowDialog(Me)
