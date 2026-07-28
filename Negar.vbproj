@@ -126,6 +126,8 @@
     <Compile Include="Business\ActivityLogService.vb" />
     <Compile Include="Business\PersianDateHelper.vb" />
     <Compile Include="Business\CompanyFiscalYearService.vb" />
+    <Compile Include="Business\PermissionTreeService.vb" />
+    <Compile Include="Business\PermissionPresetService.vb" />
     <Compile Include="Business\InventoryService.vb" />
     <Compile Include="Business\AccountingService.vb" />
     <Compile Include="Business\AccountingEntryLine.vb" />

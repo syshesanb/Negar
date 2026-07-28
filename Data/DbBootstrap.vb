@@ -184,6 +184,8 @@ Namespace Negar.Data
             Log("bootstrap:personnel-ok")
                 EnsureWarehouseTypesTable()
                 Log("bootstrap:warehousetypes-ok")
+                EnsurePermissionPresetsTable()
+                Log("bootstrap:permissionpresets-ok")
                 EnsureWarehouseLocationsTable()
                 Log("bootstrap:warehouselocations-ok")
                 EnsureModyanCodesTable()
@@ -1201,6 +1203,45 @@ Namespace Negar.Data
                 )
             Catch ex As Exception
                 Log("EnsureExpensesTable error: " & ex.Message)
+            End Try
+        End Sub
+
+        Private Sub EnsurePermissionPresetsTable()
+            Try
+                Sql.ExecuteNonQuery(
+                    "CREATE TABLE IF NOT EXISTS PermissionPresets (" &
+                    "PresetID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "PresetName TEXT NOT NULL UNIQUE, " &
+                    "Description TEXT, " &
+                    "PermissionsData TEXT, " &
+                    "CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP);"
+                )
+
+                ' Seed default roles if table is empty
+                Dim count = Convert.ToInt32(If(Sql.ExecuteScalar("SELECT COUNT(*) FROM PermissionPresets"), 0))
+                If count = 0 Then
+                    Sql.ExecuteNonQuery("INSERT INTO PermissionPresets (PresetName, Description, PermissionsData) VALUES (?, ?, ?)",
+                                        "📦 الگوی انباردار مینی",
+                                        "الگوی دسترسی به انبارداری مینی، کالاها، انبارها و فاکتورها",
+                                        "AnbarMiniModule,TradeProducts,TradeWarehouses,TradePurchase,TradeSales,TradeReports")
+
+                    Sql.ExecuteNonQuery("INSERT INTO PermissionPresets (PresetName, Description, PermissionsData) VALUES (?, ?, ?)",
+                                        "🛒 الگوی صندوق‌دار / فروشنده",
+                                        "الگوی دسترسی به فاکتور فروش، کالاها و ثبت فروش سریع",
+                                        "AnbarMiniModule,TradeSales,TradeProducts")
+
+                    Sql.ExecuteNonQuery("INSERT INTO PermissionPresets (PresetName, Description, PermissionsData) VALUES (?, ?, ?)",
+                                        "📊 الگوی حسابدار ارشد",
+                                        "الگوی دسترسی به تمام ماژول‌های حسابداری، کدینگ، اسناد و ترازها",
+                                        "ManageAccounting,AccountingHeader,AccountingShenavar,AccountingEntry,AccountingBank,AccountingBalance,AccountingLedger,AccountingReports,AccountingProfitLoss,AccountingBalanceSheet")
+
+                    Sql.ExecuteNonQuery("INSERT INTO PermissionPresets (PresetName, Description, PermissionsData) VALUES (?, ?, ?)",
+                                        "🔐 الگوی دسترسی کامل (Full Access)",
+                                        "الگوی شامل تمامی دسترسی‌های سیستم",
+                                        "ALL")
+                End If
+            Catch ex As Exception
+                Log("EnsurePermissionPresetsTable error: " & ex.Message)
             End Try
         End Sub
 
