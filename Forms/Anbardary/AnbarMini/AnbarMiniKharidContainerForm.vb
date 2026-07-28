@@ -302,13 +302,21 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 .HeaderText = "نوع پرداخت", .Width = 90
             }
 
+            Dim colSanadRef As New DataGridViewTextBoxColumn() With {
+                .Name = "SanadRef", .DataPropertyName = "SanadRef",
+                .HeaderText = "عطف حسابداری (سند / سال مالی)", .Width = 175
+            }
+            colSanadRef.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colSanadRef.DefaultCellStyle.ForeColor = Color.FromArgb(13, 71, 161)
+            colSanadRef.DefaultCellStyle.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+
             Dim colDesc As New DataGridViewTextBoxColumn() With {
                 .Name = "Description", .DataPropertyName = "Description",
                 .HeaderText = "توضیحات", .Width = 180
             }
 
             dgvInvoices.Columns.AddRange(New DataGridViewColumn() {
-                colRowIdx, colEdit, colDelete, colId, colNo, colDate, colVendor, colWh, colTotal, colPayType, colDesc
+                colRowIdx, colEdit, colDelete, colId, colNo, colDate, colVendor, colWh, colTotal, colPayType, colSanadRef, colDesc
             })
         End Sub
 
