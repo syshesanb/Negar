@@ -359,6 +359,8 @@ Namespace Negar.Forms
             Dim canSwitchUser = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SwitchUser)
             Dim canChangePassword = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ChangePassword)
 
+            Dim canManageMessages = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAppMessages)
+
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
             miTradeMini.Available = canAnbarMini
@@ -369,7 +371,7 @@ Namespace Negar.Forms
             miAccountingMain.Available = canAccounting
             miReportsAccounting.Available = canAccounting OrElse canReports
             miCompanyFiscalYears.Available = canCompanyYears
-            miSettingsMessages.Available = isSuperAdmin
+            miSettingsMessages.Available = canManageMessages
             miSettingsThemes.Available = canManageThemes
             miBackupData.Available = canBackup
             miRestoreData.Available = canRestore
@@ -391,7 +393,7 @@ Namespace Negar.Forms
             miAccountingMain.Visible = canAccounting
             miReportsAccounting.Visible = canAccounting OrElse canReports
             miCompanyFiscalYears.Visible = canCompanyYears
-            miSettingsMessages.Visible = isSuperAdmin
+            miSettingsMessages.Visible = canManageMessages
             miSettingsThemes.Visible = canManageThemes
             miBackupData.Visible = canBackup
             miRestoreData.Visible = canRestore

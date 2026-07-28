@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -79,26 +79,25 @@ Namespace Negar.Forms
 
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            Dim hasGlobalTrade = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageTradeWarehouse)
 
-            If Not (hasGlobalTrade OrElse SessionContext.HasPermission(PermissionKeys.ManageProducts)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageProducts) OrElse SessionContext.HasPermission(PermissionKeys.TradeProducts)) Then
                 tabs.TabPages.Remove(tabUnits)
                 tabs.TabPages.Remove(tabProductGroups)
                 tabs.TabPages.Remove(tabProducts)
             End If
-            If Not (hasGlobalTrade OrElse SessionContext.HasPermission(PermissionKeys.ManageWarehouses)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageWarehouses) OrElse SessionContext.HasPermission(PermissionKeys.TradeWarehouses)) Then
                 tabs.TabPages.Remove(tabWarehouses)
             End If
-            If Not (hasGlobalTrade OrElse SessionContext.HasPermission(PermissionKeys.ManagePurchases)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManagePurchases) OrElse SessionContext.HasPermission(PermissionKeys.TradePurchase)) Then
                 tabs.TabPages.Remove(tabPurchase)
             End If
-            If Not (hasGlobalTrade OrElse SessionContext.HasPermission(PermissionKeys.ManageSales)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageSales) OrElse SessionContext.HasPermission(PermissionKeys.TradeSales)) Then
                 tabs.TabPages.Remove(tabSales)
             End If
-            If Not (hasGlobalTrade OrElse SessionContext.HasPermission(PermissionKeys.ManageSales)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.TradeRemittance)) Then
                 tabs.TabPages.Remove(tabTransfer)
             End If
-            If Not (hasGlobalTrade OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory)) Then
                 tabs.TabPages.Remove(tabInventory)
             End If
 

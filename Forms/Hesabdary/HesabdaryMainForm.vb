@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -163,49 +163,48 @@ Namespace Negar.Forms
 
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            Dim hasGlobalAccounting = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)
 
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeader)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeader) OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)) Then
                 tabs.TabPages.Remove(tabAccounts)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar)) Then
                 tabs.TabPages.Remove(tabShenavar)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry)) Then
                 tabs.TabPages.Remove(tabEntry)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
                 tabs.TabPages.Remove(tabBankReconciliation)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalance)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalance)) Then
                 tabs.TabPages.Remove(tabTrial)
                 tabs.TabPages.Remove(tabTarazShenavar)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingLedger)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingLedger)) Then
                 tabs.TabPages.Remove(tabLedger)
                 tabs.TabPages.Remove(tabDaftarShenavar)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)) Then
                 tabs.TabPages.Remove(tabProfitLoss)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)) Then
                 tabs.TabPages.Remove(tabBalanceSheet)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingAdvancedReports)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingAdvancedReports)) Then
                 tabsOtherReports.TabPages.Remove(tabAdvancedReports)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingChartReports)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingChartReports)) Then
                 tabsOtherReports.TabPages.Remove(tabChartReports)
             End If
-            If Not (hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReports)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReports)) Then
                 tabsOtherReports.TabPages.Remove(tabReports)
             End If
 
-                          If tabsOtherReports.TabPages.Count = 0 Then
-                  tabs.TabPages.Remove(tabOtherReports)
-              End If
+            If tabsOtherReports.TabPages.Count = 0 Then
+                tabs.TabPages.Remove(tabOtherReports)
+            End If
 
-              If _reportsOnlyMode Then
+            If _reportsOnlyMode Then
                 tabs.TabPages.Remove(tabAccounts)
                 tabs.TabPages.Remove(tabShenavar)
                 tabs.TabPages.Remove(tabEntry)
