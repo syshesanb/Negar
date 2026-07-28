@@ -813,11 +813,6 @@ Namespace Negar.Forms
 
                 Case "Payroll"
                     AddDashButton("سیستم جامع حقوق و دستمزد", AddressOf OpenPayrollMainForm, "Users")
-                    AddDashButton("پرونده پرسنل و احکام حقوقی", AddressOf OpenPayrollMainForm, "Users")
-                    AddDashButton("کارکرد ماهانه و حضور و غیاب", AddressOf OpenPayrollMainForm, "CompanyFiscalYears")
-                    AddDashButton("محاسبه حقوق و صدور فیش", AddressOf OpenPayrollMainForm, "Accounting")
-                    AddDashButton("دیسکت‌های بیمه و مالیات", AddressOf OpenPayrollMainForm, "Settings")
-                    AddDashButton("فایل پرداخت گروهی بانک", AddressOf OpenPayrollMainForm, "BackupData")
                     AddDashButton("گزارشات جامع حقوق و دستمزد", AddressOf OpenPayrollMainForm, "Reports")
 
                 Case "BusinessShells"
