@@ -4,6 +4,7 @@ Option Explicit On
 Imports System
 Imports System.Windows.Forms
 Imports Negar.Business
+Imports Negar.Models
 
 Namespace Negar.Forms.Anbardary.AnbarMini
     Public Class AnbarMiniMainForm
@@ -12,6 +13,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         End Sub
 
         Private Sub AnbarMiniMainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            ThemeHelper.ApplyEditionTheme(Me, AppEdition.Mini)
             ApplySecurity()
 
             If tabsMini.TabPages.Contains(tabPOS) Then HostForm(tabPOS, New AnbarMiniForooshContainerForm())

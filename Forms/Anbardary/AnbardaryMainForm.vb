@@ -105,6 +105,8 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub ApplyEditionRules()
+            ThemeHelper.ApplyEditionTheme(Me, SessionContext.CurrentEdition)
+
             Select Case SessionContext.CurrentEdition
                 Case AppEdition.Mini
                     ' در نسخه مینی (یک انبار و یک فروشگاه)، تب‌های چندانباره مخفی می‌شوند
@@ -112,8 +114,10 @@ Namespace Negar.Forms
                     If tabs.TabPages.Contains(tabTransfer) Then tabs.TabPages.Remove(tabTransfer)
                 Case AppEdition.Medium
                     ' در نسخه متوسط، امکان مدیریت چند انبار وجود دارد
+                    Me.Text = "مدیریت انبارداری و کالا - نسخه متوسط (Medium Edition)"
                 Case AppEdition.Big
                     ' در نسخه بزرگ، همه امکانات فعال است
+                    Me.Text = "مدیریت انبارداری و کالا - نسخه بزرگ و پیشرفته (Big Enterprise Edition)"
             End Select
         End Sub
 
