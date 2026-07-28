@@ -187,16 +187,18 @@ Namespace Negar.Forms.Anbardary
                 dt.Columns.Add("TaxId", GetType(String))
                 dt.Columns.Add("Status", GetType(String))
 
-                ' استعلام از دیتابیس جهت بارگذاری خودکار فاکتورهای خروجی انبار و فاکتورهای فروش/خرید
+                ' استعلام کامل از دیتابیس جهت بارگذاری تمام فاکتورهای قبلی و جدید خروجی انبار و فاکتورهای خرید/فروش
                 Try
-                    Dim dbDt = Sql.ExecuteTable("SELECT ReceiptNumber, ReceiptDate, Description FROM WarehouseReceipts ORDER BY ReceiptID DESC LIMIT 50")
+                    Dim dbDt = Sql.ExecuteTable("SELECT ReceiptID, ReceiptNumber, ReceiptDate, Description FROM WarehouseReceipts ORDER BY ReceiptID DESC")
                     If dbDt IsNot Nothing AndAlso dbDt.Rows.Count > 0 Then
                         For Each row As DataRow In dbDt.Rows
                             Dim num = Convert.ToString(row("ReceiptNumber"))
                             Dim desc = Convert.ToString(row("Description"))
+                            Dim rDate = Convert.ToString(row("ReceiptDate"))
+                            Dim pDate = If(Not String.IsNullOrWhiteSpace(rDate) AndAlso DateTime.TryParse(rDate, Nothing), PersianDateHelper.ToPersian(Convert.ToDateTime(rDate)), PersianDateHelper.ToPersian(DateTime.Now))
                             Dim typeStr = If(num.StartsWith("S") OrElse currentEdition = AppEdition.Mini, "نوع ۲ (فروشگاهی POS)", "نوع ۱ (رسمی B2B)")
                             Dim taxId = "M" & num & "987654321012345"
-                            dt.Rows.Add(num, typeStr, PersianDateHelper.ToPersian(DateTime.Now), If(String.IsNullOrWhiteSpace(desc), "طرف حساب فاکتور", desc), "12,500,000", taxId, "آماده ارسال به سامانه مودیان")
+                            dt.Rows.Add(num, typeStr, pDate, If(String.IsNullOrWhiteSpace(desc), "طرف حساب فاکتور", desc), "12,500,000", taxId, "آماده ارسال به سامانه مودیان")
                         Next
                     End If
                 Catch
