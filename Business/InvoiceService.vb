@@ -351,9 +351,14 @@ Namespace Negar.Business
             For Each line In lines : total += (line.Item2 * line.Item3) - line.Item4 + line.Item5 : Next
             If total > discountAmount Then total -= discountAmount Else total = 0D
 
+            Dim targetDate As DateTime = invoiceDate
+            If (invoiceDate = Nothing OrElse invoiceDate = DateTime.MinValue) AndAlso oldHdr IsNot Nothing AndAlso Not oldHdr.IsNull("InvoiceDate") Then
+                targetDate = Convert.ToDateTime(oldHdr("InvoiceDate"))
+            End If
+
             Sql.ExecuteNonQuery(
                 "UPDATE PurchaseInvoices SET InvoiceNumber=?, InvoiceDate=?, VendorName=?, TotalAmount=?, WarehouseID=?, InvoiceType=?, DiscountAmount=?, PaymentType=?, Description=?, TaxEntryMode=?, TotalVat=? WHERE InvoiceID=?",
-                invoiceNumber, invoiceDate, vendorName, total, warehouseId, invoiceType, discountAmount, paymentType, description, taxEntryMode, totalVat, invoiceId)
+                invoiceNumber, targetDate, vendorName, total, warehouseId, invoiceType, discountAmount, paymentType, description, taxEntryMode, totalVat, invoiceId)
             Sql.ExecuteNonQuery("DELETE FROM PurchaseInvoiceDetails WHERE InvoiceID=?", invoiceId)
 
             Dim inventoryService As New InventoryService()
@@ -407,9 +412,14 @@ Namespace Negar.Business
             Dim total As Decimal = 0D
             For Each line In lines : total += line.Item2 * line.Item3 : Next
 
+            Dim targetDate As DateTime = invoiceDate
+            If (invoiceDate = Nothing OrElse invoiceDate = DateTime.MinValue) AndAlso oldHdr IsNot Nothing AndAlso Not oldHdr.IsNull("InvoiceDate") Then
+                targetDate = Convert.ToDateTime(oldHdr("InvoiceDate"))
+            End If
+
             Sql.ExecuteNonQuery(
                 "UPDATE SalesInvoices SET InvoiceNumber=?, InvoiceDate=?, CustomerName=?, TotalAmount=?, WarehouseID=?, PaymentType=?, Description=? WHERE InvoiceID=?",
-                invoiceNumber, invoiceDate, customerName, total, warehouseId, paymentType, description, invoiceId)
+                invoiceNumber, targetDate, customerName, total, warehouseId, paymentType, description, invoiceId)
             Sql.ExecuteNonQuery("DELETE FROM SalesInvoiceDetails WHERE InvoiceID=?", invoiceId)
 
             Dim inventoryService As New InventoryService()

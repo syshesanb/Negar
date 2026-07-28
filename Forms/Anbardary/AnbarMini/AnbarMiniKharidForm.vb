@@ -568,11 +568,18 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Try
                 Dim descText = If(String.IsNullOrWhiteSpace(txtDescription.Text), "فاکتور خرید نسخه مینی", txtDescription.Text.Trim())
 
+                ' استخراج تاریخ فاکتور (حفظ تاریخ قبلی فاکتور در صورت عدم تغییر)
+                Dim invoiceDateVal As DateTime = DateTime.Now
+                If Not String.IsNullOrWhiteSpace(txtInvoiceDate.Text) Then
+                    Dim parsedDate = PersianDateHelper.ParsePersianDate(txtInvoiceDate.Text.Trim())
+                    If parsedDate.HasValue Then invoiceDateVal = parsedDate.Value
+                End If
+
                 If _editingInvoiceId.HasValue AndAlso _editingInvoiceId.Value > 0 Then
-                    invoiceService.UpdatePurchaseInvoice(_editingInvoiceId.Value, txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
+                    invoiceService.UpdatePurchaseInvoice(_editingInvoiceId.Value, txtInvoiceNo.Text, invoiceDateVal, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
                     MessageBox.Show("تغییرات فاکتور خرید با موفقیت ثبت گردید." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Else
-                    Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, DateTime.Now, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
+                    Dim invoiceId = invoiceService.SavePurchaseInvoice(txtInvoiceNo.Text, invoiceDateVal, vendorName, targetWarehouseId, currentUserId, lines, "فاکتور خرید", 0D, "نقدی", descText)
                     MessageBox.Show("فاکتور خرید با موفقیت ثبت شد." & Environment.NewLine & "موجودی انبار به‌روزرسانی گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If
 
