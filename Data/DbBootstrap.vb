@@ -401,6 +401,8 @@ Namespace Negar.Data
                 Tuple.Create("مدیریت شرکت‌ها و سال‌های مالی ( جامع )", PermissionKeys.ManageCompaniesYears),
                 Tuple.Create("انتخاب شرکت و سال مالی جاری", PermissionKeys.SelectCompanyFiscalYear),
                 Tuple.Create("مدیریت تمهای برنامه و فرمها", PermissionKeys.ManageAppThemes),
+                Tuple.Create("مدیریت پیامهای درباره ما و ارتباط با ما", PermissionKeys.ManageAppMessages),
+                Tuple.Create("تبدیل دیتا از سایر نرم افزارها", PermissionKeys.DataMigration),
                 Tuple.Create("پشتیبان‌گیری اطلاعات", PermissionKeys.BackupData),
                 Tuple.Create("بازیابی اطلاعات", PermissionKeys.RestoreData),
                 Tuple.Create("پوسته مشاغل", PermissionKeys.ManageBusinessShells),
@@ -449,7 +451,10 @@ Namespace Negar.Data
                 Tuple.Create("خرید و فروش و انبارداری ( جامع )", PermissionKeys.ManageTradeWarehouse),
                 Tuple.Create("استفاده از انبارداری مینی", PermissionKeys.AnbarMiniModule),
                 Tuple.Create("استفاده از انبارداری متوسط", PermissionKeys.AnbarMediumModule),
-                Tuple.Create("استفاده از انبارداری پیشرفته", PermissionKeys.AnbarBigModule)
+                Tuple.Create("استفاده از انبارداری پیشرفته", PermissionKeys.AnbarBigModule),
+                Tuple.Create("انبار مینی – ثبت هزینه‌ها", PermissionKeys.AnbarMiniExpenses),
+                Tuple.Create("انبار مینی – دفتر هزینه", PermissionKeys.AnbarMiniExpenseLedger),
+                Tuple.Create("انبار مینی – چاپ سود و زیان", PermissionKeys.AnbarMiniProfitLoss)
             }
 
             For Each permission In permissions

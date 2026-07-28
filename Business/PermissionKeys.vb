@@ -12,6 +12,8 @@ Namespace Negar.Business
         Public Const ManageCompaniesYears As String = "ManageCompaniesYears"
         Public Const SelectCompanyFiscalYear As String = "SelectCompanyFiscalYear"
         Public Const ManageAppThemes As String = "ManageAppThemes"
+        Public Const ManageAppMessages As String = "ManageAppMessages"
+        Public Const DataMigration As String = "DataMigration"
         Public Const BackupData As String = "BackupData"
         Public Const RestoreData As String = "RestoreData"
         Public Const ManageBusinessShells As String = "ManageBusinessShells"
@@ -76,6 +78,9 @@ Namespace Negar.Business
         Public Const AnbarMiniModule As String = "AnbarMiniModule"
         Public Const AnbarMediumModule As String = "AnbarMediumModule"
         Public Const AnbarBigModule As String = "AnbarBigModule"
+        Public Const AnbarMiniExpenses As String = "AnbarMiniExpenses"
+        Public Const AnbarMiniExpenseLedger As String = "AnbarMiniExpenseLedger"
+        Public Const AnbarMiniProfitLoss As String = "AnbarMiniProfitLoss"
 
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"

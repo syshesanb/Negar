@@ -47,7 +47,7 @@ Namespace Negar.Business
             Dim smSysMessages As New PermissionTreeNode("SM_SYS_MSG", "📁 مدیریت پیامهای : درباره... و ارتباط با ما", 1)
             Dim tSysMessages As New PermissionTreeNode("T_SYS_MSG", "📄 فرم ویرایش پیام‌ها و ارتباط با ما", 2)
             Dim stSysMessages As New PermissionTreeNode("ST_SYS_MSG", "📑 تنظیم متون و راه‌های ارتباطی", 3)
-            AddActionNode(stSysMessages, PermissionKeys.ManageAppThemes, "🔘 مدیریت پیام‌های سیستم", dbPermissions)
+            AddActionNode(stSysMessages, PermissionKeys.ManageAppMessages, "🔘 مدیریت پیام‌های سیستم", dbPermissions)
             tSysMessages.Children.Add(stSysMessages)
             smSysMessages.Children.Add(tSysMessages)
             rSys.Children.Add(smSysMessages)
@@ -83,7 +83,7 @@ Namespace Negar.Business
             Dim smDataMigration As New PermissionTreeNode("SM_DATA_MIGRATION", "📁 تبدیل دیتا از سایر نرم افزارها", 1)
             Dim tDataMigration As New PermissionTreeNode("T_DATA_MIGRATION", "📄 فرم انتقال و ایمپورت داده‌ها", 2)
             Dim stDataMigration As New PermissionTreeNode("ST_DATA_MIGRATION", "📑 نگاشت جدول سرفصل‌ها و اسناد", 3)
-            AddActionNode(stDataMigration, PermissionKeys.ManageCompaniesYears, "🔘 انتقال و تبدیل اطلاعات دیتابیس", dbPermissions)
+            AddActionNode(stDataMigration, PermissionKeys.DataMigration, "🔘 انتقال و تبدیل اطلاعات دیتابیس", dbPermissions)
             tDataMigration.Children.Add(stDataMigration)
             smDataMigration.Children.Add(tDataMigration)
             rSys.Children.Add(smDataMigration)
@@ -289,15 +289,15 @@ Namespace Negar.Business
 
             Dim tMiniExpenses As New PermissionTreeNode("T_MINI_EXPENSES", "📄 تب هزینه‌ها", 2)
             Dim stMiniExpensesToolbar As New PermissionTreeNode("ST_MINI_EXPENSES_TB", "📑 زیرتب ثبت هزینه‌ها و نوار ابزار", 3)
-            AddActionNode(stMiniExpensesToolbar, PermissionKeys.TradeReports, "🔘 ثبت و ویرایش اسناد هزینه", dbPermissions)
+            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniExpenses, "🔘 ثبت و ویرایش اسناد هزینه", dbPermissions)
             tMiniExpenses.Children.Add(stMiniExpensesToolbar)
 
             Dim stMiniExpenseLedger As New PermissionTreeNode("ST_MINI_EXPENSE_LEDGER", "📑 دیالوگ دفتر هزینه (سرفصل/عنوان)", 3)
-            AddActionNode(stMiniExpenseLedger, PermissionKeys.ViewReports, "🔘 📒 تهیه و چاپ دفتر هزینه", dbPermissions)
+            AddActionNode(stMiniExpenseLedger, PermissionKeys.AnbarMiniExpenseLedger, "🔘 📒 تهیه و چاپ دفتر هزینه", dbPermissions)
             tMiniExpenses.Children.Add(stMiniExpenseLedger)
 
             Dim stMiniProfitLoss As New PermissionTreeNode("ST_MINI_PROFIT_LOSS", "📑 پیش‌نمایش چاپی عملکرد و سود و زیان", 3)
-            AddActionNode(stMiniProfitLoss, PermissionKeys.AccountingProfitLoss, "🔘 🖨️ چاپ عملکرد و سود و زیان", dbPermissions)
+            AddActionNode(stMiniProfitLoss, PermissionKeys.AnbarMiniProfitLoss, "🔘 🖨️ چاپ عملکرد و سود و زیان", dbPermissions)
             tMiniExpenses.Children.Add(stMiniProfitLoss)
             smTradeMini.Children.Add(tMiniExpenses)
 
