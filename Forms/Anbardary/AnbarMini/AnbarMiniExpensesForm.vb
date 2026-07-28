@@ -14,15 +14,20 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Inherits Form
 
         Private _expensesTable As DataTable
+        Private _isLoading As Boolean = True
 
         Public Sub New()
             InitializeComponent()
         End Sub
 
         Private Sub AnbarMiniExpensesForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            _isLoading = True
             ThemeHelper.ApplyFormTheme(Me)
 
-            ' ۱. بارگذاری دسته‌بندی‌ها
+            ' ۱. پیکربندی دیتاگرید (باید قبل از تنظیم SelectedIndex باشد)
+            ConfigureGrid()
+
+            ' ۲. بارگذاری دسته‌بندی‌ها
             cmbCategory.Items.Clear()
             cmbCategory.Items.Add("همه سرفصل‌ها")
             cmbCategory.Items.AddRange(New Object() {
@@ -37,10 +42,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             })
             cmbCategory.SelectedIndex = 0
 
-            ' ۲. پیکربندی دیتاگرید
-            ConfigureGrid()
-
             ' ۳. بارگذاری اطلاعات
+            _isLoading = False
             LoadExpenses()
         End Sub
 
@@ -240,10 +243,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         End Sub
 
         Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
+            If _isLoading Then Return
             LoadExpenses()
         End Sub
 
         Private Sub cmbCategory_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCategory.SelectedIndexChanged
+            If _isLoading Then Return
             LoadExpenses()
         End Sub
 
