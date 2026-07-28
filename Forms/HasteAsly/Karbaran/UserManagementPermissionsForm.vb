@@ -408,7 +408,7 @@ Namespace Negar.Forms
             Dim presetName = Interaction.InputBox("لطفاً نام الگوی دسترسی جدید را وارد کنید:", "ایجاد الگوی پیش‌فرض دسترسی", "الگوی سفارشی جدید")
             If String.IsNullOrWhiteSpace(presetName) Then Return
 
-            Dim checkedKeys As New List(Of String)()
+            Dim checkedKeys As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
             CollectCheckedPermissionKeysRecursive(tvPermissions.Nodes, checkedKeys)
 
             If checkedKeys.Count = 0 Then
@@ -423,13 +423,13 @@ Namespace Negar.Forms
             MessageBox.Show("الگوی پیش‌فرض جدید با موفقیت ذخیره گردید.", "موفقیت", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End Sub
 
-        Private Sub CollectCheckedPermissionKeysRecursive(nodes As TreeNodeCollection, list As List(Of String))
+        Private Sub CollectCheckedPermissionKeysRecursive(nodes As TreeNodeCollection, setKeys As HashSet(Of String))
             For Each node As TreeNode In nodes
                 Dim d = TryCast(node.Tag, PermissionTreeNode)
                 If d IsNot Nothing AndAlso node.Checked AndAlso Not String.IsNullOrEmpty(d.PermissionKey) Then
-                    If Not list.Contains(d.PermissionKey) Then list.Add(d.PermissionKey)
+                    setKeys.Add(d.PermissionKey)
                 End If
-                If node.Nodes.Count > 0 Then CollectCheckedPermissionKeysRecursive(node.Nodes, list)
+                If node.Nodes.Count > 0 Then CollectCheckedPermissionKeysRecursive(node.Nodes, setKeys)
             Next
         End Sub
 
@@ -459,7 +459,7 @@ Namespace Negar.Forms
             If dtAllPerms Is Nothing OrElse dtAllPerms.Rows.Count = 0 Then Return
 
             Dim checkedKeys As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            CollectCheckedPermissionKeysRecursive(tvPermissions.Nodes, checkedKeys.ToList())
+            CollectCheckedPermissionKeysRecursive(tvPermissions.Nodes, checkedKeys)
 
             ' Save to RolePermissions
             For Each row As DataRow In dtAllPerms.Rows
