@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
@@ -56,9 +56,12 @@ Namespace Negar.Forms
 
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            Dim hasGlobalAccounting = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)
-            btnPrint.Visible = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossPrint)
-            btnExcel.Visible = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossExport)
+            btnPrint.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossPrint) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
+            btnExcel.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossExport) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
+            If btnSave IsNot Nothing Then btnSave.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossSaveSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
+            If btnEdit IsNot Nothing Then btnEdit.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossEditSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
+            If btnSetup IsNot Nothing Then btnSetup.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossMapAccounts) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
+            If btnCalculate IsNot Nothing Then btnCalculate.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossCalculate) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
         End Sub
 
         Private Sub InitializeComponent()

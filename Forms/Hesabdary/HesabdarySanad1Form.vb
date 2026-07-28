@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -497,16 +497,22 @@ Namespace Negar.Forms
             If SessionContext.CurrentUser Is Nothing Then Return
             Dim userType = SessionContext.CurrentUser.UserType
             Dim isSuperAdmin = String.Equals(userType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            Dim hasGlobalAccounting = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)
 
-            Dim canCreate = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanCreate)
-            Dim canEdit = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanEdit)
-            Dim canDelete = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanDelete)
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryNew) OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanCreate)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryEdit) OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanEdit)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryDelete) OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanDelete)
+            Dim canCopy = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadCopy) OrElse canCreate
+            Dim canMerge = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadMerge) OrElse canEdit
+            Dim canSplit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadSplit) OrElse canEdit
+            Dim canPrintDocs = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanad1PrintDocs)
+            Dim canPrintJournal = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanad1PrintJournal)
 
             btnNew.Visible = canCreate
-            btnCopySanad.Visible = canCreate
-            btnMerge.Visible = canEdit
-            btnSplit.Visible = canEdit
+            btnCopySanad.Visible = canCopy
+            btnMerge.Visible = canMerge
+            btnSplit.Visible = canSplit
+            btnPrintDocs.Visible = canPrintDocs
+            btnPrintJournal.Visible = canPrintJournal
 
             If dgvEntries.Columns.Contains(ColBtnEdit) Then
                 dgvEntries.Columns(ColBtnEdit).Visible = canEdit

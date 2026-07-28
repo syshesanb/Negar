@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -495,11 +495,10 @@ Namespace Negar.Forms
             If SessionContext.CurrentUser Is Nothing Then Return
             Dim userType = SessionContext.CurrentUser.UserType
             Dim isSuperAdmin = String.Equals(userType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            Dim hasGlobalAccounting = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)
 
-            Dim canCreate = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar & PermissionKeys.CanCreate)
-            Dim canEdit = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar & PermissionKeys.CanEdit)
-            Dim canDelete = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar & PermissionKeys.CanDelete)
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavarNew) OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar & PermissionKeys.CanCreate)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavarEdit) OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar & PermissionKeys.CanEdit)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavarDelete) OrElse SessionContext.HasPermission(PermissionKeys.AccountingShenavar & PermissionKeys.CanDelete)
 
             btnNew.Visible = canCreate
             btnSave.Visible = canCreate OrElse canEdit

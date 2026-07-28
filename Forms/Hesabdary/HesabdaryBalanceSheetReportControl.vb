@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Data
 Imports System.Drawing
 Imports System.Windows.Forms
@@ -51,9 +51,12 @@ Namespace Negar.Forms
 
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            Dim hasGlobalAccounting = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)
-            btnPrint.Visible = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetPrint)
-            btnExcel.Visible = hasGlobalAccounting OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetExport)
+            btnPrint.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetPrint) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
+            btnExcel.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetExport) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
+            If btnSave IsNot Nothing Then btnSave.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetSaveSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
+            If btnEdit IsNot Nothing Then btnEdit.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetEditSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
+            If btnSetup IsNot Nothing Then btnSetup.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetMapAccounts) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
+            If btnCalculate IsNot Nothing Then btnCalculate.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetCalculate) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
         End Sub
 
         Private Sub InitializeComponent()
