@@ -37,13 +37,13 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabsMini.Controls.Add(Me.tabGroups)
             Me.tabsMini.Controls.Add(Me.tabInventory)
             Me.tabsMini.Dock = DockStyle.Fill
-            Me.tabsMini.Font = New Font("B Yekan", 10.0!)
-            Me.tabsMini.ItemSize = New Size(130, 35)
+            Me.tabsMini.Font = New Font("Tahoma", 9.5!)
+            Me.tabsMini.ItemSize = New Size(155, 38)
             Me.tabsMini.Location = New Point(0, 0)
             Me.tabsMini.Name = "tabsMini"
             Me.tabsMini.SelectedIndex = 0
             Me.tabsMini.Size = New Size(1000, 650)
-            Me.tabsMini.SizeMode = TabSizeMode.Fixed
+            Me.tabsMini.SizeMode = TabSizeMode.Normal
 
             ' tabPOS
             Me.tabPOS.Location = New Point(4, 39)

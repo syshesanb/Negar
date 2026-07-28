@@ -203,16 +203,11 @@ Namespace Negar.Business
                 End Using
             End If
 
-            ' Draw text
-            Dim sf As New StringFormat()
-            sf.Alignment = StringAlignment.Center
-            sf.LineAlignment = StringAlignment.Center
-
+            ' Draw text using TextRenderer (GDI) for native Emoji fallback & crisp RTL text
             Dim fStyle As FontStyle = If(isSelected, FontStyle.Bold, FontStyle.Regular)
-            Using textFont As New Font("B Yekan", 9.5!, fStyle)
-                Using textBrush As New SolidBrush(fgColor)
-                    e.Graphics.DrawString(tabPage.Text, textFont, textBrush, tabRect, sf)
-                End Using
+            Using textFont As New Font("Tahoma", 9.5!, fStyle)
+                Dim flags As TextFormatFlags = TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter Or TextFormatFlags.RightToLeft Or TextFormatFlags.SingleLine
+                TextRenderer.DrawText(e.Graphics, tabPage.Text, textFont, tabRect, fgColor, flags)
             End Using
         End Sub
 
