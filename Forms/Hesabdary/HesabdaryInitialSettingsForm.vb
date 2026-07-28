@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -20,6 +20,73 @@ Namespace Negar.Forms
             ThemeHelper.ApplyFormTheme(Me)
             LoadSettings()
         End Sub
+
+        Private Function HasInventoryPermission() As Boolean
+            Try
+                Dim companyId = SessionContext.CurrentCompanyID
+                If Not companyId.HasValue Then
+                    If SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                        Return True
+                    End If
+                End If
+
+                Dim ownerUserId As Integer? = Nothing
+                If companyId.HasValue Then
+                    Dim ownerObj = Sql.ExecuteScalar("SELECT OwnerUserID FROM Companies WHERE CompanyID = ?", companyId.Value)
+                    If ownerObj IsNot Nothing AndAlso Not Convert.IsDBNull(ownerObj) Then
+                        ownerUserId = Convert.ToInt32(ownerObj)
+                    End If
+                End If
+
+                If Not ownerUserId.HasValue AndAlso SessionContext.CurrentUser IsNot Nothing Then
+                    ownerUserId = SessionContext.CurrentUser.UserID
+                End If
+
+                If Not ownerUserId.HasValue Then Return False
+
+                ' Get Owner UserType
+                Dim userTypeObj = Sql.ExecuteScalar("SELECT UserType FROM Users WHERE UserID = ?", ownerUserId.Value)
+                Dim uType = If(userTypeObj IsNot Nothing AndAlso Not Convert.IsDBNull(userTypeObj), Convert.ToString(userTypeObj), "")
+
+                ' SuperAdmin always has full access including inventory
+                If String.Equals(uType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
+                    Return True
+                End If
+
+                ' Check if user has permission to any inventory module
+                Dim invKeys = New String() {
+                    PermissionKeys.ManageTradeWarehouse,
+                    PermissionKeys.TradeProducts,
+                    PermissionKeys.TradeWarehouses,
+                    PermissionKeys.TradePurchase,
+                    PermissionKeys.TradeSales,
+                    PermissionKeys.TradeRemittance,
+                    PermissionKeys.TradeReports,
+                    PermissionKeys.ManageProducts,
+                    PermissionKeys.ManageWarehouses,
+                    PermissionKeys.ManagePurchases,
+                    PermissionKeys.ManageSales,
+                    PermissionKeys.ViewInventory,
+                    "AnbarMini", "AnbarMedium", "AnbarBig"
+                }
+
+                Dim keyList As New List(Of String)()
+                For Each k In invKeys
+                    keyList.Add("'" & k & "'")
+                Next
+                Dim placeholders = String.Join(",", keyList.ToArray())
+
+                Dim sqlCheck = "SELECT COUNT(*) FROM RolePermissions rp " &
+                               "INNER JOIN Permissions p ON rp.PermissionID = p.PermissionID " &
+                               "WHERE rp.UserID = ? AND (rp.CanView = 1 OR rp.CanCreate = 1 OR rp.CanEdit = 1) " &
+                               "AND p.PermissionKey IN (" & placeholders & ")"
+
+                Dim count = Convert.ToInt32(If(Sql.ExecuteScalar(sqlCheck, ownerUserId.Value), 0))
+                Return count > 0
+            Catch
+                Return False
+            End Try
+        End Function
 
         Private Sub LoadSettings()
             Try
@@ -53,6 +120,14 @@ Namespace Negar.Forms
                     End If
                 Else
                     cmbCodingType.SelectedIndex = 0
+                End If
+
+                ' Check inventory module permission rule:
+                If HasInventoryPermission() Then
+                    cmbCodingType.SelectedItem = "سرفصل های پیش فرض برنامه"
+                    cmbCodingType.Enabled = False
+                Else
+                    cmbCodingType.Enabled = True
                 End If
                 
                 ApplyCodingTypeState()
@@ -163,7 +238,10 @@ Namespace Negar.Forms
             Try
                 Dim companyId = SessionContext.CurrentCompanyID
                 Dim selectedType As String = ""
-                If cmbCodingType.SelectedItem IsNot Nothing Then
+
+                If HasInventoryPermission() Then
+                    selectedType = "سرفصل های پیش فرض برنامه"
+                ElseIf cmbCodingType.SelectedItem IsNot Nothing Then
                     selectedType = cmbCodingType.SelectedItem.ToString()
                 End If
 
