@@ -33,8 +33,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.lblToDate = New System.Windows.Forms.Label()
             Me.txtToDate = New System.Windows.Forms.TextBox()
             Me.btnPickToDate = New System.Windows.Forms.Button()
-            Me.btnFilter = New System.Windows.Forms.Button()
             Me.btnClearFilter = New System.Windows.Forms.Button()
+            Me.btnExpenseLedger = New System.Windows.Forms.Button()
             Me.btnAdd = New System.Windows.Forms.Button()
             Me.btnEdit = New System.Windows.Forms.Button()
             Me.btnDelete = New System.Windows.Forms.Button()
@@ -48,11 +48,11 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             '
             Me.pnlTop.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(250, Byte), Integer))
             Me.pnlTop.Controls.Add(Me.btnPrint)
+            Me.pnlTop.Controls.Add(Me.btnExpenseLedger)
             Me.pnlTop.Controls.Add(Me.btnDelete)
             Me.pnlTop.Controls.Add(Me.btnEdit)
             Me.pnlTop.Controls.Add(Me.btnAdd)
             Me.pnlTop.Controls.Add(Me.btnClearFilter)
-            Me.pnlTop.Controls.Add(Me.btnFilter)
             Me.pnlTop.Controls.Add(Me.btnPickToDate)
             Me.pnlTop.Controls.Add(Me.txtToDate)
             Me.pnlTop.Controls.Add(Me.lblToDate)
@@ -173,28 +173,14 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnPickToDate.Text = "..."
             Me.btnPickToDate.UseVisualStyleBackColor = True
             '
-            'btnFilter
-            '
-            Me.btnFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.btnFilter.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(120, Byte), Integer), CType(CType(215, Byte), Integer))
-            Me.btnFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-            Me.btnFilter.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
-            Me.btnFilter.ForeColor = System.Drawing.Color.White
-            Me.btnFilter.Location = New System.Drawing.Point(185, 10)
-            Me.btnFilter.Name = "btnFilter"
-            Me.btnFilter.Size = New System.Drawing.Size(85, 28)
-            Me.btnFilter.TabIndex = 10
-            Me.btnFilter.Text = "جستجو"
-            Me.btnFilter.UseVisualStyleBackColor = False
-            '
             'btnClearFilter
             '
             Me.btnClearFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.btnClearFilter.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
-            Me.btnClearFilter.Location = New System.Drawing.Point(90, 10)
+            Me.btnClearFilter.Location = New System.Drawing.Point(178, 10)
             Me.btnClearFilter.Name = "btnClearFilter"
             Me.btnClearFilter.Size = New System.Drawing.Size(90, 28)
-            Me.btnClearFilter.TabIndex = 11
+            Me.btnClearFilter.TabIndex = 10
             Me.btnClearFilter.Text = "نمایش همه"
             Me.btnClearFilter.UseVisualStyleBackColor = True
             '
@@ -204,10 +190,10 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnAdd.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnAdd.ForeColor = System.Drawing.Color.White
-            Me.btnAdd.Location = New System.Drawing.Point(235, 10)
+            Me.btnAdd.Location = New System.Drawing.Point(335, 10)
             Me.btnAdd.Name = "btnAdd"
             Me.btnAdd.Size = New System.Drawing.Size(100, 28)
-            Me.btnAdd.TabIndex = 12
+            Me.btnAdd.TabIndex = 11
             Me.btnAdd.Text = "+ ثبت هزینه"
             Me.btnAdd.UseVisualStyleBackColor = False
             '
@@ -217,10 +203,10 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnEdit.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnEdit.ForeColor = System.Drawing.Color.White
-            Me.btnEdit.Location = New System.Drawing.Point(145, 10)
+            Me.btnEdit.Location = New System.Drawing.Point(245, 10)
             Me.btnEdit.Name = "btnEdit"
             Me.btnEdit.Size = New System.Drawing.Size(85, 28)
-            Me.btnEdit.TabIndex = 13
+            Me.btnEdit.TabIndex = 12
             Me.btnEdit.Text = "ویرایش"
             Me.btnEdit.UseVisualStyleBackColor = False
             '
@@ -230,12 +216,25 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat
             Me.btnDelete.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
             Me.btnDelete.ForeColor = System.Drawing.Color.White
-            Me.btnDelete.Location = New System.Drawing.Point(75, 10)
+            Me.btnDelete.Location = New System.Drawing.Point(175, 10)
             Me.btnDelete.Name = "btnDelete"
             Me.btnDelete.Size = New System.Drawing.Size(65, 28)
-            Me.btnDelete.TabIndex = 14
+            Me.btnDelete.TabIndex = 13
             Me.btnDelete.Text = "حذف"
             Me.btnDelete.UseVisualStyleBackColor = False
+            '
+            'btnExpenseLedger
+            '
+            Me.btnExpenseLedger.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(120, Byte), Integer), CType(CType(120, Byte), Integer))
+            Me.btnExpenseLedger.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+            Me.btnExpenseLedger.Font = New System.Drawing.Font("Tahoma", 8.5!, System.Drawing.FontStyle.Bold)
+            Me.btnExpenseLedger.ForeColor = System.Drawing.Color.White
+            Me.btnExpenseLedger.Location = New System.Drawing.Point(75, 10)
+            Me.btnExpenseLedger.Name = "btnExpenseLedger"
+            Me.btnExpenseLedger.Size = New System.Drawing.Size(95, 28)
+            Me.btnExpenseLedger.TabIndex = 14
+            Me.btnExpenseLedger.Text = "📒 دفتر هزینه"
+            Me.btnExpenseLedger.UseVisualStyleBackColor = False
             '
             'btnPrint
             '
@@ -329,8 +328,8 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents lblToDate As System.Windows.Forms.Label
         Friend WithEvents txtToDate As System.Windows.Forms.TextBox
         Friend WithEvents btnPickToDate As System.Windows.Forms.Button
-        Friend WithEvents btnFilter As System.Windows.Forms.Button
         Friend WithEvents btnClearFilter As System.Windows.Forms.Button
+        Friend WithEvents btnExpenseLedger As System.Windows.Forms.Button
         Friend WithEvents btnAdd As System.Windows.Forms.Button
         Friend WithEvents btnEdit As System.Windows.Forms.Button
         Friend WithEvents btnDelete As System.Windows.Forms.Button

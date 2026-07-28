@@ -239,8 +239,18 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             End Using
         End Sub
 
-        Private Sub btnFilter_Click(sender As Object, e As EventArgs) Handles btnFilter.Click
+        Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
             LoadExpenses()
+        End Sub
+
+        Private Sub cmbCategory_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCategory.SelectedIndexChanged
+            LoadExpenses()
+        End Sub
+
+        Private Sub btnExpenseLedger_Click(sender As Object, e As EventArgs) Handles btnExpenseLedger.Click
+            Using dlg As New AnbarMiniExpenseLedgerDialog(txtFromDate.Text, txtToDate.Text)
+                dlg.ShowDialog(Me)
+            End Using
         End Sub
 
         Private Sub btnClearFilter_Click(sender As Object, e As EventArgs) Handles btnClearFilter.Click
