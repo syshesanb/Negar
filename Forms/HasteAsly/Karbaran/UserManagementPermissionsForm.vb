@@ -46,14 +46,8 @@ Namespace Negar.Forms
 
         Private Sub AdjustLayoutSplitter()
             Try
-                If Me.Width > 300 Then
-                    Dim targetDist As Integer = CInt(Me.Width * 0.38)
-                    If targetDist < 450 Then targetDist = 480
-                    If targetDist > 650 Then targetDist = 580
-                    splitMain.SplitterDistance = targetDist
-                Else
-                    splitMain.SplitterDistance = 500
-                End If
+                ' Give Users Grid a compact 360px width on right, and TreeView all remaining space (1000px+) on left
+                splitMain.SplitterDistance = 360
             Catch
             End Try
         End Sub
@@ -118,6 +112,8 @@ Namespace Negar.Forms
         Private Sub BuildPermissionTreeUI()
             _isUpdatingTreeState = True
             tvPermissions.Nodes.Clear()
+            tvPermissions.ItemHeight = 24
+            tvPermissions.ShowNodeToolTips = True
 
             Dim rootNodesData = treeService.BuildDynamicTree()
             For Each rData In rootNodesData
@@ -132,6 +128,7 @@ Namespace Negar.Forms
         Private Function CreateTreeNodeRecursive(dataNode As PermissionTreeNode) As TreeNode
             Dim uiNode As New TreeNode(dataNode.Title)
             uiNode.Tag = dataNode
+            uiNode.ToolTipText = dataNode.Title
             Select Case dataNode.Level
                 Case 0
                     uiNode.NodeFont = New Font("Tahoma", 9.5!, FontStyle.Bold)
