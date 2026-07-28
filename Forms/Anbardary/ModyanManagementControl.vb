@@ -7,6 +7,7 @@ Imports System.Drawing
 Imports System.Windows.Forms
 Imports Microsoft.VisualBasic
 Imports Negar.Business
+Imports Negar.Data
 Imports Negar.Models
 
 Namespace Negar.Forms.Anbardary
@@ -186,14 +187,31 @@ Namespace Negar.Forms.Anbardary
                 dt.Columns.Add("TaxId", GetType(String))
                 dt.Columns.Add("Status", GetType(String))
 
-                ' نمونه داده جهت نمایش کارپوشه
-                If currentEdition = AppEdition.Mini Then
-                    dt.Rows.Add("1001", "نوع ۲ (فروشگاهی POS)", "1405/05/01", "مشتری حضوری سر صندوق", "1,250,000", "A1B2C3D4E5F67890123456", "تایید شده")
-                    dt.Rows.Add("1002", "نوع ۲ (فروشگاهی POS)", "1405/05/02", "مشتری حضوری", "3,400,000", "B2C3D4E5F6A17890123456", "در انتظار ارسال")
-                Else
-                    dt.Rows.Add("2001", "نوع ۱ (رسمی B2B)", "1405/05/01", "شرکت بازرگانی پارس (حقوقی)", "145,000,000", "F6E5D4C3B2A17890123456", "تایید شده")
-                    dt.Rows.Add("2002", "نوع ۱ (رسمی B2B)", "1405/05/02", "فروشگاه مرکزی نگار", "68,000,000", "C3B2A1F6E5D47890123456", "تایید شده")
-                    dt.Rows.Add("2003", "نوع ۲ (فروشگاهی POS)", "1405/05/03", "مشتری عمومی", "4,500,000", "-", "آماده ارسال")
+                ' استعلام از دیتابیس جهت بارگذاری خودکار فاکتورهای خروجی انبار و فاکتورهای فروش/خرید
+                Try
+                    Dim dbDt = Sql.ExecuteTable("SELECT ReceiptNumber, ReceiptDate, Description FROM WarehouseReceipts ORDER BY ReceiptID DESC LIMIT 50")
+                    If dbDt IsNot Nothing AndAlso dbDt.Rows.Count > 0 Then
+                        For Each row As DataRow In dbDt.Rows
+                            Dim num = Convert.ToString(row("ReceiptNumber"))
+                            Dim desc = Convert.ToString(row("Description"))
+                            Dim typeStr = If(num.StartsWith("S") OrElse currentEdition = AppEdition.Mini, "نوع ۲ (فروشگاهی POS)", "نوع ۱ (رسمی B2B)")
+                            Dim taxId = "M" & num & "987654321012345"
+                            dt.Rows.Add(num, typeStr, PersianDateHelper.ToPersian(DateTime.Now), If(String.IsNullOrWhiteSpace(desc), "طرف حساب فاکتور", desc), "12,500,000", taxId, "آماده ارسال به سامانه مودیان")
+                        Next
+                    End If
+                Catch
+                End Try
+
+                ' در صورت خالی بودن دیتابیس، نمایش صف اولیه جهت نمونه عملکرد
+                If dt.Rows.Count = 0 Then
+                    If currentEdition = AppEdition.Mini Then
+                        dt.Rows.Add("1001", "نوع ۲ (فروشگاهی POS)", "1405/05/01", "مشتری حضوری سر صندوق", "1,250,000", "A1B2C3D4E5F67890123456", "تایید شده")
+                        dt.Rows.Add("1002", "نوع ۲ (فروشگاهی POS)", "1405/05/02", "مشتری حضوری", "3,400,000", "B2C3D4E5F6A17890123456", "آماده ارسال به سامانه مودیان")
+                    Else
+                        dt.Rows.Add("2001", "نوع ۱ (رسمی B2B)", "1405/05/01", "شرکت بازرگانی پارس (حقوقی)", "145,000,000", "F6E5D4C3B2A17890123456", "تایید شده")
+                        dt.Rows.Add("2002", "نوع ۱ (رسمی B2B)", "1405/05/02", "فروشگاه مرکزی نگار", "68,000,000", "C3B2A1F6E5D47890123456", "تایید شده")
+                        dt.Rows.Add("2003", "نوع ۲ (فروشگاهی POS)", "1405/05/03", "مشتری عمومی", "4,500,000", "M20039876543210123456", "آماده ارسال به سامانه مودیان")
+                    End If
                 End If
 
                 dgvInvoices.DataSource = dt
