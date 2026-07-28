@@ -908,9 +908,9 @@ Namespace Negar.Forms
             Dim userType = SessionContext.CurrentUser.UserType
             Dim isSuperAdmin = String.Equals(userType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
 
-            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeaderNew) OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeader & PermissionKeys.CanCreate)
-            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeaderEdit) OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeader & PermissionKeys.CanEdit)
-            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeaderDelete) OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeader & PermissionKeys.CanDelete)
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeaderNew)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeaderEdit)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeaderDelete)
 
             btnNew.Visible = canCreate
             btnSave.Visible = canCreate OrElse canEdit

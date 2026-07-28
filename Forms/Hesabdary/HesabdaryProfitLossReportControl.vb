@@ -56,12 +56,12 @@ Namespace Negar.Forms
 
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            btnPrint.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossPrint) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
-            btnExcel.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossExport) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
-            If btnSave IsNot Nothing Then btnSave.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossSaveSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
-            If btnEdit IsNot Nothing Then btnEdit.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossEditSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
-            If btnSetup IsNot Nothing Then btnSetup.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossMapAccounts) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
-            If btnCalculate IsNot Nothing Then btnCalculate.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossCalculate) OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)
+            btnPrint.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossPrint)
+            btnExcel.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossExport)
+            If btnSave IsNot Nothing Then btnSave.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossSaveSettings)
+            If btnEdit IsNot Nothing Then btnEdit.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossEditSettings)
+            If btnSetup IsNot Nothing Then btnSetup.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossMapAccounts)
+            If btnCalculate IsNot Nothing Then btnCalculate.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLossCalculate)
         End Sub
 
         Private Sub InitializeComponent()

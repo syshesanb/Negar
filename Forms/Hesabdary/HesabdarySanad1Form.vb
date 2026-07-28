@@ -498,12 +498,12 @@ Namespace Negar.Forms
             Dim userType = SessionContext.CurrentUser.UserType
             Dim isSuperAdmin = String.Equals(userType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
 
-            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryNew) OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanCreate)
-            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryEdit) OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanEdit)
-            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryDelete) OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntry & PermissionKeys.CanDelete)
-            Dim canCopy = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadCopy) OrElse canCreate
-            Dim canMerge = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadMerge) OrElse canEdit
-            Dim canSplit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadSplit) OrElse canEdit
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryNew)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryEdit)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingEntryDelete)
+            Dim canCopy = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadCopy)
+            Dim canMerge = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadMerge)
+            Dim canSplit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanadSplit)
             Dim canPrintDocs = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanad1PrintDocs)
             Dim canPrintJournal = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSanad1PrintJournal)
 

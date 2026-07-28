@@ -51,12 +51,12 @@ Namespace Negar.Forms
 
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            btnPrint.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetPrint) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
-            btnExcel.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetExport) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
-            If btnSave IsNot Nothing Then btnSave.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetSaveSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
-            If btnEdit IsNot Nothing Then btnEdit.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetEditSettings) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
-            If btnSetup IsNot Nothing Then btnSetup.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetMapAccounts) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
-            If btnCalculate IsNot Nothing Then btnCalculate.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetCalculate) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheet)
+            btnPrint.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetPrint)
+            btnExcel.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetExport)
+            If btnSave IsNot Nothing Then btnSave.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetSaveSettings)
+            If btnEdit IsNot Nothing Then btnEdit.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetEditSettings)
+            If btnSetup IsNot Nothing Then btnSetup.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetMapAccounts)
+            If btnCalculate IsNot Nothing Then btnCalculate.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalanceSheetCalculate)
         End Sub
 
         Private Sub InitializeComponent()

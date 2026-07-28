@@ -1037,10 +1037,10 @@ Namespace Negar.Forms
 
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
-            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportNew) OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReports)
-            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportEdit) OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReports)
-            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportDelete) OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReports)
-            Dim canPrint = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportPrint) OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReports)
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportNew)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportEdit)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportDelete)
+            Dim canPrint = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingCustomReportPrint)
 
             btnPrintReport.Visible = canPrint
             If btnAddToCategories IsNot Nothing Then btnAddToCategories.Visible = canCreate OrElse canEdit

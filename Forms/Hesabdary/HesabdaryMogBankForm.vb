@@ -137,15 +137,15 @@ Namespace Negar.Forms
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecImport) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
                 tcMain.TabPages.Remove(tpImportStatement)
             Else
-                btnBrowseFile.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecSelectFile) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecImport)
-                btnSaveImport.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecSaveData) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecImport)
+                btnBrowseFile.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecSelectFile)
+                btnSaveImport.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecSaveData)
             End If
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecMatch) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
                 tcMain.TabPages.Remove(tpReconciliation)
             Else
-                btnTransferDesc.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecTransferDesc) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecMatch)
-                btnBankStatementReport.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecStatementReport) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecMatch)
-                btnExport.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecExportExcel) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecMatch)
+                btnTransferDesc.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecTransferDesc)
+                btnBankStatementReport.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecStatementReport)
+                btnExport.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecExportExcel)
             End If
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecSuggestions) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
                 tcBank.TabPages.Remove(tpBank_Suggestions)
