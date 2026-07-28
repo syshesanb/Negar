@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -71,6 +71,11 @@ Namespace Negar.Business
         Public Const ViewInventory As String = "ViewInventory"
         Public Const ManageTradeWarehouse As String = "ManageTradeWarehouse"
         Public Const ViewReports As String = "ViewReports"
+
+        ' Anbar Edition Modules Permissions
+        Public Const AnbarMiniModule As String = "AnbarMiniModule"
+        Public Const AnbarMediumModule As String = "AnbarMediumModule"
+        Public Const AnbarBigModule As String = "AnbarBigModule"
 
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"

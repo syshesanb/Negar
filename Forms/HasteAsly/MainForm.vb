@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -325,7 +325,14 @@ Namespace Negar.Forms
                 SessionContext.HasPermission(PermissionKeys.TradePurchase) OrElse
                 SessionContext.HasPermission(PermissionKeys.TradeSales) OrElse
                 SessionContext.HasPermission(PermissionKeys.TradeRemittance) OrElse
-                SessionContext.HasPermission(PermissionKeys.TradeReports)
+                SessionContext.HasPermission(PermissionKeys.TradeReports) OrElse
+                SessionContext.HasPermission(PermissionKeys.AnbarMiniModule) OrElse
+                SessionContext.HasPermission(PermissionKeys.AnbarMediumModule) OrElse
+                SessionContext.HasPermission(PermissionKeys.AnbarBigModule)
+
+            Dim canAnbarMini = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule) OrElse (canTrade AndAlso Not (SessionContext.HasPermission(PermissionKeys.AnbarMediumModule) OrElse SessionContext.HasPermission(PermissionKeys.AnbarBigModule)))
+            Dim canAnbarMedium = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMediumModule)
+            Dim canAnbarBig = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarBigModule)
 
             Dim canAccounting = isSuperAdmin OrElse
                 SessionContext.HasPermission(PermissionKeys.ManageAccounting) OrElse
@@ -354,6 +361,9 @@ Namespace Negar.Forms
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
+            miTradeMini.Available = canAnbarMini
+            miTradeMedium.Available = canAnbarMedium
+            miTradeBig.Available = canAnbarBig
             miTradeWarehouseMain.Available = canTrade
             miReportsTrade.Available = canTrade OrElse canReports
             miAccountingMain.Available = canAccounting
@@ -373,6 +383,9 @@ Namespace Negar.Forms
 
             miUsers.Visible = canUsers
             miBasicUsers.Visible = canBasicUsers
+            miTradeMini.Visible = canAnbarMini
+            miTradeMedium.Visible = canAnbarMedium
+            miTradeBig.Visible = canAnbarBig
             miTradeWarehouseMain.Visible = canTrade
             miReportsTrade.Visible = canTrade OrElse canReports
             miAccountingMain.Visible = canAccounting
@@ -787,9 +800,13 @@ Namespace Negar.Forms
                     If canAccounting OrElse canReports Then AddDashButton("گزارشات و ترازهای حسابداری", AddressOf MiReportsAccounting_Click, "Reports")
 
                 Case "TradeWarehouse"
-                    If canTrade Then AddDashButton("خرید و فروش – نسخه فروشگاه کوچک", AddressOf MiTradeMini_Click, "TradeWarehouse")
-                    If canTrade Then AddDashButton("خرید و فروش – نسخه فروشگاه متوسط", AddressOf MiTradeMedium_Click, "TradeWarehouse")
-                    If canTrade Then AddDashButton("خرید و فروش – نسخه فروشگاه بزرگ", AddressOf MiTradeBig_Click, "TradeWarehouse")
+                    Dim canAnbarMini = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule) OrElse (canTrade AndAlso Not (SessionContext.HasPermission(PermissionKeys.AnbarMediumModule) OrElse SessionContext.HasPermission(PermissionKeys.AnbarBigModule)))
+                    Dim canAnbarMedium = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMediumModule)
+                    Dim canAnbarBig = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarBigModule)
+
+                    If canAnbarMini Then AddDashButton("استفاده از انبارداری مینی", AddressOf MiTradeMini_Click, "TradeWarehouse")
+                    If canAnbarMedium Then AddDashButton("استفاده از انبارداری متوسط", AddressOf MiTradeMedium_Click, "TradeWarehouse")
+                    If canAnbarBig Then AddDashButton("استفاده از انبارداری پیشرفته", AddressOf MiTradeBig_Click, "TradeWarehouse")
                     If canTrade OrElse canReports Then AddDashButton("گزارشات فاکتورها و موجودی انبار", AddressOf MiReportsTrade_Click, "Reports")
 
                 Case "BusinessShells"

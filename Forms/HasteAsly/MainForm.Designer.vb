@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -333,17 +333,17 @@ Namespace Negar.Forms
             ' miTradeMini
             Me.miTradeMini.Name = "miTradeMini"
             Me.miTradeMini.Size = New Size(260, 22)
-            Me.miTradeMini.Text = "خرید و فروش – نسخه فروشگاه کوچک"
+            Me.miTradeMini.Text = "استفاده از انبارداری مینی"
 
             ' miTradeMedium
             Me.miTradeMedium.Name = "miTradeMedium"
             Me.miTradeMedium.Size = New Size(260, 22)
-            Me.miTradeMedium.Text = "خرید و فروش – نسخه فروشگاه متوسط"
+            Me.miTradeMedium.Text = "استفاده از انبارداری متوسط"
 
             ' miTradeBig
             Me.miTradeBig.Name = "miTradeBig"
             Me.miTradeBig.Size = New Size(260, 22)
-            Me.miTradeBig.Text = "خرید و فروش – نسخه فروشگاه بزرگ"
+            Me.miTradeBig.Text = "استفاده از انبارداری پیشرفته"
 
             ' miTradeWarehouseMain
             Me.miTradeWarehouseMain.Name = "miTradeWarehouseMain"

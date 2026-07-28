@@ -444,7 +444,10 @@ Namespace Negar.Data
                 Tuple.Create("خرید و فروش – صدور فاکتور فروش", PermissionKeys.TradeSales),
                 Tuple.Create("خرید و فروش – حواله و رسید انبار", PermissionKeys.TradeRemittance),
                 Tuple.Create("خرید و فروش – گزارشات انبار و کاردکس کالا", PermissionKeys.TradeReports),
-                Tuple.Create("خرید و فروش و انبارداری ( جامع )", PermissionKeys.ManageTradeWarehouse)
+                Tuple.Create("خرید و فروش و انبارداری ( جامع )", PermissionKeys.ManageTradeWarehouse),
+                Tuple.Create("استفاده از انبارداری مینی", PermissionKeys.AnbarMiniModule),
+                Tuple.Create("استفاده از انبارداری متوسط", PermissionKeys.AnbarMediumModule),
+                Tuple.Create("استفاده از انبارداری پیشرفته", PermissionKeys.AnbarBigModule)
             }
 
             For Each permission In permissions

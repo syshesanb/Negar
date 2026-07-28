@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -261,6 +261,12 @@ Namespace Negar.Forms
                     Return "مشاهده موجودی انبار"
                 Case PermissionKeys.ManageTradeWarehouse
                     Return "خرید و فروش و انبارداری ( جامع )"
+                Case PermissionKeys.AnbarMiniModule
+                    Return "استفاده از انبارداری مینی"
+                Case PermissionKeys.AnbarMediumModule
+                    Return "استفاده از انبارداری متوسط"
+                Case PermissionKeys.AnbarBigModule
+                    Return "استفاده از انبارداری پیشرفته"
                 Case PermissionKeys.ViewReports
                     Return "مشاهده گزارش‌ها"
                 Case Else
