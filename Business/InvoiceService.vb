@@ -627,10 +627,10 @@ Namespace Negar.Business
         Public Shared Function GetSanadRefAndFiscalYearForInvoice(invoiceNumber As String, prefix As String) As String
             Try
                 Dim searchDesc = prefix & " شماره " & invoiceNumber
-                Dim dt = Sql.ExecuteTable("SELECT s.ReferenceNumber, f.Title FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID WHERE s.Description LIKE ? ORDER BY s.EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+                Dim dt = Sql.ExecuteTable("SELECT s.ReferenceNumber, f.FiscalYearName FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID WHERE s.Description LIKE ? ORDER BY s.EntryID DESC LIMIT 1", "%" & searchDesc & "%")
                 If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
                     Dim refNum = Convert.ToString(dt.Rows(0)("ReferenceNumber"))
-                    Dim fyTitle = Convert.ToString(dt.Rows(0)("Title"))
+                    Dim fyTitle = Convert.ToString(dt.Rows(0)("FiscalYearName"))
                     If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = SessionContext.CurrentFiscalYearName
                     If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = "۱۴۰۵"
                     Return "سند " & refNum & " (سال " & fyTitle & ")"
@@ -644,10 +644,10 @@ Namespace Negar.Business
         Public Shared Function GetSanadRefAndFiscalYearForExpense(expenseId As Integer) As String
             Try
                 Dim searchDesc = "سند خودکار ثبت هزینه کد " & expenseId & ":"
-                Dim dt = Sql.ExecuteTable("SELECT s.ReferenceNumber, f.Title FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID WHERE s.Description LIKE ? ORDER BY s.EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+                Dim dt = Sql.ExecuteTable("SELECT s.ReferenceNumber, f.FiscalYearName FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID WHERE s.Description LIKE ? ORDER BY s.EntryID DESC LIMIT 1", "%" & searchDesc & "%")
                 If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
                     Dim refNum = Convert.ToString(dt.Rows(0)("ReferenceNumber"))
-                    Dim fyTitle = Convert.ToString(dt.Rows(0)("Title"))
+                    Dim fyTitle = Convert.ToString(dt.Rows(0)("FiscalYearName"))
                     If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = SessionContext.CurrentFiscalYearName
                     If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = "۱۴۰۵"
                     Return "سند " & refNum & " (سال " & fyTitle & ")"

@@ -317,7 +317,7 @@ Namespace Negar.Business
             Dim dt As DataTable
             Dim fyName = If(Not String.IsNullOrWhiteSpace(SessionContext.CurrentFiscalYearName), SessionContext.CurrentFiscalYearName, "۱۴۰۵")
 
-            Dim query = "SELECT s.EntryID, s.ReferenceNumber, s.EntryDate, s.Description, s.JamBedehkar, s.JamBestankar, s.TaeazSanad, s.VazeiatSanad, s.AdamVirayesh, s.CreatedBy, COALESCE(f.Title, '" & fyName & "') AS FiscalYearName FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID " &
+            Dim query = "SELECT s.EntryID, s.ReferenceNumber, s.EntryDate, s.Description, s.JamBedehkar, s.JamBestankar, s.TaeazSanad, s.VazeiatSanad, s.AdamVirayesh, s.CreatedBy, COALESCE(f.FiscalYearName, '" & fyName & "') AS FiscalYearName FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID " &
                         "WHERE s.CompanyID = ? AND s.FiscalYearID = ? AND (s.VazeiatSanad <> 'سند موقت - حذف موقت' OR s.VazeiatSanad IS NULL) "
 
             If String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
