@@ -149,7 +149,6 @@ Namespace Negar.Business
             Dim tCompaniesList As New PermissionTreeNode("T_COMP_LIST", "📄 تب مدیریت شرکت‌ها", 2)
             Dim stCompaniesGrid As New PermissionTreeNode("ST_COMP_GRID", "📑 زیرتب لیست شرکت‌ها، کد اقتصادی و لوگو", 3)
             AddActionNode(stCompaniesGrid, PermissionKeys.ManageCompanies, "🔘 مدیریت شرکت‌ها", dbPermissions)
-            AddActionNode(stCompaniesGrid, PermissionKeys.ManageCompaniesYears, "🔘 مدیریت شرکت‌ها و سال‌های مالی (جامع)", dbPermissions)
             tCompaniesList.Children.Add(stCompaniesGrid)
             smCompaniesYears.Children.Add(tCompaniesList)
 

@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -129,14 +129,16 @@ Namespace Negar.Forms
             Dim hasGlobalCompaniesYears = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageCompaniesYears)
 
             ' مجوزهای مربوط به شرکت
-            Dim canCreateCompany = hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies & PermissionKeys.CanCreate)
-            Dim canEditCompany = hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies & PermissionKeys.CanEdit)
-            Dim canDeleteCompany = hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies & PermissionKeys.CanDelete)
+            Dim canManageCompanies = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageCompaniesYears) OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies)
+            Dim canCreateCompany = canManageCompanies OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies & PermissionKeys.CanCreate)
+            Dim canEditCompany = canManageCompanies OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies & PermissionKeys.CanEdit)
+            Dim canDeleteCompany = canManageCompanies OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies & PermissionKeys.CanDelete)
 
             ' مجوزهای مربوط به سال مالی
-            Dim canCreateFiscalYear = hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears & PermissionKeys.CanCreate)
-            Dim canEditFiscalYear = hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears & PermissionKeys.CanEdit)
-            Dim canDeleteFiscalYear = hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears & PermissionKeys.CanDelete)
+            Dim canManageFiscalYears = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears)
+            Dim canCreateFiscalYear = canManageFiscalYears OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears & PermissionKeys.CanCreate)
+            Dim canEditFiscalYear = canManageFiscalYears OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears & PermissionKeys.CanEdit)
+            Dim canDeleteFiscalYear = canManageFiscalYears OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears & PermissionKeys.CanDelete)
 
             ' دکمه‌های شرکت
             btnNewCompany.Visible = canCreateCompany
@@ -149,17 +151,17 @@ Namespace Negar.Forms
             btnDeleteFiscalYear.Visible = canDeleteFiscalYear
 
             ' تب انتخاب شرکت و سال مالی جاری
-            If Not (hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.SelectCompanyFiscalYear)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageCompaniesYears) OrElse SessionContext.HasPermission(PermissionKeys.SelectCompanyFiscalYear)) Then
                 tabs.TabPages.Remove(tabSelectActive)
             End If
 
             ' تب مدیریت شرکت‌ها
-            If Not (hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies)) Then
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageCompaniesYears) OrElse SessionContext.HasPermission(PermissionKeys.ManageCompanies)) Then
                 tabs.TabPages.Remove(tabCompanies)
             End If
 
-            ' تب مدیریت سال‌های مالی
-            If Not (hasGlobalCompaniesYears OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears)) Then
+            ' تب مدیریت سال‌های مالی (صرفاً در صورت داشتن دسترسی صریح یا ابرمدیر بودن)
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageFiscalYears)) Then
                 tabs.TabPages.Remove(tabFiscalYears)
             End If
         End Sub
