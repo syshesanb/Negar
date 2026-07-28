@@ -175,6 +175,14 @@ Namespace Negar.Business
             ' 4.1 زیر منو: کدینگ، ثبت اسناد و دفاتر حسابداری (miAccountingMain)
             Dim smAccMain As New PermissionTreeNode("SM_ACC_MAIN", "📁 کدینگ، ثبت اسناد و دفاتر حسابداری", 1)
 
+            ' تب 1: تنظیمات اولیه حسابها
+            Dim tAccSettings As New PermissionTreeNode("T_ACC_SETTINGS", "📄 تب تنظیمات اولیه حسابها", 2)
+            Dim stAccSettings As New PermissionTreeNode("ST_ACC_SETTINGS", "📑 زیرتب مشخصات مالیاتی و تنظیمات طول کدینگ", 3)
+            AddActionNode(stAccSettings, PermissionKeys.AccountingSettings, "🔘 تنظیمات اولیه حساب‌ها", dbPermissions)
+            tAccSettings.Children.Add(stAccSettings)
+            smAccMain.Children.Add(tAccSettings)
+
+            ' تب 2: سرفصل حسابها
             Dim tCodingHeader As New PermissionTreeNode("T_CODING_HEADER", "📄 تب سرفصل حساب‌ها (کدینگ)", 2)
             Dim stCodingHeader As New PermissionTreeNode("ST_CODING_HEADER", "📑 زیرتب درختواره کدینگ گروه، کل و معین", 3)
             AddActionNode(stCodingHeader, PermissionKeys.AccountingHeader, "🔘 سرفصل حساب‌ها (کدینگ)", dbPermissions)
@@ -182,12 +190,14 @@ Namespace Negar.Business
             tCodingHeader.Children.Add(stCodingHeader)
             smAccMain.Children.Add(tCodingHeader)
 
+            ' تب 3: حسابهای شناور
             Dim tShenavar As New PermissionTreeNode("T_SHENAVAR", "📄 تب حساب‌های شناور", 2)
             Dim stShenavar As New PermissionTreeNode("ST_SHENAVAR", "📑 زیرتب درختواره شناور اشخاص و مراکز", 3)
             AddActionNode(stShenavar, PermissionKeys.AccountingShenavar, "🔘 حساب‌های شناور", dbPermissions)
             tShenavar.Children.Add(stShenavar)
             smAccMain.Children.Add(tShenavar)
 
+            ' تب 4: ثبت سند حسابداری
             Dim tSanad As New PermissionTreeNode("T_SANAD", "📄 تب ثبت و ویرایش سند حسابداری", 2)
             Dim stSanadGrid As New PermissionTreeNode("ST_SANAD_GRID", "📑 زیرتب جدول سطرها و ثبت اسناد", 3)
             AddActionNode(stSanadGrid, PermissionKeys.AccountingEntry, "🔘 ثبت سند حسابداری", dbPermissions)
@@ -202,6 +212,7 @@ Namespace Negar.Business
             tSanad.Children.Add(stSanadPrint)
             smAccMain.Children.Add(tSanad)
 
+            ' تب 5: مغایرت بانکی
             Dim tMogBank As New PermissionTreeNode("T_MOG_BANK", "📄 تب مغایرت‌گیری بانکی", 2)
             Dim stMogBank As New PermissionTreeNode("ST_MOG_BANK", "📑 زیرتب تطبیق صورت‌حساب بانک", 3)
             AddActionNode(stMogBank, PermissionKeys.AccountingBank, "🔘 مغایرت‌های بانکی", dbPermissions)
@@ -209,30 +220,86 @@ Namespace Negar.Business
             tMogBank.Children.Add(stMogBank)
             smAccMain.Children.Add(tMogBank)
 
-            Dim tDaftar As New PermissionTreeNode("T_DAFTAR", "📄 تب دفاتر حساب (روزنامه/کل/معین)", 2)
+            ' تب 6: تراز آزمایشی
+            Dim tTaraz As New PermissionTreeNode("T_TARAZ", "📄 تب تراز آزمایشی", 2)
+            Dim stTarazGrid As New PermissionTreeNode("ST_TARAZ_GRID", "📑 زیرتب محاسبه تراز آزمایشی ۲، ۴ و ۸ ستونی", 3)
+            AddActionNode(stTarazGrid, PermissionKeys.AccountingBalance, "🔘 تراز آزمایشی", dbPermissions)
+            AddActionNode(stTarazGrid, PermissionKeys.AccountingTrialPrint, "🔘 چاپ تراز آزمایشی", dbPermissions, new String() { PermissionKeys.AccountingBalance })
+            AddActionNode(stTarazGrid, PermissionKeys.AccountingTrialExport, "🔘 خروجی اکسل تراز آزمایشی", dbPermissions, new String() { PermissionKeys.AccountingBalance })
+            tTaraz.Children.Add(stTarazGrid)
+            smAccMain.Children.Add(tTaraz)
+
+            ' تب 7: دفتر حساب
+            Dim tDaftar As New PermissionTreeNode("T_DAFTAR", "📄 تب دفتر حساب (روزنامه/کل/معین)", 2)
             Dim stDaftarGrid As New PermissionTreeNode("ST_DAFTAR_GRID", "📑 زیرتب مرور دفاتر و گردش حساب‌ها", 3)
             AddActionNode(stDaftarGrid, PermissionKeys.AccountingLedger, "🔘 دفتر حساب", dbPermissions)
             AddActionNode(stDaftarGrid, PermissionKeys.AccountingLedgerPrint, "🔘 چاپ دفتر حساب", dbPermissions, new String() { PermissionKeys.AccountingLedger })
             AddActionNode(stDaftarGrid, PermissionKeys.AccountingLedgerExport, "🔘 خروجی اکسل دفتر", dbPermissions, new String() { PermissionKeys.AccountingLedger })
-            AddActionNode(stDaftarGrid, PermissionKeys.AccountingDaftarShenavarPrint, "🔘 چاپ دفتر شناور", dbPermissions)
-            AddActionNode(stDaftarGrid, PermissionKeys.AccountingDaftarShenavarExport, "🔘 خروجی اکسل دفتر شناور", dbPermissions)
             tDaftar.Children.Add(stDaftarGrid)
             smAccMain.Children.Add(tDaftar)
+
+            ' تب 8: تراز شناور
+            Dim tTarazShenavar As New PermissionTreeNode("T_TARAZ_SHENAVAR", "📄 تب تراز شناور", 2)
+            Dim stTarazShenavarGrid As New PermissionTreeNode("ST_TARAZ_SHENAVAR_GRID", "📑 زیرتب تراز آزمایشی حساب‌های شناور", 3)
+            AddActionNode(stTarazShenavarGrid, PermissionKeys.AccountingTarazShenavar, "🔘 تراز شناور", dbPermissions)
+            AddActionNode(stTarazShenavarGrid, PermissionKeys.AccountingTarazShenavarPrint, "🔘 چاپ تراز شناور", dbPermissions, new String() { PermissionKeys.AccountingTarazShenavar })
+            AddActionNode(stTarazShenavarGrid, PermissionKeys.AccountingTarazShenavarExport, "🔘 خروجی اکسل تراز شناور", dbPermissions, new String() { PermissionKeys.AccountingTarazShenavar })
+            tTarazShenavar.Children.Add(stTarazShenavarGrid)
+            smAccMain.Children.Add(tTarazShenavar)
+
+            ' تب 9: دفتر شناور
+            Dim tDaftarShenavar As New PermissionTreeNode("T_DAFTAR_SHENAVAR", "📄 تب دفتر شناور", 2)
+            Dim stDaftarShenavarGrid As New PermissionTreeNode("ST_DAFTAR_SHENAVAR_GRID", "📑 زیرتب دفتر و گردش حساب‌های شناور", 3)
+            AddActionNode(stDaftarShenavarGrid, PermissionKeys.AccountingDaftarShenavar, "🔘 دفتر شناور", dbPermissions)
+            AddActionNode(stDaftarShenavarGrid, PermissionKeys.AccountingDaftarShenavarPrint, "🔘 چاپ دفتر شناور", dbPermissions, new String() { PermissionKeys.AccountingDaftarShenavar })
+            AddActionNode(stDaftarShenavarGrid, PermissionKeys.AccountingDaftarShenavarExport, "🔘 خروجی اکسل دفتر شناور", dbPermissions, new String() { PermissionKeys.AccountingDaftarShenavar })
+            tDaftarShenavar.Children.Add(stDaftarShenavarGrid)
+            smAccMain.Children.Add(tDaftarShenavar)
+
+            ' تب 10: عملکرد و سود و زیان
+            Dim tProfitLoss As New PermissionTreeNode("T_PROFIT_LOSS", "📄 تب عملکرد و سود و زیان", 2)
+            Dim stProfitLossGrid As New PermissionTreeNode("ST_PROFIT_LOSS_GRID", "📑 زیرتب صورت حساب سود و زیان و عملکرد", 3)
+            AddActionNode(stProfitLossGrid, PermissionKeys.AccountingProfitLoss, "🔘 صورت سود و زیان", dbPermissions)
+            AddActionNode(stProfitLossGrid, PermissionKeys.AccountingProfitLossPrint, "🔘 چاپ سود و زیان", dbPermissions, new String() { PermissionKeys.AccountingProfitLoss })
+            AddActionNode(stProfitLossGrid, PermissionKeys.AccountingProfitLossExport, "🔘 خروجی اکسل سود و زیان", dbPermissions, new String() { PermissionKeys.AccountingProfitLoss })
+            tProfitLoss.Children.Add(stProfitLossGrid)
+            smAccMain.Children.Add(tProfitLoss)
+
+            ' تب 11: ترازنامه
+            Dim tBalanceSheet As New PermissionTreeNode("T_BALANCE_SHEET", "📄 تب ترازنامه", 2)
+            Dim stBalanceSheetGrid As New PermissionTreeNode("ST_BALANCE_SHEET_GRID", "📑 زیرتب ترازنامه و دارایی‌ها/بدهی‌ها", 3)
+            AddActionNode(stBalanceSheetGrid, PermissionKeys.AccountingBalanceSheet, "🔘 ترازنامه مالی", dbPermissions)
+            AddActionNode(stBalanceSheetGrid, PermissionKeys.AccountingBalanceSheetPrint, "🔘 چاپ ترازنامه", dbPermissions, new String() { PermissionKeys.AccountingBalanceSheet })
+            AddActionNode(stBalanceSheetGrid, PermissionKeys.AccountingBalanceSheetExport, "🔘 خروجی اکسل ترازنامه", dbPermissions, new String() { PermissionKeys.AccountingBalanceSheet })
+            tBalanceSheet.Children.Add(stBalanceSheetGrid)
+            smAccMain.Children.Add(tBalanceSheet)
+
+            ' تب 12: سایر گزارشات
+            Dim tOtherReports As New PermissionTreeNode("T_OTHER_REPORTS", "📄 تب سایر گزارشات", 2)
+            Dim stOtherReportsGrid As New PermissionTreeNode("ST_OTHER_REPORTS_GRID", "📑 زیرتب گزارشات پیشرفته، نموداری و دلخواه", 3)
+            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingReports, "🔘 گزارشات حسابداری", dbPermissions)
+            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingAdvancedReports, "🔘 گزارشات پیشرفته", dbPermissions)
+            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingChartReports, "🔘 گزارشات نموداری", dbPermissions)
+            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingCustomReports, "🔘 گزارشات دلخواه", dbPermissions)
+            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingCustomReportPrint, "🔘 چاپ گزارش دلخواه", dbPermissions, new String() { PermissionKeys.AccountingCustomReports })
+            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingCustomReportExport, "🔘 خروجی اکسل گزارش دلخواه", dbPermissions, new String() { PermissionKeys.AccountingCustomReports })
+            tOtherReports.Children.Add(stOtherReportsGrid)
+            smAccMain.Children.Add(tOtherReports)
 
             rAccounting.Children.Add(smAccMain)
 
             ' 4.2 زیر منو: گزارشات و ترازهای حسابداری (miReportsAccounting)
             Dim smAccReports As New PermissionTreeNode("SM_ACC_REPORTS", "📁 گزارشات و ترازهای حسابداری", 1)
 
-            Dim tTaraz As New PermissionTreeNode("T_TARAZ", "📄 تب ترازهای مالی (۲، ۴ و ۸ ستونی)", 2)
-            Dim stTarazGrid As New PermissionTreeNode("ST_TARAZ_GRID", "📑 زیرتب محاسبه تراز آزمایشی و شناور", 3)
-            AddActionNode(stTarazGrid, PermissionKeys.AccountingBalance, "🔘 تراز آزمایشی", dbPermissions)
-            AddActionNode(stTarazGrid, PermissionKeys.AccountingTrialPrint, "🔘 چاپ تراز آزمایشی", dbPermissions, new String() { PermissionKeys.AccountingBalance })
-            AddActionNode(stTarazGrid, PermissionKeys.AccountingTrialExport, "🔘 خروجی اکسل تراز آزمایشی", dbPermissions, new String() { PermissionKeys.AccountingBalance })
-            AddActionNode(stTarazGrid, PermissionKeys.AccountingTarazShenavarPrint, "🔘 چاپ تراز شناور", dbPermissions)
-            AddActionNode(stTarazGrid, PermissionKeys.AccountingTarazShenavarExport, "🔘 خروجی اکسل تراز شناور", dbPermissions)
-            tTaraz.Children.Add(stTarazGrid)
-            smAccReports.Children.Add(tTaraz)
+            Dim tTarazRep As New PermissionTreeNode("T_TARAZ_REP", "📄 تب ترازهای مالی (۲، ۴ و ۸ ستونی)", 2)
+            Dim stTarazRepGrid As New PermissionTreeNode("ST_TARAZ_REP_GRID", "📑 زیرتب محاسبه تراز آزمایشی و شناور", 3)
+            AddActionNode(stTarazRepGrid, PermissionKeys.AccountingBalance, "🔘 تراز آزمایشی", dbPermissions)
+            AddActionNode(stTarazRepGrid, PermissionKeys.AccountingTrialPrint, "🔘 چاپ تراز آزمایشی", dbPermissions, new String() { PermissionKeys.AccountingBalance })
+            AddActionNode(stTarazRepGrid, PermissionKeys.AccountingTrialExport, "🔘 خروجی اکسل تراز آزمایشی", dbPermissions, new String() { PermissionKeys.AccountingBalance })
+            AddActionNode(stTarazRepGrid, PermissionKeys.AccountingTarazShenavarPrint, "🔘 چاپ تراز شناور", dbPermissions)
+            AddActionNode(stTarazRepGrid, PermissionKeys.AccountingTarazShenavarExport, "🔘 خروجی اکسل تراز شناور", dbPermissions)
+            tTarazRep.Children.Add(stTarazRepGrid)
+            smAccReports.Children.Add(tTarazRep)
 
             Dim tProfitLossSheet As New PermissionTreeNode("T_PROFIT_LOSS_SHEET", "📄 تب صورت‌های مالی (سود و زیان / ترازنامه)", 2)
             Dim stProfitLossSheet As New PermissionTreeNode("ST_PROFIT_LOSS_SHEET", "📑 زیرتب گزارش عملکرد، سود/زیان و ترازنامه", 3)
@@ -335,9 +402,21 @@ Namespace Negar.Business
 
             ' 5.4 زیر منو: فاکتورها، انبار و مدیریت کالاها (جامع) (miTradeWarehouseMain)
             Dim smTradeComprehensive As New PermissionTreeNode("SM_TRADE_COMP", "📁 فاکتورها، انبار و مدیریت کالاها (جامع)", 1)
+
+            Dim tCompUnits As New PermissionTreeNode("T_COMP_UNITS", "📄 تب واحدهای سنجش کالا", 2)
+            Dim stCompUnits As New PermissionTreeNode("ST_COMP_UNITS", "📑 زیرتب تعاریف واحدهای شمارش و سنجش", 3)
+            AddActionNode(stCompUnits, PermissionKeys.TradeProductUnits, "🔘 واحدهای سنجش کالا", dbPermissions)
+            tCompUnits.Children.Add(stCompUnits)
+            smTradeComprehensive.Children.Add(tCompUnits)
+
+            Dim tCompGroups As New PermissionTreeNode("T_COMP_GROUPS", "📄 تب دسته‌بندی و گروه‌های کالا", 2)
+            Dim stCompGroups As New PermissionTreeNode("ST_COMP_GROUPS", "📑 زیرتب درختواره گروه کالا و خدمات", 3)
+            AddActionNode(stCompGroups, PermissionKeys.TradeProductGroups, "🔘 دسته‌بندی و گروه‌های کالا", dbPermissions)
+            tCompGroups.Children.Add(stCompGroups)
+            smTradeComprehensive.Children.Add(tCompGroups)
             
             Dim tCompProds As New PermissionTreeNode("T_COMP_PRODS", "📄 تب تعریف کالاها و خدمات", 2)
-            Dim stCompProds As New PermissionTreeNode("ST_COMP_PRODS", "📑 زیرتب لیست کالاها و واحدهای سنجش", 3)
+            Dim stCompProds As New PermissionTreeNode("ST_COMP_PRODS", "📑 زیرتب لیست کالاها و مشخصات", 3)
             AddActionNode(stCompProds, PermissionKeys.TradeProducts, "🔘 تعریف کالاها و خدمات", dbPermissions)
             tCompProds.Children.Add(stCompProds)
             smTradeComprehensive.Children.Add(tCompProds)

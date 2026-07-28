@@ -164,6 +164,9 @@ Namespace Negar.Forms
         Private Sub ApplySecurity()
             Dim isSuperAdmin = SessionContext.CurrentUser IsNot Nothing AndAlso String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
 
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingSettings) OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)) Then
+                tabs.TabPages.Remove(tabSettings)
+            End If
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingHeader) OrElse SessionContext.HasPermission(PermissionKeys.ManageAccounting)) Then
                 tabs.TabPages.Remove(tabAccounts)
             End If
@@ -178,10 +181,14 @@ Namespace Negar.Forms
             End If
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBalance)) Then
                 tabs.TabPages.Remove(tabTrial)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingTarazShenavar)) Then
                 tabs.TabPages.Remove(tabTarazShenavar)
             End If
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingLedger)) Then
                 tabs.TabPages.Remove(tabLedger)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingDaftarShenavar)) Then
                 tabs.TabPages.Remove(tabDaftarShenavar)
             End If
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingProfitLoss)) Then

@@ -25,12 +25,15 @@ Namespace Negar.Business
         Public Const ChangePassword As String = "ChangePassword"
 
         ' Accounting detailed permissions
+        Public Const AccountingSettings As String = "AccountingSettings"
         Public Const AccountingHeader As String = "AccountingHeader"
         Public Const AccountingShenavar As String = "AccountingShenavar"
         Public Const AccountingEntry As String = "AccountingEntry"
         Public Const AccountingBank As String = "AccountingBank"
         Public Const AccountingBalance As String = "AccountingBalance"
+        Public Const AccountingTarazShenavar As String = "AccountingTarazShenavar"
         Public Const AccountingLedger As String = "AccountingLedger"
+        Public Const AccountingDaftarShenavar As String = "AccountingDaftarShenavar"
         Public Const AccountingReports As String = "AccountingReports"
         Public Const AccountingProfitLoss As String = "AccountingProfitLoss"
         Public Const AccountingBalanceSheet As String = "AccountingBalanceSheet"
@@ -60,6 +63,8 @@ Namespace Negar.Business
         Public Const AccountingCustomReportExport As String = "AccountingCustomReportExport"
 
         ' Trade & Warehousing detailed permissions
+        Public Const TradeProductUnits As String = "TradeProductUnits"
+        Public Const TradeProductGroups As String = "TradeProductGroups"
         Public Const TradeProducts As String = "TradeProducts"
         Public Const TradeWarehouses As String = "TradeWarehouses"
         Public Const TradePurchase As String = "TradePurchase"
