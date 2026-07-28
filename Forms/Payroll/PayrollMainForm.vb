@@ -148,6 +148,7 @@ Namespace Negar.Forms.Payroll
                 .RowHeadersVisible = False,
                 .BackgroundColor = Color.White
             }
+            AddHandler dgvPersonnel.DataBindingComplete, Sub(s, e) ApplyPersianGridHeaders(CType(s, DataGridView))
 
             tabPersonnel.Controls.Add(dgvPersonnel)
             tabPersonnel.Controls.Add(pnlTop)
@@ -217,6 +218,7 @@ Namespace Negar.Forms.Payroll
                 .RowHeadersVisible = False,
                 .BackgroundColor = Color.White
             }
+            AddHandler dgvAttendance.DataBindingComplete, Sub(s, e) ApplyPersianGridHeaders(CType(s, DataGridView))
 
             tabAttendance.Controls.Add(dgvAttendance)
             tabAttendance.Controls.Add(pnlTop)
@@ -272,6 +274,7 @@ Namespace Negar.Forms.Payroll
                 .RowHeadersVisible = False,
                 .BackgroundColor = Color.White
             }
+            AddHandler dgvCalculate.DataBindingComplete, Sub(s, e) ApplyPersianGridHeaders(CType(s, DataGridView))
 
             tabCalculate.Controls.Add(dgvCalculate)
             tabCalculate.Controls.Add(pnlTop)
@@ -415,6 +418,7 @@ Namespace Negar.Forms.Payroll
                 .RowHeadersVisible = False,
                 .BackgroundColor = Color.White
             }
+            AddHandler dgvReport.DataBindingComplete, Sub(s, e) ApplyPersianGridHeaders(CType(s, DataGridView))
 
             tabReports.Controls.Add(dgvReport)
             tabReports.Controls.Add(pnlTop)
@@ -436,6 +440,52 @@ Namespace Negar.Forms.Payroll
                 Dim kvp = CType(cmbPersonnelRep.SelectedItem, KeyValuePair(Of Integer, String))
                 dgvReport.DataSource = _payrollSvc.GetEmployeeHistoricalReport(kvp.Key, txtRepYear.Text)
             End If
+        End Sub
+
+        Private Sub ApplyPersianGridHeaders(dgv As DataGridView)
+            If dgv Is Nothing OrElse dgv.Columns Is Nothing Then Return
+            
+            For Each col As DataGridViewColumn In dgv.Columns
+                Select Case col.Name
+                    Case "PersonnelID": col.HeaderText = "کد پرسنلی" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "FullName": col.HeaderText = "نام و نام خانوادگی"
+                    Case "NationalCode": col.HeaderText = "کد ملی" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "InsuranceNumber": col.HeaderText = "شماره بیمه" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "BankAccountNumber": col.HeaderText = "شماره حساب"
+                    Case "Iban": col.HeaderText = "شماره شبا"
+                    Case "ContractType": col.HeaderText = "نوع قرارداد" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "MaritalStatus": col.HeaderText = "وضعیت تأهل" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "ChildCount": col.HeaderText = "تعداد فرزند" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "BaseSalary": col.HeaderText = "حقوق پایه (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "HousingAllowance": col.HeaderText = "حق مسکن (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "FoodAllowance": col.HeaderText = "بن کارگری (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "ChildAllowance": col.HeaderText = "حق اولاد (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "SeniorityAllowance": col.HeaderText = "پایه سنوات (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "ManagementAllowance": col.HeaderText = "فوق‌العاده مدیریت (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "IsActive": col.HeaderText = "وضعیت فعال" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "WorkDays": col.HeaderText = "روزهای کارکرد" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "OvertimeHours": col.HeaderText = "ساعات اضافه کاری" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "NightShiftHours": col.HeaderText = "ساعات شب‌کاری" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "LeaveDays": col.HeaderText = "روزهای مرخصی" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "AbsenceDays": col.HeaderText = "روزهای غیبت" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "AdvancePayment": col.HeaderText = "مساعده دریافتی (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "LoanDeduction": col.HeaderText = "قسط وام (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "SalMaly": col.HeaderText = "سال مالی" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "MahMaly": col.HeaderText = "ماه مالی" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "GrossSalary": col.HeaderText = "ناخالص حقوق (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "OvertimeAmount": col.HeaderText = "مبلغ اضافه کاری (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "NightShiftAmount": col.HeaderText = "مبلغ شب‌کاری (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "TotalBenefits": col.HeaderText = "مجموع مزایا (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "EmployeeInsurance": col.HeaderText = "بیمه سهم کارمند ۷٪ (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "EmployerInsurance": col.HeaderText = "بیمه سهم کارفرما ۲۰٪ (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "UnemploymentInsurance": col.HeaderText = "بیمه بیکاری ۳٪ (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "TaxAmount": col.HeaderText = "مالیات حقوق (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "TotalDeductions": col.HeaderText = "جمع کسورات (ریال)" : col.DefaultCellStyle.Format = "N0"
+                    Case "NetSalary": col.HeaderText = "خالص قابل پرداخت (ریال)" : col.DefaultCellStyle.Format = "N0" : col.DefaultCellStyle.ForeColor = Color.FromArgb(13, 71, 161) : col.DefaultCellStyle.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+                    Case "CalcDate": col.HeaderText = "تاریخ محاسبه" : col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                    Case "AttendanceID", "CalculationID", "SanadEntryID": col.Visible = False
+                End Select
+            Next
         End Sub
 
     End Class
