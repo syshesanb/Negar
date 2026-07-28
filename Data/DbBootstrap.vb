@@ -540,7 +540,14 @@ Namespace Negar.Data
                 Tuple.Create("انبار مینی – ویرایش هزینه", PermissionKeys.AnbarMiniExpensesEdit),
                 Tuple.Create("انبار مینی – حذف هزینه", PermissionKeys.AnbarMiniExpensesDelete),
                 Tuple.Create("انبار مینی – دفتر هزینه", PermissionKeys.AnbarMiniExpenseLedger),
-                Tuple.Create("انبار مینی – چاپ سود و زیان", PermissionKeys.AnbarMiniProfitLoss)
+                Tuple.Create("انبار مینی – چاپ سود و زیان", PermissionKeys.AnbarMiniProfitLoss),
+                Tuple.Create("مدیریت حقوق و دستمزد (جامع)", PermissionKeys.PayrollModule),
+                Tuple.Create("حقوق و دستمزد – پرونده پرسنل و احکام حقوقی", PermissionKeys.PayrollPersonnel),
+                Tuple.Create("حقوق و دستمزد – ثبت کارکرد و حضور و غیاب", PermissionKeys.PayrollAttendance),
+                Tuple.Create("حقوق و دستمزد – محاسبه حقوق و صدور فیش", PermissionKeys.PayrollCalculate),
+                Tuple.Create("حقوق و دستمزد – دیسکت‌های بیمه و مالیات", PermissionKeys.PayrollDiskettes),
+                Tuple.Create("حقوق و دستمزد – فایل پرداخت گروهی بانک", PermissionKeys.PayrollBankFile),
+                Tuple.Create("حقوق و دستمزد – گزارشات جامع حقوق", PermissionKeys.PayrollReports)
             }
 
             For Each permission In permissions

@@ -811,6 +811,15 @@ Namespace Negar.Forms
                     If canAnbarBig Then AddDashButton("استفاده از انبارداری پیشرفته", AddressOf MiTradeBig_Click, "TradeWarehouse")
                     If canTrade OrElse canReports Then AddDashButton("گزارشات فاکتورها و موجودی انبار", AddressOf MiReportsTrade_Click, "Reports")
 
+                Case "Payroll"
+                    AddDashButton("سیستم جامع حقوق و دستمزد", AddressOf OpenPayrollMainForm, "Users")
+                    AddDashButton("پرونده پرسنل و احکام حقوقی", AddressOf OpenPayrollMainForm, "Users")
+                    AddDashButton("کارکرد ماهانه و حضور و غیاب", AddressOf OpenPayrollMainForm, "CompanyFiscalYears")
+                    AddDashButton("محاسبه حقوق و صدور فیش", AddressOf OpenPayrollMainForm, "Accounting")
+                    AddDashButton("دیسکت‌های بیمه و مالیات", AddressOf OpenPayrollMainForm, "Settings")
+                    AddDashButton("فایل پرداخت گروهی بانک", AddressOf OpenPayrollMainForm, "BackupData")
+                    AddDashButton("گزارشات جامع حقوق و دستمزد", AddressOf OpenPayrollMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -868,6 +877,20 @@ Namespace Negar.Forms
 
         Private Sub BtnToolTradeWarehouse_Click(sender As Object, e As EventArgs) Handles btnToolTradeWarehouse.Click
             ShowDashboardCategory("TradeWarehouse")
+        End Sub
+
+        Private Sub BtnToolPayroll_Click(sender As Object, e As EventArgs) Handles btnToolPayroll.Click
+            ShowDashboardCategory("Payroll")
+        End Sub
+
+        Private Sub OpenPayrollMainForm(sender As Object, e As EventArgs) Handles mPayroll.Click, miPayrollPersonnel.Click, miPayrollAttendance.Click, miPayrollCalculate.Click, miPayrollDiskettes.Click, miPayrollBankFile.Click, miPayrollReports.Click
+            Try
+                Using dlg As New Negar.Forms.Payroll.PayrollMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول حقوق و دستمزد: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End Sub
 
         Private Sub BtnToolBusinessShells_Click(sender As Object, e As EventArgs) Handles btnToolBusinessShells.Click

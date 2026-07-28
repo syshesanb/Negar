@@ -151,7 +151,7 @@ Namespace Negar.Business
         End Function
 
         ' ─── صدور خودکار سند حسابداری انبارداری ──────────────────────────────
-        Private Function GetOrCreateSystemAccount(companyId As Integer, defaultCode As String, defaultName As String, accountType As String) As Integer
+        Public Function GetOrCreateSystemAccount(companyId As Integer, defaultCode As String, defaultName As String, accountType As String) As Integer
             Try
                 Dim accIdObj = Sql.ExecuteScalar("SELECT AccountID FROM SarfaslHesab WHERE CompanyID = ? AND (AccountName LIKE ? OR AccountCode = ?) LIMIT 1", companyId, "%" & defaultName & "%", defaultCode)
                 If accIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(accIdObj) Then

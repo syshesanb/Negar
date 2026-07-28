@@ -616,6 +616,27 @@ Namespace Negar.Business
                 roots.Add(rNew)
             End If
 
+            ' =========================================================================
+            ' 9. منوی اصلی: مدیریت حقوق و دستمزد (mPayroll)
+            ' =========================================================================
+            Dim rPayroll As New PermissionTreeNode("MENU_PAYROLL", "💳 مدیریت حقوق و دستمزد", 0)
+            Dim smPayroll As New PermissionTreeNode("SM_PAYROLL", "📁 بخش جامع حقوق و دستمزد و کارکرد پرسنل", 1)
+            Dim tPayroll As New PermissionTreeNode("T_PAYROLL", "📄 امکانات و ماژول‌های حقوق و دستمزد", 2)
+            Dim stPayroll As New PermissionTreeNode("ST_PAYROLL", "📑 زیرتب عملیات حقوق، دیسکت‌ها و گزارشات", 3)
+
+            AddActionNode(stPayroll, PermissionKeys.PayrollModule, "🔘 دسترسی به ماژول حقوق و دستمزد", dbPermissions)
+            AddActionNode(stPayroll, PermissionKeys.PayrollPersonnel, "🔘 پرونده پرسنل و احکام حقوقی", dbPermissions)
+            AddActionNode(stPayroll, PermissionKeys.PayrollAttendance, "🔘 ثبت کارکرد و حضور و غیاب", dbPermissions)
+            AddActionNode(stPayroll, PermissionKeys.PayrollCalculate, "🔘 محاسبه حقوق و صدور فیش حقوقی", dbPermissions)
+            AddActionNode(stPayroll, PermissionKeys.PayrollDiskettes, "🔘 تولید دیسکت‌های بیمه و مالیات", dbPermissions)
+            AddActionNode(stPayroll, PermissionKeys.PayrollBankFile, "🔘 تولید فایل پرداخت گروهی بانک", dbPermissions)
+            AddActionNode(stPayroll, PermissionKeys.PayrollReports, "🔘 گزارشات جامع حقوق و دستمزد", dbPermissions)
+
+            tPayroll.Children.Add(stPayroll)
+            smPayroll.Children.Add(tPayroll)
+            rPayroll.Children.Add(smPayroll)
+            roots.Add(rPayroll)
+
             Return roots
         End Function
 

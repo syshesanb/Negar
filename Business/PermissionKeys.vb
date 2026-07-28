@@ -167,6 +167,15 @@ Namespace Negar.Business
         Public Const AnbarMediumModule As String = "AnbarMediumModule"
         Public Const AnbarBigModule As String = "AnbarBigModule"
 
+        ' Payroll permissions
+        Public Const PayrollModule As String = "PayrollModule"
+        Public Const PayrollPersonnel As String = "PayrollPersonnel"
+        Public Const PayrollAttendance As String = "PayrollAttendance"
+        Public Const PayrollCalculate As String = "PayrollCalculate"
+        Public Const PayrollDiskettes As String = "PayrollDiskettes"
+        Public Const PayrollBankFile As String = "PayrollBankFile"
+        Public Const PayrollReports As String = "PayrollReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

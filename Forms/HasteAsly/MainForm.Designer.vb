@@ -23,8 +23,17 @@ Namespace Negar.Forms
         Friend WithEvents mCompanyMgmt As ToolStripMenuItem
         Friend WithEvents mAccounting As ToolStripMenuItem
         Friend WithEvents mTradeWarehouse As ToolStripMenuItem
+        Friend WithEvents mPayroll As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
+
+        ' Sub-items for Payroll
+        Friend WithEvents miPayrollPersonnel As ToolStripMenuItem
+        Friend WithEvents miPayrollAttendance As ToolStripMenuItem
+        Friend WithEvents miPayrollCalculate As ToolStripMenuItem
+        Friend WithEvents miPayrollDiskettes As ToolStripMenuItem
+        Friend WithEvents miPayrollBankFile As ToolStripMenuItem
+        Friend WithEvents miPayrollReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -82,6 +91,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolCompanyMgmt As ToolStripButton
         Friend WithEvents btnToolAccounting As ToolStripButton
         Friend WithEvents btnToolTradeWarehouse As ToolStripButton
+        Friend WithEvents btnToolPayroll As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -111,8 +121,16 @@ Namespace Negar.Forms
             Me.mCompanyMgmt = New ToolStripMenuItem()
             Me.mAccounting = New ToolStripMenuItem()
             Me.mTradeWarehouse = New ToolStripMenuItem()
+            Me.mPayroll = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
+
+            Me.miPayrollPersonnel = New ToolStripMenuItem()
+            Me.miPayrollAttendance = New ToolStripMenuItem()
+            Me.miPayrollCalculate = New ToolStripMenuItem()
+            Me.miPayrollDiskettes = New ToolStripMenuItem()
+            Me.miPayrollBankFile = New ToolStripMenuItem()
+            Me.miPayrollReports = New ToolStripMenuItem()
 
             Me.miSettingsMessages = New ToolStripMenuItem()
             Me.miSettingsThemes = New ToolStripMenuItem()
@@ -162,6 +180,7 @@ Namespace Negar.Forms
             Me.btnToolCompanyMgmt = New ToolStripButton()
             Me.btnToolAccounting = New ToolStripButton()
             Me.btnToolTradeWarehouse = New ToolStripButton()
+            Me.btnToolPayroll = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -183,12 +202,48 @@ Namespace Negar.Forms
             Me.SuspendLayout()
 
             ' mainMenu
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mPersonnelMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mPersonnelMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
             Me.mainMenu.Size = New Size(1200, 24)
             Me.mainMenu.TabIndex = 1
+
+            ' mPayroll
+            Me.mPayroll.DropDownItems.AddRange(New ToolStripItem() {Me.miPayrollPersonnel, Me.miPayrollAttendance, Me.miPayrollCalculate, Me.miPayrollDiskettes, Me.miPayrollBankFile, Me.miPayrollReports})
+            Me.mPayroll.Name = "mPayroll"
+            Me.mPayroll.Size = New Size(100, 20)
+            Me.mPayroll.Text = "💳 حقوق و دستمزد"
+
+            ' miPayrollPersonnel
+            Me.miPayrollPersonnel.Name = "miPayrollPersonnel"
+            Me.miPayrollPersonnel.Size = New Size(240, 22)
+            Me.miPayrollPersonnel.Text = "👥 پرونده پرسنل و احکام حقوقی"
+
+            ' miPayrollAttendance
+            Me.miPayrollAttendance.Name = "miPayrollAttendance"
+            Me.miPayrollAttendance.Size = New Size(240, 22)
+            Me.miPayrollAttendance.Text = "🕒 کارکرد ماهانه و حضور و غیاب"
+
+            ' miPayrollCalculate
+            Me.miPayrollCalculate.Name = "miPayrollCalculate"
+            Me.miPayrollCalculate.Size = New Size(240, 22)
+            Me.miPayrollCalculate.Text = "🧮 محاسبه حقوق و صدور فیش"
+
+            ' miPayrollDiskettes
+            Me.miPayrollDiskettes.Name = "miPayrollDiskettes"
+            Me.miPayrollDiskettes.Size = New Size(240, 22)
+            Me.miPayrollDiskettes.Text = "🏛️ دیسکت‌های بیمه و مالیات"
+
+            ' miPayrollBankFile
+            Me.miPayrollBankFile.Name = "miPayrollBankFile"
+            Me.miPayrollBankFile.Size = New Size(240, 22)
+            Me.miPayrollBankFile.Text = "🏦 فایل پرداخت گروهی بانک"
+
+            ' miPayrollReports
+            Me.miPayrollReports.Name = "miPayrollReports"
+            Me.miPayrollReports.Size = New Size(240, 22)
+            Me.miPayrollReports.Text = "📊 گزارشات جامع حقوق و دستمزد"
 
             ' mSystemMgmt
             Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
@@ -401,7 +456,13 @@ Namespace Negar.Forms
             Me.tool.AutoSize = False
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolPersonnelMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolPersonnelMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolBusinessShells, Me.btnToolUtilities})
+
+            ' btnToolPayroll
+            Me.btnToolPayroll.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolPayroll.Name = "btnToolPayroll"
+            Me.btnToolPayroll.Size = New Size(115, 51)
+            Me.btnToolPayroll.Text = "حقوق و دستمزد"
             Me.tool.Location = New Point(0, 24)
             Me.tool.Name = "tool"
             Me.tool.RightToLeft = RightToLeft.Yes

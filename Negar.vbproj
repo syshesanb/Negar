@@ -148,6 +148,8 @@
     <Compile Include="Business\InvoiceService.vb" />
     <Compile Include="Business\PersonService.vb" />
     <Compile Include="Business\PaymentService.vb" />
+    <Compile Include="Business\PayrollService.vb" />
+    <Compile Include="Forms\Payroll\PayrollMainForm.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">
