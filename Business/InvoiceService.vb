@@ -92,6 +92,10 @@ Namespace Negar.Business
 
             logService.LogActivity(createdBy, "CreatePurchase", "PurchaseInvoice", invoiceId,
                                    "ثبت " & invoiceType & ": " & invoiceNumber, SessionContext.CurrentIP)
+
+            ' صدور خودکار سند حسابداری خرید کالا
+            CreateAutoAccountingVoucherForPurchase(invoiceId, invoiceNumber, invoiceDate, vendorName, total, paymentType, createdBy)
+
             Return invoiceId
         End Function
 
@@ -123,8 +127,107 @@ Namespace Negar.Business
 
             logService.LogActivity(createdBy, "CreateSale", "SalesInvoice", invoiceId,
                                    "ثبت فاکتور فروش: " & invoiceNumber, SessionContext.CurrentIP)
+
+            ' صدور خودکار سند حسابداری فروش کالا
+            CreateAutoAccountingVoucherForSales(invoiceId, invoiceNumber, invoiceDate, customerName, total, paymentType, createdBy)
+
             Return invoiceId
         End Function
+
+        ' ─── صدور خودکار سند حسابداری انبارداری ──────────────────────────────
+        Private Function GetOrCreateSystemAccount(companyId As Integer, defaultCode As String, defaultName As String, accountType As String) As Integer
+            Try
+                Dim accIdObj = Sql.ExecuteScalar("SELECT AccountID FROM SarfaslHesab WHERE CompanyID = ? AND (AccountName LIKE ? OR AccountCode = ?) LIMIT 1", companyId, "%" & defaultName & "%", defaultCode)
+                If accIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(accIdObj) Then
+                    Return Convert.ToInt32(accIdObj)
+                End If
+
+                Dim newId = Sql.ExecuteIdentity(
+                    "INSERT INTO SarfaslHesab (CompanyID, AccountCode, AccountName, AccountType, ParentAccountID, IsActive, AccountNature) VALUES (?, ?, ?, ?, NULL, 1, 'بدهکار/بستانکار')",
+                    companyId, defaultCode, defaultName, accountType)
+                Return Convert.ToInt32(newId)
+            Catch
+                Dim anyAcc = Sql.ExecuteScalar("SELECT AccountID FROM SarfaslHesab WHERE CompanyID = ? ORDER BY AccountID LIMIT 1", companyId)
+                If anyAcc IsNot Nothing AndAlso Not Convert.IsDBNull(anyAcc) Then Return Convert.ToInt32(anyAcc)
+                Return 1
+            End Try
+        End Function
+
+        Public Sub CreateAutoAccountingVoucherForSales(invoiceId As Integer, invoiceNumber As String, invoiceDate As DateTime, customerName As String, totalAmount As Decimal, paymentType As String, createdBy As Integer)
+            Try
+                If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then Return
+                If totalAmount <= 0 Then Return
+
+                Dim companyId = SessionContext.CurrentCompanyID.Value
+                Dim accSvc As New AccountingService()
+
+                Dim refNum = accSvc.GetNextReferenceNumber()
+                Dim desc = "سند خودکار فاکتور فروش شماره " & invoiceNumber & " - " & If(String.IsNullOrWhiteSpace(customerName), "مشتری عمومی", customerName)
+
+                Dim debitAccName = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS"), "دستگاه کارتخوان / بانک", If(paymentType.Contains("نقد"), "صندوق مرکزی", "حساب‌های دریافتنی (خریداران)"))
+                Dim debitAccCode = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS"), "102", If(paymentType.Contains("نقد"), "101", "103"))
+                Dim debitAccId = GetOrCreateSystemAccount(companyId, debitAccCode, debitAccName, "معین")
+
+                Dim creditAccId = GetOrCreateSystemAccount(companyId, "401", "فروش کالا و خدمات", "معین")
+
+                Dim lines As New List(Of AccountingEntryLine)()
+                lines.Add(New AccountingEntryLine With {
+                    .LineNumber = 1,
+                    .AccountID = debitAccId,
+                    .DebitAmount = totalAmount,
+                    .CreditAmount = 0D,
+                    .SharhRadif = "فروش کالا - " & paymentType
+                })
+                lines.Add(New AccountingEntryLine With {
+                    .LineNumber = 2,
+                    .AccountID = creditAccId,
+                    .DebitAmount = 0D,
+                    .CreditAmount = totalAmount,
+                    .SharhRadif = "درآمد حاصل از فروش کالا - فاکتور " & invoiceNumber
+                })
+
+                accSvc.SaveEntry(invoiceDate, desc, refNum, createdBy, lines, totalAmount, totalAmount, "تراز است")
+            Catch
+            End Try
+        End Sub
+
+        Public Sub CreateAutoAccountingVoucherForPurchase(invoiceId As Integer, invoiceNumber As String, invoiceDate As DateTime, vendorName As String, totalAmount As Decimal, paymentType As String, createdBy As Integer)
+            Try
+                If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then Return
+                If totalAmount <= 0 Then Return
+
+                Dim companyId = SessionContext.CurrentCompanyID.Value
+                Dim accSvc As New AccountingService()
+
+                Dim refNum = accSvc.GetNextReferenceNumber()
+                Dim desc = "سند خودکار فاکتور خرید شماره " & invoiceNumber & " - " & If(String.IsNullOrWhiteSpace(vendorName), "فروشنده کالا", vendorName)
+
+                Dim debitAccId = GetOrCreateSystemAccount(companyId, "110", "موجودی کالا و انبار", "معین")
+
+                Dim creditAccName = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS") OrElse paymentType.Contains("بانک"), "حساب بانک و کارتخوان", If(paymentType.Contains("نقد"), "صندوق مرکزی", "حساب‌های پرداختنی (فروشندگان)"))
+                Dim creditAccCode = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS") OrElse paymentType.Contains("بانک"), "102", If(paymentType.Contains("نقد"), "101", "201"))
+                Dim creditAccId = GetOrCreateSystemAccount(companyId, creditAccCode, creditAccName, "معین")
+
+                Dim lines As New List(Of AccountingEntryLine)()
+                lines.Add(New AccountingEntryLine With {
+                    .LineNumber = 1,
+                    .AccountID = debitAccId,
+                    .DebitAmount = totalAmount,
+                    .CreditAmount = 0D,
+                    .SharhRadif = "خرید کالا و افزایش موجودی انبار - فاکتور " & invoiceNumber
+                })
+                lines.Add(New AccountingEntryLine With {
+                    .LineNumber = 2,
+                    .AccountID = creditAccId,
+                    .DebitAmount = 0D,
+                    .CreditAmount = totalAmount,
+                    .SharhRadif = "پرداخت / بدهی خرید کالا - " & paymentType
+                })
+
+                accSvc.SaveEntry(invoiceDate, desc, refNum, createdBy, lines, totalAmount, totalAmount, "تراز است")
+            Catch
+            End Try
+        End Sub
 
         Public Function GetAverageCost(productId As Integer, warehouseId As Integer) As Decimal
             Dim value = Sql.ExecuteScalar("SELECT AverageCost FROM Inventory WHERE ProductID = ? AND WarehouseID = ?", productId, warehouseId)

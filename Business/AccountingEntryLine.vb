@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Namespace Negar.Business
@@ -11,6 +11,9 @@ Namespace Negar.Business
         Public Property SharhRadif As String
         Public Property TransactionNumber As String
         Public Property TransactionDate As String
+
+        Public Sub New()
+        End Sub
 
         Public Sub New(accountID As Integer, debit As Decimal, credit As Decimal,
                        lineNumber As Integer, shenavarID As Integer,
