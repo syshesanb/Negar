@@ -214,10 +214,24 @@ Namespace Negar.Business
 
             ' تب 5: مغایرت بانکی
             Dim tMogBank As New PermissionTreeNode("T_MOG_BANK", "📄 تب مغایرت‌گیری بانکی", 2)
-            Dim stMogBank As New PermissionTreeNode("ST_MOG_BANK", "📑 زیرتب تطبیق صورت‌حساب بانک", 3)
-            AddActionNode(stMogBank, PermissionKeys.AccountingBank, "🔘 مغایرت‌های بانکی", dbPermissions)
-            AddActionNode(stMogBank, PermissionKeys.AccountingBankRecExportExcel, "🔘 خروجی اکسل مغایرت", dbPermissions, new String() { PermissionKeys.AccountingBank })
-            tMogBank.Children.Add(stMogBank)
+            
+            Dim stMogBankIntro As New PermissionTreeNode("ST_MOG_BANK_INTRO", "📑 زیرتب معرفی بانک‌ها", 3)
+            AddActionNode(stMogBankIntro, PermissionKeys.AccountingBankRecIntro, "🔘 معرفی بانک‌ها", dbPermissions)
+            tMogBank.Children.Add(stMogBankIntro)
+
+            Dim stMogBankImport As New PermissionTreeNode("ST_MOG_BANK_IMPORT", "📑 زیرتب ورود صورت حساب بانک", 3)
+            AddActionNode(stMogBankImport, PermissionKeys.AccountingBankRecImport, "🔘 ورود صورت حساب بانک", dbPermissions)
+            tMogBank.Children.Add(stMogBankImport)
+
+            Dim stMogBankMatch As New PermissionTreeNode("ST_MOG_BANK_MATCH", "📑 زیرتب مغایرت‌گیری", 3)
+            AddActionNode(stMogBankMatch, PermissionKeys.AccountingBankRecMatch, "🔘 مغایرت‌گیری", dbPermissions)
+            AddActionNode(stMogBankMatch, PermissionKeys.AccountingBankRecExportExcel, "🔘 خروجی اکسل مغایرت", dbPermissions, new String() { PermissionKeys.AccountingBankRecMatch })
+            tMogBank.Children.Add(stMogBankMatch)
+
+            Dim stMogBankSugg As New PermissionTreeNode("ST_MOG_BANK_SUGG", "📑 زیرتب پیشنهاد برای رفع مغایرت", 3)
+            AddActionNode(stMogBankSugg, PermissionKeys.AccountingBankRecSuggestions, "🔘 پیشنهاد برای رفع مغایرت", dbPermissions)
+            tMogBank.Children.Add(stMogBankSugg)
+
             smAccMain.Children.Add(tMogBank)
 
             ' تب 6: تراز آزمایشی
@@ -276,14 +290,21 @@ Namespace Negar.Business
 
             ' تب 12: سایر گزارشات
             Dim tOtherReports As New PermissionTreeNode("T_OTHER_REPORTS", "📄 تب سایر گزارشات", 2)
-            Dim stOtherReportsGrid As New PermissionTreeNode("ST_OTHER_REPORTS_GRID", "📑 زیرتب گزارشات پیشرفته، نموداری و دلخواه", 3)
-            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingReports, "🔘 گزارشات حسابداری", dbPermissions)
-            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingAdvancedReports, "🔘 گزارشات پیشرفته", dbPermissions)
-            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingChartReports, "🔘 گزارشات نموداری", dbPermissions)
-            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingCustomReports, "🔘 گزارشات دلخواه", dbPermissions)
-            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingCustomReportPrint, "🔘 چاپ گزارش دلخواه", dbPermissions, new String() { PermissionKeys.AccountingCustomReports })
-            AddActionNode(stOtherReportsGrid, PermissionKeys.AccountingCustomReportExport, "🔘 خروجی اکسل گزارش دلخواه", dbPermissions, new String() { PermissionKeys.AccountingCustomReports })
-            tOtherReports.Children.Add(stOtherReportsGrid)
+
+            Dim stOtherAdvReports As New PermissionTreeNode("ST_OTHER_ADV_REPORTS", "📑 زیرتب گزارشات پیشرفته", 3)
+            AddActionNode(stOtherAdvReports, PermissionKeys.AccountingAdvancedReports, "🔘 گزارشات پیشرفته", dbPermissions)
+            tOtherReports.Children.Add(stOtherAdvReports)
+
+            Dim stOtherChartReports As New PermissionTreeNode("ST_OTHER_CHART_REPORTS", "📑 زیرتب گزارشات نموداری", 3)
+            AddActionNode(stOtherChartReports, PermissionKeys.AccountingChartReports, "🔘 گزارشات نموداری", dbPermissions)
+            tOtherReports.Children.Add(stOtherChartReports)
+
+            Dim stOtherCustomReports As New PermissionTreeNode("ST_OTHER_CUSTOM_REPORTS", "📑 زیرتب طراحی گزارشات دلخواه", 3)
+            AddActionNode(stOtherCustomReports, PermissionKeys.AccountingCustomReports, "🔘 طراحی گزارشات دلخواه", dbPermissions)
+            AddActionNode(stOtherCustomReports, PermissionKeys.AccountingCustomReportPrint, "🔘 چاپ گزارش دلخواه", dbPermissions, new String() { PermissionKeys.AccountingCustomReports })
+            AddActionNode(stOtherCustomReports, PermissionKeys.AccountingCustomReportExport, "🔘 خروجی اکسل گزارش دلخواه", dbPermissions, new String() { PermissionKeys.AccountingCustomReports })
+            tOtherReports.Children.Add(stOtherCustomReports)
+
             smAccMain.Children.Add(tOtherReports)
 
             rAccounting.Children.Add(smAccMain)

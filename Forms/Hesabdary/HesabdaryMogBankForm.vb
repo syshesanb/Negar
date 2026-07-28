@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -124,6 +124,26 @@ Namespace Negar.Forms
             InitRowCountLabels()
             AddHandler tcBank.SelectedIndexChanged, AddressOf TcBank_SelectedIndexChanged
             AddHandler tcAsnad.SelectedIndexChanged, AddressOf TcAsnad_SelectedIndexChanged
+            ApplySecurity()
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecIntro) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
+                tcMain.TabPages.Remove(tpIntroBanks)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecImport) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
+                tcMain.TabPages.Remove(tpImportStatement)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecMatch) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
+                tcMain.TabPages.Remove(tpReconciliation)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AccountingBankRecSuggestions) OrElse SessionContext.HasPermission(PermissionKeys.AccountingBank)) Then
+                tcBank.TabPages.Remove(tpBank_Suggestions)
+                tcAsnad.TabPages.Remove(tpAsnad_Suggestions)
+            End If
         End Sub
 
         Private Sub tcMain_SelectedIndexChanged(sender As Object, e As EventArgs) Handles tcMain.SelectedIndexChanged
