@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -147,6 +147,14 @@ Namespace Negar.Forms
             colPayment.HeaderText = "تسویه"
             colPayment.Width = 100
 
+            Dim colSanadRef As New DataGridViewTextBoxColumn()
+            colSanadRef.Name = "SanadRef"
+            colSanadRef.DataPropertyName = "SanadRef"
+            colSanadRef.HeaderText = "سند حسابداری (سال مالی)"
+            colSanadRef.Width = 160
+            colSanadRef.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colSanadRef.DefaultCellStyle.ForeColor = Color.FromArgb(13, 71, 161)
+
             Dim colDesc As New DataGridViewTextBoxColumn()
             colDesc.Name = "Description"
             colDesc.DataPropertyName = "Description"
@@ -155,7 +163,7 @@ Namespace Negar.Forms
 
             grid.Columns.AddRange(New DataGridViewColumn() {
                 colEdit, colDelete, colId, colNum, colType, colDate,
-                colCustomer, colWarehouse, colTotal, colPayment, colDesc
+                colCustomer, colWarehouse, colTotal, colPayment, colSanadRef, colDesc
             })
         End Sub
 

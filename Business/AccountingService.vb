@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -314,17 +314,35 @@ Namespace Negar.Business
 
             If SessionContext.CurrentUser Is Nothing Then Return New DataTable()
 
-            Dim baseSelect = "SELECT EntryID, ReferenceNumber, EntryDate, Description, JamBedehkar, JamBestankar, TaeazSanad, VazeiatSanad, AdamVirayesh, CreatedBy FROM Sanad1 "
-            Dim baseWhere = "WHERE CompanyID = ? AND FiscalYearID = ? AND (VazeiatSanad <> 'سند موقت - حذف موقت' OR VazeiatSanad IS NULL) "
+            Dim dt As DataTable
+            Dim fyName = If(Not String.IsNullOrWhiteSpace(SessionContext.CurrentFiscalYearName), SessionContext.CurrentFiscalYearName, "۱۴۰۵")
+
+            Dim query = "SELECT s.EntryID, s.ReferenceNumber, s.EntryDate, s.Description, s.JamBedehkar, s.JamBestankar, s.TaeazSanad, s.VazeiatSanad, s.AdamVirayesh, s.CreatedBy, COALESCE(f.Title, '" & fyName & "') AS FiscalYearName FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID " &
+                        "WHERE s.CompanyID = ? AND s.FiscalYearID = ? AND (s.VazeiatSanad <> 'سند موقت - حذف موقت' OR s.VazeiatSanad IS NULL) "
 
             If String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase) Then
-                Return Sql.ExecuteTable(baseSelect & baseWhere & "ORDER BY CAST(ReferenceNumber AS INTEGER) DESC", companyId, fyId)
+                dt = Sql.ExecuteTable(query & "ORDER BY CAST(s.ReferenceNumber AS INTEGER) DESC", companyId, fyId)
+            Else
+                Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
+                dt = Sql.ExecuteTable(query & "AND s.CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ") ORDER BY CAST(s.ReferenceNumber AS INTEGER) DESC", companyId, fyId)
             End If
 
-            Dim visibleIds = ActivityLogService.GetVisibleUserIDs(SessionContext.CurrentUser.UserID, SessionContext.CurrentUser.UserType)
-            Return Sql.ExecuteTable(
-                baseSelect & baseWhere & "AND CreatedBy IN (" & ActivityLogService.BuildIDInClause(visibleIds) & ") ORDER BY CAST(ReferenceNumber AS INTEGER) DESC",
-                companyId, fyId)
+            If dt IsNot Nothing Then
+                If Not dt.Columns.Contains("SourceInvoiceRef") Then dt.Columns.Add("SourceInvoiceRef", GetType(String))
+                For Each row As DataRow In dt.Rows
+                    Dim desc = Convert.ToString(row("Description"))
+                    Dim fyStr = Convert.ToString(row("FiscalYearName"))
+                    If String.IsNullOrWhiteSpace(fyStr) Then fyStr = fyName
+
+                    If Not String.IsNullOrWhiteSpace(desc) AndAlso desc.Contains("سند خودکار") Then
+                        row("SourceInvoiceRef") = desc & " (سال " & fyStr & ")"
+                    Else
+                        row("SourceInvoiceRef") = "سند دستی حسابداری (سال " & fyStr & ")"
+                    End If
+                Next
+            End If
+
+            Return dt
         End Function
 
         Public Function GetEntriesForPrint(fromRef As Integer?, toRef As Integer?, fromDateStr As String, toDateStr As String) As DataTable
@@ -574,9 +592,11 @@ Namespace Negar.Business
             Dim companyId = SessionContext.CurrentCompanyID.Value
             Dim fyId = SessionContext.CurrentFiscalYearID.Value
 
+            Dim isAutoVoucher As Boolean = Not String.IsNullOrWhiteSpace(description) AndAlso description.Contains("سند خودکار")
+
             Dim entryId = Sql.ExecuteIdentity(
-                "INSERT INTO Sanad1 (CompanyID, FiscalYearID, EntryDate, Description, ReferenceNumber, CreatedBy, VazeiatSanad) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                companyId, fyId, entryDate, description, referenceNumber, createdBy, "سند موقت - ثبت اولیه")
+                "INSERT INTO Sanad1 (CompanyID, FiscalYearID, EntryDate, Description, ReferenceNumber, CreatedBy, VazeiatSanad, AdamVirayesh) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                companyId, fyId, entryDate, description, referenceNumber, createdBy, "سند موقت - ثبت اولیه", isAutoVoucher)
 
             For Each line In lines
                 Dim debit = Math.Truncate(line.DebitAmount)

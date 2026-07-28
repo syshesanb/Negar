@@ -121,6 +121,15 @@ Namespace Negar.Forms
             colTaeaz.Width = 90
             colTaeaz.ReadOnly = True
 
+            Dim colInvoiceRef As New DataGridViewTextBoxColumn()
+            colInvoiceRef.Name = "colInvoiceRef"
+            colInvoiceRef.DataPropertyName = "SourceInvoiceRef"
+            colInvoiceRef.HeaderText = "شماره فاکتور / سند مرجع (سال مالی)"
+            colInvoiceRef.Width = 240
+            colInvoiceRef.ReadOnly = True
+            colInvoiceRef.DefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(46, 125, 50)
+            colInvoiceRef.DefaultCellStyle.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold)
+
             Dim colVazeiat As New DataGridViewTextBoxColumn()
             colVazeiat.Name = "colVazeiat"
             colVazeiat.DataPropertyName = "VazeiatSanad"
@@ -130,7 +139,7 @@ Namespace Negar.Forms
 
             dgvEntries.Columns.AddRange(New DataGridViewColumn() {
                 colEdit, colDel, colLockChk,
-                colId, colRef, colDate, colDesc,
+                colId, colRef, colDate, colInvoiceRef, colDesc,
                 colBed, colBes, colTaeaz, colVazeiat})
             dgvEntries.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells
         End Sub
@@ -168,17 +177,28 @@ Namespace Negar.Forms
             If Not entryId.HasValue Then Return
             Dim refNum = Convert.ToString(row.Cells("colRef").Value)
 
+            Dim descVal = Convert.ToString(row.Cells("colDesc").Value)
+            Dim isAutoVoucher = Not String.IsNullOrWhiteSpace(descVal) AndAlso descVal.Contains("سند خودکار")
+
             Select Case colName
                 Case ColBtnEdit
-                    If IsRowLocked(row) Then
+                    If isAutoVoucher OrElse IsRowLocked(row) Then
                         MessageBox.Show(
-                            "کاربر گرامی شما اجاره ویرایش این سند را ندارید ، لطفا برای ویرایش سند به مدیر ارشد خود مراجعه کنید",
-                            "دسترسی محدود", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                            "کاربر گرامی، این سند حسابداری به صورت خودکار از بخش انبارداری ایجاد شده است." & Environment.NewLine &
+                            "ویرایش آن حتماً باید از داخل بخش انبارداری (فروش، خرید یا هزینه) انجام شود تا تطبیق فاکتور و سند به هم نخورد.",
+                            "ویرایش غیرمجاز از حسابداری", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                         Return
                     End If
                     ShowDetailsFormInTab(New HesabdarySanad2Form(entryId.Value))
 
                 Case ColBtnDelete
+                    If isAutoVoucher OrElse IsRowLocked(row) Then
+                        MessageBox.Show(
+                            "کاربر گرامی، این سند به صورت خودکار از انبارداری صادر شده است." & Environment.NewLine &
+                            "حذف آن حتماً باید از طریق حذف فاکتور/هزینه در بخش انبارداری صورت پذیرد.",
+                            "حذف غیرمجاز از حسابداری", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        Return
+                    End If
                     Dim ans = MessageBox.Show(
                         "سند شماره « " & refNum & " » حذف شود؟" & Environment.NewLine &
                         "سند به صورت موقت حذف می‌شود و قابل بازیابی است.",

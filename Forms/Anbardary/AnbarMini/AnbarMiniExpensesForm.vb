@@ -131,6 +131,14 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             colRef.Width = 110
             colRef.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
 
+            Dim colSanadRef As New DataGridViewTextBoxColumn()
+            colSanadRef.Name = "colSanadRef"
+            colSanadRef.DataPropertyName = "SanadRef"
+            colSanadRef.HeaderText = "سند حسابداری (سال مالی)"
+            colSanadRef.Width = 160
+            colSanadRef.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            colSanadRef.DefaultCellStyle.ForeColor = Color.FromArgb(13, 71, 161)
+
             Dim colDesc As New DataGridViewTextBoxColumn()
             colDesc.Name = "colDescription"
             colDesc.DataPropertyName = "Description"
@@ -139,7 +147,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             colDesc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
 
             dgvExpenses.Columns.AddRange(New DataGridViewColumn() {
-                colNo, colId, colDate, colTitle, colCat, colAmt, colPaidTo, colMethod, colRef, colDesc
+                colNo, colId, colDate, colTitle, colCat, colAmt, colPaidTo, colMethod, colRef, colSanadRef, colDesc
             })
         End Sub
 
@@ -179,6 +187,14 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 sqlQuery &= " ORDER BY ExpenseDate DESC, ExpenseID DESC"
 
                 _expensesTable = Sql.ExecuteTable(sqlQuery, params.ToArray())
+                If _expensesTable IsNot Nothing Then
+                    If Not _expensesTable.Columns.Contains("SanadRef") Then _expensesTable.Columns.Add("SanadRef", GetType(String))
+                    For Each r As DataRow In _expensesTable.Rows
+                        Dim expId = Convert.ToInt32(r("ExpenseID"))
+                        r("SanadRef") = InvoiceService.GetSanadRefAndFiscalYearForExpense(expId)
+                    Next
+                End If
+
                 dgvExpenses.DataSource = _expensesTable
 
                 ' ردیف‌گذاری

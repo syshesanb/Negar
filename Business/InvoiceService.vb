@@ -34,7 +34,15 @@ Namespace Negar.Business
             End If
 
             query &= "ORDER BY i.InvoiceDate DESC, i.InvoiceID DESC"
-            Return Sql.ExecuteTable(query)
+            Dim dt = Sql.ExecuteTable(query)
+            If dt IsNot Nothing Then
+                If Not dt.Columns.Contains("SanadRef") Then dt.Columns.Add("SanadRef", GetType(String))
+                For Each row As DataRow In dt.Rows
+                    Dim invNum = Convert.ToString(row("InvoiceNumber"))
+                    row("SanadRef") = GetSanadRefAndFiscalYearForInvoice(invNum, "فاکتور خرید")
+                Next
+            End If
+            Return dt
         End Function
 
         Public Function GetSalesInvoices() As DataTable
@@ -56,7 +64,15 @@ Namespace Negar.Business
             End If
             query &= "ORDER BY i.InvoiceDate DESC, i.InvoiceID DESC"
 
-            Return Sql.ExecuteTable(query)
+            Dim dt = Sql.ExecuteTable(query)
+            If dt IsNot Nothing Then
+                If Not dt.Columns.Contains("SanadRef") Then dt.Columns.Add("SanadRef", GetType(String))
+                For Each row As DataRow In dt.Rows
+                    Dim invNum = Convert.ToString(row("InvoiceNumber"))
+                    row("SanadRef") = GetSanadRefAndFiscalYearForInvoice(invNum, "فاکتور فروش")
+                Next
+            End If
+            Return dt
         End Function
 
         Public Function SavePurchaseInvoice(invoiceNumber As String, invoiceDate As DateTime, vendorName As String, warehouseId As Integer, createdBy As Integer, lines As IEnumerable(Of Tuple(Of Integer, Decimal, Decimal, Decimal, Decimal)), Optional invoiceType As String = "فاکتور خرید", Optional discountAmount As Decimal = 0D, Optional paymentType As String = "نسیه", Optional description As String = "", Optional taxEntryMode As Integer = 0, Optional totalVat As Decimal = 0D) As Integer
@@ -606,6 +622,41 @@ Namespace Negar.Business
             Catch
             End Try
         End Sub
+
+        ' ─── استعلام شماره سند حسابداری و سال مالی جهت نمایش در انبارداری ──────
+        Public Shared Function GetSanadRefAndFiscalYearForInvoice(invoiceNumber As String, prefix As String) As String
+            Try
+                Dim searchDesc = prefix & " شماره " & invoiceNumber
+                Dim dt = Sql.ExecuteTable("SELECT s.ReferenceNumber, f.Title FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID WHERE s.Description LIKE ? ORDER BY s.EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                    Dim refNum = Convert.ToString(dt.Rows(0)("ReferenceNumber"))
+                    Dim fyTitle = Convert.ToString(dt.Rows(0)("Title"))
+                    If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = SessionContext.CurrentFiscalYearName
+                    If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = "۱۴۰۵"
+                    Return "سند " & refNum & " (سال " & fyTitle & ")"
+                End If
+            Catch
+            End Try
+            Dim currentFy = If(Not String.IsNullOrWhiteSpace(SessionContext.CurrentFiscalYearName), SessionContext.CurrentFiscalYearName, "۱۴۰۵")
+            Return "سند خودکار (سال " & currentFy & ")"
+        End Function
+
+        Public Shared Function GetSanadRefAndFiscalYearForExpense(expenseId As Integer) As String
+            Try
+                Dim searchDesc = "سند خودکار ثبت هزینه کد " & expenseId & ":"
+                Dim dt = Sql.ExecuteTable("SELECT s.ReferenceNumber, f.Title FROM Sanad1 s LEFT JOIN FiscalYears f ON s.FiscalYearID = f.FiscalYearID WHERE s.Description LIKE ? ORDER BY s.EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                    Dim refNum = Convert.ToString(dt.Rows(0)("ReferenceNumber"))
+                    Dim fyTitle = Convert.ToString(dt.Rows(0)("Title"))
+                    If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = SessionContext.CurrentFiscalYearName
+                    If String.IsNullOrWhiteSpace(fyTitle) Then fyTitle = "۱۴۰۵"
+                    Return "سند " & refNum & " (سال " & fyTitle & ")"
+                End If
+            Catch
+            End Try
+            Dim currentFy = If(Not String.IsNullOrWhiteSpace(SessionContext.CurrentFiscalYearName), SessionContext.CurrentFiscalYearName, "۱۴۰۵")
+            Return "سند خودکار (سال " & currentFy & ")"
+        End Function
 
         Public Sub SaveIndependentWarehouseReceipt(invoiceId As Integer, receiptNum As String, receiptDate As DateTime, createdBy As Integer, warehouseId As Integer, description As String, lines As List(Of Tuple(Of Integer, Integer, Decimal, Integer)))
             Dim inventoryService As New InventoryService()
