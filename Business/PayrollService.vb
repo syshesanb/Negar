@@ -22,6 +22,7 @@ Namespace Negar.Business
                 Sql.ExecuteNonQuery(
                     "CREATE TABLE IF NOT EXISTS PayrollPersonnel (" &
                     "PersonnelID INTEGER PRIMARY KEY AUTOINCREMENT, " &
+                    "CompanyID INTEGER DEFAULT 1, " &
                     "FullName TEXT NOT NULL, " &
                     "NationalCode TEXT, " &
                     "InsuranceNumber TEXT, " &
@@ -38,6 +39,11 @@ Namespace Negar.Business
                     "ManagementAllowance DECIMAL DEFAULT 0, " &
                     "IsActive BOOLEAN DEFAULT 1);"
                 )
+
+                Try
+                    Sql.ExecuteNonQuery("ALTER TABLE PayrollPersonnel ADD COLUMN CompanyID INTEGER DEFAULT 1;")
+                Catch ex As Exception
+                End Try
 
                 ' 2. جدول کارکرد ماهانه پرسنل
                 Sql.ExecuteNonQuery(
@@ -81,21 +87,27 @@ Namespace Negar.Business
             End Try
         End Sub
 
+        Private Function GetCurrentCompanyId() As Integer
+            Return If(SessionContext.CurrentCompanyID.HasValue, SessionContext.CurrentCompanyID.Value, 1)
+        End Function
+
         ' ─── مدیریت احکام پرسنل ──────
         Public Function GetPersonnelList() As DataTable
-            Return Sql.ExecuteTable("SELECT * FROM PayrollPersonnel ORDER BY PersonnelID DESC")
+            Dim compId = GetCurrentCompanyId()
+            Return Sql.ExecuteTable("SELECT * FROM PayrollPersonnel WHERE COALESCE(CompanyID, 1) = ? ORDER BY PersonnelID DESC", compId)
         End Function
 
         Public Function SavePersonnel(id As Integer?, fullName As String, nationalCode As String, insuranceNum As String, bankAcc As String, iban As String, contractType As String, marital As String, childCount As Integer, baseSal As Decimal, housing As Decimal, food As Decimal, childAllow As Decimal, seniority As Decimal, mgmtAllow As Decimal, isActive As Boolean) As Integer
+            Dim compId = GetCurrentCompanyId()
             If id.HasValue AndAlso id.Value > 0 Then
                 Sql.ExecuteNonQuery(
-                    "UPDATE PayrollPersonnel SET FullName=?, NationalCode=?, InsuranceNumber=?, BankAccountNumber=?, Iban=?, ContractType=?, MaritalStatus=?, ChildCount=?, BaseSalary=?, HousingAllowance=?, FoodAllowance=?, ChildAllowance=?, SeniorityAllowance=?, ManagementAllowance=?, IsActive=? WHERE PersonnelID=?",
-                    fullName, nationalCode, insuranceNum, bankAcc, iban, contractType, marital, childCount, baseSal, housing, food, childAllow, seniority, mgmtAllow, If(isActive, 1, 0), id.Value)
+                    "UPDATE PayrollPersonnel SET FullName=?, NationalCode=?, InsuranceNumber=?, BankAccountNumber=?, Iban=?, ContractType=?, MaritalStatus=?, ChildCount=?, BaseSalary=?, HousingAllowance=?, FoodAllowance=?, ChildAllowance=?, SeniorityAllowance=?, ManagementAllowance=?, IsActive=?, CompanyID=? WHERE PersonnelID=?",
+                    fullName, nationalCode, insuranceNum, bankAcc, iban, contractType, marital, childCount, baseSal, housing, food, childAllow, seniority, mgmtAllow, If(isActive, 1, 0), compId, id.Value)
                 Return id.Value
             Else
                 Sql.ExecuteNonQuery(
-                    "INSERT INTO PayrollPersonnel (FullName, NationalCode, InsuranceNumber, BankAccountNumber, Iban, ContractType, MaritalStatus, ChildCount, BaseSalary, HousingAllowance, FoodAllowance, ChildAllowance, SeniorityAllowance, ManagementAllowance, IsActive) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    fullName, nationalCode, insuranceNum, bankAcc, iban, contractType, marital, childCount, baseSal, housing, food, childAllow, seniority, mgmtAllow, If(isActive, 1, 0))
+                    "INSERT INTO PayrollPersonnel (FullName, NationalCode, InsuranceNumber, BankAccountNumber, Iban, ContractType, MaritalStatus, ChildCount, BaseSalary, HousingAllowance, FoodAllowance, ChildAllowance, SeniorityAllowance, ManagementAllowance, IsActive, CompanyID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    fullName, nationalCode, insuranceNum, bankAcc, iban, contractType, marital, childCount, baseSal, housing, food, childAllow, seniority, mgmtAllow, If(isActive, 1, 0), compId)
                 Return Convert.ToInt32(Sql.ExecuteScalar("SELECT last_insert_rowid()"))
             End If
         End Function
@@ -106,8 +118,9 @@ Namespace Negar.Business
 
         ' ─── ثبت کارکرد ماهانه ──────
         Public Function GetMonthlyAttendance(salMaly As String, mahMaly As Integer) As DataTable
-            Dim query = "SELECT a.*, p.FullName, p.NationalCode FROM MonthlyAttendance a INNER JOIN PayrollPersonnel p ON a.PersonnelID = p.PersonnelID WHERE a.SalMaly = ? AND a.MahMaly = ?"
-            Return Sql.ExecuteTable(query, salMaly, mahMaly)
+            Dim compId = GetCurrentCompanyId()
+            Dim query = "SELECT a.*, p.FullName, p.NationalCode FROM MonthlyAttendance a INNER JOIN PayrollPersonnel p ON a.PersonnelID = p.PersonnelID WHERE COALESCE(p.CompanyID, 1) = ? AND a.SalMaly = ? AND a.MahMaly = ?"
+            Return Sql.ExecuteTable(query, compId, salMaly, mahMaly)
         End Function
 
         Public Sub SaveMonthlyAttendance(personnelId As Integer, salMaly As String, mahMaly As Integer, workDays As Integer, overtime As Decimal, nightShift As Decimal, leaveDays As Decimal, absenceDays As Decimal, advancePay As Decimal, loanDed As Decimal)
@@ -122,7 +135,8 @@ Namespace Negar.Business
 
         ' ─── محاسبه حقوق ماهانه و صدور اتوماتیک سند حسابداری ──────
         Public Function CalculatePayrollForMonth(salMaly As String, mahMaly As Integer) As DataTable
-            Dim pDt = Sql.ExecuteTable("SELECT * FROM PayrollPersonnel WHERE IsActive = 1")
+            Dim compId = GetCurrentCompanyId()
+            Dim pDt = Sql.ExecuteTable("SELECT * FROM PayrollPersonnel WHERE COALESCE(CompanyID, 1) = ? AND IsActive = 1", compId)
             If pDt Is Nothing OrElse pDt.Rows.Count = 0 Then Return New DataTable()
 
             Dim totalGross As Decimal = 0
@@ -278,13 +292,15 @@ Namespace Negar.Business
 
         ' ─── گزارشات جامع حقوق ──────
         Public Function GetMonthlyPayrollReport(salMaly As String, mahMaly As Integer) As DataTable
-            Dim query = "SELECT c.*, p.FullName, p.NationalCode, p.InsuranceNumber, p.BankAccountNumber, p.Iban FROM PayrollCalculations c INNER JOIN PayrollPersonnel p ON c.PersonnelID = p.PersonnelID WHERE c.SalMaly = ? AND c.MahMaly = ? ORDER BY c.CalculationID ASC"
-            Return Sql.ExecuteTable(query, salMaly, mahMaly)
+            Dim compId = GetCurrentCompanyId()
+            Dim query = "SELECT c.*, p.FullName, p.NationalCode, p.InsuranceNumber, p.BankAccountNumber, p.Iban FROM PayrollCalculations c INNER JOIN PayrollPersonnel p ON c.PersonnelID = p.PersonnelID WHERE COALESCE(p.CompanyID, 1) = ? AND c.SalMaly = ? AND c.MahMaly = ? ORDER BY c.CalculationID ASC"
+            Return Sql.ExecuteTable(query, compId, salMaly, mahMaly)
         End Function
 
         Public Function GetEmployeeHistoricalReport(personnelId As Integer, salMaly As String) As DataTable
-            Dim query = "SELECT c.*, p.FullName, p.NationalCode FROM PayrollCalculations c INNER JOIN PayrollPersonnel p ON c.PersonnelID = p.PersonnelID WHERE c.PersonnelID = ? AND c.SalMaly = ? ORDER BY c.MahMaly ASC"
-            Return Sql.ExecuteTable(query, personnelId, salMaly)
+            Dim compId = GetCurrentCompanyId()
+            Dim query = "SELECT c.*, p.FullName, p.NationalCode FROM PayrollCalculations c INNER JOIN PayrollPersonnel p ON c.PersonnelID = p.PersonnelID WHERE COALESCE(p.CompanyID, 1) = ? AND c.PersonnelID = ? AND c.SalMaly = ? ORDER BY c.MahMaly ASC"
+            Return Sql.ExecuteTable(query, compId, personnelId, salMaly)
         End Function
 
         ' ─── تولید دیسکت بیمه و مالیات و بانک ──────

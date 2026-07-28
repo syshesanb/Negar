@@ -880,6 +880,7 @@ Namespace Negar.Forms
 
         Private Sub OpenPayrollMainForm(sender As Object, e As EventArgs) Handles mPayroll.Click, miPayrollMain.Click, miPayrollReports.Click
             Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
                 Using dlg As New Negar.Forms.Payroll.PayrollMainForm()
                     dlg.ShowDialog(Me)
                 End Using

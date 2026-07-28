@@ -257,12 +257,19 @@ Namespace Negar.Forms.Payroll
             End If
         End Sub
 
+        Private Function GetCurrentFiscalYearTitle() As String
+            If Not String.IsNullOrWhiteSpace(SessionContext.CurrentFiscalYearName) AndAlso SessionContext.CurrentFiscalYearName <> "-" Then
+                Return SessionContext.CurrentFiscalYearName
+            End If
+            Return "1405"
+        End Function
+
         ' ─── 2. TAB ATTENDANCE ──────
         Private Sub SetupAttendanceTab()
             Dim pnlTop As New Panel() With {.Dock = DockStyle.Top, .Height = 55, .BackColor = Color.FromArgb(235, 240, 245)}
             
             Dim lblYear As New Label() With {.Text = "سال مالی:", .Location = New Point(1000, 16), .AutoSize = True}
-            txtAttYear = New TextBox() With {.Text = "1405", .Location = New Point(920, 12), .Size = New Size(70, 26)}
+            txtAttYear = New TextBox() With {.Text = GetCurrentFiscalYearTitle(), .Location = New Point(920, 12), .Size = New Size(70, 26)}
             
             Dim lblMonth As New Label() With {.Text = "ماه:", .Location = New Point(875, 16), .AutoSize = True}
             cmbAttMonth = New ComboBox() With {.Location = New Point(790, 12), .Size = New Size(80, 26), .DropDownStyle = ComboBoxStyle.DropDownList}
@@ -317,7 +324,7 @@ Namespace Negar.Forms.Payroll
             Dim pnlTop As New Panel() With {.Dock = DockStyle.Top, .Height = 55, .BackColor = Color.FromArgb(235, 240, 245)}
             
             Dim lblYear As New Label() With {.Text = "سال مالی:", .Location = New Point(1000, 16), .AutoSize = True}
-            txtCalcYear = New TextBox() With {.Text = "1405", .Location = New Point(920, 12), .Size = New Size(70, 26)}
+            txtCalcYear = New TextBox() With {.Text = GetCurrentFiscalYearTitle(), .Location = New Point(920, 12), .Size = New Size(70, 26)}
             
             Dim lblMonth As New Label() With {.Text = "ماه:", .Location = New Point(875, 16), .AutoSize = True}
             cmbCalcMonth = New ComboBox() With {.Location = New Point(790, 12), .Size = New Size(80, 26), .DropDownStyle = ComboBoxStyle.DropDownList}
@@ -366,7 +373,7 @@ Namespace Negar.Forms.Payroll
         Private Sub SetupDiskettesTab()
             Dim pnlTop As New Panel() With {.Dock = DockStyle.Top, .Height = 55, .BackColor = Color.FromArgb(235, 240, 245)}
             
-            txtDisksYear = New TextBox() With {.Text = "1405", .Location = New Point(920, 12), .Size = New Size(70, 26)}
+            txtDisksYear = New TextBox() With {.Text = GetCurrentFiscalYearTitle(), .Location = New Point(920, 12), .Size = New Size(70, 26)}
             cmbDisksMonth = New ComboBox() With {.Location = New Point(790, 12), .Size = New Size(80, 26), .DropDownStyle = ComboBoxStyle.DropDownList}
             For i As Integer = 1 To 12
                 cmbDisksMonth.Items.Add(i.ToString())
@@ -414,7 +421,7 @@ Namespace Negar.Forms.Payroll
         Private Sub SetupBankFileTab()
             Dim pnlTop As New Panel() With {.Dock = DockStyle.Top, .Height = 55, .BackColor = Color.FromArgb(235, 240, 245)}
             
-            txtBankYear = New TextBox() With {.Text = "1405", .Location = New Point(920, 12), .Size = New Size(70, 26)}
+            txtBankYear = New TextBox() With {.Text = GetCurrentFiscalYearTitle(), .Location = New Point(920, 12), .Size = New Size(70, 26)}
             cmbBankMonth = New ComboBox() With {.Location = New Point(790, 12), .Size = New Size(80, 26), .DropDownStyle = ComboBoxStyle.DropDownList}
             For i As Integer = 1 To 12
                 cmbBankMonth.Items.Add(i.ToString())
@@ -450,7 +457,7 @@ Namespace Negar.Forms.Payroll
         Private Sub SetupReportsTab()
             Dim pnlTop As New Panel() With {.Dock = DockStyle.Top, .Height = 55, .BackColor = Color.FromArgb(235, 240, 245)}
             
-            txtRepYear = New TextBox() With {.Text = "1405", .Location = New Point(920, 12), .Size = New Size(70, 26)}
+            txtRepYear = New TextBox() With {.Text = GetCurrentFiscalYearTitle(), .Location = New Point(920, 12), .Size = New Size(70, 26)}
             cmbRepMonth = New ComboBox() With {.Location = New Point(790, 12), .Size = New Size(80, 26), .DropDownStyle = ComboBoxStyle.DropDownList}
             For i As Integer = 1 To 12
                 cmbRepMonth.Items.Add(i.ToString())
