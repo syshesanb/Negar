@@ -44,6 +44,7 @@ Namespace Negar.Business
         Public Const AccountingAdvancedReports As String = "AccountingAdvancedReports"
         Public Const AccountingChartReports As String = "AccountingChartReports"
         Public Const AccountingCustomReports As String = "AccountingCustomReports"
+        Public Const AccountingReportsMenu As String = "AccountingReportsMenu"
         Public Const ManageAccounting As String = "ManageAccounting"
 
         ' Accounting detailed print/export buttons permissions
@@ -84,12 +85,18 @@ Namespace Negar.Business
         Public Const ViewReports As String = "ViewReports"
 
         ' Anbar Edition Modules Permissions
+        ' Anbar Mini unique permission keys
         Public Const AnbarMiniModule As String = "AnbarMiniModule"
-        Public Const AnbarMediumModule As String = "AnbarMediumModule"
-        Public Const AnbarBigModule As String = "AnbarBigModule"
+        Public Const AnbarMiniPos As String = "AnbarMiniPos"
+        Public Const AnbarMiniKharid As String = "AnbarMiniKharid"
+        Public Const AnbarMiniPersons As String = "AnbarMiniPersons"
+        Public Const AnbarMiniProducts As String = "AnbarMiniProducts"
+        Public Const AnbarMiniWarehouses As String = "AnbarMiniWarehouses"
         Public Const AnbarMiniExpenses As String = "AnbarMiniExpenses"
         Public Const AnbarMiniExpenseLedger As String = "AnbarMiniExpenseLedger"
         Public Const AnbarMiniProfitLoss As String = "AnbarMiniProfitLoss"
+        Public Const AnbarMediumModule As String = "AnbarMediumModule"
+        Public Const AnbarBigModule As String = "AnbarBigModule"
 
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
