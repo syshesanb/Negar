@@ -6,6 +6,7 @@ Imports System.ComponentModel
 Imports System.Windows.Forms
 Imports Negar.Business
 Imports Negar.Models
+Imports Negar.Forms.Anbardary
 
 Namespace Negar.Forms
     Partial Class AnbardaryMainForm
@@ -53,6 +54,7 @@ Namespace Negar.Forms
                 progress.UpdateProgress(95, "بارگذاری گزارش موجودی انبار...")
 
                 If tabs.TabPages.Contains(tabInventory) Then HostForm(tabInventory, New MojodyAnbarFormRep())
+                If tabs.TabPages.Contains(tabModyan) Then HostControl(tabModyan, New ModyanManagementControl(SessionContext.CurrentEdition))
                 progress.UpdateProgress(100, "اتمام بارگذاری ماژول انبارداری")
             End Using
 
@@ -99,6 +101,9 @@ Namespace Negar.Forms
             End If
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory)) Then
                 tabs.TabPages.Remove(tabInventory)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.TradeModyanMedium) OrElse SessionContext.HasPermission(PermissionKeys.TradeModyanBig) OrElse SessionContext.HasPermission(PermissionKeys.ManageTradeWarehouse)) Then
+                tabs.TabPages.Remove(tabModyan)
             End If
 
             ApplyEditionRules()

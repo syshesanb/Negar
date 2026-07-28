@@ -5,6 +5,7 @@ Imports System
 Imports System.Windows.Forms
 Imports Negar.Business
 Imports Negar.Models
+Imports Negar.Forms.Anbardary
 
 Namespace Negar.Forms.Anbardary.AnbarMini
     Public Class AnbarMiniMainForm
@@ -24,6 +25,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             If tabsMini.TabPages.Contains(tabWarehouses) Then HostForm(tabWarehouses, New AnbardaryNamAnbar1Form())
             If tabsMini.TabPages.Contains(tabGroups) Then HostForm(tabGroups, New AnbardaryGoroohKala1Form())
             If tabsMini.TabPages.Contains(tabInventory) Then HostForm(tabInventory, New MojodyAnbarFormRep())
+            If tabsMini.TabPages.Contains(tabModyan) Then HostControl(tabModyan, New ModyanManagementControl(AppEdition.Mini))
         End Sub
 
         Private Sub ApplySecurity()
@@ -54,6 +56,16 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniReports) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
                 tabsMini.TabPages.Remove(tabInventory)
             End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModyan) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabModyan)
+            End If
+        End Sub
+
+        Private Sub HostControl(targetTab As TabPage, child As Control)
+            child.Dock = DockStyle.Fill
+            child.Visible = True
+            targetTab.Controls.Add(child)
+            child.BringToFront()
         End Sub
 
         Private Sub HostForm(targetTab As TabPage, child As Form)

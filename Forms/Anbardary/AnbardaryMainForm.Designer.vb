@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -43,6 +43,7 @@ Namespace Negar.Forms
             Me.tabSales = New TabPage()
             Me.tabTransfer = New TabPage()
             Me.tabInventory = New TabPage()
+            Me.tabModyan = New TabPage()
             Me.tabs.SuspendLayout()
             Me.tabPersonnel.SuspendLayout()
             Me.SuspendLayout()
@@ -68,6 +69,7 @@ Namespace Negar.Forms
             Me.tabs.Controls.Add(Me.tabSales)
             Me.tabs.Controls.Add(Me.tabTransfer)
             Me.tabs.Controls.Add(Me.tabInventory)
+            Me.tabs.Controls.Add(Me.tabModyan)
             Me.tabs.Dock = DockStyle.Fill
             Me.tabs.Location = New Point(0, 0)
             Me.tabs.Name = "tabs"
@@ -184,6 +186,15 @@ Namespace Negar.Forms
             Me.tabInventory.Text = "موجودی انبار"
             Me.tabInventory.UseVisualStyleBackColor = True
             '
+            'tabModyan
+            '
+            Me.tabModyan.Location = New Point(4, 23)
+            Me.tabModyan.Name = "tabModyan"
+            Me.tabModyan.Padding = New Padding(3)
+            Me.tabModyan.Size = New Size(1312, 733)
+            Me.tabModyan.Text = "🏛️ سامانه مودیان"
+            Me.tabModyan.UseVisualStyleBackColor = True
+            '
             'Controls
             '
             Me.Controls.Add(Me.tabs)
@@ -191,6 +202,8 @@ Namespace Negar.Forms
             Me.tabs.ResumeLayout(False)
             Me.ResumeLayout(False)
         End Sub
+
+        Friend WithEvents tabModyan As TabPage
     End Class
 End Namespace
 

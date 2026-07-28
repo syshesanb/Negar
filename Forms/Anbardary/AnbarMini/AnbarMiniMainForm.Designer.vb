@@ -24,6 +24,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabWarehouses = New TabPage()
             Me.tabGroups = New TabPage()
             Me.tabInventory = New TabPage()
+            Me.tabModyan = New TabPage()
             Me.tabsMini.SuspendLayout()
             Me.SuspendLayout()
 
@@ -36,6 +37,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabsMini.Controls.Add(Me.tabWarehouses)
             Me.tabsMini.Controls.Add(Me.tabGroups)
             Me.tabsMini.Controls.Add(Me.tabInventory)
+            Me.tabsMini.Controls.Add(Me.tabModyan)
             Me.tabsMini.Dock = DockStyle.Fill
             Me.tabsMini.Font = New Font("Tahoma", 9.5!)
             Me.tabsMini.ItemSize = New Size(155, 38)
@@ -94,6 +96,12 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             Me.tabInventory.Size = New Size(992, 607)
             Me.tabInventory.Text = "📊 گزارش"
 
+            ' tabModyan
+            Me.tabModyan.Location = New Point(4, 39)
+            Me.tabModyan.Name = "tabModyan"
+            Me.tabModyan.Size = New Size(992, 607)
+            Me.tabModyan.Text = "🏛️ سامانه مودیان"
+
             ' Form Setup
             Me.AutoScaleDimensions = New SizeF(8.0!, 19.0!)
             Me.AutoScaleMode = AutoScaleMode.Font
@@ -120,5 +128,6 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         Friend WithEvents tabWarehouses As TabPage
         Friend WithEvents tabGroups As TabPage
         Friend WithEvents tabInventory As TabPage
+        Friend WithEvents tabModyan As TabPage
     End Class
 End Namespace

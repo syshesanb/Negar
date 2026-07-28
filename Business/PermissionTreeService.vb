@@ -456,7 +456,14 @@ Namespace Negar.Business
             AddActionNode(stMiniInventoryCount, PermissionKeys.AnbarMiniInventoryCountPrint, "🔘 چاپ انبارگردانی", dbPermissions, new String() { PermissionKeys.AnbarMiniInventoryCount })
             tMiniReports.Children.Add(stMiniInventoryCount)
 
-            smTradeMini.Children.Add(tMiniReports)
+            ' تب 9: سامانه مودیان ساده (نوع 2)
+            Dim tMiniModyan As New PermissionTreeNode("T_MINI_MODYAN", "📄 تب سامانه مودیان ساده (نوع ۲)", 2)
+            Dim stMiniModyan As New PermissionTreeNode("ST_MINI_MODYAN", "📑 زیرتب ارسال فاکتور فروشگاهی نوع ۲ به مودیان", 3)
+            AddActionNode(stMiniModyan, PermissionKeys.AnbarMiniModyan, "🔘 سامانه مودیان ساده", dbPermissions)
+            AddActionNode(stMiniModyan, PermissionKeys.AnbarMiniModyanSend, "🔘 ارسال سریع فاکتور نوع ۲ به مودیان", dbPermissions, new String() { PermissionKeys.AnbarMiniModyan })
+            AddActionNode(stMiniModyan, PermissionKeys.AnbarMiniModyanGuide, "🔘 📖 مشاهده راهنمای مودیان", dbPermissions, new String() { PermissionKeys.AnbarMiniModyan })
+            tMiniModyan.Children.Add(stMiniModyan)
+            smTradeMini.Children.Add(tMiniModyan)
 
             rTrade.Children.Add(smTradeMini)
 
@@ -467,6 +474,16 @@ Namespace Negar.Business
             AddActionNode(stMedGrid, PermissionKeys.AnbarMediumModule, "🔘 استفاده از انبارداری متوسط", dbPermissions)
             tMedMain.Children.Add(stMedGrid)
             smTradeMed.Children.Add(tMedMain)
+
+            Dim tMedModyan As New PermissionTreeNode("T_MED_MODYAN", "📄 تب سامانه مودیان پیشرفته (نوع ۱ و ۲)", 2)
+            Dim stMedModyan As New PermissionTreeNode("ST_MED_MODYAN", "📑 زیرتب ارسال صورتحساب‌های رسمی B2B و تنظیمات مالیاتی", 3)
+            AddActionNode(stMedModyan, PermissionKeys.TradeModyanMedium, "🔘 سامانه مودیان پیشرفته", dbPermissions)
+            AddActionNode(stMedModyan, PermissionKeys.TradeModyanKeysSetup, "🔘 🔑 تنظیم کلیدها و حافظه مالیاتی", dbPermissions, new String() { PermissionKeys.TradeModyanMedium })
+            AddActionNode(stMedModyan, PermissionKeys.TradeModyanSendInvoices, "🔘 🚀 ارسال صورتحساب‌های رسمی به کارپوشه", dbPermissions, new String() { PermissionKeys.TradeModyanMedium })
+            AddActionNode(stMedModyan, PermissionKeys.TradeModyanInquiry, "🔘 🔄 استعلام وضعیت صورتحساب‌ها", dbPermissions, new String() { PermissionKeys.TradeModyanMedium })
+            tMedModyan.Children.Add(stMedModyan)
+            smTradeMed.Children.Add(tMedModyan)
+
             rTrade.Children.Add(smTradeMed)
 
             ' 5.3 زیر منو: استفاده از انبارداری پیشرفته (miTradeBig)
@@ -476,6 +493,16 @@ Namespace Negar.Business
             AddActionNode(stBigGrid, PermissionKeys.AnbarBigModule, "🔘 استفاده از انبارداری پیشرفته", dbPermissions)
             tBigMain.Children.Add(stBigGrid)
             smTradeBig.Children.Add(tBigMain)
+
+            Dim tBigModyan As New PermissionTreeNode("T_BIG_MODYAN", "📄 تب سامانه مودیان پیشرفته جامع", 2)
+            Dim stBigModyan As New PermissionTreeNode("ST_BIG_MODYAN", "📑 زیرتب مدیریت جامع کلیدها، شناسه کالاها و ارسال دسته‌ای", 3)
+            AddActionNode(stBigModyan, PermissionKeys.TradeModyanBig, "🔘 سامانه مودیان پیشرفته جامع", dbPermissions)
+            AddActionNode(stBigModyan, PermissionKeys.TradeModyanKeysSetup, "🔘 🔑 تنظیم کلیدها و حافظه مالیاتی", dbPermissions, new String() { PermissionKeys.TradeModyanBig })
+            AddActionNode(stBigModyan, PermissionKeys.TradeModyanSendInvoices, "🔘 🚀 ارسال صورتحساب‌های رسمی به کارپوشه", dbPermissions, new String() { PermissionKeys.TradeModyanBig })
+            AddActionNode(stBigModyan, PermissionKeys.TradeModyanInquiry, "🔘 🔄 استعلام وضعیت صورتحساب‌ها", dbPermissions, new String() { PermissionKeys.TradeModyanBig })
+            tBigModyan.Children.Add(stBigModyan)
+            smTradeBig.Children.Add(tBigModyan)
+
             rTrade.Children.Add(smTradeBig)
 
             ' 5.4 زیر منو: فاکتورها، انبار و مدیریت کالاها (جامع) (miTradeWarehouseMain)
