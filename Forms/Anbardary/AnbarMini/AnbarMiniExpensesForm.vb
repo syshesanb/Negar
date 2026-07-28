@@ -310,6 +310,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             If MessageBox.Show("آیا از حذف سند هزینه انتخاب شده اطمینان دارید؟", "تأیید حذف", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                 Try
                     Sql.ExecuteNonQuery("DELETE FROM Expenses WHERE ExpenseID = ?", selectedId.Value)
+                    InvoiceService.DeleteAutoVoucherForExpense(selectedId.Value)
                     LoadExpenses()
                 Catch ex As Exception
                     MessageBox.Show("خطا در حذف هزینه: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)

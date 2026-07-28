@@ -150,6 +150,11 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                     SavedExpenseID = Convert.ToInt32(Sql.ExecuteScalar("SELECT last_insert_rowid()"))
                 End If
 
+                ' صدور/بروزرسانی خودکار سند حسابداری هزینه
+                If SavedExpenseID.HasValue Then
+                    InvoiceService.CreateOrUpdateAutoVoucherForExpense(SavedExpenseID.Value, pDate, title, category, amt, paidTo, paymentMethod, desc)
+                End If
+
                 Me.DialogResult = DialogResult.OK
                 Me.Close()
             Catch ex As Exception

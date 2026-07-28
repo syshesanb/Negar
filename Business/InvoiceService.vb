@@ -296,6 +296,7 @@ Namespace Negar.Business
             Sql.ExecuteNonQuery("DELETE FROM PurchaseInvoices WHERE InvoiceID=?", invoiceId)
             logService.LogActivity(0, "DeletePurchase", "PurchaseInvoice", invoiceId,
                                    "حذف سند خرید: " & Convert.ToString(hdr("InvoiceNumber")), SessionContext.CurrentIP)
+            DeleteAutoVoucherForInvoice(Convert.ToString(hdr("InvoiceNumber")), "فاکتور خرید")
         End Sub
 
         Public Sub DeleteSalesInvoice(invoiceId As Integer)
@@ -314,6 +315,7 @@ Namespace Negar.Business
             Sql.ExecuteNonQuery("DELETE FROM SalesInvoices WHERE InvoiceID=?", invoiceId)
             logService.LogActivity(0, "DeleteSale", "SalesInvoice", invoiceId,
                                    "حذف فاکتور فروش: " & Convert.ToString(hdr("InvoiceNumber")), SessionContext.CurrentIP)
+            DeleteAutoVoucherForInvoice(Convert.ToString(hdr("InvoiceNumber")), "فاکتور فروش")
         End Sub
 
         Public Function UpdatePurchaseInvoice(invoiceId As Integer, invoiceNumber As String,
@@ -376,6 +378,10 @@ Namespace Negar.Business
 
             logService.LogActivity(createdBy, "UpdatePurchase", "PurchaseInvoice", invoiceId,
                                    "ویرایش " & invoiceType & ": " & invoiceNumber, SessionContext.CurrentIP)
+
+            ' بروزرسانی خودکار سند حسابداری مربوطه
+            SyncAutoVoucherForPurchase(invoiceNumber, invoiceDate, vendorName, total, paymentType, createdBy)
+
             Return invoiceId
         End Function
 
@@ -423,8 +429,173 @@ Namespace Negar.Business
 
             logService.LogActivity(createdBy, "UpdateSale", "SalesInvoice", invoiceId,
                                    "ویرایش فاکتور فروش: " & invoiceNumber, SessionContext.CurrentIP)
+
+            ' بروزرسانی خودکار سند حسابداری مربوطه
+            SyncAutoVoucherForSales(invoiceNumber, invoiceDate, customerName, total, paymentType, createdBy)
+
             Return invoiceId
         End Function
+
+        Public Sub SyncAutoVoucherForPurchase(invoiceNumber As String, invoiceDate As DateTime, vendorName As String, totalAmount As Decimal, paymentType As String, createdBy As Integer)
+            Try
+                Dim searchDesc = "فاکتور خرید شماره " & invoiceNumber
+                Dim entryIdObj = Sql.ExecuteScalar("SELECT EntryID FROM Sanad1 WHERE Description LIKE ? ORDER BY EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+
+                If entryIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(entryIdObj) Then
+                    Dim entryId = Convert.ToInt32(entryIdObj)
+                    Dim companyId = SessionContext.CurrentCompanyID.Value
+                    Dim accSvc As New AccountingService()
+
+                    Dim debitAccId = GetOrCreateSystemAccount(companyId, "110", "موجودی کالا و انبار", "معین")
+                    Dim creditAccName = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS") OrElse paymentType.Contains("بانک"), "حساب بانک و کارتخوان", If(paymentType.Contains("نقد"), "صندوق مرکزی", "حساب‌های پرداختنی (فروشندگان)"))
+                    Dim creditAccCode = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS") OrElse paymentType.Contains("بانک"), "102", If(paymentType.Contains("نقد"), "101", "201"))
+                    Dim creditAccId = GetOrCreateSystemAccount(companyId, creditAccCode, creditAccName, "معین")
+
+                    Dim lines As New List(Of AccountingEntryLine)()
+                    lines.Add(New AccountingEntryLine With {
+                        .LineNumber = 1,
+                        .AccountID = debitAccId,
+                        .DebitAmount = totalAmount,
+                        .CreditAmount = 0D,
+                        .SharhRadif = "خرید کالا و افزایش موجودی انبار - فاکتور " & invoiceNumber
+                    })
+                    lines.Add(New AccountingEntryLine With {
+                        .LineNumber = 2,
+                        .AccountID = creditAccId,
+                        .DebitAmount = 0D,
+                        .CreditAmount = totalAmount,
+                        .SharhRadif = "پرداخت / بدهی خرید کالا - " & paymentType
+                    })
+
+                    Dim refNum = Convert.ToString(Sql.ExecuteScalar("SELECT ReferenceNumber FROM Sanad1 WHERE EntryID = ?", entryId))
+                    Dim desc = "سند خودکار فاکتور خرید شماره " & invoiceNumber & " - " & If(String.IsNullOrWhiteSpace(vendorName), "فروشنده کالا", vendorName)
+
+                    accSvc.UpdateEntry(entryId, invoiceDate, desc, refNum, createdBy, lines, totalAmount, totalAmount, "تراز است")
+                Else
+                    CreateAutoAccountingVoucherForPurchase(0, invoiceNumber, invoiceDate, vendorName, totalAmount, paymentType, createdBy)
+                End If
+            Catch
+            End Try
+        End Sub
+
+        Public Sub SyncAutoVoucherForSales(invoiceNumber As String, invoiceDate As DateTime, customerName As String, totalAmount As Decimal, paymentType As String, createdBy As Integer)
+            Try
+                Dim searchDesc = "فاکتور فروش شماره " & invoiceNumber
+                Dim entryIdObj = Sql.ExecuteScalar("SELECT EntryID FROM Sanad1 WHERE Description LIKE ? ORDER BY EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+
+                If entryIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(entryIdObj) Then
+                    Dim entryId = Convert.ToInt32(entryIdObj)
+                    Dim companyId = SessionContext.CurrentCompanyID.Value
+                    Dim accSvc As New AccountingService()
+
+                    Dim debitAccName = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS"), "دستگاه کارتخوان / بانک", If(paymentType.Contains("نقد"), "صندوق مرکزی", "حساب‌های دریافتنی (خریداران)"))
+                    Dim debitAccCode = If(paymentType.Contains("کارتخوان") OrElse paymentType.Contains("POS"), "102", If(paymentType.Contains("نقد"), "101", "103"))
+                    Dim debitAccId = GetOrCreateSystemAccount(companyId, debitAccCode, debitAccName, "معین")
+
+                    Dim creditAccId = GetOrCreateSystemAccount(companyId, "401", "فروش کالا و خدمات", "معین")
+
+                    Dim lines As New List(Of AccountingEntryLine)()
+                    lines.Add(New AccountingEntryLine With {
+                        .LineNumber = 1,
+                        .AccountID = debitAccId,
+                        .DebitAmount = totalAmount,
+                        .CreditAmount = 0D,
+                        .SharhRadif = "فروش کالا - " & paymentType
+                    })
+                    lines.Add(New AccountingEntryLine With {
+                        .LineNumber = 2,
+                        .AccountID = creditAccId,
+                        .DebitAmount = 0D,
+                        .CreditAmount = totalAmount,
+                        .SharhRadif = "درآمد حاصل از فروش کالا - فاکتور " & invoiceNumber
+                    })
+
+                    Dim refNum = Convert.ToString(Sql.ExecuteScalar("SELECT ReferenceNumber FROM Sanad1 WHERE EntryID = ?", entryId))
+                    Dim desc = "سند خودکار فاکتور فروش شماره " & invoiceNumber & " - " & If(String.IsNullOrWhiteSpace(customerName), "مشتری عمومی", customerName)
+
+                    accSvc.UpdateEntry(entryId, invoiceDate, desc, refNum, createdBy, lines, totalAmount, totalAmount, "تراز است")
+                Else
+                    CreateAutoAccountingVoucherForSales(0, invoiceNumber, invoiceDate, customerName, totalAmount, paymentType, createdBy)
+                End If
+            Catch
+            End Try
+        End Sub
+
+        Public Sub DeleteAutoVoucherForInvoice(invoiceNumber As String, invoiceTypePrefix As String)
+            Try
+                Dim searchDesc = invoiceTypePrefix & " شماره " & invoiceNumber
+                Dim entryIdObj = Sql.ExecuteScalar("SELECT EntryID FROM Sanad1 WHERE Description LIKE ? ORDER BY EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+                If entryIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(entryIdObj) Then
+                    Dim entryId = Convert.ToInt32(entryIdObj)
+                    Sql.ExecuteNonQuery("UPDATE Sanad1 SET VazeiatSanad = 'سند موقت - حذف موقت' WHERE EntryID = ?", entryId)
+                End If
+            Catch
+            End Try
+        End Sub
+
+        ' ─── صدور سند خودکار حسابداری برای هزینه‌ها ─────────────────────────
+        Public Shared Sub CreateOrUpdateAutoVoucherForExpense(expenseId As Integer, expenseDateStr As String, title As String, category As String, amount As Decimal, paidTo As String, paymentMethod As String, description As String)
+            Try
+                If Not SessionContext.CurrentCompanyID.HasValue OrElse Not SessionContext.CurrentFiscalYearID.HasValue Then Return
+                If amount <= 0 Then Return
+
+                Dim companyId = SessionContext.CurrentCompanyID.Value
+                Dim createdBy = If(SessionContext.CurrentUser IsNot Nothing, SessionContext.CurrentUser.UserID, 1)
+                Dim accSvc As New AccountingService()
+
+                Dim expDate = If(Not String.IsNullOrWhiteSpace(expenseDateStr), PersianDateHelper.ParsePersianDate(expenseDateStr), DateTime.Now)
+
+                Dim invSvc As New InvoiceService()
+                Dim debitAccId = invSvc.GetOrCreateSystemAccount(companyId, "501", "هزینه‌های عمومی و اداری", "معین")
+
+                Dim creditAccName = If(paymentMethod.Contains("کارتخوان") OrElse paymentMethod.Contains("POS") OrElse paymentMethod.Contains("بانک"), "دستگاه کارتخوان / بانک", "صندوق مرکزی")
+                Dim creditAccCode = If(paymentMethod.Contains("کارتخوان") OrElse paymentMethod.Contains("POS") OrElse paymentMethod.Contains("بانک"), "102", "101")
+                Dim creditAccId = invSvc.GetOrCreateSystemAccount(companyId, creditAccCode, creditAccName, "معین")
+
+                Dim searchDesc = "سند خودکار ثبت هزینه کد " & expenseId & ":"
+                Dim entryIdObj = Sql.ExecuteScalar("SELECT EntryID FROM Sanad1 WHERE Description LIKE ? ORDER BY EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+
+                Dim desc = "سند خودکار ثبت هزینه کد " & expenseId & ": " & title & " - " & If(String.IsNullOrWhiteSpace(paidTo), "گیرنده وجه", paidTo)
+
+                Dim lines As New List(Of AccountingEntryLine)()
+                lines.Add(New AccountingEntryLine With {
+                    .LineNumber = 1,
+                    .AccountID = debitAccId,
+                    .DebitAmount = amount,
+                    .CreditAmount = 0D,
+                    .SharhRadif = "ثبت هزینه - " & title & " (" & category & ")"
+                })
+                lines.Add(New AccountingEntryLine With {
+                    .LineNumber = 2,
+                    .AccountID = creditAccId,
+                    .DebitAmount = 0D,
+                    .CreditAmount = amount,
+                    .SharhRadif = "پرداخت هزینه از " & paymentMethod
+                })
+
+                If entryIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(entryIdObj) Then
+                    Dim entryId = Convert.ToInt32(entryIdObj)
+                    Dim refNum = Convert.ToString(Sql.ExecuteScalar("SELECT ReferenceNumber FROM Sanad1 WHERE EntryID = ?", entryId))
+                    accSvc.UpdateEntry(entryId, expDate, desc, refNum, createdBy, lines, amount, amount, "تراز است")
+                Else
+                    Dim refNum = accSvc.GetNextReferenceNumber()
+                    accSvc.SaveEntry(expDate, desc, refNum, createdBy, lines, amount, amount, "تراز است")
+                End If
+            Catch
+            End Try
+        End Sub
+
+        Public Shared Sub DeleteAutoVoucherForExpense(expenseId As Integer)
+            Try
+                Dim searchDesc = "سند خودکار ثبت هزینه کد " & expenseId & ":"
+                Dim entryIdObj = Sql.ExecuteScalar("SELECT EntryID FROM Sanad1 WHERE Description LIKE ? ORDER BY EntryID DESC LIMIT 1", "%" & searchDesc & "%")
+                If entryIdObj IsNot Nothing AndAlso Not Convert.IsDBNull(entryIdObj) Then
+                    Dim entryId = Convert.ToInt32(entryIdObj)
+                    Sql.ExecuteNonQuery("UPDATE Sanad1 SET VazeiatSanad = 'سند موقت - حذف موقت' WHERE EntryID = ?", entryId)
+                End If
+            Catch
+            End Try
+        End Sub
 
         Public Sub SaveIndependentWarehouseReceipt(invoiceId As Integer, receiptNum As String, receiptDate As DateTime, createdBy As Integer, warehouseId As Integer, description As String, lines As List(Of Tuple(Of Integer, Integer, Decimal, Integer)))
             Dim inventoryService As New InventoryService()
