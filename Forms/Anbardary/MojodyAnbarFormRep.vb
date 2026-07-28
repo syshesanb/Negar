@@ -76,6 +76,41 @@ Namespace Negar.Forms
             txtKardexTo.Text = ""
 
             LoadInventory()
+            ApplySecurity()
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            ' Subtabs removal if no permission
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniInvStock) OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory) OrElse SessionContext.HasPermission(PermissionKeys.TradeReports)) Then
+                tabMain.TabPages.Remove(tabInventory)
+            Else
+                btnPrintInventory.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniInvStockPrint)
+            End If
+
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniKardex) OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory) OrElse SessionContext.HasPermission(PermissionKeys.TradeReports)) Then
+                tabMain.TabPages.Remove(tabKardex)
+            Else
+                btnKardexLoad.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniKardexLoad)
+                btnPrintKardex.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniKardexPrint)
+            End If
+
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProfitLossRep) OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory) OrElse SessionContext.HasPermission(PermissionKeys.TradeReports)) Then
+                tabMain.TabPages.Remove(tabProfitLoss)
+            Else
+                btnProfitLossLoad.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProfitLossLoad)
+                btnPrintProfitLossStatement.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProfitLossPrintStatement)
+                btnPrintProfitLoss.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProfitLossPrintRep)
+            End If
+
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniInventoryCount) OrElse SessionContext.HasPermission(PermissionKeys.ViewInventory) OrElse SessionContext.HasPermission(PermissionKeys.TradeReports)) Then
+                tabMain.TabPages.Remove(tabInventoryCount)
+            Else
+                btnGenerateInvCount.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniInventoryCountGenerate)
+                btnPrintInvCount.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniInventoryCountPrint)
+            End If
         End Sub
 
         Private Sub ApplyGridStyle(grid As DataGridView)

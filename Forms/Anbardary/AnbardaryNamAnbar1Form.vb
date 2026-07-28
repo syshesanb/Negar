@@ -328,6 +328,20 @@ Namespace Negar.Forms
                 txt.Clear()
             Next
             LoadData()
+            ApplySecurity()
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniWarehousesNew) OrElse SessionContext.HasPermission(PermissionKeys.ManageWarehouses) OrElse SessionContext.HasPermission(PermissionKeys.TradeWarehouses)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniWarehousesEdit) OrElse SessionContext.HasPermission(PermissionKeys.ManageWarehouses) OrElse SessionContext.HasPermission(PermissionKeys.TradeWarehouses)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniWarehousesDelete) OrElse SessionContext.HasPermission(PermissionKeys.ManageWarehouses) OrElse SessionContext.HasPermission(PermissionKeys.TradeWarehouses)
+
+            btnNew.Visible = canCreate
+            If dgvWarehouses.Columns.Contains(ColBtnEdit) Then dgvWarehouses.Columns(ColBtnEdit).Visible = canEdit
+            If dgvWarehouses.Columns.Contains(ColBtnDelete) Then dgvWarehouses.Columns(ColBtnDelete).Visible = canDelete
         End Sub
     End Class
 End Namespace

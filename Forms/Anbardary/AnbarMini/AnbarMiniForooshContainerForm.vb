@@ -225,6 +225,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             dgvInvoices.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(242, 248, 255)
 
             SetupGridColumns()
+            ApplySecurity()
 
             ' Docking controls: Fill (dgv), Bottom (footer), Top (header)
             pnlListContainer.Controls.Add(dgvInvoices)
@@ -506,6 +507,19 @@ Namespace Negar.Forms.Anbardary.AnbarMini
                 pnlEditContainer.BringToFront()
                 forooshForm.LoadInvoiceForEdit(invId)
             End If
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPosNew) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPos) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPosEdit) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPos) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPosDelete) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPos) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)
+
+            btnNewInvoice.Visible = canCreate
+            If dgvInvoices.Columns.Contains("colEdit") Then dgvInvoices.Columns("colEdit").Visible = canEdit
+            If dgvInvoices.Columns.Contains("colDelete") Then dgvInvoices.Columns("colDelete").Visible = canDelete
         End Sub
     End Class
 End Namespace

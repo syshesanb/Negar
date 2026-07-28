@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -70,6 +70,7 @@ Namespace Negar.Forms
 
             SetupGrid()
             LoadData()
+            ApplySecurity()
 
             ' Load configured levels
             Dim companyId = SessionContext.CurrentCompanyID
@@ -584,6 +585,21 @@ Namespace Negar.Forms
 
         Private Sub TxtSearch_TextChanged(sender As Object, e As EventArgs)
             RefreshGrid()
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            Dim canNewTop = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniGroupsNewTop) OrElse SessionContext.HasPermission(PermissionKeys.TradeProductGroups)
+            Dim canNewGrid = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniGroupsNew) OrElse SessionContext.HasPermission(PermissionKeys.TradeProductGroups)
+            Dim canEditGrid = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniGroupsEdit) OrElse SessionContext.HasPermission(PermissionKeys.TradeProductGroups)
+            Dim canDeleteGrid = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniGroupsDelete) OrElse SessionContext.HasPermission(PermissionKeys.TradeProductGroups)
+
+            btnNew.Visible = canNewTop
+            If dgvGroups.Columns.Contains("colBtnAddChild") Then dgvGroups.Columns("colBtnAddChild").Visible = canNewGrid
+            If dgvGroups.Columns.Contains("colBtnEdit") Then dgvGroups.Columns("colBtnEdit").Visible = canEditGrid
+            If dgvGroups.Columns.Contains("colBtnDelete") Then dgvGroups.Columns("colBtnDelete").Visible = canDeleteGrid
         End Sub
     End Class
 End Namespace

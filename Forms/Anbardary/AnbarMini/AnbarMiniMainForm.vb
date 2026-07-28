@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System
 Imports System.Windows.Forms
+Imports Negar.Business
 
 Namespace Negar.Forms.Anbardary.AnbarMini
     Public Class AnbarMiniMainForm
@@ -11,14 +12,46 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         End Sub
 
         Private Sub AnbarMiniMainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-            HostForm(tabPOS, New AnbarMiniForooshContainerForm())
-            HostForm(tabPurchase, New AnbarMiniKharidContainerForm())
-            HostForm(tabParties, New AnbardaryVendorsCustomersForm())
-            HostForm(tabExpenses, New AnbarMiniExpensesForm())
-            HostForm(tabProducts, New AnbardaryNamKala1Form())
-            HostForm(tabWarehouses, New AnbardaryNamAnbar1Form())
-            HostForm(tabGroups, New AnbardaryGoroohKala1Form())
-            HostForm(tabInventory, New MojodyAnbarFormRep())
+            ApplySecurity()
+
+            If tabsMini.TabPages.Contains(tabPOS) Then HostForm(tabPOS, New AnbarMiniForooshContainerForm())
+            If tabsMini.TabPages.Contains(tabPurchase) Then HostForm(tabPurchase, New AnbarMiniKharidContainerForm())
+            If tabsMini.TabPages.Contains(tabParties) Then HostForm(tabParties, New AnbardaryVendorsCustomersForm())
+            If tabsMini.TabPages.Contains(tabExpenses) Then HostForm(tabExpenses, New AnbarMiniExpensesForm())
+            If tabsMini.TabPages.Contains(tabProducts) Then HostForm(tabProducts, New AnbardaryNamKala1Form())
+            If tabsMini.TabPages.Contains(tabWarehouses) Then HostForm(tabWarehouses, New AnbardaryNamAnbar1Form())
+            If tabsMini.TabPages.Contains(tabGroups) Then HostForm(tabGroups, New AnbardaryGoroohKala1Form())
+            If tabsMini.TabPages.Contains(tabInventory) Then HostForm(tabInventory, New MojodyAnbarFormRep())
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPos) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabPOS)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniKharid) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabPurchase)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPersons) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabParties)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniExpenses) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabExpenses)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProducts) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabProducts)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniWarehouses) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabWarehouses)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniGroups) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabGroups)
+            End If
+            If Not (isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniReports) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniModule)) Then
+                tabsMini.TabPages.Remove(tabInventory)
+            End If
         End Sub
 
         Private Sub HostForm(targetTab As TabPage, child As Form)

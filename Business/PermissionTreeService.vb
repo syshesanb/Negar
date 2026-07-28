@@ -355,50 +355,108 @@ Namespace Negar.Business
             ' 5.1 زیر منو: استفاده از انبارداری مینی (miTradeMini)
             Dim smTradeMini As New PermissionTreeNode("SM_TRADE_MINI", "📁 استفاده از انبارداری مینی", 1)
             
+            ' تب 1: فروش سریع (POS)
             Dim tMiniPos As New PermissionTreeNode("T_MINI_POS", "📄 تب فروش سریع (POS)", 2)
             Dim stMiniPosGrid As New PermissionTreeNode("ST_MINI_POS_GRID", "📑 زیرتب صدور فاکتور و تسویه کارتخوان/نقد", 3)
             AddActionNode(stMiniPosGrid, PermissionKeys.AnbarMiniModule, "🔘 استفاده از انبارداری مینی", dbPermissions)
-            AddActionNode(stMiniPosGrid, PermissionKeys.AnbarMiniPos, "🔘 صدور و ورود اطلاعات فاکتور فروش مینی", dbPermissions)
+            AddActionNode(stMiniPosGrid, PermissionKeys.AnbarMiniPos, "🔘 فروش سریع (POS)", dbPermissions)
+            AddActionNode(stMiniPosGrid, PermissionKeys.AnbarMiniPosNew, "🔘 فاکتور فروش جدید", dbPermissions, new String() { PermissionKeys.AnbarMiniPos })
+            AddActionNode(stMiniPosGrid, PermissionKeys.AnbarMiniPosEdit, "🔘 ویرایش فاکتور فروش", dbPermissions, new String() { PermissionKeys.AnbarMiniPos })
+            AddActionNode(stMiniPosGrid, PermissionKeys.AnbarMiniPosDelete, "🔘 حذف فاکتور فروش", dbPermissions, new String() { PermissionKeys.AnbarMiniPos })
             tMiniPos.Children.Add(stMiniPosGrid)
             smTradeMini.Children.Add(tMiniPos)
 
+            ' تب 2: خرید کالا
             Dim tMiniKharid As New PermissionTreeNode("T_MINI_KHARID", "📄 تب خرید کالا", 2)
             Dim stMiniKharidGrid As New PermissionTreeNode("ST_MINI_KHARID_GRID", "📑 زیرتب ثبت فاکتورهای خرید کالا", 3)
-            AddActionNode(stMiniKharidGrid, PermissionKeys.AnbarMiniKharid, "🔘 صدور فاکتور خرید مینی", dbPermissions)
+            AddActionNode(stMiniKharidGrid, PermissionKeys.AnbarMiniKharid, "🔘 خرید کالا", dbPermissions)
+            AddActionNode(stMiniKharidGrid, PermissionKeys.AnbarMiniKharidNew, "🔘 فاکتور خرید جدید", dbPermissions, new String() { PermissionKeys.AnbarMiniKharid })
+            AddActionNode(stMiniKharidGrid, PermissionKeys.AnbarMiniKharidEdit, "🔘 ویرایش فاکتور خرید", dbPermissions, new String() { PermissionKeys.AnbarMiniKharid })
+            AddActionNode(stMiniKharidGrid, PermissionKeys.AnbarMiniKharidDelete, "🔘 حذف فاکتور خرید", dbPermissions, new String() { PermissionKeys.AnbarMiniKharid })
             tMiniKharid.Children.Add(stMiniKharidGrid)
             smTradeMini.Children.Add(tMiniKharid)
 
+            ' تب 3: لیست فروشنده و خریدار
             Dim tMiniPersons As New PermissionTreeNode("T_MINI_PERSONS", "📄 تب لیست فروشنده و خریدار", 2)
             Dim stMiniPersonsGrid As New PermissionTreeNode("ST_MINI_PERSONS_GRID", "📑 زیرتب طرف حساب‌ها و اشخاص", 3)
-            AddActionNode(stMiniPersonsGrid, PermissionKeys.AnbarMiniPersons, "🔘 ثبت و ویرایش طرف حساب‌های مینی", dbPermissions)
+            AddActionNode(stMiniPersonsGrid, PermissionKeys.AnbarMiniPersons, "🔘 لیست فروشنده و خریدار", dbPermissions)
+            AddActionNode(stMiniPersonsGrid, PermissionKeys.AnbarMiniPersonsNew, "🔘 شخص جدید", dbPermissions, new String() { PermissionKeys.AnbarMiniPersons })
+            AddActionNode(stMiniPersonsGrid, PermissionKeys.AnbarMiniPersonsEdit, "🔘 ویرایش شخص", dbPermissions, new String() { PermissionKeys.AnbarMiniPersons })
+            AddActionNode(stMiniPersonsGrid, PermissionKeys.AnbarMiniPersonsDelete, "🔘 حذف شخص", dbPermissions, new String() { PermissionKeys.AnbarMiniPersons })
             tMiniPersons.Children.Add(stMiniPersonsGrid)
             smTradeMini.Children.Add(tMiniPersons)
 
+            ' تب 4: هزینه‌ها
             Dim tMiniExpenses As New PermissionTreeNode("T_MINI_EXPENSES", "📄 تب هزینه‌ها", 2)
             Dim stMiniExpensesToolbar As New PermissionTreeNode("ST_MINI_EXPENSES_TB", "📑 زیرتب ثبت هزینه‌ها و نوار ابزار", 3)
-            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniExpenses, "🔘 ثبت و ویرایش اسناد هزینه", dbPermissions)
+            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniExpenses, "🔘 هزینه‌ها", dbPermissions)
+            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniExpensesSave, "🔘 ثبت هزینه", dbPermissions, new String() { PermissionKeys.AnbarMiniExpenses })
+            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniExpensesEdit, "🔘 ویرایش هزینه", dbPermissions, new String() { PermissionKeys.AnbarMiniExpenses })
+            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniExpensesDelete, "🔘 حذف هزینه", dbPermissions, new String() { PermissionKeys.AnbarMiniExpenses })
+            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniExpenseLedger, "🔘 📒 دفتر هزینه", dbPermissions, new String() { PermissionKeys.AnbarMiniExpenses })
+            AddActionNode(stMiniExpensesToolbar, PermissionKeys.AnbarMiniProfitLoss, "🔘 🖨️ چاپ سود و زیان", dbPermissions, new String() { PermissionKeys.AnbarMiniExpenses })
             tMiniExpenses.Children.Add(stMiniExpensesToolbar)
-
-            Dim stMiniExpenseLedger As New PermissionTreeNode("ST_MINI_EXPENSE_LEDGER", "📑 دیالوگ دفتر هزینه (سرفصل/عنوان)", 3)
-            AddActionNode(stMiniExpenseLedger, PermissionKeys.AnbarMiniExpenseLedger, "🔘 📒 تهیه و چاپ دفتر هزینه", dbPermissions)
-            tMiniExpenses.Children.Add(stMiniExpenseLedger)
-
-            Dim stMiniProfitLoss As New PermissionTreeNode("ST_MINI_PROFIT_LOSS", "📑 پیش‌نمایش چاپی عملکرد و سود و زیان", 3)
-            AddActionNode(stMiniProfitLoss, PermissionKeys.AnbarMiniProfitLoss, "🔘 🖨️ چاپ عملکرد و سود و زیان", dbPermissions)
-            tMiniExpenses.Children.Add(stMiniProfitLoss)
             smTradeMini.Children.Add(tMiniExpenses)
 
+            ' تب 5: لیست کالاها
             Dim tMiniProducts As New PermissionTreeNode("T_MINI_PRODS", "📄 تب لیست کالاها", 2)
             Dim stMiniProdsGrid As New PermissionTreeNode("ST_MINI_PRODS_GRID", "📑 زیرتب مدیریت کالاها و قیمت‌ها", 3)
-            AddActionNode(stMiniProdsGrid, PermissionKeys.AnbarMiniProducts, "🔘 مدیریت کالاها و خدمات مینی", dbPermissions)
+            AddActionNode(stMiniProdsGrid, PermissionKeys.AnbarMiniProducts, "🔘 لیست کالاها", dbPermissions)
+            AddActionNode(stMiniProdsGrid, PermissionKeys.AnbarMiniProductsNew, "🔘 کالای جدید", dbPermissions, new String() { PermissionKeys.AnbarMiniProducts })
+            AddActionNode(stMiniProdsGrid, PermissionKeys.AnbarMiniProductsEdit, "🔘 ویرایش کالا", dbPermissions, new String() { PermissionKeys.AnbarMiniProducts })
+            AddActionNode(stMiniProdsGrid, PermissionKeys.AnbarMiniProductsDelete, "🔘 حذف کالا", dbPermissions, new String() { PermissionKeys.AnbarMiniProducts })
             tMiniProducts.Children.Add(stMiniProdsGrid)
             smTradeMini.Children.Add(tMiniProducts)
 
+            ' تب 6: لیست انبارها
             Dim tMiniWarehouses As New PermissionTreeNode("T_MINI_WHS", "📄 تب لیست انبارها", 2)
             Dim stMiniWhsGrid As New PermissionTreeNode("ST_MINI_WHS_GRID", "📑 زیرتب تعریف انبارها و موجودی", 3)
-            AddActionNode(stMiniWhsGrid, PermissionKeys.AnbarMiniWarehouses, "🔘 مدیریت انبارها و موجودی مینی", dbPermissions)
+            AddActionNode(stMiniWhsGrid, PermissionKeys.AnbarMiniWarehouses, "🔘 لیست انبارها", dbPermissions)
+            AddActionNode(stMiniWhsGrid, PermissionKeys.AnbarMiniWarehousesNew, "🔘 انبار جدید", dbPermissions, new String() { PermissionKeys.AnbarMiniWarehouses })
+            AddActionNode(stMiniWhsGrid, PermissionKeys.AnbarMiniWarehousesEdit, "🔘 ویرایش انبار", dbPermissions, new String() { PermissionKeys.AnbarMiniWarehouses })
+            AddActionNode(stMiniWhsGrid, PermissionKeys.AnbarMiniWarehousesDelete, "🔘 حذف انبار", dbPermissions, new String() { PermissionKeys.AnbarMiniWarehouses })
             tMiniWarehouses.Children.Add(stMiniWhsGrid)
             smTradeMini.Children.Add(tMiniWarehouses)
+
+            ' تب 7: دسته‌بندی کالا
+            Dim tMiniGroups As New PermissionTreeNode("T_MINI_GROUPS", "📄 تب دسته‌بندی کالا", 2)
+            Dim stMiniGroupsGrid As New PermissionTreeNode("ST_MINI_GROUPS_GRID", "📑 زیرتب درختواره و لیست گروه‌های کالا", 3)
+            AddActionNode(stMiniGroupsGrid, PermissionKeys.AnbarMiniGroups, "🔘 دسته‌بندی کالا", dbPermissions)
+            AddActionNode(stMiniGroupsGrid, PermissionKeys.AnbarMiniGroupsNewTop, "🔘 دسته‌بندی جدید (بالای فرم)", dbPermissions, new String() { PermissionKeys.AnbarMiniGroups })
+            AddActionNode(stMiniGroupsGrid, PermissionKeys.AnbarMiniGroupsNew, "🔘 جدید (دیتاگرید/درختواره)", dbPermissions, new String() { PermissionKeys.AnbarMiniGroups })
+            AddActionNode(stMiniGroupsGrid, PermissionKeys.AnbarMiniGroupsEdit, "🔘 ویرایش (دیتاگرید/درختواره)", dbPermissions, new String() { PermissionKeys.AnbarMiniGroups })
+            AddActionNode(stMiniGroupsGrid, PermissionKeys.AnbarMiniGroupsDelete, "🔘 حذف (دیتاگرید/درختواره)", dbPermissions, new String() { PermissionKeys.AnbarMiniGroups })
+            tMiniGroups.Children.Add(stMiniGroupsGrid)
+            smTradeMini.Children.Add(tMiniGroups)
+
+            ' تب 8: گزارشات
+            Dim tMiniReports As New PermissionTreeNode("T_MINI_REPORTS", "📄 تب گزارشات", 2)
+
+            Dim stMiniInvStock As New PermissionTreeNode("ST_MINI_INV_STOCK", "📑 زیرتب موجودی انبار", 3)
+            AddActionNode(stMiniInvStock, PermissionKeys.AnbarMiniInvStock, "🔘 موجودی انبار", dbPermissions)
+            AddActionNode(stMiniInvStock, PermissionKeys.AnbarMiniInvStockPrint, "🔘 چاپ موجودی انبار", dbPermissions, new String() { PermissionKeys.AnbarMiniInvStock })
+            tMiniReports.Children.Add(stMiniInvStock)
+
+            Dim stMiniKardex As New PermissionTreeNode("ST_MINI_KARDEX", "📑 زیرتب کاردکس کالا", 3)
+            AddActionNode(stMiniKardex, PermissionKeys.AnbarMiniKardex, "🔘 کاردکس کالا", dbPermissions)
+            AddActionNode(stMiniKardex, PermissionKeys.AnbarMiniKardexLoad, "🔘 نمایش کاردکس", dbPermissions, new String() { PermissionKeys.AnbarMiniKardex })
+            AddActionNode(stMiniKardex, PermissionKeys.AnbarMiniKardexPrint, "🔘 چاپ کاردکس", dbPermissions, new String() { PermissionKeys.AnbarMiniKardex })
+            tMiniReports.Children.Add(stMiniKardex)
+
+            Dim stMiniProfitLossRep As New PermissionTreeNode("ST_MINI_PL_REP", "📑 زیرتب سود و زیان", 3)
+            AddActionNode(stMiniProfitLossRep, PermissionKeys.AnbarMiniProfitLossRep, "🔘 سود و زیان", dbPermissions)
+            AddActionNode(stMiniProfitLossRep, PermissionKeys.AnbarMiniProfitLossLoad, "🔘 نمایش گزارش", dbPermissions, new String() { PermissionKeys.AnbarMiniProfitLossRep })
+            AddActionNode(stMiniProfitLossRep, PermissionKeys.AnbarMiniProfitLossPrintStatement, "🔘 چاپ عملکرد", dbPermissions, new String() { PermissionKeys.AnbarMiniProfitLossRep })
+            AddActionNode(stMiniProfitLossRep, PermissionKeys.AnbarMiniProfitLossPrintRep, "🔘 چاپ سود و زیان", dbPermissions, new String() { PermissionKeys.AnbarMiniProfitLossRep })
+            tMiniReports.Children.Add(stMiniProfitLossRep)
+
+            Dim stMiniInventoryCount As New PermissionTreeNode("ST_MINI_INV_COUNT", "📑 زیرتب لیست انبارگردانی", 3)
+            AddActionNode(stMiniInventoryCount, PermissionKeys.AnbarMiniInventoryCount, "🔘 لیست انبارگردانی", dbPermissions)
+            AddActionNode(stMiniInventoryCount, PermissionKeys.AnbarMiniInventoryCountGenerate, "🔘 تهیه لیست انبارگردانی", dbPermissions, new String() { PermissionKeys.AnbarMiniInventoryCount })
+            AddActionNode(stMiniInventoryCount, PermissionKeys.AnbarMiniInventoryCountPrint, "🔘 چاپ انبارگردانی", dbPermissions, new String() { PermissionKeys.AnbarMiniInventoryCount })
+            tMiniReports.Children.Add(stMiniInventoryCount)
+
+            smTradeMini.Children.Add(tMiniReports)
 
             rTrade.Children.Add(smTradeMini)
 

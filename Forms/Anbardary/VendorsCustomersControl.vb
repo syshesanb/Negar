@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -142,6 +142,20 @@ Namespace Negar.Forms.Controls
             dgvPersons.Columns.AddRange(New DataGridViewColumn() {
                 colEdit, colDel, colDaftar, colCode, colName, colType, colRole, colNationalCode, colMobile, colPhone, colActive, colID, colShenavarID
             })
+            ApplySecurity()
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPersonsNew) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPersons) OrElse SessionContext.HasPermission(PermissionKeys.TradeProducts)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPersonsEdit) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPersons) OrElse SessionContext.HasPermission(PermissionKeys.TradeProducts)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPersonsDelete) OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniPersons) OrElse SessionContext.HasPermission(PermissionKeys.TradeProducts)
+
+            btnNew.Visible = canCreate
+            If dgvPersons.Columns.Contains("colEdit") Then dgvPersons.Columns("colEdit").Visible = canEdit
+            If dgvPersons.Columns.Contains("colDel") Then dgvPersons.Columns("colDel").Visible = canDelete
         End Sub
 
         Private Sub BuildEditPanelControls()

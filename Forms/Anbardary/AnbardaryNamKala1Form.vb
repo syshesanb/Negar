@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -242,6 +242,7 @@ Namespace Negar.Forms
                 dgvProducts.DataSource = _productsTable
                 ApplyFilters()
                 AlignSearchBoxes()
+                ApplySecurity()
             Catch ex As Exception
                 MessageBox.Show("خطا در بارگذاری لیست کالاها: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -313,6 +314,19 @@ Namespace Negar.Forms
                 txt.Clear()
             Next
             LoadData()
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            Dim canCreate = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProductsNew) OrElse SessionContext.HasPermission(PermissionKeys.ManageProducts) OrElse SessionContext.HasPermission(PermissionKeys.TradeProducts)
+            Dim canEdit = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProductsEdit) OrElse SessionContext.HasPermission(PermissionKeys.ManageProducts) OrElse SessionContext.HasPermission(PermissionKeys.TradeProducts)
+            Dim canDelete = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProductsDelete) OrElse SessionContext.HasPermission(PermissionKeys.ManageProducts) OrElse SessionContext.HasPermission(PermissionKeys.TradeProducts)
+
+            btnNew.Visible = canCreate
+            If dgvProducts.Columns.Contains(ColBtnEdit) Then dgvProducts.Columns(ColBtnEdit).Visible = canEdit
+            If dgvProducts.Columns.Contains(ColBtnDelete) Then dgvProducts.Columns(ColBtnDelete).Visible = canDelete
         End Sub
     End Class
 End Namespace

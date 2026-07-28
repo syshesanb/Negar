@@ -45,6 +45,18 @@ Namespace Negar.Forms.Anbardary.AnbarMini
             ' ۳. بارگذاری اطلاعات
             _isLoading = False
             LoadExpenses()
+            ApplySecurity()
+        End Sub
+
+        Private Sub ApplySecurity()
+            If SessionContext.CurrentUser Is Nothing Then Return
+            Dim isSuperAdmin = String.Equals(SessionContext.CurrentUser.UserType, "SuperAdmin", StringComparison.OrdinalIgnoreCase)
+
+            btnAdd.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniExpensesSave)
+            btnEdit.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniExpensesEdit)
+            btnDelete.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniExpensesDelete)
+            btnExpenseLedger.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniExpenseLedger)
+            btnPrint.Visible = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AnbarMiniProfitLoss)
         End Sub
 
         Private Sub ConfigureGrid()
