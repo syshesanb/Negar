@@ -637,6 +637,36 @@ Namespace Negar.Business
             rPayroll.Children.Add(smPayroll)
             roots.Add(rPayroll)
 
+            ' =========================================================================
+            ' 10. منوی اصلی: اموال و دارایی‌های ثابت (mAmval)
+            ' =========================================================================
+            Dim rAmval As New PermissionTreeNode("MENU_AMVAL", "🏛️ اموال", 0)
+            Dim smAmvalMain As New PermissionTreeNode("SM_AMVAL_MAIN", "📁 سیستم جامع اموال", 1)
+            Dim tAmvalMain As New PermissionTreeNode("T_AMVAL_MAIN", "📄 مدیریت شناسنامه دارایی‌ها، استهلاک و جابجایی", 2)
+            Dim stAmvalMain As New PermissionTreeNode("ST_AMVAL_MAIN", "📑 عملیات پلاک‌گذاری، محاسبه استهلاک و اموال‌گردانی", 3)
+
+            AddActionNode(stAmvalMain, PermissionKeys.AmvalModule, "🔘 دسترسی به سیستم جامع اموال", dbPermissions)
+            AddActionNode(stAmvalMain, PermissionKeys.AmvalAssets, "🔘 ثبت و ویرایش شناسنامه دارایی‌ها", dbPermissions)
+            AddActionNode(stAmvalMain, PermissionKeys.AmvalDepreciation, "🔘 محاسبه استهلاک دوره و صدور سند", dbPermissions)
+            AddActionNode(stAmvalMain, PermissionKeys.AmvalTransfers, "🔘 ثبت جابجایی و تعمیرات اساسی", dbPermissions)
+            AddActionNode(stAmvalMain, PermissionKeys.AmvalInventory, "🔘 اموال‌گردانی و خروج دارایی", dbPermissions)
+
+            tAmvalMain.Children.Add(stAmvalMain)
+            smAmvalMain.Children.Add(tAmvalMain)
+            rAmval.Children.Add(smAmvalMain)
+
+            Dim smAmvalReports As New PermissionTreeNode("SM_AMVAL_REPORTS", "📁 گزارشات جامع اموال", 1)
+            Dim tAmvalReports As New PermissionTreeNode("T_AMVAL_REPORTS", "📄 گزارش‌های استهلاک، کارت اموال و اموال نزد پرسنل", 2)
+            Dim stAmvalReports As New PermissionTreeNode("ST_AMVAL_REPORTS", "📑 جدول استهلاک دارایی‌ها و گزارشات مدیریتی", 3)
+
+            AddActionNode(stAmvalReports, PermissionKeys.AmvalReports, "🔘 گزارشات جامع اموال و دارایی‌ها", dbPermissions)
+
+            tAmvalReports.Children.Add(stAmvalReports)
+            smAmvalReports.Children.Add(tAmvalReports)
+            rAmval.Children.Add(smAmvalReports)
+
+            roots.Add(rAmval)
+
             Return roots
         End Function
 

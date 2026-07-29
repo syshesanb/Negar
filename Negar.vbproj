@@ -149,8 +149,11 @@
     <Compile Include="Business\PersonService.vb" />
     <Compile Include="Business\PaymentService.vb" />
     <Compile Include="Business\PayrollService.vb" />
+    <Compile Include="Business\AmvalService.vb" />
     <Compile Include="Forms\Payroll\PayrollMainForm.vb" />
     <Compile Include="Forms\Payroll\PayrollPersonnelEditDialog.vb" />
+    <Compile Include="Forms\Amval\AmvalMainForm.vb" />
+    <Compile Include="Forms\Amval\AmvalAssetEditDialog.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">

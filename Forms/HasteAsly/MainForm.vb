@@ -815,6 +815,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع حقوق و دستمزد", AddressOf OpenPayrollMainForm, "Users")
                     AddDashButton("گزارشات جامع حقوق و دستمزد", AddressOf OpenPayrollMainForm, "Reports")
 
+                Case "Amval"
+                    AddDashButton("سیستم جامع اموال", AddressOf OpenAmvalMainForm, "CompanyFiscalYears")
+                    AddDashButton("گزارشات جامع اموال", AddressOf OpenAmvalMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -886,6 +890,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول حقوق و دستمزد: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolAmval_Click(sender As Object, e As EventArgs) Handles btnToolAmval.Click
+            ShowDashboardCategory("Amval")
+        End Sub
+
+        Private Sub OpenAmvalMainForm(sender As Object, e As EventArgs) Handles mAmval.Click, miAmvalMain.Click, miAmvalReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Amval.AmvalMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول اموال: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

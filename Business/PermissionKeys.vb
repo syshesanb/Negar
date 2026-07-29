@@ -176,6 +176,14 @@ Namespace Negar.Business
         Public Const PayrollBankFile As String = "PayrollBankFile"
         Public Const PayrollReports As String = "PayrollReports"
 
+        ' Fixed Assets (Amval) permissions
+        Public Const AmvalModule As String = "AmvalModule"
+        Public Const AmvalAssets As String = "AmvalAssets"
+        Public Const AmvalDepreciation As String = "AmvalDepreciation"
+        Public Const AmvalTransfers As String = "AmvalTransfers"
+        Public Const AmvalInventory As String = "AmvalInventory"
+        Public Const AmvalReports As String = "AmvalReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"
