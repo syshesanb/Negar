@@ -983,10 +983,6 @@ Namespace Negar.Forms
                 End If
             End Using
         End Sub
-            Private Sub mPersonnelMgmt_Click(sender As Object, e As EventArgs) Handles mPersonnelMgmt.Click, btnToolPersonnelMgmt.Click
-            Dim frm As New PersonnelManagementForm()
-            frm.ShowDialog()
-        End Sub
     End Class
 End Namespace
 
