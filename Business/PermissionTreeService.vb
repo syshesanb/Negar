@@ -39,9 +39,9 @@ Namespace Negar.Business
             Dim dbPermissions = FetchDbPermissionsMap()
 
             ' =========================================================================
-            ' 1. منوی اصلی: مدیریت سیستم (mSystemMgmt)
+            ' 1. منوی اصلی: سیستم (mSystemMgmt)
             ' =========================================================================
-            Dim rSys As New PermissionTreeNode("MENU_SYS", "⚙️ مدیریت سیستم", 0)
+            Dim rSys As New PermissionTreeNode("MENU_SYS", "⚙️ سیستم", 0)
 
             ' 1.1 زیر منو: مدیریت پیامهای : درباره... و ارتباط با ما
             Dim smSysMessages As New PermissionTreeNode("SM_SYS_MSG", "📁 مدیریت پیامهای : درباره... و ارتباط با ما", 1)
@@ -91,9 +91,9 @@ Namespace Negar.Business
             roots.Add(rSys)
 
             ' =========================================================================
-            ' 2. منوی اصلی: مدیریت کاربران (mUserMgmt)
+            ' 2. منوی اصلی: کاربران (mUserMgmt)
             ' =========================================================================
-            Dim rUsers As New PermissionTreeNode("MENU_USERS", "👥 مدیریت کاربران", 0)
+            Dim rUsers As New PermissionTreeNode("MENU_USERS", "👥 کاربران", 0)
 
             ' 2.1 زیر منو: مدیریت کاربران (جامع)
             Dim smUsersComprehensive As New PermissionTreeNode("SM_USERS_COMP", "📁 مدیریت کاربران (جامع)", 1)
@@ -140,12 +140,12 @@ Namespace Negar.Business
             roots.Add(rUsers)
 
             ' =========================================================================
-            ' 3. منوی اصلی: مدیریت شرکت و سال مالی (mCompanyMgmt)
+            ' 3. منوی اصلی: شرکت ها و سالهای مالی (mCompanyMgmt)
             ' =========================================================================
-            Dim rCompanies As New PermissionTreeNode("MENU_COMPANIES", "🏢 مدیریت شرکت و سال مالی", 0)
+            Dim rCompanies As New PermissionTreeNode("MENU_COMPANIES", "🏢 شرکت ها و سالهای مالی", 0)
 
-            ' 3.1 زیر منو: مدیریت شرکت‌ها و سال‌های مالی
-            Dim smCompaniesYears As New PermissionTreeNode("SM_COMP_YEARS", "📁 مدیریت شرکت‌ها و سال‌های مالی", 1)
+            ' 3.1 زیر منو: شرکت ها و سالهای مالی
+            Dim smCompaniesYears As New PermissionTreeNode("SM_COMP_YEARS", "📁 شرکت ها و سالهای مالی", 1)
             Dim tCompaniesList As New PermissionTreeNode("T_COMP_LIST", "📄 تب مدیریت شرکت‌ها", 2)
             Dim stCompaniesGrid As New PermissionTreeNode("ST_COMP_GRID", "📑 زیرتب لیست شرکت‌ها، کد اقتصادی و لوگو", 3)
             AddActionNode(stCompaniesGrid, PermissionKeys.ManageCompanies, "🔘 مدیریت شرکت‌ها", dbPermissions)

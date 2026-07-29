@@ -221,7 +221,7 @@ Namespace Negar.Forms
             Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
             Me.mSystemMgmt.Name = "mSystemMgmt"
             Me.mSystemMgmt.Size = New Size(93, 20)
-            Me.mSystemMgmt.Text = "مدیریت سیستم"
+            Me.mSystemMgmt.Text = "سیستم"
 
             ' miSettingsMessages
             Me.miSettingsMessages.Name = "miSettingsMessages"
@@ -298,7 +298,7 @@ Namespace Negar.Forms
             Me.mUserMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miUsers, Me.miBasicUsers, Me.miSepUser1, Me.miChangeProfile, Me.miSwitchUser})
             Me.mUserMgmt.Name = "mUserMgmt"
             Me.mUserMgmt.Size = New Size(94, 20)
-            Me.mUserMgmt.Text = "مدیریت کاربران"
+            Me.mUserMgmt.Text = "کاربران"
 
             ' miUsers
             Me.miUsers.Name = "miUsers"
@@ -328,12 +328,12 @@ Namespace Negar.Forms
             Me.mCompanyMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miCompanyFiscalYears})
             Me.mCompanyMgmt.Name = "mCompanyMgmt"
             Me.mCompanyMgmt.Size = New Size(140, 20)
-            Me.mCompanyMgmt.Text = "مدیریت شرکت و سال مالی"
+            Me.mCompanyMgmt.Text = "شرکت ها و سالهای مالی"
 
             ' miCompanyFiscalYears
             Me.miCompanyFiscalYears.Name = "miCompanyFiscalYears"
             Me.miCompanyFiscalYears.Size = New Size(230, 22)
-            Me.miCompanyFiscalYears.Text = "مدیریت شرکت‌ها و سال‌های مالی"
+            Me.miCompanyFiscalYears.Text = "شرکت ها و سالهای مالی"
 
             ' mAccounting
             Me.mAccounting.DropDownItems.AddRange(New ToolStripItem() {Me.miAccountingMain, Me.miReportsAccounting})
@@ -445,19 +445,19 @@ Namespace Negar.Forms
             Me.btnToolSystemMgmt.Margin = New Padding(4, 2, 4, 2)
             Me.btnToolSystemMgmt.Name = "btnToolSystemMgmt"
             Me.btnToolSystemMgmt.Size = New Size(105, 51)
-            Me.btnToolSystemMgmt.Text = "مدیریت سیستم"
+            Me.btnToolSystemMgmt.Text = "سیستم"
 
             ' btnToolUserMgmt
             Me.btnToolUserMgmt.Margin = New Padding(4, 2, 4, 2)
             Me.btnToolUserMgmt.Name = "btnToolUserMgmt"
             Me.btnToolUserMgmt.Size = New Size(106, 51)
-            Me.btnToolUserMgmt.Text = "مدیریت کاربران"
+            Me.btnToolUserMgmt.Text = "کاربران"
 
             ' btnToolCompanyMgmt
             Me.btnToolCompanyMgmt.Margin = New Padding(4, 2, 4, 2)
             Me.btnToolCompanyMgmt.Name = "btnToolCompanyMgmt"
             Me.btnToolCompanyMgmt.Size = New Size(160, 51)
-            Me.btnToolCompanyMgmt.Text = "مدیریت شرکت و سال مالی"
+            Me.btnToolCompanyMgmt.Text = "شرکت ها و سالهای مالی"
 
             ' btnToolAccounting
             Me.btnToolAccounting.Margin = New Padding(4, 2, 4, 2)

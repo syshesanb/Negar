@@ -795,7 +795,7 @@ Namespace Negar.Forms
                     If canSwitchUser Then AddDashButton("ورود با کاربر دیگر", AddressOf MiSwitchUser_Click, "SwitchUser")
 
                 Case "CompanyMgmt"
-                    If canCompanyYears Then AddDashButton("مدیریت شرکت‌ها و سال‌های مالی", AddressOf MiCompanyFiscalYears_Click, "CompanyFiscalYears")
+                    If canCompanyYears Then AddDashButton("شرکت ها و سالهای مالی", AddressOf MiCompanyFiscalYears_Click, "CompanyFiscalYears")
 
                 Case "Accounting"
                     If canAccounting Then AddDashButton("کدینگ، ثبت اسناد و دفاتر", AddressOf MiAccountingMain_Click, "Accounting")
