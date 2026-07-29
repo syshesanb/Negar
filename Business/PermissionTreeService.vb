@@ -664,8 +664,36 @@ Namespace Negar.Business
             tAmvalReports.Children.Add(stAmvalReports)
             smAmvalReports.Children.Add(tAmvalReports)
             rAmval.Children.Add(smAmvalReports)
-
             roots.Add(rAmval)
+
+            ' =========================================================================
+            ' 11. منوی اصلی: اتوماسیون اداری (mAutomation)
+            ' =========================================================================
+            Dim rAuto As New PermissionTreeNode("MENU_AUTOMATION", "📨 اتوماسیون اداری", 0)
+            Dim smAutoMain As New PermissionTreeNode("SM_AUTO_MAIN", "📁 سیستم جامع اتوماسیون اداری", 1)
+            Dim tAutoMain As New PermissionTreeNode("T_AUTO_MAIN", "📄 مدیریت نامه‌ها، دبیرخانه، کارتابل و ارجاعات", 2)
+            Dim stAutoMain As New PermissionTreeNode("ST_AUTO_MAIN", "📑 عملیات ثبت نامه، ارجاع، کارتابل و اندیکاتور", 3)
+
+            AddActionNode(stAutoMain, PermissionKeys.AutomationModule, "🔘 دسترسی به سیستم جامع اتوماسیون اداری", dbPermissions)
+            AddActionNode(stAutoMain, PermissionKeys.AutomationLetters, "🔘 ثبت و مدیریت مکاتبات و نامه‌ها", dbPermissions)
+            AddActionNode(stAutoMain, PermissionKeys.AutomationInbox, "🔘 کارتابل الکترونیک و ارجاعات نامه‌ها", dbPermissions)
+            AddActionNode(stAutoMain, PermissionKeys.AutomationSecretariat, "🔘 دبیرخانه، اندیکاتور و شماره‌گذاری", dbPermissions)
+
+            tAutoMain.Children.Add(stAutoMain)
+            smAutoMain.Children.Add(tAutoMain)
+            rAuto.Children.Add(smAutoMain)
+
+            Dim smAutoReports As New PermissionTreeNode("SM_AUTO_REPORTS", "📁 گزارشات جامع اتوماسیون اداری", 1)
+            Dim tAutoReports As New PermissionTreeNode("T_AUTO_REPORTS", "📄 گزارش‌های آماری نامه‌ها، گردش مکاتبات و معوقات", 2)
+            Dim stAutoReports As New PermissionTreeNode("ST_AUTO_REPORTS", "📑 گزارشات مدیریتی و چرخه ارجاعات اداری", 3)
+
+            AddActionNode(stAutoReports, PermissionKeys.AutomationReports, "🔘 گزارشات جامع اتوماسیون اداری", dbPermissions)
+
+            tAutoReports.Children.Add(stAutoReports)
+            smAutoReports.Children.Add(tAutoReports)
+            rAuto.Children.Add(smAutoReports)
+
+            roots.Add(rAuto)
 
             Return roots
         End Function

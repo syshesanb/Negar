@@ -184,6 +184,13 @@ Namespace Negar.Business
         Public Const AmvalInventory As String = "AmvalInventory"
         Public Const AmvalReports As String = "AmvalReports"
 
+        ' Office Automation (AutomationEdari) permissions
+        Public Const AutomationModule As String = "AutomationModule"
+        Public Const AutomationLetters As String = "AutomationLetters"
+        Public Const AutomationInbox As String = "AutomationInbox"
+        Public Const AutomationSecretariat As String = "AutomationSecretariat"
+        Public Const AutomationReports As String = "AutomationReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

@@ -24,6 +24,7 @@ Namespace Negar.Forms
         Friend WithEvents mTradeWarehouse As ToolStripMenuItem
         Friend WithEvents mPayroll As ToolStripMenuItem
         Friend WithEvents mAmval As ToolStripMenuItem
+        Friend WithEvents mAutomation As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -34,6 +35,10 @@ Namespace Negar.Forms
         ' Sub-items for Amval
         Friend WithEvents miAmvalMain As ToolStripMenuItem
         Friend WithEvents miAmvalReports As ToolStripMenuItem
+
+        ' Sub-items for Automation
+        Friend WithEvents miAutomationMain As ToolStripMenuItem
+        Friend WithEvents miAutomationReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -92,6 +97,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolTradeWarehouse As ToolStripButton
         Friend WithEvents btnToolPayroll As ToolStripButton
         Friend WithEvents btnToolAmval As ToolStripButton
+        Friend WithEvents btnToolAutomation As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -122,6 +128,7 @@ Namespace Negar.Forms
             Me.mTradeWarehouse = New ToolStripMenuItem()
             Me.mPayroll = New ToolStripMenuItem()
             Me.mAmval = New ToolStripMenuItem()
+            Me.mAutomation = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -130,6 +137,9 @@ Namespace Negar.Forms
 
             Me.miAmvalMain = New ToolStripMenuItem()
             Me.miAmvalReports = New ToolStripMenuItem()
+
+            Me.miAutomationMain = New ToolStripMenuItem()
+            Me.miAutomationReports = New ToolStripMenuItem()
 
             Me.miSettingsMessages = New ToolStripMenuItem()
             Me.miSettingsThemes = New ToolStripMenuItem()
@@ -180,6 +190,7 @@ Namespace Negar.Forms
             Me.btnToolTradeWarehouse = New ToolStripButton()
             Me.btnToolPayroll = New ToolStripButton()
             Me.btnToolAmval = New ToolStripButton()
+            Me.btnToolAutomation = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -201,7 +212,7 @@ Namespace Negar.Forms
             Me.SuspendLayout()
 
             ' mainMenu
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -239,6 +250,22 @@ Namespace Negar.Forms
             Me.miAmvalReports.Name = "miAmvalReports"
             Me.miAmvalReports.Size = New Size(220, 22)
             Me.miAmvalReports.Text = "📊 گزارشات جامع اموال"
+
+            ' mAutomation
+            Me.mAutomation.DropDownItems.AddRange(New ToolStripItem() {Me.miAutomationMain, Me.miAutomationReports})
+            Me.mAutomation.Name = "mAutomation"
+            Me.mAutomation.Size = New Size(120, 20)
+            Me.mAutomation.Text = "📨 اتوماسیون اداری"
+
+            ' miAutomationMain
+            Me.miAutomationMain.Name = "miAutomationMain"
+            Me.miAutomationMain.Size = New Size(240, 22)
+            Me.miAutomationMain.Text = "📨 سیستم جامع اتوماسیون اداری"
+
+            ' miAutomationReports
+            Me.miAutomationReports.Name = "miAutomationReports"
+            Me.miAutomationReports.Size = New Size(240, 22)
+            Me.miAutomationReports.Text = "📊 گزارشات جامع اتوماسیون اداری"
 
             ' mSystemMgmt
             Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
@@ -451,7 +478,7 @@ Namespace Negar.Forms
             Me.tool.AutoSize = False
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' btnToolPayroll
             Me.btnToolPayroll.Margin = New Padding(4, 2, 4, 2)
@@ -464,6 +491,12 @@ Namespace Negar.Forms
             Me.btnToolAmval.Name = "btnToolAmval"
             Me.btnToolAmval.Size = New Size(95, 51)
             Me.btnToolAmval.Text = "اموال"
+
+            ' btnToolAutomation
+            Me.btnToolAutomation.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolAutomation.Name = "btnToolAutomation"
+            Me.btnToolAutomation.Size = New Size(125, 51)
+            Me.btnToolAutomation.Text = "اتوماسیون اداری"
             Me.tool.Location = New Point(0, 24)
             Me.tool.Name = "tool"
             Me.tool.RightToLeft = RightToLeft.Yes

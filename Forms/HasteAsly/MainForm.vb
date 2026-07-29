@@ -819,6 +819,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع اموال", AddressOf OpenAmvalMainForm, "CompanyFiscalYears")
                     AddDashButton("گزارشات جامع اموال", AddressOf OpenAmvalMainForm, "Reports")
 
+                Case "Automation"
+                    AddDashButton("سیستم جامع اتوماسیون اداری", AddressOf OpenAutomationMainForm, "Users")
+                    AddDashButton("گزارشات جامع اتوماسیون اداری", AddressOf OpenAutomationMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -905,6 +909,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول اموال: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolAutomation_Click(sender As Object, e As EventArgs) Handles btnToolAutomation.Click
+            ShowDashboardCategory("Automation")
+        End Sub
+
+        Private Sub OpenAutomationMainForm(sender As Object, e As EventArgs) Handles mAutomation.Click, miAutomationMain.Click, miAutomationReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Automation.AutomationMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول اتوماسیون اداری: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
