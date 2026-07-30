@@ -839,6 +839,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع بهای تمام‌شده و برنامه‌ریزی تولید", AddressOf OpenProductionMainForm, "TradeWarehouse")
                     AddDashButton("گزارشات جامع بهای تمام‌شده و آنالیز BOM", AddressOf OpenProductionMainForm, "Reports")
 
+                Case "Project"
+                    AddDashButton("سیستم جامع مدیریت پروژه‌ها و پیمان‌ها", AddressOf OpenProjectMainForm, "TradeWarehouse")
+                    AddDashButton("گزارشات جامع پروژه‌ها و پیمان‌ها", AddressOf OpenProjectMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1000,6 +1004,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول بهای تمام‌شده و تولید: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolProject_Click(sender As Object, e As EventArgs) Handles btnToolProject.Click
+            ShowDashboardCategory("Project")
+        End Sub
+
+        Private Sub OpenProjectMainForm(sender As Object, e As EventArgs) Handles mProject.Click, miProjectMain.Click, miProjectReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Project.ProjectMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول مدیریت پروژه‌ها و پیمان‌ها: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

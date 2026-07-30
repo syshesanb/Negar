@@ -697,7 +697,7 @@ Namespace Negar.Business
             ' =========================================================================
             ' 12. منوی اصلی: مدیریت ارتباط با مشتریان (mCrm)
             ' =========================================================================
-            Dim rCrm As New PermissionTreeNode("MENU_CRM", "🤝 مدیریت ارتباط با مشتریان (CRM)", 0)
+            Dim rCrm As New PermissionTreeNode("MENU_CRM", "🤝 سیستم جامع باشگاه مشتریان (CRM)", 0)
             Dim smCrmMain As New PermissionTreeNode("SM_CRM_MAIN", "📁 سیستم جامع CRM و فرصت‌های فروش", 1)
             Dim tCrmMain As New PermissionTreeNode("T_CRM_MAIN", "📄 پرونده ۳۶۰ درجه مشتریان، قیف فروش و پیگیری‌ها", 2)
             Dim stCrmMain As New PermissionTreeNode("ST_CRM_MAIN", "📑 ثبت سرنخ، فرصت فروش، پیش‌فاکتور و تیکت پشتیبانی", 3)
@@ -810,6 +810,36 @@ Namespace Negar.Business
             rProd.Children.Add(smProdReports)
 
             roots.Add(rProd)
+
+            ' =========================================================================
+            ' 16. منوی اصلی: سیستم مدیریت پروژه‌ها و پیمان‌ها (mProject)
+            ' =========================================================================
+            Dim rProject As New PermissionTreeNode("MENU_PROJECT", "🏗️ سیستم جامع مدیریت پروژه‌ها و پیمان‌ها", 0)
+            Dim smProjMain As New PermissionTreeNode("SM_PROJ_MAIN", "📁 سیستم جامع مدیریت پروژه‌ها و پیمان‌ها", 1)
+            Dim tProjMain As New PermissionTreeNode("T_PROJ_MAIN", "📄 شناسنامه پیمان، ساختار شکست کار (WBS) و صورت‌وضعیت‌ها", 2)
+            Dim stProjMain As New PermissionTreeNode("ST_PROJ_MAIN", "📑 ثبت کارکرد، کسورات قانونی، صورت‌وضعیت و ضمانت‌نامه‌ها", 3)
+
+            AddActionNode(stProjMain, PermissionKeys.ProjectModule, "🔘 دسترسی به سیستم مدیریت پروژه‌ها و پیمان‌ها", dbPermissions)
+            AddActionNode(stProjMain, PermissionKeys.ProjectProfile, "🔘 مدیریت شناسنامه پیمان‌ها و قراردادها", dbPermissions)
+            AddActionNode(stProjMain, PermissionKeys.ProjectWBS, "🔘 مدیریت ساختار شکست کار (WBS)", dbPermissions)
+            AddActionNode(stProjMain, PermissionKeys.ProjectClaims, "🔘 مدیریت صورت‌وضعیت‌ها و کسورات قانونی", dbPermissions)
+            AddActionNode(stProjMain, PermissionKeys.ProjectGuarantees, "🔘 مدیریت ضمانت‌نامه‌های بانکی و سپرده‌ها", dbPermissions)
+
+            tProjMain.Children.Add(stProjMain)
+            smProjMain.Children.Add(tProjMain)
+            rProject.Children.Add(smProjMain)
+
+            Dim smProjReports As New PermissionTreeNode("SM_PROJ_REPORTS", "📁 گزارشات جامع پروژه‌ها و آنالیز سود و زیان (P&L)", 1)
+            Dim tProjReports As New PermissionTreeNode("T_PROJ_REPORTS", "📄 گزارش‌های سود و زیان تفکیکی پروژه‌ها و انحراف بودجه", 2)
+            Dim stProjReports As New PermissionTreeNode("ST_PROJ_REPORTS", "📑 گزارشات مدیریتی مطالبات کارفرما و سررسید ضمانت‌نامه‌ها", 3)
+
+            AddActionNode(stProjReports, PermissionKeys.ProjectReports, "🔘 گزارشات جامع پروژه‌ها و سود و زیان پیمان‌ها", dbPermissions)
+
+            tProjReports.Children.Add(stProjReports)
+            smProjReports.Children.Add(tProjReports)
+            rProject.Children.Add(smProjReports)
+
+            roots.Add(rProject)
 
             Return roots
         End Function

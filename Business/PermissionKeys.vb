@@ -222,6 +222,14 @@ Namespace Negar.Business
         Public Const ProductionWIP As String = "ProductionWIP"
         Public Const ProductionReports As String = "ProductionReports"
 
+        ' Project & Contract Management permissions
+        Public Const ProjectModule As String = "ProjectModule"
+        Public Const ProjectProfile As String = "ProjectProfile"
+        Public Const ProjectWBS As String = "ProjectWBS"
+        Public Const ProjectClaims As String = "ProjectClaims"
+        Public Const ProjectGuarantees As String = "ProjectGuarantees"
+        Public Const ProjectReports As String = "ProjectReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"
