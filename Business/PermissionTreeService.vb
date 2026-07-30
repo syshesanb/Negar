@@ -870,6 +870,36 @@ Namespace Negar.Business
 
             roots.Add(rKpi)
 
+            ' =========================================================================
+            ' 18. منوی اصلی: سیستم بازرگانی خارجی و واردات/صادرات (mImportExport)
+            ' =========================================================================
+            Dim rImp As New PermissionTreeNode("MENU_IMPORT_EXPORT", "🚢 سیستم جامع بازرگانی خارجی و واردات/صادرات", 0)
+            Dim smImpMain As New PermissionTreeNode("SM_IMP_MAIN", "📁 سیستم جامع بازرگانی خارجی و واردات", 1)
+            Dim tImpMain As New PermissionTreeNode("T_IMP_MAIN", "📄 ثبت پروفرما (PI)، اعتبارات اسنادی (LC)، ترخیص و بهای تمام‌شده", 2)
+            Dim stImpMain As New PermissionTreeNode("ST_IMP_MAIN", "📑 ثبت سفارش، تخصیص ارز، پروانه سبز گمرکی و Landed Costing", 3)
+
+            AddActionNode(stImpMain, PermissionKeys.ImportExportModule, "🔘 دسترسی به سیستم بازرگانی خارجی و واردات/صادرات", dbPermissions)
+            AddActionNode(stImpMain, PermissionKeys.ImportExportProforma, "🔘 مدیریت پرونده‌های خرید خارجی و پروفرما (PI)", dbPermissions)
+            AddActionNode(stImpMain, PermissionKeys.ImportExportLC, "🔘 مدیریت اعتبارات اسنادی (LC) و حواله‌های ارزی", dbPermissions)
+            AddActionNode(stImpMain, PermissionKeys.ImportExportCustoms, "🔘 مدیریت اسناد ترخیص و گمرک", dbPermissions)
+            AddActionNode(stImpMain, PermissionKeys.ImportExportCosting, "🔘 محاسبات بهای تمام‌شده واقعی کالای وارداتی (Landed Cost)", dbPermissions)
+
+            tImpMain.Children.Add(stImpMain)
+            smImpMain.Children.Add(tImpMain)
+            rImp.Children.Add(smImpMain)
+
+            Dim smImpReports As New PermissionTreeNode("SM_IMP_REPORTS", "📁 گزارشات جامع بازرگانی خارجی و بهای تمام‌شده واردات", 1)
+            Dim tImpReports As New PermissionTreeNode("T_IMP_REPORTS", "📄 گزارش‌های آنالیز بهای تمام‌شده واقعی (Landed Cost) و تسعیر ارز", 2)
+            Dim stImpReports As New PermissionTreeNode("ST_IMP_REPORTS", "📑 گزارشات مدیریتی وضعیت ترخیص پرونده‌ها و اعتبارات اسنادی", 3)
+
+            AddActionNode(stImpReports, PermissionKeys.ImportExportReports, "🔘 گزارشات جامع بازرگانی خارجی و بهای تمام‌شده واردات", dbPermissions)
+
+            tImpReports.Children.Add(stImpReports)
+            smImpReports.Children.Add(tImpReports)
+            rImp.Children.Add(smImpReports)
+
+            roots.Add(rImp)
+
             Return roots
         End Function
 

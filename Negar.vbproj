@@ -157,6 +157,7 @@
     <Compile Include="Business\ProductionService.vb" />
     <Compile Include="Business\ProjectService.vb" />
     <Compile Include="Business\KpiService.vb" />
+    <Compile Include="Business\ImportExportService.vb" />
     <Compile Include="Forms\Payroll\PayrollMainForm.vb" />
     <Compile Include="Forms\Payroll\PayrollPersonnelEditDialog.vb" />
     <Compile Include="Forms\Amval\AmvalMainForm.vb" />
@@ -175,6 +176,8 @@
     <Compile Include="Forms\Project\ProjectEditDialog.vb" />
     <Compile Include="Forms\KPI\KpiMainForm.vb" />
     <Compile Include="Forms\KPI\KpiEditDialog.vb" />
+    <Compile Include="Forms\ImportExport\ImportExportMainForm.vb" />
+    <Compile Include="Forms\ImportExport\ImportExportEditDialog.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">

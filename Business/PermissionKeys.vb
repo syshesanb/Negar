@@ -237,6 +237,14 @@ Namespace Negar.Business
         Public Const KpiBonuses As String = "KpiBonuses"
         Public Const KpiReports As String = "KpiReports"
 
+        ' Commercial Import/Export permissions
+        Public Const ImportExportModule As String = "ImportExportModule"
+        Public Const ImportExportProforma As String = "ImportExportProforma"
+        Public Const ImportExportLC As String = "ImportExportLC"
+        Public Const ImportExportCustoms As String = "ImportExportCustoms"
+        Public Const ImportExportCosting As String = "ImportExportCosting"
+        Public Const ImportExportReports As String = "ImportExportReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

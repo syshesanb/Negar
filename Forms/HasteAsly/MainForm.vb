@@ -110,6 +110,7 @@ Namespace Negar.Forms
             btnToolCompanyMgmt.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolAccounting.Image = CreateModuleIcon("Accounting", 24)
             btnToolTradeWarehouse.Image = CreateModuleIcon("TradeWarehouse", 24)
+            btnToolImportExport.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -370,6 +371,7 @@ Namespace Negar.Forms
             Dim canProduction = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ProductionModule)
             Dim canProject = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ProjectModule)
             Dim canKpi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.KpiModule)
+            Dim canImportExport = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ImportExportModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -429,6 +431,7 @@ Namespace Negar.Forms
             mProduction.Visible = canProduction
             mProject.Visible = canProject
             mKpi.Visible = canKpi
+            mImportExport.Visible = canImportExport
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -446,6 +449,7 @@ Namespace Negar.Forms
             btnToolProduction.Visible = canProduction
             btnToolProject.Visible = canProject
             btnToolKpi.Visible = canKpi
+            btnToolImportExport.Visible = canImportExport
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -877,6 +881,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع ارزیابی عملکرد و پاداش (KPI)", AddressOf OpenKpiMainForm, "Users")
                     AddDashButton("گزارشات جامع ارزیابی عملکرد و کارانه", AddressOf OpenKpiMainForm, "Reports")
 
+                Case "ImportExport"
+                    AddDashButton("سیستم جامع بازرگانی خارجی و واردات/صادرات", AddressOf OpenImportExportMainForm, "TradeWarehouse")
+                    AddDashButton("گزارشات جامع بهای تمام‌شده واردات (Landed Cost)", AddressOf OpenImportExportMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1068,6 +1076,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول ارزیابی عملکرد و پاداش: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolImportExport_Click(sender As Object, e As EventArgs) Handles btnToolImportExport.Click
+            ShowDashboardCategory("ImportExport")
+        End Sub
+
+        Private Sub OpenImportExportMainForm(sender As Object, e As EventArgs) Handles mImportExport.Click, miImportExportMain.Click, miImportExportReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.ImportExport.ImportExportMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم بازرگانی خارجی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
