@@ -109,6 +109,7 @@ Namespace Negar.Forms
         Friend WithEvents miUtilCalendar As ToolStripMenuItem
 
         ' Toolbar (Top Level Main Menu Titles as Buttons)
+        Friend WithEvents pnlToolBar As Panel
         Friend WithEvents tool As ToolStrip
         Friend WithEvents btnToolSystemMgmt As ToolStripButton
         Friend WithEvents btnToolUserMgmt As ToolStripButton
@@ -222,6 +223,7 @@ Namespace Negar.Forms
             Me.miUtilNotes = New ToolStripMenuItem()
             Me.miUtilCalendar = New ToolStripMenuItem()
 
+            Me.pnlToolBar = New Panel()
             Me.tool = New ToolStrip()
             Me.btnToolSystemMgmt = New ToolStripButton()
             Me.btnToolUserMgmt = New ToolStripButton()
@@ -314,18 +316,18 @@ Namespace Negar.Forms
             ' mCrm
             Me.mCrm.DropDownItems.AddRange(New ToolStripItem() {Me.miCrmMain, Me.miCrmReports})
             Me.mCrm.Name = "mCrm"
-            Me.mCrm.Size = New Size(90, 20)
-            Me.mCrm.Text = "🤝 CRM"
+            Me.mCrm.Size = New Size(120, 20)
+            Me.mCrm.Text = "🤝 باشگاه مشتریان"
 
             ' miCrmMain
             Me.miCrmMain.Name = "miCrmMain"
-            Me.miCrmMain.Size = New Size(240, 22)
-            Me.miCrmMain.Text = "🤝 سیستم جامع CRM"
+            Me.miCrmMain.Size = New Size(280, 22)
+            Me.miCrmMain.Text = "🤝 سیستم جامع باشگاه مشتریان (CRM)"
 
             ' miCrmReports
             Me.miCrmReports.Name = "miCrmReports"
-            Me.miCrmReports.Size = New Size(240, 22)
-            Me.miCrmReports.Text = "📊 گزارشات جامع CRM"
+            Me.miCrmReports.Size = New Size(280, 22)
+            Me.miCrmReports.Text = "📊 گزارشات جامع باشگاه مشتریان"
 
             ' mTreasury
             Me.mTreasury.DropDownItems.AddRange(New ToolStripItem() {Me.miTreasuryMain, Me.miTreasuryReports})
@@ -583,10 +585,21 @@ Namespace Negar.Forms
             Me.miUtilCalendar.Text = "تقویم و مناسبت‌ها"
 
             ' tool (ToolStrip Toolbar for Top-Level Main Menu Titles)
-            Me.tool.AutoSize = False
+            Me.tool.AutoSize = True
+            Me.tool.Dock = DockStyle.None
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolBusinessShells, Me.btnToolUtilities})
+
+            ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
+            Me.pnlToolBar.AutoScroll = True
+            Me.pnlToolBar.Dock = DockStyle.Top
+            Me.pnlToolBar.Height = 60
+            Me.pnlToolBar.Location = New Point(0, 24)
+            Me.pnlToolBar.Name = "pnlToolBar"
+            Me.pnlToolBar.RightToLeft = RightToLeft.Yes
+            Me.pnlToolBar.TabIndex = 0
+            Me.pnlToolBar.Controls.Add(Me.tool)
 
             ' btnToolPayroll
             Me.btnToolPayroll.Margin = New Padding(4, 2, 4, 2)
@@ -609,8 +622,8 @@ Namespace Negar.Forms
             ' btnToolCrm
             Me.btnToolCrm.Margin = New Padding(4, 2, 4, 2)
             Me.btnToolCrm.Name = "btnToolCrm"
-            Me.btnToolCrm.Size = New Size(85, 51)
-            Me.btnToolCrm.Text = "CRM"
+            Me.btnToolCrm.Size = New Size(130, 51)
+            Me.btnToolCrm.Text = "باشگاه مشتریان"
 
             ' btnToolTreasury
             Me.btnToolTreasury.Margin = New Padding(4, 2, 4, 2)
@@ -623,10 +636,15 @@ Namespace Negar.Forms
             Me.btnToolBudgeting.Name = "btnToolBudgeting"
             Me.btnToolBudgeting.Size = New Size(130, 51)
             Me.btnToolBudgeting.Text = "بودجه و هزینه"
-            Me.tool.Location = New Point(0, 24)
+
+            ' btnToolProduction
+            Me.btnToolProduction.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolProduction.Name = "btnToolProduction"
+            Me.btnToolProduction.Size = New Size(160, 51)
+            Me.btnToolProduction.Text = "تولید و بهای تمام‌شده"
+            Me.tool.Location = New Point(0, 0)
             Me.tool.Name = "tool"
             Me.tool.RightToLeft = RightToLeft.Yes
-            Me.tool.Size = New Size(1200, 55)
             Me.tool.TabIndex = 0
 
             ' btnToolSystemMgmt
@@ -727,7 +745,7 @@ Namespace Negar.Forms
             Me.ClientSize = New Size(1200, 700)
             Me.Controls.Add(Me.flpDashboard)
             Me.Controls.Add(Me.status)
-            Me.Controls.Add(Me.tool)
+            Me.Controls.Add(Me.pnlToolBar)
             Me.Controls.Add(Me.mainMenu)
             Me.Font = New Font("Tahoma", 9.0!)
             Me.MainMenuStrip = Me.mainMenu

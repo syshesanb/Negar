@@ -824,8 +824,8 @@ Namespace Negar.Forms
                     AddDashButton("گزارشات جامع اتوماسیون اداری", AddressOf OpenAutomationMainForm, "Reports")
 
                 Case "Crm"
-                    AddDashButton("سیستم جامع مدیریت ارتباط با مشتریان (CRM)", AddressOf OpenCrmMainForm, "Users")
-                    AddDashButton("گزارشات جامع CRM و فروش", AddressOf OpenCrmMainForm, "Reports")
+                    AddDashButton("سیستم جامع باشگاه مشتریان (CRM)", AddressOf OpenCrmMainForm, "Users")
+                    AddDashButton("گزارشات جامع باشگاه مشتریان و فروش", AddressOf OpenCrmMainForm, "Reports")
 
                 Case "Treasury"
                     AddDashButton("سیستم جامع خزانه‌داری و مدیریت نقدینگی", AddressOf OpenTreasuryMainForm, "CompanyFiscalYears")
@@ -1009,6 +1009,16 @@ Namespace Negar.Forms
 
         Private Sub BtnToolUtilities_Click(sender As Object, e As EventArgs) Handles btnToolUtilities.Click
             ShowDashboardCategory("Utilities")
+        End Sub
+
+        Private Sub PnlToolBar_MouseWheel(sender As Object, e As MouseEventArgs) Handles pnlToolBar.MouseWheel
+            Try
+                Dim newX = pnlToolBar.HorizontalScroll.Value - e.Delta
+                If newX < 0 Then newX = 0
+                If newX > pnlToolBar.HorizontalScroll.Maximum Then newX = pnlToolBar.HorizontalScroll.Maximum
+                pnlToolBar.HorizontalScroll.Value = newX
+            Catch ex As Exception
+            End Try
         End Sub
 
         Private Sub LblCompany_DoubleClick(sender As Object, e As EventArgs) Handles lblCompany.DoubleClick
