@@ -26,6 +26,7 @@ Namespace Negar.Forms
         Friend WithEvents mAmval As ToolStripMenuItem
         Friend WithEvents mAutomation As ToolStripMenuItem
         Friend WithEvents mCrm As ToolStripMenuItem
+        Friend WithEvents mTreasury As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -44,6 +45,10 @@ Namespace Negar.Forms
         ' Sub-items for CRM
         Friend WithEvents miCrmMain As ToolStripMenuItem
         Friend WithEvents miCrmReports As ToolStripMenuItem
+
+        ' Sub-items for Treasury
+        Friend WithEvents miTreasuryMain As ToolStripMenuItem
+        Friend WithEvents miTreasuryReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -104,6 +109,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolAmval As ToolStripButton
         Friend WithEvents btnToolAutomation As ToolStripButton
         Friend WithEvents btnToolCrm As ToolStripButton
+        Friend WithEvents btnToolTreasury As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -136,6 +142,7 @@ Namespace Negar.Forms
             Me.mAmval = New ToolStripMenuItem()
             Me.mAutomation = New ToolStripMenuItem()
             Me.mCrm = New ToolStripMenuItem()
+            Me.mTreasury = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -150,6 +157,9 @@ Namespace Negar.Forms
 
             Me.miCrmMain = New ToolStripMenuItem()
             Me.miCrmReports = New ToolStripMenuItem()
+
+            Me.miTreasuryMain = New ToolStripMenuItem()
+            Me.miTreasuryReports = New ToolStripMenuItem()
 
             Me.miSettingsMessages = New ToolStripMenuItem()
             Me.miSettingsThemes = New ToolStripMenuItem()
@@ -202,6 +212,7 @@ Namespace Negar.Forms
             Me.btnToolAmval = New ToolStripButton()
             Me.btnToolAutomation = New ToolStripButton()
             Me.btnToolCrm = New ToolStripButton()
+            Me.btnToolTreasury = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -223,7 +234,7 @@ Namespace Negar.Forms
             Me.SuspendLayout()
 
             ' mainMenu
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -293,6 +304,22 @@ Namespace Negar.Forms
             Me.miCrmReports.Name = "miCrmReports"
             Me.miCrmReports.Size = New Size(240, 22)
             Me.miCrmReports.Text = "📊 گزارشات جامع CRM"
+
+            ' mTreasury
+            Me.mTreasury.DropDownItems.AddRange(New ToolStripItem() {Me.miTreasuryMain, Me.miTreasuryReports})
+            Me.mTreasury.Name = "mTreasury"
+            Me.mTreasury.Size = New Size(100, 20)
+            Me.mTreasury.Text = "💰 خزانه‌داری"
+
+            ' miTreasuryMain
+            Me.miTreasuryMain.Name = "miTreasuryMain"
+            Me.miTreasuryMain.Size = New Size(280, 22)
+            Me.miTreasuryMain.Text = "💰 سیستم جامع خزانه‌داری و جریان نقدینگی"
+
+            ' miTreasuryReports
+            Me.miTreasuryReports.Name = "miTreasuryReports"
+            Me.miTreasuryReports.Size = New Size(280, 22)
+            Me.miTreasuryReports.Text = "📊 گزارشات جامع خزانه‌داری و Cash Flow"
 
             ' mSystemMgmt
             Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
@@ -505,7 +532,7 @@ Namespace Negar.Forms
             Me.tool.AutoSize = False
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' btnToolPayroll
             Me.btnToolPayroll.Margin = New Padding(4, 2, 4, 2)
@@ -530,6 +557,12 @@ Namespace Negar.Forms
             Me.btnToolCrm.Name = "btnToolCrm"
             Me.btnToolCrm.Size = New Size(85, 51)
             Me.btnToolCrm.Text = "CRM"
+
+            ' btnToolTreasury
+            Me.btnToolTreasury.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolTreasury.Name = "btnToolTreasury"
+            Me.btnToolTreasury.Size = New Size(105, 51)
+            Me.btnToolTreasury.Text = "خزانه‌داری"
             Me.tool.Location = New Point(0, 24)
             Me.tool.Name = "tool"
             Me.tool.RightToLeft = RightToLeft.Yes

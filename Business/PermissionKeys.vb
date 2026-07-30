@@ -199,6 +199,14 @@ Namespace Negar.Business
         Public Const CrmTickets As String = "CrmTickets"
         Public Const CrmReports As String = "CrmReports"
 
+        ' Advanced Treasury & Cash Flow permissions
+        Public Const TreasuryModule As String = "TreasuryModule"
+        Public Const TreasuryCashBanks As String = "TreasuryCashBanks"
+        Public Const TreasuryChecks As String = "TreasuryChecks"
+        Public Const TreasuryLoans As String = "TreasuryLoans"
+        Public Const TreasuryCashFlow As String = "TreasuryCashFlow"
+        Public Const TreasuryReports As String = "TreasuryReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

@@ -152,6 +152,7 @@
     <Compile Include="Business\AmvalService.vb" />
     <Compile Include="Business\AutomationService.vb" />
     <Compile Include="Business\CrmService.vb" />
+    <Compile Include="Business\TreasuryService.vb" />
     <Compile Include="Forms\Payroll\PayrollMainForm.vb" />
     <Compile Include="Forms\Payroll\PayrollPersonnelEditDialog.vb" />
     <Compile Include="Forms\Amval\AmvalMainForm.vb" />
@@ -160,6 +161,8 @@
     <Compile Include="Forms\Automation\AutomationLetterEditDialog.vb" />
     <Compile Include="Forms\CRM\CrmMainForm.vb" />
     <Compile Include="Forms\CRM\CrmCustomerEditDialog.vb" />
+    <Compile Include="Forms\Treasury\TreasuryMainForm.vb" />
+    <Compile Include="Forms\Treasury\TreasuryEditDialog.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">

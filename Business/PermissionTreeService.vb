@@ -721,8 +721,37 @@ Namespace Negar.Business
             tCrmReports.Children.Add(stCrmReports)
             smCrmReports.Children.Add(tCrmReports)
             rCrm.Children.Add(smCrmReports)
-
             roots.Add(rCrm)
+
+            ' =========================================================================
+            ' 13. منوی اصلی: خزانه‌داری پیشرفته و جریان نقدینگی (mTreasury)
+            ' =========================================================================
+            Dim rTreasury As New PermissionTreeNode("MENU_TREASURY", "💰 سیستم جامع خزانه‌داری و مدیریت نقدینگی", 0)
+            Dim smTreasuryMain As New PermissionTreeNode("SM_TREASURY_MAIN", "📁 سیستم جامع خزانه‌داری و اسناد تجاری", 1)
+            Dim tTreasuryMain As New PermissionTreeNode("T_TREASURY_MAIN", "📄 مدیریت بانک‌ها، صندوق‌ها، چک‌ها و تسهیلات", 2)
+            Dim stTreasuryMain As New PermissionTreeNode("ST_TREASURY_MAIN", "📑 عملیات دریافت و پرداخت، چرخه چک، وام و Cash Flow", 3)
+
+            AddActionNode(stTreasuryMain, PermissionKeys.TreasuryModule, "🔘 دسترسی به سیستم جامع خزانه‌داری", dbPermissions)
+            AddActionNode(stTreasuryMain, PermissionKeys.TreasuryCashBanks, "🔘 مدیریت بانک‌ها، صندوق‌ها و تنخواه‌گردان‌ها", dbPermissions)
+            AddActionNode(stTreasuryMain, PermissionKeys.TreasuryChecks, "🔘 مدیریت چرخه چک‌ها و اسناد تجاری", dbPermissions)
+            AddActionNode(stTreasuryMain, PermissionKeys.TreasuryLoans, "🔘 مدیریت تسهیلات و وام‌های بانکی", dbPermissions)
+            AddActionNode(stTreasuryMain, PermissionKeys.TreasuryCashFlow, "🔘 پیش‌بینی جریان وجوه نقد (Cash Flow)", dbPermissions)
+
+            tTreasuryMain.Children.Add(stTreasuryMain)
+            smTreasuryMain.Children.Add(tTreasuryMain)
+            rTreasury.Children.Add(smTreasuryMain)
+
+            Dim smTreasuryReports As New PermissionTreeNode("SM_TREASURY_REPORTS", "📁 گزارشات جامع خزانه‌داری و Cash Flow", 1)
+            Dim tTreasuryReports As New PermissionTreeNode("T_TREASURY_REPORTS", "📄 گزارش‌های آماری راس‌گیری، مغایرت‌گیری و تسهیلات", 2)
+            Dim stTreasuryReports As New PermissionTreeNode("ST_TREASURY_REPORTS", "📑 گزارشات مدیریتی منابع و مصارف نقدینگی", 3)
+
+            AddActionNode(stTreasuryReports, PermissionKeys.TreasuryReports, "🔘 گزارشات جامع خزانه‌داری و نقدینگی", dbPermissions)
+
+            tTreasuryReports.Children.Add(stTreasuryReports)
+            smTreasuryReports.Children.Add(tTreasuryReports)
+            rTreasury.Children.Add(smTreasuryReports)
+
+            roots.Add(rTreasury)
 
             Return roots
         End Function

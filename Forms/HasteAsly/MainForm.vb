@@ -827,6 +827,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع مدیریت ارتباط با مشتریان (CRM)", AddressOf OpenCrmMainForm, "Users")
                     AddDashButton("گزارشات جامع CRM و فروش", AddressOf OpenCrmMainForm, "Reports")
 
+                Case "Treasury"
+                    AddDashButton("سیستم جامع خزانه‌داری و مدیریت نقدینگی", AddressOf OpenTreasuryMainForm, "CompanyFiscalYears")
+                    AddDashButton("گزارشات جامع خزانه‌داری و Cash Flow", AddressOf OpenTreasuryMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -943,6 +947,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول CRM: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolTreasury_Click(sender As Object, e As EventArgs) Handles btnToolTreasury.Click
+            ShowDashboardCategory("Treasury")
+        End Sub
+
+        Private Sub OpenTreasuryMainForm(sender As Object, e As EventArgs) Handles mTreasury.Click, miTreasuryMain.Click, miTreasuryReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Treasury.TreasuryMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول خزانه‌داری: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
