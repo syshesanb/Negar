@@ -207,6 +207,13 @@ Namespace Negar.Business
         Public Const TreasuryCashFlow As String = "TreasuryCashFlow"
         Public Const TreasuryReports As String = "TreasuryReports"
 
+        ' Budgeting & Cost Control permissions
+        Public Const BudgetingModule As String = "BudgetingModule"
+        Public Const BudgetingItems As String = "BudgetingItems"
+        Public Const BudgetingEnforcement As String = "BudgetingEnforcement"
+        Public Const BudgetingAmendments As String = "BudgetingAmendments"
+        Public Const BudgetingReports As String = "BudgetingReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

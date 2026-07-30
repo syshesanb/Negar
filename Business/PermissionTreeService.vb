@@ -750,8 +750,36 @@ Namespace Negar.Business
             tTreasuryReports.Children.Add(stTreasuryReports)
             smTreasuryReports.Children.Add(tTreasuryReports)
             rTreasury.Children.Add(smTreasuryReports)
-
             roots.Add(rTreasury)
+
+            ' =========================================================================
+            ' 14. منوی اصلی: سیستم بودجه و کنترل هزینه‌ها (mBudgeting)
+            ' =========================================================================
+            Dim rBudget As New PermissionTreeNode("MENU_BUDGETING", "📊 سیستم جامع بودجه و کنترل هزینه‌ها", 0)
+            Dim smBudgetMain As New PermissionTreeNode("SM_BUDGET_MAIN", "📁 سیستم جامع بودجه و کنترل هزینه‌ها", 1)
+            Dim tBudgetMain As New PermissionTreeNode("T_BUDGET_MAIN", "📄 تعریف بودجه مصوب، ارزیابی انحراف زنده و متمم بودجه", 2)
+            Dim stBudgetMain As New PermissionTreeNode("ST_BUDGET_MAIN", "📑 ثبت سقف اعتبار، کنترل پیشگیرانه هزینه و جابجایی اعتبار", 3)
+
+            AddActionNode(stBudgetMain, PermissionKeys.BudgetingModule, "🔘 دسترسی به سیستم جامع بودجه و کنترل هزینه", dbPermissions)
+            AddActionNode(stBudgetMain, PermissionKeys.BudgetingItems, "🔘 مدیریت ردیف‌های بودجه مصوب", dbPermissions)
+            AddActionNode(stBudgetMain, PermissionKeys.BudgetingEnforcement, "🔘 پایش و کنترل زنده انحراف بودجه", dbPermissions)
+            AddActionNode(stBudgetMain, PermissionKeys.BudgetingAmendments, "🔘 ثبت متمم بودجه و جابجایی اعتبار", dbPermissions)
+
+            tBudgetMain.Children.Add(stBudgetMain)
+            smBudgetMain.Children.Add(tBudgetMain)
+            rBudget.Children.Add(smBudgetMain)
+
+            Dim smBudgetReports As New PermissionTreeNode("SM_BUDGET_REPORTS", "📁 گزارشات انحراف بودجه و انضباط مالی", 1)
+            Dim tBudgetReports As New PermissionTreeNode("T_BUDGET_REPORTS", "📄 گزارش‌های ماتریسی انحراف بودجه و درصد جذب", 2)
+            Dim stBudgetReports As New PermissionTreeNode("ST_BUDGET_REPORTS", "📑 گزارشات مدیریتی انحرافات مساعد و نامساعد", 3)
+
+            AddActionNode(stBudgetReports, PermissionKeys.BudgetingReports, "🔘 گزارشات جامع انحراف بودجه و انضباط مالی", dbPermissions)
+
+            tBudgetReports.Children.Add(stBudgetReports)
+            smBudgetReports.Children.Add(tBudgetReports)
+            rBudget.Children.Add(smBudgetReports)
+
+            roots.Add(rBudget)
 
             Return roots
         End Function
