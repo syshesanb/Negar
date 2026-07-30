@@ -1089,6 +1089,16 @@ Namespace Negar.Forms
             End Try
         End Sub
 
+        Private Sub PnlMainMenuContainer_MouseWheel(sender As Object, e As MouseEventArgs) Handles pnlMainMenuContainer.MouseWheel, mainMenu.MouseWheel
+            Try
+                Dim newX = pnlMainMenuContainer.HorizontalScroll.Value - e.Delta
+                If newX < 0 Then newX = 0
+                If newX > pnlMainMenuContainer.HorizontalScroll.Maximum Then newX = pnlMainMenuContainer.HorizontalScroll.Maximum
+                pnlMainMenuContainer.HorizontalScroll.Value = newX
+            Catch ex As Exception
+            End Try
+        End Sub
+
         Private Sub LblCompany_DoubleClick(sender As Object, e As EventArgs) Handles lblCompany.DoubleClick
             Dim form As New CompanyFiscalYearForm(Me)
             form.StartPosition = FormStartPosition.CenterParent

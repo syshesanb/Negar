@@ -16,6 +16,7 @@ Namespace Negar.Forms
         Private components As IContainer
 
         ' Main Top-Level Menus
+        Friend WithEvents pnlMainMenuContainer As Panel
         Friend WithEvents mainMenu As MenuStrip
         Friend WithEvents mSystemMgmt As ToolStripMenuItem
         Friend WithEvents mUserMgmt As ToolStripMenuItem
@@ -157,6 +158,7 @@ Namespace Negar.Forms
         <DebuggerStepThrough()>
         Private Sub InitializeComponent()
             Me.components = New Container()
+            Me.pnlMainMenuContainer = New Panel()
             Me.mainMenu = New MenuStrip()
             Me.mSystemMgmt = New ToolStripMenuItem()
             Me.mUserMgmt = New ToolStripMenuItem()
@@ -279,14 +281,25 @@ Namespace Negar.Forms
             Me.status.SuspendLayout()
             Me.SuspendLayout()
 
+            ' pnlMainMenuContainer (Scrollable Container for Top MenuStrip)
+            Me.pnlMainMenuContainer.AutoScroll = True
+            Me.pnlMainMenuContainer.Dock = DockStyle.Top
+            Me.pnlMainMenuContainer.Height = 28
+            Me.pnlMainMenuContainer.Location = New Point(0, 0)
+            Me.pnlMainMenuContainer.Name = "pnlMainMenuContainer"
+            Me.pnlMainMenuContainer.RightToLeft = RightToLeft.Yes
+            Me.pnlMainMenuContainer.TabIndex = 1
+            Me.pnlMainMenuContainer.Controls.Add(Me.mainMenu)
+
             ' mainMenu
+            Me.mainMenu.AutoSize = True
             Me.mainMenu.CanOverflow = True
+            Me.mainMenu.Dock = DockStyle.None
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
             Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
-            Me.mainMenu.Size = New Size(1200, 24)
             Me.mainMenu.TabIndex = 1
 
             ' mPayroll
@@ -814,7 +827,7 @@ Namespace Negar.Forms
             Me.Controls.Add(Me.flpDashboard)
             Me.Controls.Add(Me.status)
             Me.Controls.Add(Me.pnlToolBar)
-            Me.Controls.Add(Me.mainMenu)
+            Me.Controls.Add(Me.pnlMainMenuContainer)
             Me.Font = New Font("Tahoma", 9.0!)
             Me.MainMenuStrip = Me.mainMenu
             Me.Name = "MainForm"
