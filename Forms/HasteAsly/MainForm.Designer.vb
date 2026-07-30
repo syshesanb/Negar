@@ -280,6 +280,8 @@ Namespace Negar.Forms
             Me.SuspendLayout()
 
             ' mainMenu
+            Me.mainMenu.CanOverflow = True
+            Me.mainMenu.Font = New Font("Tahoma", 9.0!)
             Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
@@ -418,7 +420,7 @@ Namespace Negar.Forms
             ' mKpi
             Me.mKpi.DropDownItems.AddRange(New ToolStripItem() {Me.miKpiMain, Me.miKpiReports})
             Me.mKpi.Name = "mKpi"
-            Me.mKpi.Size = New Size(170, 20)
+            Me.mKpi.Size = New Size(145, 20)
             Me.mKpi.Text = "🎯 ارزیابی عملکرد و پاداش"
 
             ' miKpiMain
@@ -541,8 +543,8 @@ Namespace Negar.Forms
             ' mCompanyMgmt
             Me.mCompanyMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miCompanyFiscalYears})
             Me.mCompanyMgmt.Name = "mCompanyMgmt"
-            Me.mCompanyMgmt.Size = New Size(140, 20)
-            Me.mCompanyMgmt.Text = "شرکت ها و سالهای مالی"
+            Me.mCompanyMgmt.Size = New Size(110, 20)
+            Me.mCompanyMgmt.Text = "شرکت‌ها و سال‌ها"
 
             ' miCompanyFiscalYears
             Me.miCompanyFiscalYears.Name = "miCompanyFiscalYears"
@@ -568,8 +570,8 @@ Namespace Negar.Forms
             ' mTradeWarehouse
             Me.mTradeWarehouse.DropDownItems.AddRange(New ToolStripItem() {Me.miTradeMini, Me.miTradeMedium, Me.miTradeBig, Me.miTradeWarehouseMain, Me.miReportsTrade})
             Me.mTradeWarehouse.Name = "mTradeWarehouse"
-            Me.mTradeWarehouse.Size = New Size(136, 20)
-            Me.mTradeWarehouse.Text = "خریدو فروش و انبارداری"
+            Me.mTradeWarehouse.Size = New Size(95, 20)
+            Me.mTradeWarehouse.Text = "انبار و فروش"
 
             ' miTradeMini
             Me.miTradeMini.Name = "miTradeMini"
