@@ -284,7 +284,7 @@ Namespace Negar.Forms
             ' pnlMainMenuContainer (Scrollable Container for Top MenuStrip)
             Me.pnlMainMenuContainer.AutoScroll = True
             Me.pnlMainMenuContainer.Dock = DockStyle.Top
-            Me.pnlMainMenuContainer.Height = 28
+            Me.pnlMainMenuContainer.Height = 44
             Me.pnlMainMenuContainer.Location = New Point(0, 0)
             Me.pnlMainMenuContainer.Name = "pnlMainMenuContainer"
             Me.pnlMainMenuContainer.RightToLeft = RightToLeft.Yes
