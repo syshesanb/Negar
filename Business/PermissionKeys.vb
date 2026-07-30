@@ -191,6 +191,14 @@ Namespace Negar.Business
         Public Const AutomationSecretariat As String = "AutomationSecretariat"
         Public Const AutomationReports As String = "AutomationReports"
 
+        ' CRM (Customer Relationship Management) permissions
+        Public Const CrmModule As String = "CrmModule"
+        Public Const CrmLeads As String = "CrmLeads"
+        Public Const CrmOpportunities As String = "CrmOpportunities"
+        Public Const CrmActivities As String = "CrmActivities"
+        Public Const CrmTickets As String = "CrmTickets"
+        Public Const CrmReports As String = "CrmReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

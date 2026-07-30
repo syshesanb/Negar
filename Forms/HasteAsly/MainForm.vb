@@ -823,6 +823,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع اتوماسیون اداری", AddressOf OpenAutomationMainForm, "Users")
                     AddDashButton("گزارشات جامع اتوماسیون اداری", AddressOf OpenAutomationMainForm, "Reports")
 
+                Case "Crm"
+                    AddDashButton("سیستم جامع مدیریت ارتباط با مشتریان (CRM)", AddressOf OpenCrmMainForm, "Users")
+                    AddDashButton("گزارشات جامع CRM و فروش", AddressOf OpenCrmMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -924,6 +928,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول اتوماسیون اداری: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolCrm_Click(sender As Object, e As EventArgs) Handles btnToolCrm.Click
+            ShowDashboardCategory("Crm")
+        End Sub
+
+        Private Sub OpenCrmMainForm(sender As Object, e As EventArgs) Handles mCrm.Click, miCrmMain.Click, miCrmReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.CRM.CrmMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول CRM: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

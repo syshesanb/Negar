@@ -692,8 +692,37 @@ Namespace Negar.Business
             tAutoReports.Children.Add(stAutoReports)
             smAutoReports.Children.Add(tAutoReports)
             rAuto.Children.Add(smAutoReports)
-
             roots.Add(rAuto)
+
+            ' =========================================================================
+            ' 12. منوی اصلی: مدیریت ارتباط با مشتریان (mCrm)
+            ' =========================================================================
+            Dim rCrm As New PermissionTreeNode("MENU_CRM", "🤝 مدیریت ارتباط با مشتریان (CRM)", 0)
+            Dim smCrmMain As New PermissionTreeNode("SM_CRM_MAIN", "📁 سیستم جامع CRM و فرصت‌های فروش", 1)
+            Dim tCrmMain As New PermissionTreeNode("T_CRM_MAIN", "📄 پرونده ۳۶۰ درجه مشتریان، قیف فروش و پیگیری‌ها", 2)
+            Dim stCrmMain As New PermissionTreeNode("ST_CRM_MAIN", "📑 ثبت سرنخ، فرصت فروش، پیش‌فاکتور و تیکت پشتیبانی", 3)
+
+            AddActionNode(stCrmMain, PermissionKeys.CrmModule, "🔘 دسترسی به سیستم جامع CRM", dbPermissions)
+            AddActionNode(stCrmMain, PermissionKeys.CrmLeads, "🔘 مدیریت پرونده سرنخ‌ها و مشتریان", dbPermissions)
+            AddActionNode(stCrmMain, PermissionKeys.CrmOpportunities, "🔘 قیف فروش و تبدیل به فاکتور فروش", dbPermissions)
+            AddActionNode(stCrmMain, PermissionKeys.CrmActivities, "🔘 ثبت فعالیت‌ها و پیگیری‌ها", dbPermissions)
+            AddActionNode(stCrmMain, PermissionKeys.CrmTickets, "🔘 خدمات پس از فروش و پشتیبانی", dbPermissions)
+
+            tCrmMain.Children.Add(stCrmMain)
+            smCrmMain.Children.Add(tCrmMain)
+            rCrm.Children.Add(smCrmMain)
+
+            Dim smCrmReports As New PermissionTreeNode("SM_CRM_REPORTS", "📁 گزارشات جامع CRM و تحلیل فروش", 1)
+            Dim tCrmReports As New PermissionTreeNode("T_CRM_REPORTS", "📄 گزارش‌های آماری تحلیل فروش و نرخ تبدیل", 2)
+            Dim stCrmReports As New PermissionTreeNode("ST_CRM_REPORTS", "📑 گزارشات مدیریتی قیف فروش و عملکرد فروشندگان", 3)
+
+            AddActionNode(stCrmReports, PermissionKeys.CrmReports, "🔘 گزارشات جامع CRM و تحلیل فروش", dbPermissions)
+
+            tCrmReports.Children.Add(stCrmReports)
+            smCrmReports.Children.Add(tCrmReports)
+            rCrm.Children.Add(smCrmReports)
+
+            roots.Add(rCrm)
 
             Return roots
         End Function
