@@ -293,68 +293,78 @@ Namespace Negar.Forms.Production
         End Sub
 
         Private Sub SetupGridColumns(dgv As DataGridView)
-            If dgv Is Nothing Then Return
+            Try
+                If dgv Is Nothing OrElse dgv.Columns Is Nothing OrElse dgv.Columns.Count = 0 Then Return
 
-            If Not dgv.Columns.Contains("colRowIndex") Then
-                Dim colRow As New DataGridViewTextBoxColumn() With {
-                    .Name = "colRowIndex",
-                    .HeaderText = "ردیف",
-                    .Width = 50,
-                    .ReadOnly = True
-                }
-                dgv.Columns.Insert(0, colRow)
-            End If
+                If Not dgv.Columns.Contains("colRowIndex") Then
+                    Dim colRow As New DataGridViewTextBoxColumn() With {
+                        .Name = "colRowIndex",
+                        .HeaderText = "ردیف",
+                        .Width = 50,
+                        .ReadOnly = True
+                    }
+                    dgv.Columns.Insert(0, colRow)
+                End If
 
-            For i As Integer = 0 To dgv.Rows.Count - 1
-                dgv.Rows(i).Cells("colRowIndex").Value = (i + 1).ToString()
-            Next
+                If dgv.Columns.Contains("colRowIndex") Then
+                    For i As Integer = 0 To dgv.Rows.Count - 1
+                        If i < dgv.Rows.Count Then
+                            dgv.Rows(i).Cells("colRowIndex").Value = (i + 1).ToString()
+                        End If
+                    Next
+                End If
 
-            ApplyPersianGridHeaders(dgv)
+                ApplyPersianGridHeaders(dgv)
+            Catch ex As Exception
+            End Try
         End Sub
 
         Private Sub ApplyPersianGridHeaders(dgv As DataGridView)
-            If dgv Is Nothing Then Return
+            Try
+                If dgv Is Nothing OrElse dgv.Columns Is Nothing Then Return
 
-            Dim dict As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase) From {
-                {"BomID", "شناسه"},
-                {"ProductCode", "کد محصول"},
-                {"ProductName", "نام محصول"},
-                {"RawMaterialName", "ماده اولیه / قطعه"},
-                {"QuantityRequired", "ضریب مصرف"},
-                {"WastePercent", "ضایعات (%)"},
-                {"UnitName", "واحد سنجش"},
-                {"OrderID", "شناسه دستور"},
-                {"OrderNo", "شماره دستور تولید"},
-                {"TargetQuantity", "تیراژ هدف (تعداد)"},
-                {"ProducedQuantity", "تعداد تولیدشده"},
-                {"DirectMaterialCost", "مواد مستقیم" & vbCrLf & "(ریال)"},
-                {"DirectLaborCost", "دستمزد مستقیم" & vbCrLf & "(ریال)"},
-                {"OverheadCost", "سربار تولید" & vbCrLf & "(ریال)"},
-                {"TotalProductionCost", "بهای تمام‌شده کل" & vbCrLf & "(ریال)"},
-                {"TotalMaterials", "کل مواد" & vbCrLf & "(ریال)"},
-                {"TotalLabor", "کل دستمزد" & vbCrLf & "(ریال)"},
-                {"TotalOverhead", "کل سربار" & vbCrLf & "(ریال)"},
-                {"TotalCost", "بهای کل" & vbCrLf & "(ریال)"},
-                {"AvgUnitCost", "میانگین واحد" & vbCrLf & "(ریال)"},
-                {"UnitCost", "بهای تمام‌شده واحد" & vbCrLf & "(ریال)"},
-                {"Status", "وضعیت تولید"},
-                {"StartDate", "تاریخ شروع"},
-                {"EndDate", "تاریخ خاتمه"},
-                {"Notes", "توضیحات"}
-            }
+                Dim dict As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase) From {
+                    {"BomID", "شناسه"},
+                    {"ProductCode", "کد محصول"},
+                    {"ProductName", "نام محصول"},
+                    {"RawMaterialName", "ماده اولیه / قطعه"},
+                    {"QuantityRequired", "ضریب مصرف"},
+                    {"WastePercent", "ضایعات (%)"},
+                    {"UnitName", "واحد سنجش"},
+                    {"OrderID", "شناسه دستور"},
+                    {"OrderNo", "شماره دستور تولید"},
+                    {"TargetQuantity", "تیراژ هدف (تعداد)"},
+                    {"ProducedQuantity", "تعداد تولیدشده"},
+                    {"DirectMaterialCost", "مواد مستقیم" & vbCrLf & "(ریال)"},
+                    {"DirectLaborCost", "دستمزد مستقیم" & vbCrLf & "(ریال)"},
+                    {"OverheadCost", "سربار تولید" & vbCrLf & "(ریال)"},
+                    {"TotalProductionCost", "بهای تمام‌شده کل" & vbCrLf & "(ریال)"},
+                    {"TotalMaterials", "کل مواد" & vbCrLf & "(ریال)"},
+                    {"TotalLabor", "کل دستمزد" & vbCrLf & "(ریال)"},
+                    {"TotalOverhead", "کل سربار" & vbCrLf & "(ریال)"},
+                    {"TotalCost", "بهای کل" & vbCrLf & "(ریال)"},
+                    {"AvgUnitCost", "میانگین واحد" & vbCrLf & "(ریال)"},
+                    {"UnitCost", "بهای تمام‌شده واحد" & vbCrLf & "(ریال)"},
+                    {"Status", "وضعیت تولید"},
+                    {"StartDate", "تاریخ شروع"},
+                    {"EndDate", "تاریخ خاتمه"},
+                    {"Notes", "توضیحات"}
+                }
 
-            For Each col As DataGridViewColumn In dgv.Columns
-                If dict.ContainsKey(col.Name) Then
-                    col.HeaderText = dict(col.Name)
-                End If
-                col.Width = 140
-            Next
+                For Each col As DataGridViewColumn In dgv.Columns
+                    If dict.ContainsKey(col.Name) Then
+                        col.HeaderText = dict(col.Name)
+                    End If
+                    col.Width = 140
+                Next
 
-            If dgv.Columns.Contains("BomID") Then dgv.Columns("BomID").Visible = False
-            If dgv.Columns.Contains("OrderID") Then dgv.Columns("OrderID").Visible = False
-            If dgv.Columns.Contains("ProductCode") Then dgv.Columns("ProductCode").Width = 110
-            If dgv.Columns.Contains("ProductName") Then dgv.Columns("ProductName").Width = 220
-            If dgv.Columns.Contains("RawMaterialName") Then dgv.Columns("RawMaterialName").Width = 200
+                If dgv.Columns.Contains("BomID") Then dgv.Columns("BomID").Visible = False
+                If dgv.Columns.Contains("OrderID") Then dgv.Columns("OrderID").Visible = False
+                If dgv.Columns.Contains("ProductCode") Then dgv.Columns("ProductCode").Width = 110
+                If dgv.Columns.Contains("ProductName") Then dgv.Columns("ProductName").Width = 220
+                If dgv.Columns.Contains("RawMaterialName") Then dgv.Columns("RawMaterialName").Width = 200
+            Catch ex As Exception
+            End Try
         End Sub
     End Class
 End Namespace
