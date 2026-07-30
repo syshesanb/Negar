@@ -114,13 +114,17 @@ Namespace Negar.Forms.Production
             }
             dgvBOM.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
             dgvBOM.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            AddHandler dgvBOM.DataBindingComplete, Sub(s, e) SetupGridColumns(CType(s, DataGridView))
 
             tabBOM.Controls.Add(dgvBOM)
         End Sub
 
         Private Sub LoadBOMData()
-            dgvBOM.DataSource = _prodSvc.GetBOMList(_currentCompanyID)
+            Try
+                Dim dt = _prodSvc.GetBOMList(_currentCompanyID)
+                dgvBOM.DataSource = dt
+                SetupGridColumns(dgvBOM)
+            Catch ex As Exception
+            End Try
         End Sub
 
         ' ----------------------------------------------------
@@ -167,17 +171,23 @@ Namespace Negar.Forms.Production
             }
             dgvOrders.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
             dgvOrders.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            AddHandler dgvOrders.DataBindingComplete, Sub(s, e) SetupGridColumns(CType(s, DataGridView))
 
             tabOrders.Controls.Add(dgvOrders)
             tabOrders.Controls.Add(pnlTop)
         End Sub
 
         Private Sub LoadOrdersData()
-            Dim dt = _prodSvc.GetProductionOrders(_currentCompanyID)
-            dgvOrders.DataSource = dt
-            dgvElements.DataSource = dt
-            dgvScrapWIP.DataSource = dt
+            Try
+                Dim dt = _prodSvc.GetProductionOrders(_currentCompanyID)
+                dgvOrders.DataSource = dt
+                dgvElements.DataSource = If(dt IsNot Nothing, dt.Copy(), Nothing)
+                dgvScrapWIP.DataSource = If(dt IsNot Nothing, dt.Copy(), Nothing)
+
+                SetupGridColumns(dgvOrders)
+                SetupGridColumns(dgvElements)
+                SetupGridColumns(dgvScrapWIP)
+            Catch ex As Exception
+            End Try
         End Sub
 
         Private Sub BtnAddOrder_Click(sender As Object, e As EventArgs)
@@ -224,7 +234,6 @@ Namespace Negar.Forms.Production
             }
             dgvElements.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
             dgvElements.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            AddHandler dgvElements.DataBindingComplete, Sub(s, e) SetupGridColumns(CType(s, DataGridView))
 
             tabElements.Controls.Add(dgvElements)
         End Sub
@@ -248,7 +257,6 @@ Namespace Negar.Forms.Production
             }
             dgvScrapWIP.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
             dgvScrapWIP.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            AddHandler dgvScrapWIP.DataBindingComplete, Sub(s, e) SetupGridColumns(CType(s, DataGridView))
 
             tabScrapWIP.Controls.Add(dgvScrapWIP)
         End Sub
@@ -267,7 +275,14 @@ Namespace Negar.Forms.Production
                 .ForeColor = Color.White,
                 .FlatStyle = FlatStyle.Flat
             }
-            AddHandler btnLoadReport.Click, Sub() dgvReport.DataSource = _prodSvc.GetCostBreakdownReport(_currentCompanyID)
+            AddHandler btnLoadReport.Click, Sub()
+                Try
+                    Dim dt = _prodSvc.GetCostBreakdownReport(_currentCompanyID)
+                    dgvReport.DataSource = dt
+                    SetupGridColumns(dgvReport)
+                Catch ex As Exception
+                End Try
+            End Sub
 
             pnlTop.Controls.Add(btnLoadReport)
 
@@ -286,7 +301,6 @@ Namespace Negar.Forms.Production
             }
             dgvReport.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
             dgvReport.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            AddHandler dgvReport.DataBindingComplete, Sub(s, e) SetupGridColumns(CType(s, DataGridView))
 
             tabReports.Controls.Add(dgvReport)
             tabReports.Controls.Add(pnlTop)
@@ -295,16 +309,6 @@ Namespace Negar.Forms.Production
         Private Sub SetupGridColumns(dgv As DataGridView)
             Try
                 If dgv Is Nothing OrElse dgv.Columns Is Nothing OrElse dgv.Columns.Count = 0 Then Return
-
-                If Not dgv.Columns.Contains("colRowIndex") Then
-                    Dim colRow As New DataGridViewTextBoxColumn() With {
-                        .Name = "colRowIndex",
-                        .HeaderText = "ردیف",
-                        .Width = 50,
-                        .ReadOnly = True
-                    }
-                    dgv.Columns.Insert(0, colRow)
-                End If
 
                 If dgv.Columns.Contains("colRowIndex") Then
                     For i As Integer = 0 To dgv.Rows.Count - 1

@@ -94,11 +94,11 @@ Namespace Negar.Business
         End Sub
 
         Public Function GetBOMList(companyID As Integer) As DataTable
-            Return Sql.ExecuteTable("SELECT * FROM ProductionBOM WHERE CompanyID = ? ORDER BY BomID DESC", companyID)
+            Return Sql.ExecuteTable("SELECT '' AS colRowIndex, BomID, CompanyID, ProductCode, ProductName, RawMaterialName, QuantityRequired, WastePercent, UnitName, Notes, CreatedAt FROM ProductionBOM WHERE CompanyID = ? ORDER BY BomID DESC", companyID)
         End Function
 
         Public Function GetProductionOrders(companyID As Integer) As DataTable
-            Dim query = "SELECT OrderID, OrderNo, ProductCode, ProductName, TargetQuantity, ProducedQuantity, " &
+            Dim query = "SELECT '' AS colRowIndex, OrderID, OrderNo, ProductCode, ProductName, TargetQuantity, ProducedQuantity, " &
                         "DirectMaterialCost, DirectLaborCost, OverheadCost, " &
                         "(DirectMaterialCost + DirectLaborCost + OverheadCost) AS TotalProductionCost, " &
                         "UnitCost, Status, StartDate, EndDate, Notes " &
@@ -192,7 +192,7 @@ Namespace Negar.Business
         End Function
 
         Public Function GetCostBreakdownReport(companyID As Integer) As DataTable
-            Dim query = "SELECT ProductCode, ProductName, SUM(TargetQuantity) AS TotalQuantity, " &
+            Dim query = "SELECT '' AS colRowIndex, ProductCode, ProductName, SUM(TargetQuantity) AS TotalQuantity, " &
                         "SUM(DirectMaterialCost) AS TotalMaterials, " &
                         "SUM(DirectLaborCost) AS TotalLabor, " &
                         "SUM(OverheadCost) AS TotalOverhead, " &
