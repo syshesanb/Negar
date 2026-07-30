@@ -230,6 +230,13 @@ Namespace Negar.Business
         Public Const ProjectGuarantees As String = "ProjectGuarantees"
         Public Const ProjectReports As String = "ProjectReports"
 
+        ' KPI & Performance Management permissions
+        Public Const KpiModule As String = "KpiModule"
+        Public Const KpiDefinitions As String = "KpiDefinitions"
+        Public Const KpiEvaluations As String = "KpiEvaluations"
+        Public Const KpiBonuses As String = "KpiBonuses"
+        Public Const KpiReports As String = "KpiReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

@@ -841,6 +841,35 @@ Namespace Negar.Business
 
             roots.Add(rProject)
 
+            ' =========================================================================
+            ' 17. منوی اصلی: سیستم ارزیابی عملکرد و پاداش پرسنل (mKpi)
+            ' =========================================================================
+            Dim rKpi As New PermissionTreeNode("MENU_KPI", "🎯 سیستم جامع ارزیابی عملکرد و پاداش پرسنل (KPI)", 0)
+            Dim smKpiMain As New PermissionTreeNode("SM_KPI_MAIN", "📁 سیستم جامع ارزیابی عملکرد و کارانه", 1)
+            Dim tKpiMain As New PermissionTreeNode("T_KPI_MAIN", "📄 تعریف شاخص‌های عملکرد (KPI)، ارزیابی ۳۶۰ درجه و پاداش", 2)
+            Dim stKpiMain As New PermissionTreeNode("ST_KPI_MAIN", "📑 ثبت اهداف SMART، نمره‌دهی دوره‌ای، فرمول پاداش و فیش کارانه", 3)
+
+            AddActionNode(stKpiMain, PermissionKeys.KpiModule, "🔘 دسترسی به سیستم ارزیابی عملکرد و پاداش", dbPermissions)
+            AddActionNode(stKpiMain, PermissionKeys.KpiDefinitions, "🔘 مدیریت بانک شاخص‌های KPI و هدف‌گذاری", dbPermissions)
+            AddActionNode(stKpiMain, PermissionKeys.KpiEvaluations, "🔘 ارزیابی دوره‌ای و ارزیابی ۳۶۰ درجه", dbPermissions)
+            AddActionNode(stKpiMain, PermissionKeys.KpiBonuses, "🔘 محاسبات پاداش، کارانه و انتقال به حقوق", dbPermissions)
+
+            tKpiMain.Children.Add(stKpiMain)
+            smKpiMain.Children.Add(tKpiMain)
+            rKpi.Children.Add(smKpiMain)
+
+            Dim smKpiReports As New PermissionTreeNode("SM_KPI_REPORTS", "📁 گزارشات جامع ارزیابی عملکرد و کارانه", 1)
+            Dim tKpiReports As New PermissionTreeNode("T_KPI_REPORTS", "📄 گزارش‌های ماتریس ارزیابی (9-Box Grid) و تحقق اهداف", 2)
+            Dim stKpiReports As New PermissionTreeNode("ST_KPI_REPORTS", "📑 گزارشات مدیریتی کارانه پرداختی و انحراف عملکرد", 3)
+
+            AddActionNode(stKpiReports, PermissionKeys.KpiReports, "🔘 گزارشات جامع ارزیابی عملکرد و پاداش پرسنل", dbPermissions)
+
+            tKpiReports.Children.Add(stKpiReports)
+            smKpiReports.Children.Add(tKpiReports)
+            rKpi.Children.Add(smKpiReports)
+
+            roots.Add(rKpi)
+
             Return roots
         End Function
 

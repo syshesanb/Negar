@@ -30,6 +30,7 @@ Namespace Negar.Forms
         Friend WithEvents mBudgeting As ToolStripMenuItem
         Friend WithEvents mProduction As ToolStripMenuItem
         Friend WithEvents mProject As ToolStripMenuItem
+        Friend WithEvents mKpi As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -64,6 +65,10 @@ Namespace Negar.Forms
         ' Sub-items for Project
         Friend WithEvents miProjectMain As ToolStripMenuItem
         Friend WithEvents miProjectReports As ToolStripMenuItem
+
+        ' Sub-items for KPI
+        Friend WithEvents miKpiMain As ToolStripMenuItem
+        Friend WithEvents miKpiReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -129,6 +134,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolBudgeting As ToolStripButton
         Friend WithEvents btnToolProduction As ToolStripButton
         Friend WithEvents btnToolProject As ToolStripButton
+        Friend WithEvents btnToolKpi As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -165,6 +171,7 @@ Namespace Negar.Forms
             Me.mBudgeting = New ToolStripMenuItem()
             Me.mProduction = New ToolStripMenuItem()
             Me.mProject = New ToolStripMenuItem()
+            Me.mKpi = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -191,6 +198,9 @@ Namespace Negar.Forms
 
             Me.miProjectMain = New ToolStripMenuItem()
             Me.miProjectReports = New ToolStripMenuItem()
+
+            Me.miKpiMain = New ToolStripMenuItem()
+            Me.miKpiReports = New ToolStripMenuItem()
 
             Me.miSettingsMessages = New ToolStripMenuItem()
             Me.miSettingsThemes = New ToolStripMenuItem()
@@ -248,6 +258,7 @@ Namespace Negar.Forms
             Me.btnToolBudgeting = New ToolStripButton()
             Me.btnToolProduction = New ToolStripButton()
             Me.btnToolProject = New ToolStripButton()
+            Me.btnToolKpi = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -269,7 +280,7 @@ Namespace Negar.Forms
             Me.SuspendLayout()
 
             ' mainMenu
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -403,6 +414,22 @@ Namespace Negar.Forms
             Me.miProjectReports.Name = "miProjectReports"
             Me.miProjectReports.Size = New Size(300, 22)
             Me.miProjectReports.Text = "📊 گزارشات جامع پروژه‌ها و پیمان‌ها"
+
+            ' mKpi
+            Me.mKpi.DropDownItems.AddRange(New ToolStripItem() {Me.miKpiMain, Me.miKpiReports})
+            Me.mKpi.Name = "mKpi"
+            Me.mKpi.Size = New Size(170, 20)
+            Me.mKpi.Text = "🎯 ارزیابی عملکرد و پاداش"
+
+            ' miKpiMain
+            Me.miKpiMain.Name = "miKpiMain"
+            Me.miKpiMain.Size = New Size(320, 22)
+            Me.miKpiMain.Text = "🎯 سیستم جامع ارزیابی عملکرد و پاداش (KPI)"
+
+            ' miKpiReports
+            Me.miKpiReports.Name = "miKpiReports"
+            Me.miKpiReports.Size = New Size(320, 22)
+            Me.miKpiReports.Text = "📊 گزارشات جامع ارزیابی عملکرد و کارانه"
 
             ' mSystemMgmt
             Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
@@ -616,7 +643,7 @@ Namespace Negar.Forms
             Me.tool.Dock = DockStyle.None
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
             Me.pnlToolBar.AutoScroll = True
@@ -675,6 +702,12 @@ Namespace Negar.Forms
             Me.btnToolProject.Name = "btnToolProject"
             Me.btnToolProject.Size = New Size(150, 51)
             Me.btnToolProject.Text = "پروژه‌ها و پیمان‌ها"
+
+            ' btnToolKpi
+            Me.btnToolKpi.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolKpi.Name = "btnToolKpi"
+            Me.btnToolKpi.Size = New Size(170, 51)
+            Me.btnToolKpi.Text = "ارزیابی عملکرد و پاداش"
             Me.tool.Location = New Point(0, 0)
             Me.tool.Name = "tool"
             Me.tool.RightToLeft = RightToLeft.Yes

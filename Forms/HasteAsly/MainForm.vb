@@ -843,6 +843,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع مدیریت پروژه‌ها و پیمان‌ها", AddressOf OpenProjectMainForm, "TradeWarehouse")
                     AddDashButton("گزارشات جامع پروژه‌ها و پیمان‌ها", AddressOf OpenProjectMainForm, "Reports")
 
+                Case "Kpi"
+                    AddDashButton("سیستم جامع ارزیابی عملکرد و پاداش (KPI)", AddressOf OpenKpiMainForm, "Users")
+                    AddDashButton("گزارشات جامع ارزیابی عملکرد و کارانه", AddressOf OpenKpiMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1019,6 +1023,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول مدیریت پروژه‌ها و پیمان‌ها: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolKpi_Click(sender As Object, e As EventArgs) Handles btnToolKpi.Click
+            ShowDashboardCategory("Kpi")
+        End Sub
+
+        Private Sub OpenKpiMainForm(sender As Object, e As EventArgs) Handles mKpi.Click, miKpiMain.Click, miKpiReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.KPI.KpiMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول ارزیابی عملکرد و پاداش: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
