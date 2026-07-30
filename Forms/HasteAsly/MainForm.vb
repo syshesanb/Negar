@@ -361,6 +361,16 @@ Namespace Negar.Forms
 
             Dim canManageMessages = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ManageAppMessages)
 
+            Dim canPayroll = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.PayrollModule)
+            Dim canAmval = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AmvalModule)
+            Dim canAutomation = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.AutomationModule)
+            Dim canCrm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.CrmModule)
+            Dim canTreasury = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.TreasuryModule)
+            Dim canBudgeting = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BudgetingModule)
+            Dim canProduction = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ProductionModule)
+            Dim canProject = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ProjectModule)
+            Dim canKpi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.KpiModule)
+
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
             miTradeMini.Available = canAnbarMini
@@ -410,6 +420,15 @@ Namespace Negar.Forms
             mCompanyMgmt.Visible = canCompanyYears
             mAccounting.Visible = canAccounting OrElse canReports
             mTradeWarehouse.Visible = canTrade OrElse canReports
+            mPayroll.Visible = canPayroll
+            mAmval.Visible = canAmval
+            mAutomation.Visible = canAutomation
+            mCrm.Visible = canCrm
+            mTreasury.Visible = canTreasury
+            mBudgeting.Visible = canBudgeting
+            mProduction.Visible = canProduction
+            mProject.Visible = canProject
+            mKpi.Visible = canKpi
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -418,8 +437,19 @@ Namespace Negar.Forms
             btnToolCompanyMgmt.Visible = canCompanyYears
             btnToolAccounting.Visible = canAccounting OrElse canReports
             btnToolTradeWarehouse.Visible = canTrade OrElse canReports
+            btnToolPayroll.Visible = canPayroll
+            btnToolAmval.Visible = canAmval
+            btnToolAutomation.Visible = canAutomation
+            btnToolCrm.Visible = canCrm
+            btnToolTreasury.Visible = canTreasury
+            btnToolBudgeting.Visible = canBudgeting
+            btnToolProduction.Visible = canProduction
+            btnToolProject.Visible = canProject
+            btnToolKpi.Visible = canKpi
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
+
+            ShowDashboardCategory("SystemMgmt")
 
             ShowDashboardCategory("SystemMgmt")
         End Sub
