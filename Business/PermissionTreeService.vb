@@ -781,6 +781,36 @@ Namespace Negar.Business
 
             roots.Add(rBudget)
 
+            ' =========================================================================
+            ' 15. منوی اصلی: سیستم بهای تمام‌شده و برنامه‌ریزی تولید (mProduction)
+            ' =========================================================================
+            Dim rProd As New PermissionTreeNode("MENU_PRODUCTION", "🏭 سیستم جامع بهای تمام‌شده و مدیریت تولید", 0)
+            Dim smProdMain As New PermissionTreeNode("SM_PROD_MAIN", "📁 سیستم جامع بهای تمام‌شده و برنامه‌ریزی تولید", 1)
+            Dim tProdMain As New PermissionTreeNode("T_PROD_MAIN", "📄 تعریف فرمول ساخت (BOM)، دستورات تولید و بهای تمام‌شده", 2)
+            Dim stProdMain As New PermissionTreeNode("ST_PROD_MAIN", "📑 کارت تولید، ۳ عنصر اصلی بهای تمام‌شده و ارزیابی WIP", 3)
+
+            AddActionNode(stProdMain, PermissionKeys.ProductionModule, "🔘 دسترسی به سیستم بهای تمام‌شده و تولید", dbPermissions)
+            AddActionNode(stProdMain, PermissionKeys.ProductionBOM, "🔘 مدیریت فرمول ساخت و BOM کالاها", dbPermissions)
+            AddActionNode(stProdMain, PermissionKeys.ProductionOrders, "🔘 صدور و مدیریت دستورات و کارت‌های تولید", dbPermissions)
+            AddActionNode(stProdMain, PermissionKeys.ProductionCosting, "🔘 محاسبات بهای تمام‌شده (مواد، دستمزد، سربار)", dbPermissions)
+            AddActionNode(stProdMain, PermissionKeys.ProductionWIP, "🔘 ارزیابی کالای در جریان ساخت (WIP) و ضایعات", dbPermissions)
+
+            tProdMain.Children.Add(stProdMain)
+            smProdMain.Children.Add(tProdMain)
+            rProd.Children.Add(smProdMain)
+
+            Dim smProdReports As New PermissionTreeNode("SM_PROD_REPORTS", "📁 گزارشات جامع بهای تمام‌شده و آنالیز BOM", 1)
+            Dim tProdReports As New PermissionTreeNode("T_PROD_REPORTS", "📄 گزارش‌های آنالیز عناصر بهای تمام‌شده و سودآوری محصولات", 2)
+            Dim stProdReports As New PermissionTreeNode("ST_PROD_REPORTS", "📑 گزارشات مدیریتی انحراف بهای تمام‌شده و راندمان تولید", 3)
+
+            AddActionNode(stProdReports, PermissionKeys.ProductionReports, "🔘 گزارشات جامع بهای تمام‌شده و سودآوری کالاها", dbPermissions)
+
+            tProdReports.Children.Add(stProdReports)
+            smProdReports.Children.Add(tProdReports)
+            rProd.Children.Add(smProdReports)
+
+            roots.Add(rProd)
+
             Return roots
         End Function
 

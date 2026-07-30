@@ -28,6 +28,7 @@ Namespace Negar.Forms
         Friend WithEvents mCrm As ToolStripMenuItem
         Friend WithEvents mTreasury As ToolStripMenuItem
         Friend WithEvents mBudgeting As ToolStripMenuItem
+        Friend WithEvents mProduction As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -54,6 +55,10 @@ Namespace Negar.Forms
         ' Sub-items for Budgeting
         Friend WithEvents miBudgetingMain As ToolStripMenuItem
         Friend WithEvents miBudgetingReports As ToolStripMenuItem
+
+        ' Sub-items for Production
+        Friend WithEvents miProductionMain As ToolStripMenuItem
+        Friend WithEvents miProductionReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -116,6 +121,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolCrm As ToolStripButton
         Friend WithEvents btnToolTreasury As ToolStripButton
         Friend WithEvents btnToolBudgeting As ToolStripButton
+        Friend WithEvents btnToolProduction As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -150,6 +156,7 @@ Namespace Negar.Forms
             Me.mCrm = New ToolStripMenuItem()
             Me.mTreasury = New ToolStripMenuItem()
             Me.mBudgeting = New ToolStripMenuItem()
+            Me.mProduction = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -170,6 +177,9 @@ Namespace Negar.Forms
 
             Me.miBudgetingMain = New ToolStripMenuItem()
             Me.miBudgetingReports = New ToolStripMenuItem()
+
+            Me.miProductionMain = New ToolStripMenuItem()
+            Me.miProductionReports = New ToolStripMenuItem()
 
             Me.miSettingsMessages = New ToolStripMenuItem()
             Me.miSettingsThemes = New ToolStripMenuItem()
@@ -224,6 +234,7 @@ Namespace Negar.Forms
             Me.btnToolCrm = New ToolStripButton()
             Me.btnToolTreasury = New ToolStripButton()
             Me.btnToolBudgeting = New ToolStripButton()
+            Me.btnToolProduction = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -245,7 +256,7 @@ Namespace Negar.Forms
             Me.SuspendLayout()
 
             ' mainMenu
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -347,6 +358,22 @@ Namespace Negar.Forms
             Me.miBudgetingReports.Name = "miBudgetingReports"
             Me.miBudgetingReports.Size = New Size(280, 22)
             Me.miBudgetingReports.Text = "📈 گزارشات انحراف بودجه و انضباط مالی"
+
+            ' mProduction
+            Me.mProduction.DropDownItems.AddRange(New ToolStripItem() {Me.miProductionMain, Me.miProductionReports})
+            Me.mProduction.Name = "mProduction"
+            Me.mProduction.Size = New Size(140, 20)
+            Me.mProduction.Text = "🏭 تولید و بهای تمام‌شده"
+
+            ' miProductionMain
+            Me.miProductionMain.Name = "miProductionMain"
+            Me.miProductionMain.Size = New Size(300, 22)
+            Me.miProductionMain.Text = "🏭 سیستم جامع بهای تمام‌شده و برنامه‌ریزی تولید"
+
+            ' miProductionReports
+            Me.miProductionReports.Name = "miProductionReports"
+            Me.miProductionReports.Size = New Size(300, 22)
+            Me.miProductionReports.Text = "📊 گزارشات جامع بهای تمام‌شده و آنالیز BOM"
 
             ' mSystemMgmt
             Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})

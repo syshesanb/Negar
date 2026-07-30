@@ -214,6 +214,14 @@ Namespace Negar.Business
         Public Const BudgetingAmendments As String = "BudgetingAmendments"
         Public Const BudgetingReports As String = "BudgetingReports"
 
+        ' Costing & Production permissions
+        Public Const ProductionModule As String = "ProductionModule"
+        Public Const ProductionBOM As String = "ProductionBOM"
+        Public Const ProductionOrders As String = "ProductionOrders"
+        Public Const ProductionCosting As String = "ProductionCosting"
+        Public Const ProductionWIP As String = "ProductionWIP"
+        Public Const ProductionReports As String = "ProductionReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

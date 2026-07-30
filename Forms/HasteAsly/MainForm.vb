@@ -835,6 +835,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع بودجه و کنترل هزینه‌ها", AddressOf OpenBudgetingMainForm, "CompanyFiscalYears")
                     AddDashButton("گزارشات انحراف بودجه و انضباط مالی", AddressOf OpenBudgetingMainForm, "Reports")
 
+                Case "Production"
+                    AddDashButton("سیستم جامع بهای تمام‌شده و برنامه‌ریزی تولید", AddressOf OpenProductionMainForm, "TradeWarehouse")
+                    AddDashButton("گزارشات جامع بهای تمام‌شده و آنالیز BOM", AddressOf OpenProductionMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -981,6 +985,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول بودجه و کنترل هزینه: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolProduction_Click(sender As Object, e As EventArgs) Handles btnToolProduction.Click
+            ShowDashboardCategory("Production")
+        End Sub
+
+        Private Sub OpenProductionMainForm(sender As Object, e As EventArgs) Handles mProduction.Click, miProductionMain.Click, miProductionReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Production.ProductionMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن ماژول بهای تمام‌شده و تولید: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 
