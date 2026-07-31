@@ -261,6 +261,14 @@ Namespace Negar.Business
         Public Const LogisticsCosting As String = "LogisticsCosting"
         Public Const LogisticsReports As String = "LogisticsReports"
 
+        ' Supplier Relationship Management (SRM) permissions
+        Public Const SrmModule As String = "SrmModule"
+        Public Const SrmSuppliers As String = "SrmSuppliers"
+        Public Const SrmRfq As String = "SrmRfq"
+        Public Const SrmEvaluations As String = "SrmEvaluations"
+        Public Const SrmCosting As String = "SrmCosting"
+        Public Const SrmReports As String = "SrmReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

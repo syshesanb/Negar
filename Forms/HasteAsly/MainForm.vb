@@ -113,6 +113,7 @@ Namespace Negar.Forms
             btnToolImportExport.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolPm.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolLogistics.Image = CreateModuleIcon("TradeWarehouse", 24)
+            btnToolSrm.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -376,6 +377,7 @@ Namespace Negar.Forms
             Dim canImportExport = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ImportExportModule)
             Dim canPm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.PmModule)
             Dim canLogistics = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.LogisticsModule)
+            Dim canSrm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SrmModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -438,6 +440,7 @@ Namespace Negar.Forms
             mImportExport.Visible = canImportExport
             mPm.Visible = canPm
             mLogistics.Visible = canLogistics
+            mSrm.Visible = canSrm
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -458,6 +461,7 @@ Namespace Negar.Forms
             btnToolImportExport.Visible = canImportExport
             btnToolPm.Visible = canPm
             btnToolLogistics.Visible = canLogistics
+            btnToolSrm.Visible = canSrm
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -901,6 +905,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع مدیریت ناوگان حمل و پخش مویرگی", AddressOf OpenLogisticsMainForm, "TradeWarehouse")
                     AddDashButton("گزارشات جامع بارنامه‌ها، کرایه حمل و پورسانت توزیع", AddressOf OpenLogisticsMainForm, "Reports")
 
+                Case "Srm"
+                    AddDashButton("سیستم جامع ارزیابی و مدیریت ارتباط با تامین‌کنندگان (SRM)", AddressOf OpenSrmMainForm, "CompanyFiscalYears")
+                    AddDashButton("گزارشات جامع استعلام‌ها (RFQ)، کارت امتیازی و انحراف قیمت خرید", AddressOf OpenSrmMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1137,6 +1145,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم لوجستیک و پخش مویرگی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolSrm_Click(sender As Object, e As EventArgs) Handles btnToolSrm.Click
+            ShowDashboardCategory("Srm")
+        End Sub
+
+        Private Sub OpenSrmMainForm(sender As Object, e As EventArgs) Handles mSrm.Click, miSrmMain.Click, miSrmReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.SRM.SrmMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم مدیریت تامین‌کنندگان (SRM): " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

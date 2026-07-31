@@ -958,6 +958,36 @@ Namespace Negar.Business
 
             roots.Add(rLog)
 
+            ' =========================================================================
+            ' 21. منوی اصلی: سیستم ارزیابی و مدیریت ارتباط با تامین‌کنندگان (mSrm)
+            ' =========================================================================
+            Dim rSrm As New PermissionTreeNode("MENU_SRM", "🤝 سیستم جامع ارزیابی و مدیریت ارتباط با تامین‌کنندگان (SRM)", 0)
+            Dim smSrmMain As New PermissionTreeNode("SM_SRM_MAIN", "📁 سیستم جامع مدیریت ارتباط با تامین‌کنندگان", 1)
+            Dim tSrmMain As New PermissionTreeNode("T_SRM_MAIN", "📄 شناسنامه تامین‌کنندگان، استعلام قیمت (RFQ)، ارزیابی و گریدبندی", 2)
+            Dim stSrmMain As New PermissionTreeNode("ST_SRM_MAIN", "📑 ثبت مناقصات، کارت امتیازی (Scorecard) و قراردادهای تامین", 3)
+
+            AddActionNode(stSrmMain, PermissionKeys.SrmModule, "🔘 دسترسی به سیستم مدیریت تامین‌کنندگان (SRM)", dbPermissions)
+            AddActionNode(stSrmMain, PermissionKeys.SrmSuppliers, "🔘 مدیریت شناسنامه و بانک اطلاعات تامین‌کنندگان", dbPermissions)
+            AddActionNode(stSrmMain, PermissionKeys.SrmRfq, "🔘 مدیریت استعلام‌های قیمت خرید (RFQ)", dbPermissions)
+            AddActionNode(stSrmMain, PermissionKeys.SrmEvaluations, "🔘 ارزیابی دوره‌ای و سیستم کارت امتیازی تامین‌کنندگان", dbPermissions)
+            AddActionNode(stSrmMain, PermissionKeys.SrmCosting, "🔘 محاسبات انحراف قیمت خرید (PPV) و پاداش کیفی", dbPermissions)
+
+            tSrmMain.Children.Add(stSrmMain)
+            smSrmMain.Children.Add(tSrmMain)
+            rSrm.Children.Add(smSrmMain)
+
+            Dim smSrmReports As New PermissionTreeNode("SM_SRM_REPORTS", "📁 گزارشات جامع تامین‌کنندگان، OTD و گریدبندی", 1)
+            Dim tSrmReports As New PermissionTreeNode("T_SRM_REPORTS", "📄 گزارش‌های ارزیابی کیفی، تحویل به موقع و صرفه‌جویی استعلام‌ها", 2)
+            Dim stSrmReports As New PermissionTreeNode("ST_SRM_REPORTS", "📑 گزارشات مدیریتی کارت امتیازی و ماتریس رتبه‌بندی تامین‌کنندگان", 3)
+
+            AddActionNode(stSrmReports, PermissionKeys.SrmReports, "🔘 گزارشات جامع مدیریت تامین‌کنندگان و شاخص‌های SRM", dbPermissions)
+
+            tSrmReports.Children.Add(stSrmReports)
+            smSrmReports.Children.Add(tSrmReports)
+            rSrm.Children.Add(smSrmReports)
+
+            roots.Add(rSrm)
+
             Return roots
         End Function
 
