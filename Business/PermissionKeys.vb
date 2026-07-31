@@ -285,6 +285,14 @@ Namespace Negar.Business
         Public Const BiSales As String = "BiSales"
         Public Const BiReports As String = "BiReports"
 
+        ' Document Management System (DMS) permissions
+        Public Const DmsModule As String = "DmsModule"
+        Public Const DmsDocuments As String = "DmsDocuments"
+        Public Const DmsCategories As String = "DmsCategories"
+        Public Const DmsVersioning As String = "DmsVersioning"
+        Public Const DmsSecurity As String = "DmsSecurity"
+        Public Const DmsReports As String = "DmsReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

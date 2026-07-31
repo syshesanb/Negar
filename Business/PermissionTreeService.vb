@@ -1044,8 +1044,37 @@ Namespace Negar.Business
             tBiReports.Children.Add(stBiReports)
             smBiReports.Children.Add(tBiReports)
             rBi.Children.Add(smBiReports)
-
             roots.Add(rBi)
+
+            ' =========================================================================
+            ' 24. منوی اصلی: سیستم مدیریت بایگانی دیجیتال و آرشیو اسناد (mDms)
+            ' =========================================================================
+            Dim rDms As New PermissionTreeNode("MENU_DMS", "📁 سیستم جامع مدیریت بایگانی دیجیتال و آرشیو اسناد (DMS)", 0)
+            Dim smDmsMain As New PermissionTreeNode("SM_DMS_MAIN", "📁 آرشیو اسناد، پرونده‌ها و متاداده‌گذاری", 1)
+            Dim tDmsMain As New PermissionTreeNode("T_DMS_MAIN", "📄 اسکن مستقیم، OCR فارسی، متاداده‌گذاری، کنترل نسخه و رمزنگاری AES-256", 2)
+            Dim stDmsMain As New PermissionTreeNode("ST_DMS_MAIN", "📑 بایگانی دیجیتال، قفل‌گذاری اسناد (Check-in/Out) و پیوست به مالی/پرسنلی", 3)
+
+            AddActionNode(stDmsMain, PermissionKeys.DmsModule, "🔘 دسترسی به سیستم مدیریت بایگانی دیجیتال (DMS)", dbPermissions)
+            AddActionNode(stDmsMain, PermissionKeys.DmsDocuments, "🔘 مدیریت پرونده‌ها، اسکن مدارک و متاداده‌گذاری", dbPermissions)
+            AddActionNode(stDmsMain, PermissionKeys.DmsCategories, "🔘 مدیریت درختواره زون‌های بایگانی اسناد", dbPermissions)
+            AddActionNode(stDmsMain, PermissionKeys.DmsVersioning, "🔘 مدیریت تاریخچه نسخه‌های اسناد (Version Control)", dbPermissions)
+            AddActionNode(stDmsMain, PermissionKeys.DmsSecurity, "🔘 سطوح محرمانگی اسناد، رمزنگاری AES و واترمارک", dbPermissions)
+
+            tDmsMain.Children.Add(stDmsMain)
+            smDmsMain.Children.Add(tDmsMain)
+            rDms.Children.Add(smDmsMain)
+
+            Dim smDmsReports As New PermissionTreeNode("SM_DMS_REPORTS", "📁 گزارشات بایگانی، سررسید اسناد و لاگ امنیتی", 1)
+            Dim tDmsReports As New PermissionTreeNode("T_DMS_REPORTS", "📄 موتور جستجوی متن کامل (Full-Text)، هشدار انقضای قراردادها و ردیابی audit", 2)
+            Dim stDmsReports As New PermissionTreeNode("ST_DMS_REPORTS", "📑 گزارشات مدیریتی آرشیو دیجیتال و وضعیت امنیت اسناد", 3)
+
+            AddActionNode(stDmsReports, PermissionKeys.DmsReports, "🔘 گزارشات جامع پرونده‌های آرشیو، سررسید انقضا و لاگ امنیتی", dbPermissions)
+
+            tDmsReports.Children.Add(stDmsReports)
+            smDmsReports.Children.Add(tDmsReports)
+            rDms.Children.Add(smDmsReports)
+
+            roots.Add(rDms)
 
             Return roots
         End Function
