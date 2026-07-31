@@ -277,6 +277,14 @@ Namespace Negar.Business
         Public Const QcCosting As String = "QcCosting"
         Public Const QcReports As String = "QcReports"
 
+        ' Business Intelligence & Advanced Dashboard (BI) permissions
+        Public Const BiModule As String = "BiModule"
+        Public Const BiExecutive As String = "BiExecutive"
+        Public Const BiFinancial As String = "BiFinancial"
+        Public Const BiProduction As String = "BiProduction"
+        Public Const BiSales As String = "BiSales"
+        Public Const BiReports As String = "BiReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

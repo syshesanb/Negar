@@ -115,6 +115,7 @@ Namespace Negar.Forms
             btnToolLogistics.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolSrm.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolQc.Image = CreateModuleIcon("TradeWarehouse", 24)
+            btnToolBi.Image = CreateModuleIcon("Reports", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -380,6 +381,7 @@ Namespace Negar.Forms
             Dim canLogistics = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.LogisticsModule)
             Dim canSrm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SrmModule)
             Dim canQc = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.QcModule)
+            Dim canBi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BiModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -444,6 +446,7 @@ Namespace Negar.Forms
             mLogistics.Visible = canLogistics
             mSrm.Visible = canSrm
             mQc.Visible = canQc
+            mBi.Visible = canBi
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -466,6 +469,7 @@ Namespace Negar.Forms
             btnToolLogistics.Visible = canLogistics
             btnToolSrm.Visible = canSrm
             btnToolQc.Visible = canQc
+            btnToolBi.Visible = canBi
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -917,6 +921,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع کنترل کیفیت و تضمین کیفیت (QC/QA)", AddressOf OpenQcMainForm, "Production")
                     AddDashButton("گزارشات جامع بازرسی‌های IQC/IPQC، ضایعات و FPY", AddressOf OpenQcMainForm, "Reports")
 
+                Case "Bi"
+                    AddDashButton("سیستم جامع هوش تجاری و داشبورد مدیریتی پیشرفته (BI)", AddressOf OpenBiMainForm, "Reports")
+                    AddDashButton("گزارشات جامع تحلیلی OLAP، پیش‌بینی هوشمند و P&L", AddressOf OpenBiMainForm, "Accounting")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1183,6 +1191,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم کنترل کیفیت و تضمین کیفیت: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolBi_Click(sender As Object, e As EventArgs) Handles btnToolBi.Click
+            ShowDashboardCategory("Bi")
+        End Sub
+
+        Private Sub OpenBiMainForm(sender As Object, e As EventArgs) Handles mBi.Click, miBiMain.Click, miBiReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.BI.BiMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم هوش تجاری و داشبورد مدیریتی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

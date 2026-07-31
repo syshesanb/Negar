@@ -162,6 +162,7 @@
     <Compile Include="Business\LogisticsService.vb" />
     <Compile Include="Business\SrmService.vb" />
     <Compile Include="Business\QcService.vb" />
+    <Compile Include="Business\BiService.vb" />
     <Compile Include="Forms\Payroll\PayrollMainForm.vb" />
     <Compile Include="Forms\Payroll\PayrollPersonnelEditDialog.vb" />
     <Compile Include="Forms\Amval\AmvalMainForm.vb" />
@@ -190,6 +191,7 @@
     <Compile Include="Forms\SRM\SrmEditDialog.vb" />
     <Compile Include="Forms\QC\QcMainForm.vb" />
     <Compile Include="Forms\QC\QcEditDialog.vb" />
+    <Compile Include="Forms\BI\BiMainForm.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">

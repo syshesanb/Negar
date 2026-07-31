@@ -1017,6 +1017,36 @@ Namespace Negar.Business
 
             roots.Add(rQc)
 
+            ' =========================================================================
+            ' 23. منوی اصلی: سیستم هوش تجاری و داشبورد مدیریتی پیشرفته (mBi)
+            ' =========================================================================
+            Dim rBi As New PermissionTreeNode("MENU_BI", "📊 سیستم جامع هوش تجاری و داشبورد مدیریتی پیشرفته (BI)", 0)
+            Dim smBiMain As New PermissionTreeNode("SM_BI_MAIN", "📁 برج کنترل مدیرعامل و داشبوردهای تخصصی", 1)
+            Dim tBiMain As New PermissionTreeNode("T_BI_MAIN", "📄 برج کنترل CEO، تحلیل سود و زیان P&L، پیش‌بینی هوشمند فروش و OEE", 2)
+            Dim stBiMain As New PermissionTreeNode("ST_BI_MAIN", "📑 مکعب‌های داده (OLAP)، تحلیل چندبعدی، پیش‌بینی نقدینگی و ریسک", 3)
+
+            AddActionNode(stBiMain, PermissionKeys.BiModule, "🔘 دسترسی به سیستم هوش تجاری و داشبورد مدیریتی (BI)", dbPermissions)
+            AddActionNode(stBiMain, PermissionKeys.BiExecutive, "🔘 برج کنترل مدیرعامل (CEO Control Tower)", dbPermissions)
+            AddActionNode(stBiMain, PermissionKeys.BiFinancial, "🔘 هوش تجاری مالی، P&L و سودآوری به تفکیک محصولات", dbPermissions)
+            AddActionNode(stBiMain, PermissionKeys.BiProduction, "🔘 هوش تجاری تولید، بهره‌وری OEE و ضایعات FPY", dbPermissions)
+            AddActionNode(stBiMain, PermissionKeys.BiSales, "🔘 پیش‌بینی هوشمند فروش و پایش فروش مویرگی", dbPermissions)
+
+            tBiMain.Children.Add(stBiMain)
+            smBiMain.Children.Add(tBiMain)
+            rBi.Children.Add(smBiMain)
+
+            Dim smBiReports As New PermissionTreeNode("SM_BI_REPORTS", "📁 گزارشات تحلیلی OLAP و پیش‌بینی‌های AI", 1)
+            Dim tBiReports As New PermissionTreeNode("T_BI_REPORTS", "📄 گزارش‌های چندبعدی Drill-down، تحلیل انحراف بودجه و رتبه‌بندی", 2)
+            Dim stBiReports As New PermissionTreeNode("ST_BI_REPORTS", "📑 گزارشات مدیریتی ارشد و ماتریس‌های هوش تجاری", 3)
+
+            AddActionNode(stBiReports, PermissionKeys.BiReports, "🔘 گزارشات جامع تحلیلی OLAP، پیش‌بینی هوشمند و P&L", dbPermissions)
+
+            tBiReports.Children.Add(stBiReports)
+            smBiReports.Children.Add(tBiReports)
+            rBi.Children.Add(smBiReports)
+
+            roots.Add(rBi)
+
             Return roots
         End Function
 

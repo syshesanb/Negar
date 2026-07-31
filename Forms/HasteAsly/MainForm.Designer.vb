@@ -37,6 +37,7 @@ Namespace Negar.Forms
         Friend WithEvents mLogistics As ToolStripMenuItem
         Friend WithEvents mSrm As ToolStripMenuItem
         Friend WithEvents mQc As ToolStripMenuItem
+        Friend WithEvents mBi As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -95,6 +96,10 @@ Namespace Negar.Forms
         ' Sub-items for QC
         Friend WithEvents miQcMain As ToolStripMenuItem
         Friend WithEvents miQcReports As ToolStripMenuItem
+
+        ' Sub-items for BI
+        Friend WithEvents miBiMain As ToolStripMenuItem
+        Friend WithEvents miBiReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -166,6 +171,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolLogistics As ToolStripButton
         Friend WithEvents btnToolSrm As ToolStripButton
         Friend WithEvents btnToolQc As ToolStripButton
+        Friend WithEvents btnToolBi As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -209,6 +215,7 @@ Namespace Negar.Forms
             Me.mLogistics = New ToolStripMenuItem()
             Me.mSrm = New ToolStripMenuItem()
             Me.mQc = New ToolStripMenuItem()
+            Me.mBi = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -226,6 +233,9 @@ Namespace Negar.Forms
 
             Me.miQcMain = New ToolStripMenuItem()
             Me.miQcReports = New ToolStripMenuItem()
+
+            Me.miBiMain = New ToolStripMenuItem()
+            Me.miBiReports = New ToolStripMenuItem()
 
             Me.miPayrollMain = New ToolStripMenuItem()
             Me.miPayrollReports = New ToolStripMenuItem()
@@ -316,6 +326,7 @@ Namespace Negar.Forms
             Me.btnToolLogistics = New ToolStripButton()
             Me.btnToolSrm = New ToolStripButton()
             Me.btnToolQc = New ToolStripButton()
+            Me.btnToolBi = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -351,7 +362,7 @@ Namespace Negar.Forms
             Me.mainMenu.CanOverflow = True
             Me.mainMenu.Dock = DockStyle.None
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -570,6 +581,22 @@ Namespace Negar.Forms
             Me.miQcReports.Size = New Size(380, 22)
             Me.miQcReports.Text = "📊 گزارشات جامع بازرسی‌های IQC/IPQC، ضایعات و FPY"
 
+            ' mBi
+            Me.mBi.DropDownItems.AddRange(New ToolStripItem() {Me.miBiMain, Me.miBiReports})
+            Me.mBi.Name = "mBi"
+            Me.mBi.Size = New Size(160, 20)
+            Me.mBi.Text = "📊 هوش تجاری و داشبورد"
+
+            ' miBiMain
+            Me.miBiMain.Name = "miBiMain"
+            Me.miBiMain.Size = New Size(420, 22)
+            Me.miBiMain.Text = "📊 سیستم جامع هوش تجاری و داشبورد مدیریتی پیشرفته (BI)"
+
+            ' miBiReports
+            Me.miBiReports.Name = "miBiReports"
+            Me.miBiReports.Size = New Size(420, 22)
+            Me.miBiReports.Text = "📈 گزارشات جامع تحلیلی OLAP، پیش‌بینی هوشمند و P&L"
+
             ' miLogisticsReports
             Me.miLogisticsReports.Name = "miLogisticsReports"
             Me.miLogisticsReports.Size = New Size(380, 22)
@@ -787,7 +814,7 @@ Namespace Negar.Forms
             Me.tool.Dock = DockStyle.None
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
             Me.pnlToolBar.AutoScroll = True
@@ -916,6 +943,12 @@ Namespace Negar.Forms
             Me.btnToolQc.Name = "btnToolQc"
             Me.btnToolQc.Size = New Size(160, 51)
             Me.btnToolQc.Text = "کنترل و تضمین کیفیت"
+
+            ' btnToolBi
+            Me.btnToolBi.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolBi.Name = "btnToolBi"
+            Me.btnToolBi.Size = New Size(160, 51)
+            Me.btnToolBi.Text = "هوش تجاری و داشبورد"
 
             ' btnToolBusinessShells
             Me.btnToolBusinessShells.Margin = New Padding(4, 2, 4, 2)
