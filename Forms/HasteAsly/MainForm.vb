@@ -114,6 +114,7 @@ Namespace Negar.Forms
             btnToolPm.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolLogistics.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolSrm.Image = CreateModuleIcon("CompanyFiscalYears", 24)
+            btnToolQc.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -378,6 +379,7 @@ Namespace Negar.Forms
             Dim canPm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.PmModule)
             Dim canLogistics = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.LogisticsModule)
             Dim canSrm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SrmModule)
+            Dim canQc = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.QcModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -441,6 +443,7 @@ Namespace Negar.Forms
             mPm.Visible = canPm
             mLogistics.Visible = canLogistics
             mSrm.Visible = canSrm
+            mQc.Visible = canQc
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -462,6 +465,7 @@ Namespace Negar.Forms
             btnToolPm.Visible = canPm
             btnToolLogistics.Visible = canLogistics
             btnToolSrm.Visible = canSrm
+            btnToolQc.Visible = canQc
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -909,6 +913,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع ارزیابی و مدیریت ارتباط با تامین‌کنندگان (SRM)", AddressOf OpenSrmMainForm, "CompanyFiscalYears")
                     AddDashButton("گزارشات جامع استعلام‌ها (RFQ)، کارت امتیازی و انحراف قیمت خرید", AddressOf OpenSrmMainForm, "Reports")
 
+                Case "Qc"
+                    AddDashButton("سیستم جامع کنترل کیفیت و تضمین کیفیت (QC/QA)", AddressOf OpenQcMainForm, "Production")
+                    AddDashButton("گزارشات جامع بازرسی‌های IQC/IPQC، ضایعات و FPY", AddressOf OpenQcMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1160,6 +1168,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم مدیریت تامین‌کنندگان (SRM): " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolQc_Click(sender As Object, e As EventArgs) Handles btnToolQc.Click
+            ShowDashboardCategory("Qc")
+        End Sub
+
+        Private Sub OpenQcMainForm(sender As Object, e As EventArgs) Handles mQc.Click, miQcMain.Click, miQcReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.QC.QcMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم کنترل کیفیت و تضمین کیفیت: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

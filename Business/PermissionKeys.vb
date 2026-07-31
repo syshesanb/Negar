@@ -269,6 +269,14 @@ Namespace Negar.Business
         Public Const SrmCosting As String = "SrmCosting"
         Public Const SrmReports As String = "SrmReports"
 
+        ' Quality Control & Assurance (QC/QA) permissions
+        Public Const QcModule As String = "QcModule"
+        Public Const QcIqc As String = "QcIqc"
+        Public Const QcIpqc As String = "QcIpqc"
+        Public Const QcNcrCapa As String = "QcNcrCapa"
+        Public Const QcCosting As String = "QcCosting"
+        Public Const QcReports As String = "QcReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

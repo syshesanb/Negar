@@ -985,8 +985,37 @@ Namespace Negar.Business
             tSrmReports.Children.Add(stSrmReports)
             smSrmReports.Children.Add(tSrmReports)
             rSrm.Children.Add(smSrmReports)
-
             roots.Add(rSrm)
+
+            ' =========================================================================
+            ' 22. منوی اصلی: سیستم کنترل کیفیت و تضمین کیفیت (mQc)
+            ' =========================================================================
+            Dim rQc As New PermissionTreeNode("MENU_QC", "🔬 سیستم جامع کنترل کیفیت و تضمین کیفیت (QC/QA)", 0)
+            Dim smQcMain As New PermissionTreeNode("SM_QC_MAIN", "📁 سیستم جامع کنترل و تضمین کیفیت", 1)
+            Dim tQcMain As New PermissionTreeNode("T_QC_MAIN", "📄 بازرسی IQC، بازرسی حین تولید IPQC، محصولات نهایی OQC و عدم انطباق", 2)
+            Dim stQcMain As New PermissionTreeNode("ST_QC_MAIN", "📑 صدور آنالیز فنی (CoA)، فرم‌های NCR، اقدامات اصلاحی (CAPA) و ضایعات", 3)
+
+            AddActionNode(stQcMain, PermissionKeys.QcModule, "🔘 دسترسی به سیستم کنترل و تضمین کیفیت (QC/QA)", dbPermissions)
+            AddActionNode(stQcMain, PermissionKeys.QcIqc, "🔘 مدیریت بازرسی کیفی ورودی انبار (IQC)", dbPermissions)
+            AddActionNode(stQcMain, PermissionKeys.QcIpqc, "🔘 مدیریت بازرسی حین تولید و ایستگاه‌ها (IPQC)", dbPermissions)
+            AddActionNode(stQcMain, PermissionKeys.QcNcrCapa, "🔘 مدیریت عدم انطباق‌ها (NCR) و اقدامات اصلاحی (CAPA)", dbPermissions)
+            AddActionNode(stQcMain, PermissionKeys.QcCosting, "🔘 محاسبات بهای ضایعات کیفی و ثبت اسناد افت ارزش", dbPermissions)
+
+            tQcMain.Children.Add(stQcMain)
+            smQcMain.Children.Add(tQcMain)
+            rQc.Children.Add(smQcMain)
+
+            Dim smQcReports As New PermissionTreeNode("SM_QC_REPORTS", "📁 گزارشات جامع کیفیت، FPY، ضایعات و COQ", 1)
+            Dim tQcReports As New PermissionTreeNode("T_QC_REPORTS", "📄 گزارش‌های نرخ عبور کیفی بار اول (FPY)، هزینه عدم کیفیت و تحلیل ضایعات", 2)
+            Dim stQcReports As New PermissionTreeNode("ST_QC_REPORTS", "📑 گزارشات مدیریتی برگه‌های NCR و وضعیت اقدامات اصلاحی CAPA", 3)
+
+            AddActionNode(stQcReports, PermissionKeys.QcReports, "🔘 گزارشات جامع کنترل کیفیت و شاخص‌های FPY/COQ", dbPermissions)
+
+            tQcReports.Children.Add(stQcReports)
+            smQcReports.Children.Add(tQcReports)
+            rQc.Children.Add(smQcReports)
+
+            roots.Add(rQc)
 
             Return roots
         End Function
