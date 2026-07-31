@@ -1103,8 +1103,37 @@ Namespace Negar.Business
             tSahamReports.Children.Add(stSahamReports)
             smSahamReports.Children.Add(tSahamReports)
             rSaham.Children.Add(smSahamReports)
-
             roots.Add(rSaham)
+
+            ' =========================================================================
+            ' 26. منوی اصلی: سیستم وب‌سرویس و API فروشگاه اینترنتی و پوز سیار (mApi)
+            ' =========================================================================
+            Dim rApi As New PermissionTreeNode("MENU_API", "🌐 سیستم جامع وب‌سرویس و API فروشگاه اینترنتی و صندوق سیار", 0)
+            Dim smApiMain As New PermissionTreeNode("SM_API_MAIN", "📁 کلیدهای API، سفارشات آنلاین و پوز سیار", 1)
+            Dim tApiMain As New PermissionTreeNode("T_API_MAIN", "📄 همگام‌سازی زنده کالاها، صدور خودکار فاکتور فروش و کارتخوان اندرویدی", 2)
+            Dim stApiMain As New PermissionTreeNode("ST_API_MAIN", "📑 کلیدهای امنیتی JWT، شبیه‌سازی تست سفارشات آنلاین و وب‌هوکس", 3)
+
+            AddActionNode(stApiMain, PermissionKeys.ApiModule, "🔘 دسترسی به سیستم وب‌سرویس و API نگار", dbPermissions)
+            AddActionNode(stApiMain, PermissionKeys.ApiProductsSync, "🔘 همگام‌سازی زنده کالاها، موجودی انبار و قیمت‌ها", dbPermissions)
+            AddActionNode(stApiMain, PermissionKeys.ApiOrders, "🔘 دریافت سفارشات آنلاین و صدور خودکار فاکتور فروش", dbPermissions)
+            AddActionNode(stApiMain, PermissionKeys.ApiMobilePos, "🔘 تراکنش‌های صندوق سیار و کارتخوان‌های اندرویدی (Android POS)", dbPermissions)
+            AddActionNode(stApiMain, PermissionKeys.ApiWebhooks, "🔘 مدیریت رویدادهای زنده (Webhooks) و توکن‌های JWT", dbPermissions)
+
+            tApiMain.Children.Add(stApiMain)
+            smApiMain.Children.Add(tApiMain)
+            rApi.Children.Add(smApiMain)
+
+            Dim smApiReports As New PermissionTreeNode("SM_API_REPORTS", "📁 مانیتورینگ ترافیک، لاگ وب‌سرویس و تحلیل Omnichannel", 1)
+            Dim tApiReports As New PermissionTreeNode("T_API_REPORTS", "📄 مانیتورینگ زنده ترافیک HTTP، زمان پاسخ‌دهی (Latency) و فروش چندهسته", 2)
+            Dim stApiReports As New PermissionTreeNode("ST_API_REPORTS", "📑 گزارشات مدیریتی لاگ خطاها و تحلیلی فروش حضوری/آنلاین", 3)
+
+            AddActionNode(stApiReports, PermissionKeys.ApiReports, "🔘 گزارشات جامع لاگ‌های API، مانیتورینگ ترافیک و فروش Omnichannel", dbPermissions)
+
+            tApiReports.Children.Add(stApiReports)
+            smApiReports.Children.Add(tApiReports)
+            rApi.Children.Add(smApiReports)
+
+            roots.Add(rApi)
 
             Return roots
         End Function

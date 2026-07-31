@@ -118,6 +118,7 @@ Namespace Negar.Forms
             btnToolBi.Image = CreateModuleIcon("Reports", 24)
             btnToolDms.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolSaham.Image = CreateModuleIcon("CompanyFiscalYears", 24)
+            btnToolApi.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -386,6 +387,7 @@ Namespace Negar.Forms
             Dim canBi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BiModule)
             Dim canDms = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.DmsModule)
             Dim canSaham = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SahamModule)
+            Dim canApi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ApiModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -453,6 +455,7 @@ Namespace Negar.Forms
             mBi.Visible = canBi
             mDms.Visible = canDms
             mSaham.Visible = canSaham
+            mApi.Visible = canApi
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -478,6 +481,7 @@ Namespace Negar.Forms
             btnToolBi.Visible = canBi
             btnToolDms.Visible = canDms
             btnToolSaham.Visible = canSaham
+            btnToolApi.Visible = canApi
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -941,6 +945,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع امور سهام و سهامداران", AddressOf OpenSahamMainForm, "CompanyFiscalYears")
                     AddDashButton("گزارشات جامع ترکیب سهامداران، مجمع عمومی و پرداخت سود", AddressOf OpenSahamMainForm, "Reports")
 
+                Case "Api"
+                    AddDashButton("سیستم جامع وب‌سرویس، API فروشگاه اینترنتی و پوز سیار", AddressOf OpenApiMainForm, "CompanyFiscalYears")
+                    AddDashButton("گزارشات جامع لاگ‌های API، مانیتورینگ ترافیک و فروش Omnichannel", AddressOf OpenApiMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1252,6 +1260,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم امور سهام و سهامداران: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolApi_Click(sender As Object, e As EventArgs) Handles btnToolApi.Click
+            ShowDashboardCategory("Api")
+        End Sub
+
+        Private Sub OpenApiMainForm(sender As Object, e As EventArgs) Handles mApi.Click, miApiMain.Click, miApiReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.API.ApiMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم وب‌سرویس و API: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

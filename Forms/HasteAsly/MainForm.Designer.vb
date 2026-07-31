@@ -40,6 +40,7 @@ Namespace Negar.Forms
         Friend WithEvents mBi As ToolStripMenuItem
         Friend WithEvents mDms As ToolStripMenuItem
         Friend WithEvents mSaham As ToolStripMenuItem
+        Friend WithEvents mApi As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -110,6 +111,10 @@ Namespace Negar.Forms
         ' Sub-items for Saham
         Friend WithEvents miSahamMain As ToolStripMenuItem
         Friend WithEvents miSahamReports As ToolStripMenuItem
+
+        ' Sub-items for Api
+        Friend WithEvents miApiMain As ToolStripMenuItem
+        Friend WithEvents miApiReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -184,6 +189,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolBi As ToolStripButton
         Friend WithEvents btnToolDms As ToolStripButton
         Friend WithEvents btnToolSaham As ToolStripButton
+        Friend WithEvents btnToolApi As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -230,6 +236,7 @@ Namespace Negar.Forms
             Me.mBi = New ToolStripMenuItem()
             Me.mDms = New ToolStripMenuItem()
             Me.mSaham = New ToolStripMenuItem()
+            Me.mApi = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -256,6 +263,9 @@ Namespace Negar.Forms
 
             Me.miSahamMain = New ToolStripMenuItem()
             Me.miSahamReports = New ToolStripMenuItem()
+
+            Me.miApiMain = New ToolStripMenuItem()
+            Me.miApiReports = New ToolStripMenuItem()
 
             Me.miPayrollMain = New ToolStripMenuItem()
             Me.miPayrollReports = New ToolStripMenuItem()
@@ -349,6 +359,7 @@ Namespace Negar.Forms
             Me.btnToolBi = New ToolStripButton()
             Me.btnToolDms = New ToolStripButton()
             Me.btnToolSaham = New ToolStripButton()
+            Me.btnToolApi = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -384,7 +395,7 @@ Namespace Negar.Forms
             Me.mainMenu.CanOverflow = True
             Me.mainMenu.Dock = DockStyle.None
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mApi, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -640,6 +651,22 @@ Namespace Negar.Forms
             Me.miSahamReports.Size = New Size(420, 22)
             Me.miSahamReports.Text = "📊 گزارشات جامع ترکیب سهامداران، مجمع عمومی و پرداخت سود"
 
+            ' mApi
+            Me.mApi.DropDownItems.AddRange(New ToolStripItem() {Me.miApiMain, Me.miApiReports})
+            Me.mApi.Name = "mApi"
+            Me.mApi.Size = New Size(210, 20)
+            Me.mApi.Text = "🌐 وب‌سرویس و API فروشگاه و پوز سیار"
+
+            ' miApiMain
+            Me.miApiMain.Name = "miApiMain"
+            Me.miApiMain.Size = New Size(450, 22)
+            Me.miApiMain.Text = "🌐 سیستم جامع وب‌سرویس، API فروشگاه اینترنتی و پوز سیار"
+
+            ' miApiReports
+            Me.miApiReports.Name = "miApiReports"
+            Me.miApiReports.Size = New Size(450, 22)
+            Me.miApiReports.Text = "📊 گزارشات جامع لاگ‌های API، مانیتورینگ ترافیک و فروش Omnichannel"
+
             ' miBiReports
             Me.miBiReports.Name = "miBiReports"
             Me.miBiReports.Size = New Size(420, 22)
@@ -862,7 +889,7 @@ Namespace Negar.Forms
             Me.tool.Dock = DockStyle.None
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolDms, Me.btnToolSaham, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolDms, Me.btnToolSaham, Me.btnToolApi, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
             Me.pnlToolBar.AutoScroll = True
@@ -1009,6 +1036,12 @@ Namespace Negar.Forms
             Me.btnToolSaham.Name = "btnToolSaham"
             Me.btnToolSaham.Size = New Size(170, 51)
             Me.btnToolSaham.Text = "امور سهام و سهامداران"
+
+            ' btnToolApi
+            Me.btnToolApi.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolApi.Name = "btnToolApi"
+            Me.btnToolApi.Size = New Size(210, 51)
+            Me.btnToolApi.Text = "وب‌سرویس و API فروشگاه و پوز سیار"
 
             ' btnToolBusinessShells
             Me.btnToolBusinessShells.Margin = New Padding(4, 2, 4, 2)

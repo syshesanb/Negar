@@ -301,6 +301,14 @@ Namespace Negar.Business
         Public Const SahamCapital As String = "SahamCapital"
         Public Const SahamReports As String = "SahamReports"
 
+        ' E-Commerce & Mobile POS API permissions
+        Public Const ApiModule As String = "ApiModule"
+        Public Const ApiProductsSync As String = "ApiProductsSync"
+        Public Const ApiOrders As String = "ApiOrders"
+        Public Const ApiMobilePos As String = "ApiMobilePos"
+        Public Const ApiWebhooks As String = "ApiWebhooks"
+        Public Const ApiReports As String = "ApiReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"
