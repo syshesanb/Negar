@@ -111,6 +111,7 @@ Namespace Negar.Forms
             btnToolAccounting.Image = CreateModuleIcon("Accounting", 24)
             btnToolTradeWarehouse.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolImportExport.Image = CreateModuleIcon("TradeWarehouse", 24)
+            btnToolPm.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -372,6 +373,7 @@ Namespace Negar.Forms
             Dim canProject = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ProjectModule)
             Dim canKpi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.KpiModule)
             Dim canImportExport = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ImportExportModule)
+            Dim canPm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.PmModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -432,6 +434,7 @@ Namespace Negar.Forms
             mProject.Visible = canProject
             mKpi.Visible = canKpi
             mImportExport.Visible = canImportExport
+            mPm.Visible = canPm
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -450,6 +453,7 @@ Namespace Negar.Forms
             btnToolProject.Visible = canProject
             btnToolKpi.Visible = canKpi
             btnToolImportExport.Visible = canImportExport
+            btnToolPm.Visible = canPm
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -885,6 +889,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع بازرگانی خارجی و واردات/صادرات", AddressOf OpenImportExportMainForm, "TradeWarehouse")
                     AddDashButton("گزارشات جامع بهای تمام‌شده واردات (Landed Cost)", AddressOf OpenImportExportMainForm, "Reports")
 
+                Case "Pm"
+                    AddDashButton("سیستم جامع مدیریت نت، نگهداری و تعمیرات (PM)", AddressOf OpenPmMainForm, "Production")
+                    AddDashButton("گزارشات جامع شاخص‌های OEE، MTBF و هزینه نت", AddressOf OpenPmMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1091,6 +1099,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم بازرگانی خارجی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolPm_Click(sender As Object, e As EventArgs) Handles btnToolPm.Click
+            ShowDashboardCategory("Pm")
+        End Sub
+
+        Private Sub OpenPmMainForm(sender As Object, e As EventArgs) Handles mPm.Click, miPmMain.Click, miPmReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.PM.PmMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم مدیریت نگهداری و تعمیرات: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

@@ -245,6 +245,14 @@ Namespace Negar.Business
         Public Const ImportExportCosting As String = "ImportExportCosting"
         Public Const ImportExportReports As String = "ImportExportReports"
 
+        ' Preventive Maintenance (PM) permissions
+        Public Const PmModule As String = "PmModule"
+        Public Const PmAssets As String = "PmAssets"
+        Public Const PmSchedules As String = "PmSchedules"
+        Public Const PmWorkOrders As String = "PmWorkOrders"
+        Public Const PmCosting As String = "PmCosting"
+        Public Const PmReports As String = "PmReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

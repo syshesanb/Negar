@@ -33,6 +33,7 @@ Namespace Negar.Forms
         Friend WithEvents mProject As ToolStripMenuItem
         Friend WithEvents mKpi As ToolStripMenuItem
         Friend WithEvents mImportExport As ToolStripMenuItem
+        Friend WithEvents mPm As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -75,6 +76,10 @@ Namespace Negar.Forms
         ' Sub-items for Import/Export
         Friend WithEvents miImportExportMain As ToolStripMenuItem
         Friend WithEvents miImportExportReports As ToolStripMenuItem
+
+        ' Sub-items for PM
+        Friend WithEvents miPmMain As ToolStripMenuItem
+        Friend WithEvents miPmReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -142,6 +147,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolProject As ToolStripButton
         Friend WithEvents btnToolKpi As ToolStripButton
         Friend WithEvents btnToolImportExport As ToolStripButton
+        Friend WithEvents btnToolPm As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -181,11 +187,15 @@ Namespace Negar.Forms
             Me.mProject = New ToolStripMenuItem()
             Me.mKpi = New ToolStripMenuItem()
             Me.mImportExport = New ToolStripMenuItem()
+            Me.mPm = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
             Me.miImportExportMain = New ToolStripMenuItem()
             Me.miImportExportReports = New ToolStripMenuItem()
+
+            Me.miPmMain = New ToolStripMenuItem()
+            Me.miPmReports = New ToolStripMenuItem()
 
             Me.miPayrollMain = New ToolStripMenuItem()
             Me.miPayrollReports = New ToolStripMenuItem()
@@ -272,6 +282,7 @@ Namespace Negar.Forms
             Me.btnToolProject = New ToolStripButton()
             Me.btnToolKpi = New ToolStripButton()
             Me.btnToolImportExport = New ToolStripButton()
+            Me.btnToolPm = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -307,7 +318,7 @@ Namespace Negar.Forms
             Me.mainMenu.CanOverflow = True
             Me.mainMenu.Dock = DockStyle.None
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -472,6 +483,22 @@ Namespace Negar.Forms
             Me.miImportExportReports.Name = "miImportExportReports"
             Me.miImportExportReports.Size = New Size(340, 22)
             Me.miImportExportReports.Text = "📊 گزارشات جامع بهای تمام‌شده واردات (Landed Cost)"
+
+            ' mPm
+            Me.mPm.DropDownItems.AddRange(New ToolStripItem() {Me.miPmMain, Me.miPmReports})
+            Me.mPm.Name = "mPm"
+            Me.mPm.Size = New Size(140, 20)
+            Me.mPm.Text = "🔧 نگهداری و تعمیرات"
+
+            ' miPmMain
+            Me.miPmMain.Name = "miPmMain"
+            Me.miPmMain.Size = New Size(360, 22)
+            Me.miPmMain.Text = "🔧 سیستم جامع مدیریت نت، نگهداری و تعمیرات (PM)"
+
+            ' miPmReports
+            Me.miPmReports.Name = "miPmReports"
+            Me.miPmReports.Size = New Size(360, 22)
+            Me.miPmReports.Text = "📊 گزارشات جامع شاخص‌های OEE، MTBF و هزینه نت"
 
             ' mSystemMgmt
             Me.mSystemMgmt.DropDownItems.AddRange(New ToolStripItem() {Me.miSettingsMessages, Me.miSettingsThemes, Me.miSepSys1, Me.miBackupData, Me.miRestoreData, Me.miSepSys2, Me.miCreateRelease, Me.miCreateUpdate, Me.miExportDecryptedDb, Me.miSepSys3, Me.miLock, Me.miSepSys4, Me.miAbout, Me.miContact, Me.miExit})
@@ -685,7 +712,7 @@ Namespace Negar.Forms
             Me.tool.Dock = DockStyle.None
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
             Me.pnlToolBar.AutoScroll = True
@@ -790,6 +817,12 @@ Namespace Negar.Forms
             Me.btnToolImportExport.Name = "btnToolImportExport"
             Me.btnToolImportExport.Size = New Size(130, 51)
             Me.btnToolImportExport.Text = "بازرگانی خارجی"
+
+            ' btnToolPm
+            Me.btnToolPm.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolPm.Name = "btnToolPm"
+            Me.btnToolPm.Size = New Size(140, 51)
+            Me.btnToolPm.Text = "نگهداری و تعمیرات"
 
             ' btnToolBusinessShells
             Me.btnToolBusinessShells.Margin = New Padding(4, 2, 4, 2)

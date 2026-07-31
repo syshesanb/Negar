@@ -897,8 +897,37 @@ Namespace Negar.Business
             tImpReports.Children.Add(stImpReports)
             smImpReports.Children.Add(tImpReports)
             rImp.Children.Add(smImpReports)
-
             roots.Add(rImp)
+
+            ' =========================================================================
+            ' 19. منوی اصلی: سیستم مدیریت نت، نگهداری و تعمیرات (mPm)
+            ' =========================================================================
+            Dim rPm As New PermissionTreeNode("MENU_PM", "🔧 سیستم جامع مدیریت نت، نگهداری و تعمیرات (PM)", 0)
+            Dim smPmMain As New PermissionTreeNode("SM_PM_MAIN", "📁 سیستم جامع مدیریت نگهداری و تعمیرات", 1)
+            Dim tPmMain As New PermissionTreeNode("T_PM_MAIN", "📄 شناسنامه ماشین‌آلات، برنامه‌ریزی نت، دستورکارها و قطعات یدکی", 2)
+            Dim stPmMain As New PermissionTreeNode("ST_PM_MAIN", "📑 کنترل سرویس‌های دوره‌ای، تعمیرات اضطراری (EM) و ثبت اسناد نت", 3)
+
+            AddActionNode(stPmMain, PermissionKeys.PmModule, "🔘 دسترسی به سیستم نگهداری و تعمیرات (PM)", dbPermissions)
+            AddActionNode(stPmMain, PermissionKeys.PmAssets, "🔘 مدیریت شناسنامه تجهیزات و ماشین‌آلات", dbPermissions)
+            AddActionNode(stPmMain, PermissionKeys.PmSchedules, "🔘 برنامه‌ریزی نت پیشگیرانه (PM)", dbPermissions)
+            AddActionNode(stPmMain, PermissionKeys.PmWorkOrders, "🔘 مدیریت دستورکارها و تعمیرات اضطراری (EM)", dbPermissions)
+            AddActionNode(stPmMain, PermissionKeys.PmCosting, "🔘 محاسبات بهای تمام‌شده و ثبت سند هزینه تعمیرات", dbPermissions)
+
+            tPmMain.Children.Add(stPmMain)
+            smPmMain.Children.Add(tPmMain)
+            rPm.Children.Add(smPmMain)
+
+            Dim smPmReports As New PermissionTreeNode("SM_PM_REPORTS", "📁 گزارشات جامع نت، OEE و توقفات خط تولید", 1)
+            Dim tPmReports As New PermissionTreeNode("T_PM_REPORTS", "📄 گزارش‌های شاخص‌های OEE، MTBF، MTTR و هزینه تعمیرات", 2)
+            Dim stPmReports As New PermissionTreeNode("ST_PM_REPORTS", "📑 گزارشات مدیریتی کارایی تجهیزات و مصرف قطعات یدکی", 3)
+
+            AddActionNode(stPmReports, PermissionKeys.PmReports, "🔘 گزارشات جامع مدیریت نت و شاخص‌های OEE", dbPermissions)
+
+            tPmReports.Children.Add(stPmReports)
+            smPmReports.Children.Add(tPmReports)
+            rPm.Children.Add(smPmReports)
+
+            roots.Add(rPm)
 
             Return roots
         End Function
