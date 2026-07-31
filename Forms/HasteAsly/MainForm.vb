@@ -121,6 +121,7 @@ Namespace Negar.Forms
             btnToolApi.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolLegal.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolRd.Image = CreateModuleIcon("Reports", 24)
+            btnToolVoip.Image = CreateModuleIcon("Crm", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -392,6 +393,7 @@ Namespace Negar.Forms
             Dim canApi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ApiModule)
             Dim canLegal = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.LegalModule)
             Dim canRd = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.RdModule)
+            Dim canVoip = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.VoipModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -462,6 +464,7 @@ Namespace Negar.Forms
             mApi.Visible = canApi
             mLegal.Visible = canLegal
             mRd.Visible = canRd
+            mVoip.Visible = canVoip
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -490,6 +493,7 @@ Namespace Negar.Forms
             btnToolApi.Visible = canApi
             btnToolLegal.Visible = canLegal
             btnToolRd.Visible = canRd
+            btnToolVoip.Visible = canVoip
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -970,6 +974,13 @@ Namespace Negar.Forms
                     AddDashButton("🏛️ مدیریت پتنت‌ها، اختراعات و مالکیت فکری (IPR)", AddressOf OpenRdMainForm, "CompanyFiscalYears")
                     AddDashButton("📊 گزارشات Innovation Funnel، ROI تحقیقات و Time-to-Market", AddressOf OpenRdMainForm, "Reports")
 
+                Case "Voip"
+                    AddDashButton("📞 سیستم جامع مرکز تلفن هوشمند، CRM صوتی و صف ACD", AddressOf OpenVoipMainForm, "Crm")
+                    AddDashButton("🖥️ Screen Pop-Up هوشمند مشتری و پایش زنده صف تماس", AddressOf OpenVoipMainForm, "Automation")
+                    AddDashButton("🎙️ آرشیو صوتی مکالمات، پیوند به DMS و جستجوی متنی (STT)", AddressOf OpenVoipMainForm, "TradeWarehouse")
+                    AddDashButton("📲 کمپین‌های تماس خروجی با Preview Dial و Click-to-Call", AddressOf OpenVoipMainForm, "CompanyFiscalYears")
+                    AddDashButton("📊 گزارشات KPI مرکز تماس — Answer Rate، ASA، CSAT و نرخ تبدیل", AddressOf OpenVoipMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1326,6 +1337,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم تحقیق و توسعه: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolVoip_Click(sender As Object, e As EventArgs) Handles btnToolVoip.Click
+            ShowDashboardCategory("Voip")
+        End Sub
+
+        Private Sub OpenVoipMainForm(sender As Object, e As EventArgs) Handles mVoip.Click, miVoipMain.Click, miVoipReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.VoIP.VoipMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم مرکز تلفن هوشمند: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

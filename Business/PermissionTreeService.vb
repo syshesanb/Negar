@@ -1196,6 +1196,38 @@ Namespace Negar.Business
 
             roots.Add(rRd)
 
+            ' =========================================================================
+            ' 29. منوی اصلی: سیستم یکپارچه‌سازی مرکز تلفن هوشمند و CRM صوتی (mVoip)
+            ' =========================================================================
+            Dim rVoip As New PermissionTreeNode("MENU_VOIP", "📞 سیستم یکپارچه‌سازی مرکز تلفن هوشمند و CRM صوتی (VoIP)", 0)
+
+            Dim smVoipMain As New PermissionTreeNode("SM_VOIP_MAIN", "📁 لاگ تماس‌ها، صف ACD، ضبط مکالمه و کمپین خروجی", 1)
+            Dim tVoipMain As New PermissionTreeNode("T_VOIP_MAIN", "📄 Screen Pop-Up مشتری، Sticky Agent، Click-to-Call و داشبورد Real-Time", 2)
+            Dim stVoipMain As New PermissionTreeNode("ST_VOIP_MAIN", "📑 مدیریت کامل چرخه تماس از Screen Pop-Up تا آرشیو صوتی در DMS", 3)
+
+            AddActionNode(stVoipMain, PermissionKeys.VoipModule, "🔘 دسترسی به سیستم مرکز تلفن هوشمند نگار (VoIP CRM)", dbPermissions)
+            AddActionNode(stVoipMain, PermissionKeys.VoipCallLogs, "🔘 لاگ تماس‌های ورودی/خروجی، نتیجه تماس و یادداشت CRM", dbPermissions)
+            AddActionNode(stVoipMain, PermissionKeys.VoipQueue, "🔘 مدیریت صف تماس (ACD)، Sticky Agent و داشبورد Real-Time اپراتورها", dbPermissions)
+            AddActionNode(stVoipMain, PermissionKeys.VoipRecordings, "🔘 ضبط مکالمه، آرشیو صوتی در DMS و جستجوی متنی (STT)", dbPermissions)
+            AddActionNode(stVoipMain, PermissionKeys.VoipCampaigns, "🔘 مدیریت کمپین‌های تماس خروجی، Preview Dial و Click-to-Call", dbPermissions)
+            AddActionNode(stVoipMain, PermissionKeys.VoipSettings, "🔘 پیکربندی Asterisk AMI، نگاشت داخلی‌ها و قوانین مسیریابی", dbPermissions)
+
+            tVoipMain.Children.Add(stVoipMain)
+            smVoipMain.Children.Add(tVoipMain)
+            rVoip.Children.Add(smVoipMain)
+
+            Dim smVoipReports As New PermissionTreeNode("SM_VOIP_REPORTS", "📁 گزارشات KPI مرکز تماس — Answer Rate، ASA، CSAT و نرخ تبدیل", 1)
+            Dim tVoipReports As New PermissionTreeNode("T_VOIP_REPORTS", "📄 گزارش عملکرد اپراتورها، تحلیل صف و نرخ تبدیل تماس به فروش", 2)
+            Dim stVoipReports As New PermissionTreeNode("ST_VOIP_REPORTS", "📑 داشبورد BI تماس‌ها — هزینه هر تماس، مدت مکالمه و رضایت CSAT", 3)
+
+            AddActionNode(stVoipReports, PermissionKeys.VoipReports, "🔘 گزارشات جامع KPI مرکز تماس، عملکرد اپراتور و نرخ تبدیل فروش", dbPermissions)
+
+            tVoipReports.Children.Add(stVoipReports)
+            smVoipReports.Children.Add(tVoipReports)
+            rVoip.Children.Add(smVoipReports)
+
+            roots.Add(rVoip)
+
             Return roots
         End Function
 

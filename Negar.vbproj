@@ -207,6 +207,9 @@
     <Compile Include="Business\RdService.vb" />
     <Compile Include="Forms\RD\RdMainForm.vb" />
     <Compile Include="Forms\RD\RdEditDialog.vb" />
+    <Compile Include="Business\VoipService.vb" />
+    <Compile Include="Forms\VoIP\VoipMainForm.vb" />
+    <Compile Include="Forms\VoIP\VoipEditDialog.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">

@@ -326,6 +326,15 @@ Namespace Negar.Business
         Public Const RdBudget As String = "RdBudget"
         Public Const RdReports As String = "RdReports"
 
+        ' VoIP & Call Center API (Voip) permissions
+        Public Const VoipModule As String = "VoipModule"
+        Public Const VoipCallLogs As String = "VoipCallLogs"
+        Public Const VoipQueue As String = "VoipQueue"
+        Public Const VoipRecordings As String = "VoipRecordings"
+        Public Const VoipCampaigns As String = "VoipCampaigns"
+        Public Const VoipSettings As String = "VoipSettings"
+        Public Const VoipReports As String = "VoipReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

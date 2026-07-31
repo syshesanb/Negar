@@ -43,6 +43,7 @@ Namespace Negar.Forms
         Friend WithEvents mApi As ToolStripMenuItem
         Friend WithEvents mLegal As ToolStripMenuItem
         Friend WithEvents mRd As ToolStripMenuItem
+        Friend WithEvents mVoip As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -126,6 +127,10 @@ Namespace Negar.Forms
         Friend WithEvents miRdMain As ToolStripMenuItem
         Friend WithEvents miRdReports As ToolStripMenuItem
 
+        ' Sub-items for VoIP
+        Friend WithEvents miVoipMain As ToolStripMenuItem
+        Friend WithEvents miVoipReports As ToolStripMenuItem
+
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
         Friend WithEvents miSettingsThemes As ToolStripMenuItem
@@ -202,6 +207,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolApi As ToolStripButton
         Friend WithEvents btnToolLegal As ToolStripButton
         Friend WithEvents btnToolRd As ToolStripButton
+        Friend WithEvents btnToolVoip As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -251,6 +257,7 @@ Namespace Negar.Forms
             Me.mApi = New ToolStripMenuItem()
             Me.mLegal = New ToolStripMenuItem()
             Me.mRd = New ToolStripMenuItem()
+            Me.mVoip = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -286,6 +293,9 @@ Namespace Negar.Forms
 
             Me.miRdMain = New ToolStripMenuItem()
             Me.miRdReports = New ToolStripMenuItem()
+
+            Me.miVoipMain = New ToolStripMenuItem()
+            Me.miVoipReports = New ToolStripMenuItem()
 
             Me.miPayrollMain = New ToolStripMenuItem()
             Me.miPayrollReports = New ToolStripMenuItem()
@@ -382,6 +392,7 @@ Namespace Negar.Forms
             Me.btnToolApi = New ToolStripButton()
             Me.btnToolLegal = New ToolStripButton()
             Me.btnToolRd = New ToolStripButton()
+            Me.btnToolVoip = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -417,7 +428,7 @@ Namespace Negar.Forms
             Me.mainMenu.CanOverflow = True
             Me.mainMenu.Dock = DockStyle.None
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mApi, Me.mLegal, Me.mRd, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mApi, Me.mLegal, Me.mRd, Me.mVoip, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -721,6 +732,22 @@ Namespace Negar.Forms
             Me.miRdReports.Size = New Size(460, 22)
             Me.miRdReports.Text = "📊 گزارشات Innovation Funnel، Time-to-Market و ROI تحقیقات"
 
+            ' mVoip
+            Me.mVoip.DropDownItems.AddRange(New ToolStripItem() {Me.miVoipMain, Me.miVoipReports})
+            Me.mVoip.Name = "mVoip"
+            Me.mVoip.Size = New Size(220, 20)
+            Me.mVoip.Text = "📞 مرکز تلفن هوشمند و CRM صوتی"
+
+            ' miVoipMain
+            Me.miVoipMain.Name = "miVoipMain"
+            Me.miVoipMain.Size = New Size(460, 22)
+            Me.miVoipMain.Text = "📞 سیستم جامع مرکز تلفن هوشمند، CRM صوتی و صف ACD (VoIP)"
+
+            ' miVoipReports
+            Me.miVoipReports.Name = "miVoipReports"
+            Me.miVoipReports.Size = New Size(460, 22)
+            Me.miVoipReports.Text = "📊 گزارشات KPI مرکز تماس، عملکرد اپراتورها و CSAT"
+
             ' miBiReports
             Me.miBiReports.Name = "miBiReports"
             Me.miBiReports.Size = New Size(420, 22)
@@ -943,7 +970,7 @@ Namespace Negar.Forms
             Me.tool.Dock = DockStyle.None
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolDms, Me.btnToolSaham, Me.btnToolApi, Me.btnToolLegal, Me.btnToolRd, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolDms, Me.btnToolSaham, Me.btnToolApi, Me.btnToolLegal, Me.btnToolRd, Me.btnToolVoip, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
             Me.pnlToolBar.AutoScroll = True
@@ -1108,6 +1135,12 @@ Namespace Negar.Forms
             Me.btnToolRd.Name = "btnToolRd"
             Me.btnToolRd.Size = New Size(180, 51)
             Me.btnToolRd.Text = "تحقیق، توسعه و فرمولاسیون"
+
+            ' btnToolVoip
+            Me.btnToolVoip.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolVoip.Name = "btnToolVoip"
+            Me.btnToolVoip.Size = New Size(210, 51)
+            Me.btnToolVoip.Text = "مرکز تلفن هوشمند و CRM صوتی"
 
             ' btnToolBusinessShells
             Me.btnToolBusinessShells.Margin = New Padding(4, 2, 4, 2)
