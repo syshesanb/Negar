@@ -1132,8 +1132,37 @@ Namespace Negar.Business
             tApiReports.Children.Add(stApiReports)
             smApiReports.Children.Add(tApiReports)
             rApi.Children.Add(smApiReports)
-
             roots.Add(rApi)
+
+            ' =========================================================================
+            ' 27. منوی اصلی: سیستم مدیریت امور حقوقی، قراردادها و دعاوی (mLegal)
+            ' =========================================================================
+            Dim rLegal As New PermissionTreeNode("MENU_LEGAL", "⚖️ سیستم جامع مدیریت امور حقوقی، قراردادها و دعاوی", 0)
+            Dim smLegalMain As New PermissionTreeNode("SM_LEGAL_MAIN", "📁 پرونده‌های قضایی، دادخواست‌ها و جلسات دادگاه", 1)
+            Dim tLegalMain As New PermissionTreeNode("T_LEGAL_MAIN", "📄 پرونده‌های حقوقی/کیفری، زمان‌بندی دادگاه، لوایح و وکالت‌نامه‌ها", 2)
+            Dim stLegalMain As New PermissionTreeNode("ST_LEGAL_MAIN", "📑 تشکیل پرونده، هشدار انقضای مهلت‌های قانونی، مدیریت وکلا و حق‌الوکاله", 3)
+
+            AddActionNode(stLegalMain, PermissionKeys.LegalModule, "🔘 دسترسی به سیستم امور حقوقی و دعاوی نگار", dbPermissions)
+            AddActionNode(stLegalMain, PermissionKeys.LegalCases, "🔘 مدیریت شناسنامه پرونده‌های حقوقی و دعاوی قضایی", dbPermissions)
+            AddActionNode(stLegalMain, PermissionKeys.LegalHearings, "🔘 تقویم جلسات دادگاه و مهلت‌های تجدیدنظرخواهی", dbPermissions)
+            AddActionNode(stLegalMain, PermissionKeys.LegalLawyers, "🔘 مدیریت وکلا، کارشناسان رسمی و حق‌الوکاله‌ها", dbPermissions)
+            AddActionNode(stLegalMain, PermissionKeys.LegalDocuments, "🔘 آرشیو دادخواست‌ها، اظهارنامه‌ها و لوایح دفاعیه", dbPermissions)
+
+            tLegalMain.Children.Add(stLegalMain)
+            smLegalMain.Children.Add(tLegalMain)
+            rLegal.Children.Add(smLegalMain)
+
+            Dim smLegalReports As New PermissionTreeNode("SM_LEGAL_REPORTS", "📁 گزارشات ریسک دادرسی، پرونده‌ها و هزینه‌ها", 1)
+            Dim tLegalReports As New PermissionTreeNode("T_LEGAL_REPORTS", "📄 گزارش ارزیابی ریسک مالی پرونده‌ها (Financial Risk Analysis) و بردهای حقوقی", 2)
+            Dim stLegalReports As New PermissionTreeNode("ST_LEGAL_REPORTS", "📑 گزارشات مدیریتی پرونده‌های در جریان و هزینه‌های دادرسی", 3)
+
+            AddActionNode(stLegalReports, PermissionKeys.LegalReports, "🔘 گزارشات جامع پرونده‌های حقوقی، جلسات دادگاه و ریسک دادرسی", dbPermissions)
+
+            tLegalReports.Children.Add(stLegalReports)
+            smLegalReports.Children.Add(tLegalReports)
+            rLegal.Children.Add(smLegalReports)
+
+            roots.Add(rLegal)
 
             Return roots
         End Function

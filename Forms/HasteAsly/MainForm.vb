@@ -119,6 +119,7 @@ Namespace Negar.Forms
             btnToolDms.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolSaham.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolApi.Image = CreateModuleIcon("TradeWarehouse", 24)
+            btnToolLegal.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -388,6 +389,7 @@ Namespace Negar.Forms
             Dim canDms = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.DmsModule)
             Dim canSaham = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SahamModule)
             Dim canApi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ApiModule)
+            Dim canLegal = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.LegalModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -456,6 +458,7 @@ Namespace Negar.Forms
             mDms.Visible = canDms
             mSaham.Visible = canSaham
             mApi.Visible = canApi
+            mLegal.Visible = canLegal
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -482,6 +485,7 @@ Namespace Negar.Forms
             btnToolDms.Visible = canDms
             btnToolSaham.Visible = canSaham
             btnToolApi.Visible = canApi
+            btnToolLegal.Visible = canLegal
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -949,6 +953,12 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع وب‌سرویس، API فروشگاه اینترنتی و پوز سیار", AddressOf OpenApiMainForm, "CompanyFiscalYears")
                     AddDashButton("گزارشات جامع لاگ‌های API، مانیتورینگ ترافیک و فروش Omnichannel", AddressOf OpenApiMainForm, "Reports")
 
+                Case "Legal"
+                    AddDashButton("سیستم جامع مدیریت امور حقوقی، قراردادها و دعاوی", AddressOf OpenLegalMainForm, "CompanyFiscalYears")
+                    AddDashButton("📅 تقویم جلسات دادگاه و مهلت‌های تجدیدنظرخواهی", AddressOf OpenLegalMainForm, "Accounting")
+                    AddDashButton("👨‍⚖️ مدیریت وکلا، کارشناسان رسمی و حق‌الوکاله‌ها", AddressOf OpenLegalMainForm, "TradeWarehouse")
+                    AddDashButton("📊 گزارشات جامع ریسک مالی پرونده‌های حقوقی در جریان", AddressOf OpenLegalMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1275,6 +1285,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم وب‌سرویس و API: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolLegal_Click(sender As Object, e As EventArgs) Handles btnToolLegal.Click
+            ShowDashboardCategory("Legal")
+        End Sub
+
+        Private Sub OpenLegalMainForm(sender As Object, e As EventArgs) Handles mLegal.Click, miLegalMain.Click, miLegalReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Legal.LegalMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم امور حقوقی و دعاوی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

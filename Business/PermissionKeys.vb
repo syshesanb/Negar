@@ -309,6 +309,14 @@ Namespace Negar.Business
         Public Const ApiWebhooks As String = "ApiWebhooks"
         Public Const ApiReports As String = "ApiReports"
 
+        ' Legal & Claims Management (Legal) permissions
+        Public Const LegalModule As String = "LegalModule"
+        Public Const LegalCases As String = "LegalCases"
+        Public Const LegalHearings As String = "LegalHearings"
+        Public Const LegalLawyers As String = "LegalLawyers"
+        Public Const LegalDocuments As String = "LegalDocuments"
+        Public Const LegalReports As String = "LegalReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"
