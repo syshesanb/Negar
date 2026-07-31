@@ -317,6 +317,15 @@ Namespace Negar.Business
         Public Const LegalDocuments As String = "LegalDocuments"
         Public Const LegalReports As String = "LegalReports"
 
+        ' R&D & Innovation Management (Rd) permissions
+        Public Const RdModule As String = "RdModule"
+        Public Const RdProjects As String = "RdProjects"
+        Public Const RdFormulations As String = "RdFormulations"
+        Public Const RdLabTests As String = "RdLabTests"
+        Public Const RdPatents As String = "RdPatents"
+        Public Const RdBudget As String = "RdBudget"
+        Public Const RdReports As String = "RdReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

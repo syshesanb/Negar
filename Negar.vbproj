@@ -204,6 +204,9 @@
     <Compile Include="Business\LegalService.vb" />
     <Compile Include="Forms\Legal\LegalMainForm.vb" />
     <Compile Include="Forms\Legal\LegalEditDialog.vb" />
+    <Compile Include="Business\RdService.vb" />
+    <Compile Include="Forms\RD\RdMainForm.vb" />
+    <Compile Include="Forms\RD\RdEditDialog.vb" />
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">

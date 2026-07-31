@@ -1164,6 +1164,38 @@ Namespace Negar.Business
 
             roots.Add(rLegal)
 
+            ' =========================================================================
+            ' 28. منوی اصلی: سیستم مدیریت تحقیق و توسعه و فرمولاسیون (mRd)
+            ' =========================================================================
+            Dim rRd As New PermissionTreeNode("MENU_RD", "🔬 سیستم جامع مدیریت تحقیق و توسعه و فرمولاسیون (R&D)", 0)
+
+            Dim smRdMain As New PermissionTreeNode("SM_RD_MAIN", "📁 پروژه‌های NPD، فرمولاسیون، آزمایشگاه و پتنت", 1)
+            Dim tRdMain As New PermissionTreeNode("T_RD_MAIN", "📄 پروژه‌های Stage-Gate، BOM پژوهشی، لاگ آزمایشگاه و ثبت پتنت", 2)
+            Dim stRdMain As New PermissionTreeNode("ST_RD_MAIN", "📑 مدیریت کامل چرخه عمر نوآوری از ایده تا تجاری‌سازی", 3)
+
+            AddActionNode(stRdMain, PermissionKeys.RdModule, "🔘 دسترسی به سیستم تحقیق و توسعه نگار (R&D)", dbPermissions)
+            AddActionNode(stRdMain, PermissionKeys.RdProjects, "🔘 مدیریت پروژه‌های NPD با Stage-Gate و Gate Reviews", dbPermissions)
+            AddActionNode(stRdMain, PermissionKeys.RdFormulations, "🔘 فرمولاسیون محصول، BOM پژوهشی و Version Control فرمول", dbPermissions)
+            AddActionNode(stRdMain, PermissionKeys.RdLabTests, "🔘 لاگ آزمایشگاهی، نمونه‌های اولیه و نتایج Pilot Test", dbPermissions)
+            AddActionNode(stRdMain, PermissionKeys.RdPatents, "🔘 مدیریت پتنت‌ها، اختراعات و مالکیت فکری (IPR)", dbPermissions)
+            AddActionNode(stRdMain, PermissionKeys.RdBudget, "🔘 بودجه پروژه‌های R&D و محاسبه ROI تحقیقات", dbPermissions)
+
+            tRdMain.Children.Add(stRdMain)
+            smRdMain.Children.Add(tRdMain)
+            rRd.Children.Add(smRdMain)
+
+            Dim smRdReports As New PermissionTreeNode("SM_RD_REPORTS", "📁 گزارشات Innovation Funnel، ROI تحقیقات و IPR", 1)
+            Dim tRdReports As New PermissionTreeNode("T_RD_REPORTS", "📄 گزارش Time-to-Market، قیف نوآوری و ارزیابی ROI", 2)
+            Dim stRdReports As New PermissionTreeNode("ST_RD_REPORTS", "📑 گزارشات مدیریتی عملکرد بودجه R&D و پتنت‌های شرکت", 3)
+
+            AddActionNode(stRdReports, PermissionKeys.RdReports, "🔘 گزارشات جامع Innovation Funnel، Time-to-Market و ROI پژوهش", dbPermissions)
+
+            tRdReports.Children.Add(stRdReports)
+            smRdReports.Children.Add(tRdReports)
+            rRd.Children.Add(smRdReports)
+
+            roots.Add(rRd)
+
             Return roots
         End Function
 

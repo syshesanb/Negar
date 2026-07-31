@@ -120,6 +120,7 @@ Namespace Negar.Forms
             btnToolSaham.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolApi.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolLegal.Image = CreateModuleIcon("CompanyFiscalYears", 24)
+            btnToolRd.Image = CreateModuleIcon("Reports", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -390,6 +391,7 @@ Namespace Negar.Forms
             Dim canSaham = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SahamModule)
             Dim canApi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ApiModule)
             Dim canLegal = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.LegalModule)
+            Dim canRd = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.RdModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -459,6 +461,7 @@ Namespace Negar.Forms
             mSaham.Visible = canSaham
             mApi.Visible = canApi
             mLegal.Visible = canLegal
+            mRd.Visible = canRd
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -486,6 +489,7 @@ Namespace Negar.Forms
             btnToolSaham.Visible = canSaham
             btnToolApi.Visible = canApi
             btnToolLegal.Visible = canLegal
+            btnToolRd.Visible = canRd
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -959,6 +963,13 @@ Namespace Negar.Forms
                     AddDashButton("👨‍⚖️ مدیریت وکلا، کارشناسان رسمی و حق‌الوکاله‌ها", AddressOf OpenLegalMainForm, "TradeWarehouse")
                     AddDashButton("📊 گزارشات جامع ریسک مالی پرونده‌های حقوقی در جریان", AddressOf OpenLegalMainForm, "Reports")
 
+                Case "Rd"
+                    AddDashButton("🔬 پروژه‌های NPD با Stage-Gate — از ایده تا تجاری‌سازی", AddressOf OpenRdMainForm, "Production")
+                    AddDashButton("🧪 فرمولاسیون محصول، BOM پژوهشی و Version Control فرمول", AddressOf OpenRdMainForm, "TradeWarehouse")
+                    AddDashButton("🧫 لاگ آزمایشگاهی، Pilot Test و مقایسه با Target Specs", AddressOf OpenRdMainForm, "QcModule")
+                    AddDashButton("🏛️ مدیریت پتنت‌ها، اختراعات و مالکیت فکری (IPR)", AddressOf OpenRdMainForm, "CompanyFiscalYears")
+                    AddDashButton("📊 گزارشات Innovation Funnel، ROI تحقیقات و Time-to-Market", AddressOf OpenRdMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1300,6 +1311,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم امور حقوقی و دعاوی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolRd_Click(sender As Object, e As EventArgs) Handles btnToolRd.Click
+            ShowDashboardCategory("Rd")
+        End Sub
+
+        Private Sub OpenRdMainForm(sender As Object, e As EventArgs) Handles mRd.Click, miRdMain.Click, miRdReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.RD.RdMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم تحقیق و توسعه: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

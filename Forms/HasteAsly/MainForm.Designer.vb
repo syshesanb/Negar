@@ -42,6 +42,7 @@ Namespace Negar.Forms
         Friend WithEvents mSaham As ToolStripMenuItem
         Friend WithEvents mApi As ToolStripMenuItem
         Friend WithEvents mLegal As ToolStripMenuItem
+        Friend WithEvents mRd As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -121,6 +122,10 @@ Namespace Negar.Forms
         Friend WithEvents miLegalMain As ToolStripMenuItem
         Friend WithEvents miLegalReports As ToolStripMenuItem
 
+        ' Sub-items for Rd
+        Friend WithEvents miRdMain As ToolStripMenuItem
+        Friend WithEvents miRdReports As ToolStripMenuItem
+
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
         Friend WithEvents miSettingsThemes As ToolStripMenuItem
@@ -196,6 +201,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolSaham As ToolStripButton
         Friend WithEvents btnToolApi As ToolStripButton
         Friend WithEvents btnToolLegal As ToolStripButton
+        Friend WithEvents btnToolRd As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -244,6 +250,7 @@ Namespace Negar.Forms
             Me.mSaham = New ToolStripMenuItem()
             Me.mApi = New ToolStripMenuItem()
             Me.mLegal = New ToolStripMenuItem()
+            Me.mRd = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -276,6 +283,9 @@ Namespace Negar.Forms
 
             Me.miLegalMain = New ToolStripMenuItem()
             Me.miLegalReports = New ToolStripMenuItem()
+
+            Me.miRdMain = New ToolStripMenuItem()
+            Me.miRdReports = New ToolStripMenuItem()
 
             Me.miPayrollMain = New ToolStripMenuItem()
             Me.miPayrollReports = New ToolStripMenuItem()
@@ -371,6 +381,7 @@ Namespace Negar.Forms
             Me.btnToolSaham = New ToolStripButton()
             Me.btnToolApi = New ToolStripButton()
             Me.btnToolLegal = New ToolStripButton()
+            Me.btnToolRd = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -406,7 +417,7 @@ Namespace Negar.Forms
             Me.mainMenu.CanOverflow = True
             Me.mainMenu.Dock = DockStyle.None
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mApi, Me.mLegal, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mApi, Me.mLegal, Me.mRd, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -694,6 +705,22 @@ Namespace Negar.Forms
             Me.miLegalReports.Size = New Size(460, 22)
             Me.miLegalReports.Text = "📊 گزارشات جامع پرونده‌های حقوقی، جلسات دادگاه و ریسک دادرسی"
 
+            ' mRd
+            Me.mRd.DropDownItems.AddRange(New ToolStripItem() {Me.miRdMain, Me.miRdReports})
+            Me.mRd.Name = "mRd"
+            Me.mRd.Size = New Size(200, 20)
+            Me.mRd.Text = "🔬 تحقیق، توسعه و فرمولاسیون"
+
+            ' miRdMain
+            Me.miRdMain.Name = "miRdMain"
+            Me.miRdMain.Size = New Size(460, 22)
+            Me.miRdMain.Text = "🔬 سیستم جامع مدیریت تحقیق و توسعه، فرمولاسیون و پتنت (R&D)"
+
+            ' miRdReports
+            Me.miRdReports.Name = "miRdReports"
+            Me.miRdReports.Size = New Size(460, 22)
+            Me.miRdReports.Text = "📊 گزارشات Innovation Funnel، Time-to-Market و ROI تحقیقات"
+
             ' miBiReports
             Me.miBiReports.Name = "miBiReports"
             Me.miBiReports.Size = New Size(420, 22)
@@ -916,7 +943,7 @@ Namespace Negar.Forms
             Me.tool.Dock = DockStyle.None
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.tool.ImageScalingSize = New Size(28, 28)
-            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolDms, Me.btnToolSaham, Me.btnToolApi, Me.btnToolLegal, Me.btnToolBusinessShells, Me.btnToolUtilities})
+            Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolDms, Me.btnToolSaham, Me.btnToolApi, Me.btnToolLegal, Me.btnToolRd, Me.btnToolBusinessShells, Me.btnToolUtilities})
 
             ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
             Me.pnlToolBar.AutoScroll = True
@@ -1075,6 +1102,12 @@ Namespace Negar.Forms
             Me.btnToolLegal.Name = "btnToolLegal"
             Me.btnToolLegal.Size = New Size(190, 51)
             Me.btnToolLegal.Text = "مدیریت امور حقوقی و دعاوی"
+
+            ' btnToolRd
+            Me.btnToolRd.Margin = New Padding(4, 2, 4, 2)
+            Me.btnToolRd.Name = "btnToolRd"
+            Me.btnToolRd.Size = New Size(180, 51)
+            Me.btnToolRd.Text = "تحقیق، توسعه و فرمولاسیون"
 
             ' btnToolBusinessShells
             Me.btnToolBusinessShells.Margin = New Padding(4, 2, 4, 2)
