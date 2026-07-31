@@ -253,6 +253,14 @@ Namespace Negar.Business
         Public Const PmCosting As String = "PmCosting"
         Public Const PmReports As String = "PmReports"
 
+        ' Logistics & Fleet Management permissions
+        Public Const LogisticsModule As String = "LogisticsModule"
+        Public Const LogisticsFleet As String = "LogisticsFleet"
+        Public Const LogisticsRoutes As String = "LogisticsRoutes"
+        Public Const LogisticsManifests As String = "LogisticsManifests"
+        Public Const LogisticsCosting As String = "LogisticsCosting"
+        Public Const LogisticsReports As String = "LogisticsReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

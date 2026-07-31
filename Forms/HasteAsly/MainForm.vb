@@ -112,6 +112,7 @@ Namespace Negar.Forms
             btnToolTradeWarehouse.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolImportExport.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolPm.Image = CreateModuleIcon("TradeWarehouse", 24)
+            btnToolLogistics.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -374,6 +375,7 @@ Namespace Negar.Forms
             Dim canKpi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.KpiModule)
             Dim canImportExport = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.ImportExportModule)
             Dim canPm = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.PmModule)
+            Dim canLogistics = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.LogisticsModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -435,6 +437,7 @@ Namespace Negar.Forms
             mKpi.Visible = canKpi
             mImportExport.Visible = canImportExport
             mPm.Visible = canPm
+            mLogistics.Visible = canLogistics
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -454,6 +457,7 @@ Namespace Negar.Forms
             btnToolKpi.Visible = canKpi
             btnToolImportExport.Visible = canImportExport
             btnToolPm.Visible = canPm
+            btnToolLogistics.Visible = canLogistics
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -893,6 +897,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع مدیریت نت، نگهداری و تعمیرات (PM)", AddressOf OpenPmMainForm, "Production")
                     AddDashButton("گزارشات جامع شاخص‌های OEE، MTBF و هزینه نت", AddressOf OpenPmMainForm, "Reports")
 
+                Case "Logistics"
+                    AddDashButton("سیستم جامع مدیریت ناوگان حمل و پخش مویرگی", AddressOf OpenLogisticsMainForm, "TradeWarehouse")
+                    AddDashButton("گزارشات جامع بارنامه‌ها، کرایه حمل و پورسانت توزیع", AddressOf OpenLogisticsMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1114,6 +1122,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم مدیریت نگهداری و تعمیرات: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolLogistics_Click(sender As Object, e As EventArgs) Handles btnToolLogistics.Click
+            ShowDashboardCategory("Logistics")
+        End Sub
+
+        Private Sub OpenLogisticsMainForm(sender As Object, e As EventArgs) Handles mLogistics.Click, miLogisticsMain.Click, miLogisticsReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Logistics.LogisticsMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم لوجستیک و پخش مویرگی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

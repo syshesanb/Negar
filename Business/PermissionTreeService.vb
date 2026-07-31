@@ -926,8 +926,37 @@ Namespace Negar.Business
             tPmReports.Children.Add(stPmReports)
             smPmReports.Children.Add(tPmReports)
             rPm.Children.Add(smPmReports)
-
             roots.Add(rPm)
+
+            ' =========================================================================
+            ' 20. منوی اصلی: سیستم مدیریت ناوگان حمل، پخش مویرگی و لوجستیک (mLogistics)
+            ' =========================================================================
+            Dim rLog As New PermissionTreeNode("MENU_LOGISTICS", "🚚 سیستم جامع مدیریت ناوگان حمل، پخش مویرگی و لوجستیک", 0)
+            Dim smLogMain As New PermissionTreeNode("SM_LOG_MAIN", "📁 سیستم جامع مدیریت ناوگان و پخش مویرگی", 1)
+            Dim tLogMain As New PermissionTreeNode("T_LOG_MAIN", "📄 شناسنامه وسایط نقلیه، مناطق توزیع، بارنامه‌ها و پورسانت موزعان", 2)
+            Dim stLogMain As New PermissionTreeNode("ST_LOG_MAIN", "📑 کنترل تورهای توزیع، تسویه‌حساب بارنامه‌ها و ثبت اسناد حمل", 3)
+
+            AddActionNode(stLogMain, PermissionKeys.LogisticsModule, "🔘 دسترسی به سیستم لوجستیک و پخش مویرگی", dbPermissions)
+            AddActionNode(stLogMain, PermissionKeys.LogisticsFleet, "🔘 مدیریت شناسنامه ناوگان و وسایط نقلیه", dbPermissions)
+            AddActionNode(stLogMain, PermissionKeys.LogisticsRoutes, "🔘 مدیریت مسیرها و مناطق توزیع", dbPermissions)
+            AddActionNode(stLogMain, PermissionKeys.LogisticsManifests, "🔘 مدیریت بارنامه‌ها و تورهای توزیع", dbPermissions)
+            AddActionNode(stLogMain, PermissionKeys.LogisticsCosting, "🔘 محاسبات کرایه حمل، پورسانت و تسویه‌حساب بارنامه", dbPermissions)
+
+            tLogMain.Children.Add(stLogMain)
+            smLogMain.Children.Add(tLogMain)
+            rLog.Children.Add(smLogMain)
+
+            Dim smLogReports As New PermissionTreeNode("SM_LOG_REPORTS", "📁 گزارشات جامع لوجستیک، کرایه حمل و تحویل فاکتورها", 1)
+            Dim tLogReports As New PermissionTreeNode("T_LOG_REPORTS", "📄 گزارش‌های انحراف کرایه حمل، تحلیل عدم تحویل و کارکرد ناوگان", 2)
+            Dim stLogReports As New PermissionTreeNode("ST_LOG_REPORTS", "📑 گزارشات مدیریتی پورسانت موزعان و تسویه‌حساب بارنامه‌ها", 3)
+
+            AddActionNode(stLogReports, PermissionKeys.LogisticsReports, "🔘 گزارشات جامع لوجستیک و تحلیل پخش مویرگی", dbPermissions)
+
+            tLogReports.Children.Add(stLogReports)
+            smLogReports.Children.Add(tLogReports)
+            rLog.Children.Add(smLogReports)
+
+            roots.Add(rLog)
 
             Return roots
         End Function
