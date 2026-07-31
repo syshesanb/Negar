@@ -293,6 +293,14 @@ Namespace Negar.Business
         Public Const DmsSecurity As String = "DmsSecurity"
         Public Const DmsReports As String = "DmsReports"
 
+        ' Shareholders & Equity Management (Saham) permissions
+        Public Const SahamModule As String = "SahamModule"
+        Public Const SahamRegister As String = "SahamRegister"
+        Public Const SahamTransfers As String = "SahamTransfers"
+        Public Const SahamDividends As String = "SahamDividends"
+        Public Const SahamCapital As String = "SahamCapital"
+        Public Const SahamReports As String = "SahamReports"
+
         ' CRUD suffixes
         Public Const CanCreate As String = ".CanCreate"
         Public Const CanEdit As String = ".CanEdit"

@@ -39,6 +39,7 @@ Namespace Negar.Forms
         Friend WithEvents mQc As ToolStripMenuItem
         Friend WithEvents mBi As ToolStripMenuItem
         Friend WithEvents mDms As ToolStripMenuItem
+        Friend WithEvents mSaham As ToolStripMenuItem
         Friend WithEvents mBusinessShells As ToolStripMenuItem
         Friend WithEvents mUtilities As ToolStripMenuItem
 
@@ -105,6 +106,10 @@ Namespace Negar.Forms
         ' Sub-items for DMS
         Friend WithEvents miDmsMain As ToolStripMenuItem
         Friend WithEvents miDmsReports As ToolStripMenuItem
+
+        ' Sub-items for Saham
+        Friend WithEvents miSahamMain As ToolStripMenuItem
+        Friend WithEvents miSahamReports As ToolStripMenuItem
 
         ' Sub-items for System Management
         Friend WithEvents miSettingsMessages As ToolStripMenuItem
@@ -178,6 +183,7 @@ Namespace Negar.Forms
         Friend WithEvents btnToolQc As ToolStripButton
         Friend WithEvents btnToolBi As ToolStripButton
         Friend WithEvents btnToolDms As ToolStripButton
+        Friend WithEvents btnToolSaham As ToolStripButton
         Friend WithEvents btnToolBusinessShells As ToolStripButton
         Friend WithEvents btnToolUtilities As ToolStripButton
 
@@ -223,6 +229,7 @@ Namespace Negar.Forms
             Me.mQc = New ToolStripMenuItem()
             Me.mBi = New ToolStripMenuItem()
             Me.mDms = New ToolStripMenuItem()
+            Me.mSaham = New ToolStripMenuItem()
             Me.mBusinessShells = New ToolStripMenuItem()
             Me.mUtilities = New ToolStripMenuItem()
 
@@ -246,6 +253,9 @@ Namespace Negar.Forms
 
             Me.miDmsMain = New ToolStripMenuItem()
             Me.miDmsReports = New ToolStripMenuItem()
+
+            Me.miSahamMain = New ToolStripMenuItem()
+            Me.miSahamReports = New ToolStripMenuItem()
 
             Me.miPayrollMain = New ToolStripMenuItem()
             Me.miPayrollReports = New ToolStripMenuItem()
@@ -338,6 +348,7 @@ Namespace Negar.Forms
             Me.btnToolQc = New ToolStripButton()
             Me.btnToolBi = New ToolStripButton()
             Me.btnToolDms = New ToolStripButton()
+            Me.btnToolSaham = New ToolStripButton()
             Me.btnToolBusinessShells = New ToolStripButton()
             Me.btnToolUtilities = New ToolStripButton()
 
@@ -373,7 +384,7 @@ Namespace Negar.Forms
             Me.mainMenu.CanOverflow = True
             Me.mainMenu.Dock = DockStyle.None
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
-            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mBusinessShells, Me.mUtilities})
+            Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
             Me.mainMenu.Name = "mainMenu"
             Me.mainMenu.RightToLeft = RightToLeft.Yes
@@ -612,6 +623,22 @@ Namespace Negar.Forms
             Me.miDmsReports.Name = "miDmsReports"
             Me.miDmsReports.Size = New Size(430, 22)
             Me.miDmsReports.Text = "📊 گزارشات جامع پرونده‌های آرشیو، سررسید انقضا و لاگ امنیتی"
+
+            ' mSaham
+            Me.mSaham.DropDownItems.AddRange(New ToolStripItem() {Me.miSahamMain, Me.miSahamReports})
+            Me.mSaham.Name = "mSaham"
+            Me.mSaham.Size = New Size(170, 20)
+            Me.mSaham.Text = "🏛️ امور سهام و سهامداران"
+
+            ' miSahamMain
+            Me.miSahamMain.Name = "miSahamMain"
+            Me.miSahamMain.Size = New Size(420, 22)
+            Me.miSahamMain.Text = "🏛️ سیستم جامع امور سهام و سهامداران"
+
+            ' miSahamReports
+            Me.miSahamReports.Name = "miSahamReports"
+            Me.miSahamReports.Size = New Size(420, 22)
+            Me.miSahamReports.Text = "📊 گزارشات جامع ترکیب سهامداران، مجمع عمومی و پرداخت سود"
 
             ' miBiReports
             Me.miBiReports.Name = "miBiReports"

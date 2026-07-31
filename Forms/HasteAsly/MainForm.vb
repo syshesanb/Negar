@@ -117,6 +117,7 @@ Namespace Negar.Forms
             btnToolQc.Image = CreateModuleIcon("TradeWarehouse", 24)
             btnToolBi.Image = CreateModuleIcon("Reports", 24)
             btnToolDms.Image = CreateModuleIcon("TradeWarehouse", 24)
+            btnToolSaham.Image = CreateModuleIcon("CompanyFiscalYears", 24)
             btnToolBusinessShells.Image = CreateModuleIcon("Home", 24)
             btnToolUtilities.Image = CreateModuleIcon("Reports", 24)
         End Sub
@@ -384,6 +385,7 @@ Namespace Negar.Forms
             Dim canQc = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.QcModule)
             Dim canBi = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.BiModule)
             Dim canDms = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.DmsModule)
+            Dim canSaham = isSuperAdmin OrElse SessionContext.HasPermission(PermissionKeys.SahamModule)
 
             miUsers.Available = canUsers
             miBasicUsers.Available = canBasicUsers
@@ -450,6 +452,7 @@ Namespace Negar.Forms
             mQc.Visible = canQc
             mBi.Visible = canBi
             mDms.Visible = canDms
+            mSaham.Visible = canSaham
             mBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             mUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -474,6 +477,7 @@ Namespace Negar.Forms
             btnToolQc.Visible = canQc
             btnToolBi.Visible = canBi
             btnToolDms.Visible = canDms
+            btnToolSaham.Visible = canSaham
             btnToolBusinessShells.Visible = canBusinessShells OrElse isSuperAdmin
             btnToolUtilities.Visible = canUtilities OrElse isSuperAdmin
 
@@ -933,6 +937,10 @@ Namespace Negar.Forms
                     AddDashButton("سیستم جامع مدیریت بایگانی دیجیتال و آرشیو اسناد (DMS)", AddressOf OpenDmsMainForm, "CompanyFiscalYears")
                     AddDashButton("گزارشات جامع پرونده‌های آرشیو، سررسید انقضا و لاگ امنیتی", AddressOf OpenDmsMainForm, "Reports")
 
+                Case "Saham"
+                    AddDashButton("سیستم جامع امور سهام و سهامداران", AddressOf OpenSahamMainForm, "CompanyFiscalYears")
+                    AddDashButton("گزارشات جامع ترکیب سهامداران، مجمع عمومی و پرداخت سود", AddressOf OpenSahamMainForm, "Reports")
+
                 Case "BusinessShells"
                     If canBusinessShells OrElse isSuperAdmin Then
                         AddDashButton("پوسته عمومی و بازرگانی", AddressOf MiShellGeneral_Click, "Home")
@@ -1229,6 +1237,21 @@ Namespace Negar.Forms
                 End Using
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم مدیریت بایگانی دیجیتال: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Sub
+
+        Private Sub BtnToolSaham_Click(sender As Object, e As EventArgs) Handles btnToolSaham.Click
+            ShowDashboardCategory("Saham")
+        End Sub
+
+        Private Sub OpenSahamMainForm(sender As Object, e As EventArgs) Handles mSaham.Click, miSahamMain.Click, miSahamReports.Click
+            Try
+                If Not EnsureCompanyAndFiscalYearSelected() Then Return
+                Using dlg As New Negar.Forms.Saham.SahamMainForm()
+                    dlg.ShowDialog(Me)
+                End Using
+            Catch ex As Exception
+                MessageBox.Show("خطا در باز کردن سیستم امور سهام و سهامداران: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End Sub
 

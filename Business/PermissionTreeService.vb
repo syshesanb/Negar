@@ -1076,6 +1076,36 @@ Namespace Negar.Business
 
             roots.Add(rDms)
 
+            ' =========================================================================
+            ' 25. منوی اصلی: سیستم امور سهام و سهامداران (mSaham)
+            ' =========================================================================
+            Dim rSaham As New PermissionTreeNode("MENU_SAHAM", "🏛️ سیستم جامع امور سهام و سهامداران", 0)
+            Dim smSahamMain As New PermissionTreeNode("SM_SAHAM_MAIN", "📁 دفتر سهام، نقل و انتقالات و مجمع عمومی", 1)
+            Dim tSahamMain As New PermissionTreeNode("T_SAHAM_MAIN", "📄 دفتر ثبت سهامداران، نقل و انتقال سهام، سود مصوب DPS و افزایش سرمایه", 2)
+            Dim stSahamMain As New PermissionTreeNode("ST_SAHAM_MAIN", "📑 صدور ورقه سهم، پرداخت سود پایا، حق تقدم و صدور خودکار اسناد حسابداری", 3)
+
+            AddActionNode(stSahamMain, PermissionKeys.SahamModule, "🔘 دسترسی به سیستم امور سهام و سهامداران", dbPermissions)
+            AddActionNode(stSahamMain, PermissionKeys.SahamRegister, "🔘 مدیریت دفتر ثبت سهامداران و صدور ورقه سهم", dbPermissions)
+            AddActionNode(stSahamMain, PermissionKeys.SahamTransfers, "🔘 مدیریت نقل و انتقال سهام و معاملات حقوقی", dbPermissions)
+            AddActionNode(stSahamMain, PermissionKeys.SahamDividends, "🔘 محاسبه و تقسیم سود مصوب مجمع (DPS) و فایل واریز بانکی", dbPermissions)
+            AddActionNode(stSahamMain, PermissionKeys.SahamCapital, "🔘 مدیریت افزایش سرمایه و گواهی حق تقدم", dbPermissions)
+
+            tSahamMain.Children.Add(stSahamMain)
+            smSahamMain.Children.Add(tSahamMain)
+            rSaham.Children.Add(smSahamMain)
+
+            Dim smSahamReports As New PermissionTreeNode("SM_SAHAM_REPORTS", "📁 گزارشات دفتر سهام، مجمع و واریز سود", 1)
+            Dim tSahamReports As New PermissionTreeNode("T_SAHAM_REPORTS", "📄 گزارش‌های ترکیب سهامداران، سود تقسیم‌شده DPS و حدنصاب مجمع", 2)
+            Dim stSahamReports As New PermissionTreeNode("ST_SAHAM_REPORTS", "📑 گزارشات مدیریتی سهامداران عمده و گردش مطالبات سود", 3)
+
+            AddActionNode(stSahamReports, PermissionKeys.SahamReports, "🔘 گزارشات جامع ترکیب سهامداران، مجمع عمومی و پرداخت سود", dbPermissions)
+
+            tSahamReports.Children.Add(stSahamReports)
+            smSahamReports.Children.Add(tSahamReports)
+            rSaham.Children.Add(smSahamReports)
+
+            roots.Add(rSaham)
+
             Return roots
         End Function
 
