@@ -312,7 +312,7 @@ Namespace Negar.Forms
                     _priorSums = blocks(0).PriorSums
                 Else
                     If _selectedRangeAccounts.Count > 0 AndAlso cmbSelectedAccounts.SelectedIndex = 0 Then
-                        lblAccountTitle.Text = "دفتر حساب :  از کد: " & _selectedFromChain & vbCrLf & "تا کد: " & _selectedToChain
+                        lblAccountTitle.Text = "دفتر حساب :  از کد: " & _selectedFromChain & Environment.NewLine & "تا کد: " & _selectedToChain
                     Else
                         lblAccountTitle.Text = String.Format("چاپ تمام دفاتر (تعداد: {0} دفتر از سطح {1})", blocks.Count, cmbSelectedAccounts.Text)
                     End If

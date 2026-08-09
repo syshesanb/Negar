@@ -71,10 +71,10 @@ Namespace Negar.Forms.VoIP
             tabControl.TabPages.Add(tabDashboard)
 
             Me.Controls.Add(tabControl)
-            AddHandler Me.Load, AddressOf OnLoad
+            AddHandler Me.Load, AddressOf VoipMainForm_Load
         End Sub
 
-        Private Sub OnLoad(sender As Object, e As EventArgs)
+        Private Sub VoipMainForm_Load(sender As Object, e As EventArgs)
             Me.WindowState = FormWindowState.Maximized
             LoadAll()
         End Sub

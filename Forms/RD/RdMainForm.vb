@@ -72,10 +72,10 @@ Namespace Negar.Forms.RD
             tabControl.TabPages.Add(tabReports)
 
             Me.Controls.Add(tabControl)
-            AddHandler Me.Load, AddressOf OnLoad
+            AddHandler Me.Load, AddressOf RdMainForm_Load
         End Sub
 
-        Private Sub OnLoad(sender As Object, e As EventArgs)
+        Private Sub RdMainForm_Load(sender As Object, e As EventArgs)
             Me.WindowState = FormWindowState.Maximized
             LoadAll()
         End Sub
