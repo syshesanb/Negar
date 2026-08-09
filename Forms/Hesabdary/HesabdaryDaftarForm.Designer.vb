@@ -131,17 +131,17 @@ Namespace Negar.Forms
             Me.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top
             Me.pnlHeader.Location = New System.Drawing.Point(0, 0)
             Me.pnlHeader.Name = "pnlHeader"
-            Me.pnlHeader.Size = New System.Drawing.Size(1320, 44)
+            Me.pnlHeader.Size = New System.Drawing.Size(1320, 60)
             Me.pnlHeader.TabIndex = 1
             '
             'lblAccountTitle
             '
             Me.lblAccountTitle.Dock = System.Windows.Forms.DockStyle.Fill
-            Me.lblAccountTitle.Font = New System.Drawing.Font("Tahoma", 10.0!, System.Drawing.FontStyle.Bold)
+            Me.lblAccountTitle.Font = New System.Drawing.Font("Tahoma", 9.5!, System.Drawing.FontStyle.Bold)
             Me.lblAccountTitle.ForeColor = System.Drawing.Color.FromArgb(CType(CType(20, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(120, Byte), Integer))
             Me.lblAccountTitle.Location = New System.Drawing.Point(0, 0)
             Me.lblAccountTitle.Name = "lblAccountTitle"
-            Me.lblAccountTitle.Size = New System.Drawing.Size(1320, 44)
+            Me.lblAccountTitle.Size = New System.Drawing.Size(1320, 60)
             Me.lblAccountTitle.TabIndex = 4
             Me.lblAccountTitle.Text = "دفتر حساب"
             Me.lblAccountTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft

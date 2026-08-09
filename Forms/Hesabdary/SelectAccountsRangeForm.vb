@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Drawing
@@ -14,15 +14,27 @@ Namespace Negar.Forms
         Public Property SelectedLevel As Integer ' 1-indexed (1: Group, 2: General, 3: Subsidiary, etc.)
         Public Property SelectedFromCode As String = String.Empty
         Public Property SelectedToCode As String = String.Empty
+        Public Property SelectedFromChain As String = String.Empty
+        Public Property SelectedToChain As String = String.Empty
         Public Property SelectedAccounts As New List(Of Tuple(Of Integer, String, String))() ' List of (AccountID, Code, Name)
 
         Private cmbLevelSelector As ComboBox
-        Private cmbFromAccount As ComboBox
-        Private cmbToAccount As ComboBox
+        Private lblFromCode As Label
+        Private btnSelectFrom As Button
+        Private lblToCode As Label
+        Private btnSelectTo As Button
         Private btnOk As Button
         Private btnCancel As Button
 
         Private _allAccounts As New List(Of Tuple(Of Integer, String, String, Integer))() ' (ID, Code, Name, Level)
+
+        Private _fromAccountId As Integer = 0
+        Private _fromAccountCode As String = String.Empty
+        Private _fromAccountName As String = String.Empty
+
+        Private _toAccountId As Integer = 0
+        Private _toAccountCode As String = String.Empty
+        Private _toAccountName As String = String.Empty
 
         Public Sub New()
             InitializeComponent()
@@ -33,7 +45,7 @@ Namespace Negar.Forms
 
         Private Sub InitializeComponent()
             Me.Text = "انتخاب محدوده سرفصل‌ها"
-            Me.Size = New Size(400, 250)
+            Me.Size = New Size(540, 260)
             Me.FormBorderStyle = FormBorderStyle.FixedDialog
             Me.MaximizeBox = False
             Me.MinimizeBox = False
@@ -42,27 +54,43 @@ Namespace Negar.Forms
             Me.RightToLeftLayout = True
             Me.Font = New Font("Tahoma", 9.0!)
 
-            Dim lblLevel As New Label() With {.Text = "سطح سرفصل:", .Location = New Point(280, 20), .Size = New Size(90, 22), .TextAlign = ContentAlignment.MiddleLeft}
-            cmbLevelSelector = New ComboBox() With {.Location = New Point(30, 20), .Size = New Size(240, 22), .DropDownStyle = ComboBoxStyle.DropDownList}
+            Dim lblLevel As New Label() With {.Text = "سطح سرفصل:", .Location = New Point(420, 20), .Size = New Size(90, 22), .TextAlign = ContentAlignment.MiddleLeft}
+            cmbLevelSelector = New ComboBox() With {.Location = New Point(150, 20), .Size = New Size(260, 22), .DropDownStyle = ComboBoxStyle.DropDownList}
             AddHandler cmbLevelSelector.SelectedIndexChanged, AddressOf CmbLevelSelector_SelectedIndexChanged
 
-            Dim lblFrom As New Label() With {.Text = "از سرفصل:", .Location = New Point(280, 60), .Size = New Size(90, 22), .TextAlign = ContentAlignment.MiddleLeft}
-            cmbFromAccount = New ComboBox() With {.Location = New Point(30, 60), .Size = New Size(240, 22), .DropDownStyle = ComboBoxStyle.DropDownList, .DropDownWidth = 350}
+            lblFromCode = New Label() With {
+                .Text = "از کد: (انتخاب نشده)",
+                .Location = New Point(150, 60),
+                .Size = New Size(360, 36),
+                .TextAlign = ContentAlignment.MiddleLeft,
+                .BorderStyle = BorderStyle.FixedSingle,
+                .BackColor = Color.White
+            }
+            btnSelectFrom = New Button() With {.Text = "...", .Location = New Point(30, 60), .Size = New Size(100, 36)}
+            AddHandler btnSelectFrom.Click, AddressOf BtnSelectFrom_Click
 
-            Dim lblTo As New Label() With {.Text = "تا سرفصل:", .Location = New Point(280, 100), .Size = New Size(90, 22), .TextAlign = ContentAlignment.MiddleLeft}
-            cmbToAccount = New ComboBox() With {.Location = New Point(30, 100), .Size = New Size(240, 22), .DropDownStyle = ComboBoxStyle.DropDownList, .DropDownWidth = 350}
+            lblToCode = New Label() With {
+                .Text = "تا کد: (انتخاب نشده)",
+                .Location = New Point(150, 110),
+                .Size = New Size(360, 36),
+                .TextAlign = ContentAlignment.MiddleLeft,
+                .BorderStyle = BorderStyle.FixedSingle,
+                .BackColor = Color.White
+            }
+            btnSelectTo = New Button() With {.Text = "...", .Location = New Point(30, 110), .Size = New Size(100, 36)}
+            AddHandler btnSelectTo.Click, AddressOf BtnSelectTo_Click
 
-            btnOk = New Button() With {.Text = "تأیید", .Location = New Point(150, 150), .Size = New Size(100, 32), .DialogResult = DialogResult.OK}
+            btnOk = New Button() With {.Text = "تأیید", .Location = New Point(150, 170), .Size = New Size(100, 32), .DialogResult = DialogResult.OK}
             AddHandler btnOk.Click, AddressOf BtnOk_Click
 
-            btnCancel = New Button() With {.Text = "انصراف", .Location = New Point(30, 150), .Size = New Size(100, 32), .DialogResult = DialogResult.Cancel}
+            btnCancel = New Button() With {.Text = "انصراف", .Location = New Point(30, 170), .Size = New Size(100, 32), .DialogResult = DialogResult.Cancel}
 
             Me.Controls.Add(lblLevel)
             Me.Controls.Add(cmbLevelSelector)
-            Me.Controls.Add(lblFrom)
-            Me.Controls.Add(cmbFromAccount)
-            Me.Controls.Add(lblTo)
-            Me.Controls.Add(cmbToAccount)
+            Me.Controls.Add(lblFromCode)
+            Me.Controls.Add(btnSelectFrom)
+            Me.Controls.Add(lblToCode)
+            Me.Controls.Add(btnSelectTo)
             Me.Controls.Add(btnOk)
             Me.Controls.Add(btnCancel)
 
@@ -126,44 +154,119 @@ Namespace Negar.Forms
             If cmbLevelSelector.SelectedIndex < 0 Then Return
             Dim selectedLvl = cmbLevelSelector.SelectedIndex + 1
 
-            cmbFromAccount.Items.Clear()
-            cmbToAccount.Items.Clear()
+            Dim levelAccounts = _allAccounts.FindAll(Function(x) x.Item4 = selectedLvl)
+            If levelAccounts.Count > 0 Then
+                Dim firstAcc = levelAccounts(0)
+                Dim lastAcc = levelAccounts(levelAccounts.Count - 1)
 
-            For Each acc In _allAccounts
-                If acc.Item4 = selectedLvl Then
-                    Dim itemText = acc.Item2 & " - " & acc.Item3
-                    cmbFromAccount.Items.Add(New ComboItem(acc.Item1, acc.Item2, itemText))
-                    cmbToAccount.Items.Add(New ComboItem(acc.Item1, acc.Item2, itemText))
-                End If
-            Next
+                _fromAccountId = firstAcc.Item1
+                _fromAccountCode = firstAcc.Item2
+                _fromAccountName = firstAcc.Item3
 
-            If cmbFromAccount.Items.Count > 0 Then cmbFromAccount.SelectedIndex = 0
-            If cmbToAccount.Items.Count > 0 Then cmbToAccount.SelectedIndex = cmbToAccount.Items.Count - 1
+                _toAccountId = lastAcc.Item1
+                _toAccountCode = lastAcc.Item2
+                _toAccountName = lastAcc.Item3
+
+                lblFromCode.Text = "از کد: " & GetFormattedAccountChain(_fromAccountId)
+                lblToCode.Text = "تا کد: " & GetFormattedAccountChain(_toAccountId)
+            Else
+                _fromAccountId = 0
+                _fromAccountCode = String.Empty
+                _fromAccountName = String.Empty
+
+                _toAccountId = 0
+                _toAccountCode = String.Empty
+                _toAccountName = String.Empty
+
+                lblFromCode.Text = "از کد: (سرفصلی در این سطح وجود ندارد)"
+                lblToCode.Text = "تا کد: (سرفصلی در این سطح وجود ندارد)"
+            End If
         End Sub
+
+        Private Function GetFormattedAccountChain(accountId As Integer) As String
+            Try
+                If accountId <= 0 Then Return String.Empty
+                Dim chain = service.GetAccountHierarchyChain(accountId)
+                Dim parts As New List(Of String)()
+                For Each item In chain
+                    parts.Add(item.Item1 & " — " & item.Item2)
+                Next
+                Return String.Join(" / ", parts.ToArray())
+            Catch
+                Return String.Empty
+            End Try
+        End Function
 
         Private Sub CmbLevelSelector_SelectedIndexChanged(sender As Object, e As EventArgs)
             PopulateLevels()
         End Sub
 
+        Private Sub BtnSelectFrom_Click(sender As Object, e As EventArgs)
+            Using frm As New HesabdaryCodingForm()
+                frm.SelectMode = True
+                frm.ReportSelectionMode = True
+                frm.ShowDialog(Me)
+                If frm.SelectedAccountID.HasValue Then
+                    Dim accId = frm.SelectedAccountID.Value
+                    Dim acc = _allAccounts.Find(Function(x) x.Item1 = accId)
+                    If acc IsNot Nothing Then
+                        _fromAccountId = acc.Item1
+                        _fromAccountCode = acc.Item2
+                        _fromAccountName = acc.Item3
+                        
+                        ' Update Level selector automatically to match selected account level
+                        RemoveHandler cmbLevelSelector.SelectedIndexChanged, AddressOf CmbLevelSelector_SelectedIndexChanged
+                        cmbLevelSelector.SelectedIndex = acc.Item4 - 1
+                        AddHandler cmbLevelSelector.SelectedIndexChanged, AddressOf CmbLevelSelector_SelectedIndexChanged
+
+                        lblFromCode.Text = "از کد: " & GetFormattedAccountChain(_fromAccountId)
+                    End If
+                End If
+            End Using
+        End Sub
+
+        Private Sub BtnSelectTo_Click(sender As Object, e As EventArgs)
+            Using frm As New HesabdaryCodingForm()
+                frm.SelectMode = True
+                frm.ReportSelectionMode = True
+                frm.ShowDialog(Me)
+                If frm.SelectedAccountID.HasValue Then
+                    Dim accId = frm.SelectedAccountID.Value
+                    Dim acc = _allAccounts.Find(Function(x) x.Item1 = accId)
+                    If acc IsNot Nothing Then
+                        _toAccountId = acc.Item1
+                        _toAccountCode = acc.Item2
+                        _toAccountName = acc.Item3
+                        
+                        ' Update Level selector automatically to match selected account level
+                        RemoveHandler cmbLevelSelector.SelectedIndexChanged, AddressOf CmbLevelSelector_SelectedIndexChanged
+                        cmbLevelSelector.SelectedIndex = acc.Item4 - 1
+                        AddHandler cmbLevelSelector.SelectedIndexChanged, AddressOf CmbLevelSelector_SelectedIndexChanged
+
+                        lblToCode.Text = "تا کد: " & GetFormattedAccountChain(_toAccountId)
+                    End If
+                End If
+            End Using
+        End Sub
+
         Private Sub BtnOk_Click(sender As Object, e As EventArgs)
-            If cmbLevelSelector.SelectedIndex < 0 OrElse cmbFromAccount.SelectedItem Is Nothing OrElse cmbToAccount.SelectedItem Is Nothing Then
-                MessageBox.Show("لطفاً سطح و محدوده حساب‌ها را انتخاب کنید.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            If _fromAccountId <= 0 OrElse _toAccountId <= 0 Then
+                MessageBox.Show("لطفاً محدوده سرفصل‌ها را مشخص کنید.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Me.DialogResult = DialogResult.None
                 Return
             End If
 
-            Dim fromItem = DirectCast(cmbFromAccount.SelectedItem, ComboItem)
-            Dim toItem = DirectCast(cmbToAccount.SelectedItem, ComboItem)
-
-            If String.Compare(fromItem.Code, toItem.Code, StringComparison.OrdinalIgnoreCase) > 0 Then
+            If String.Compare(_fromAccountCode, _toAccountCode, StringComparison.OrdinalIgnoreCase) > 0 Then
                 MessageBox.Show("کد شروع نمی‌تواند بزرگتر از کد پایان باشد.", "خطا", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Me.DialogResult = DialogResult.None
                 Return
             End If
 
             Me.SelectedLevel = cmbLevelSelector.SelectedIndex + 1
-            Me.SelectedFromCode = fromItem.Code
-            Me.SelectedToCode = toItem.Code
+            Me.SelectedFromCode = _fromAccountCode
+            Me.SelectedToCode = _toAccountCode
+            Me.SelectedFromChain = GetFormattedAccountChain(_fromAccountId)
+            Me.SelectedToChain = GetFormattedAccountChain(_toAccountId)
 
             ' Populate selected accounts
             Me.SelectedAccounts.Clear()
@@ -175,21 +278,5 @@ Namespace Negar.Forms
                 End If
             Next
         End Sub
-
-        Private Class ComboItem
-            Public Property ID As Integer
-            Public Property Code As String
-            Public Property Text As String
-
-            Public Sub New(id As Integer, code As String, text As String)
-                Me.ID = id
-                Me.Code = code
-                Me.Text = text
-            End Sub
-
-            Public Overrides Function ToString() As String
-                Return Me.Text
-            End Function
-        End Class
     End Class
 End Namespace

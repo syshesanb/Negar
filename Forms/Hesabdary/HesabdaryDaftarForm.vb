@@ -25,6 +25,8 @@ Namespace Negar.Forms
         Private _fullDataTable As DataTable
         Private _priorSums As Tuple(Of Decimal, Decimal)
         Private _selectedRangeAccounts As New List(Of Tuple(Of Integer, String, String))()
+        Private _selectedFromChain As String = String.Empty
+        Private _selectedToChain As String = String.Empty
         Private _returnTargetEntryID As Integer? = Nothing
         Private _returnTargetLineNumber As Integer? = Nothing
 
@@ -309,7 +311,11 @@ Namespace Negar.Forms
                     _fullDataTable = blocks(0).LedgerData
                     _priorSums = blocks(0).PriorSums
                 Else
-                    lblAccountTitle.Text = String.Format("چاپ تمام دفاتر (تعداد: {0} دفتر از سطح {1})", blocks.Count, cmbSelectedAccounts.Text)
+                    If _selectedRangeAccounts.Count > 0 AndAlso cmbSelectedAccounts.SelectedIndex = 0 Then
+                        lblAccountTitle.Text = "دفتر حساب :  از کد: " & _selectedFromChain & vbCrLf & "تا کد: " & _selectedToChain
+                    Else
+                        lblAccountTitle.Text = String.Format("چاپ تمام دفاتر (تعداد: {0} دفتر از سطح {1})", blocks.Count, cmbSelectedAccounts.Text)
+                    End If
                     _fullDataTable = Nothing
                     _priorSums = Nothing
                 End If
@@ -598,6 +604,8 @@ Namespace Negar.Forms
                 If frm.ShowDialog(Me) = DialogResult.OK Then
                     _selectedRangeAccounts.Clear()
                     _selectedRangeAccounts.AddRange(frm.SelectedAccounts)
+                    _selectedFromChain = frm.SelectedFromChain
+                    _selectedToChain = frm.SelectedToChain
 
                     RemoveHandler cmbSelectedAccounts.SelectedIndexChanged, AddressOf CmbSelectedAccounts_SelectedIndexChanged
                     cmbSelectedAccounts.Items.Clear()
