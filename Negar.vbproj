@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -166,50 +166,132 @@
     <Compile Include="Business\DmsService.vb" />
     <Compile Include="Business\SahamService.vb" />
     <Compile Include="Business\ApiService.vb" />
-    <Compile Include="Forms\Payroll\PayrollMainForm.vb" />
-    <Compile Include="Forms\Payroll\PayrollPersonnelEditDialog.vb" />
-    <Compile Include="Forms\Amval\AmvalMainForm.vb" />
-    <Compile Include="Forms\Amval\AmvalAssetEditDialog.vb" />
-    <Compile Include="Forms\Automation\AutomationMainForm.vb" />
-    <Compile Include="Forms\Automation\AutomationLetterEditDialog.vb" />
-    <Compile Include="Forms\CRM\CrmMainForm.vb" />
-    <Compile Include="Forms\CRM\CrmCustomerEditDialog.vb" />
-    <Compile Include="Forms\Treasury\TreasuryMainForm.vb" />
-    <Compile Include="Forms\Treasury\TreasuryEditDialog.vb" />
-    <Compile Include="Forms\Budgeting\BudgetMainForm.vb" />
-    <Compile Include="Forms\Budgeting\BudgetEditDialog.vb" />
-    <Compile Include="Forms\Production\ProductionMainForm.vb" />
-    <Compile Include="Forms\Production\ProductionEditDialog.vb" />
-    <Compile Include="Forms\Project\ProjectMainForm.vb" />
-    <Compile Include="Forms\Project\ProjectEditDialog.vb" />
-    <Compile Include="Forms\KPI\KpiMainForm.vb" />
-    <Compile Include="Forms\KPI\KpiEditDialog.vb" />
-    <Compile Include="Forms\ImportExport\ImportExportMainForm.vb" />
-    <Compile Include="Forms\ImportExport\ImportExportEditDialog.vb" />
-    <Compile Include="Forms\PM\PmMainForm.vb" />
-    <Compile Include="Forms\PM\PmEditDialog.vb" />
-    <Compile Include="Forms\Logistics\LogisticsMainForm.vb" />
-    <Compile Include="Forms\Logistics\LogisticsEditDialog.vb" />
-    <Compile Include="Forms\SRM\SrmMainForm.vb" />
-    <Compile Include="Forms\SRM\SrmEditDialog.vb" />
-    <Compile Include="Forms\QC\QcMainForm.vb" />
-    <Compile Include="Forms\QC\QcEditDialog.vb" />
-    <Compile Include="Forms\BI\BiMainForm.vb" />
-    <Compile Include="Forms\DMS\DmsMainForm.vb" />
-    <Compile Include="Forms\DMS\DmsEditDialog.vb" />
-    <Compile Include="Forms\Saham\SahamMainForm.vb" />
-    <Compile Include="Forms\Saham\SahamEditDialog.vb" />
-    <Compile Include="Forms\API\ApiMainForm.vb" />
-    <Compile Include="Forms\API\ApiEditDialog.vb" />
+    <Compile Include="Forms\Payroll\PayrollMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Payroll\PayrollPersonnelEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Amval\AmvalMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Amval\AmvalAssetEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Automation\AutomationMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Automation\AutomationLetterEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CRM\CrmMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CRM\CrmCustomerEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Treasury\TreasuryMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Treasury\TreasuryEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Budgeting\BudgetMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Budgeting\BudgetEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Production\ProductionMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Production\ProductionEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Project\ProjectMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Project\ProjectEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\KPI\KpiMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\KPI\KpiEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ImportExport\ImportExportMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ImportExport\ImportExportEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PM\PmMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PM\PmEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Logistics\LogisticsMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Logistics\LogisticsEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SRM\SrmMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SRM\SrmEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\QC\QcMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\QC\QcEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BI\BiMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DMS\DmsMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DMS\DmsEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Saham\SahamMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Saham\SahamEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\API\ApiMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\API\ApiEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Business\LegalService.vb" />
-    <Compile Include="Forms\Legal\LegalMainForm.vb" />
-    <Compile Include="Forms\Legal\LegalEditDialog.vb" />
+    <Compile Include="Forms\Legal\LegalMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Legal\LegalEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Business\RdService.vb" />
-    <Compile Include="Forms\RD\RdMainForm.vb" />
-    <Compile Include="Forms\RD\RdEditDialog.vb" />
+    <Compile Include="Forms\RD\RdMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RD\RdEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Business\VoipService.vb" />
-    <Compile Include="Forms\VoIP\VoipMainForm.vb" />
-    <Compile Include="Forms\VoIP\VoipEditDialog.vb" />
+    <Compile Include="Forms\VoIP\VoipMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\VoIP\VoipEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Business\ThemeHelper.vb" />
     <Compile Include="Business\CsvImportService.vb" />
     <Compile Include="Forms\HasteAsly\ThemeSelectionForm.vb">

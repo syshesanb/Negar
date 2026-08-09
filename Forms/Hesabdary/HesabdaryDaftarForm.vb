@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -394,12 +394,12 @@ Namespace Negar.Forms
                     Dim firstRowIdx = dgvLedger.Rows.Add()
                     Dim firstRow = dgvLedger.Rows(firstRowIdx)
                     firstRow.Tag = "Header"
-                    firstRow.Cells("colGoToDoc") = New DataGridViewTextBoxCell() With {.Value = ""}
-                    firstRow.Cells("colRefNo").Value = ""
+                    firstRow.Cells("colGoToDoc") = New DataGridViewTextBoxCell() With {.Value = "—"}
+                    firstRow.Cells("colRefNo").Value = "—"
                     If dgvLedger.Columns("colLineNo").Visible Then
-                        firstRow.Cells("colLineNo").Value = ""
+                        firstRow.Cells("colLineNo").Value = "—"
                     End If
-                    firstRow.Cells("colDate").Value = ""
+                    firstRow.Cells("colDate").Value = "—"
                     firstRow.Cells("colSharh").Value = "شروع دفتر حساب: " & block.AccountCode & " — " & block.AccountName
                     firstRow.Cells("colDebit").Value = If(priorDebit = 0D, "0", priorDebit.ToString("#,##0"))
                     firstRow.Cells("colCredit").Value = If(priorCredit = 0D, "0", priorCredit.ToString("#,##0"))
@@ -513,12 +513,12 @@ Namespace Negar.Forms
                     Dim sumRowIdx = dgvLedger.Rows.Add()
                     Dim sumRow = dgvLedger.Rows(sumRowIdx)
                     sumRow.Tag = "Summary"
-                    sumRow.Cells("colGoToDoc") = New DataGridViewTextBoxCell() With {.Value = ""}
-                    sumRow.Cells("colRefNo").Value = ""
+                    sumRow.Cells("colGoToDoc") = New DataGridViewTextBoxCell() With {.Value = "—"}
+                    sumRow.Cells("colRefNo").Value = "—"
                     If dgvLedger.Columns("colLineNo").Visible Then
-                        sumRow.Cells("colLineNo").Value = ""
+                        sumRow.Cells("colLineNo").Value = "—"
                     End If
-                    sumRow.Cells("colDate").Value = ""
+                    sumRow.Cells("colDate").Value = "—"
                     sumRow.Cells("colSharh").Value = "جمع دفتر حساب: " & block.AccountCode & " — " & block.AccountName
                     sumRow.Cells("colDebit").Value = If(totalDebit = 0D, "0", totalDebit.ToString("#,##0"))
                     sumRow.Cells("colCredit").Value = If(totalCredit = 0D, "0", totalCredit.ToString("#,##0"))
@@ -764,12 +764,12 @@ Namespace Negar.Forms
             Dim firstRowIdx = dgvLedger.Rows.Add()
             Dim firstRow = dgvLedger.Rows(firstRowIdx)
             firstRow.Tag = Nothing
-            firstRow.Cells("colGoToDoc") = New DataGridViewTextBoxCell() With {.Value = ""}
-            firstRow.Cells("colRefNo").Value = ""
+            firstRow.Cells("colGoToDoc") = New DataGridViewTextBoxCell() With {.Value = "—"}
+            firstRow.Cells("colRefNo").Value = "—"
             If dgvLedger.Columns("colLineNo").Visible Then
-                firstRow.Cells("colLineNo").Value = ""
+                firstRow.Cells("colLineNo").Value = "—"
             End If
-            firstRow.Cells("colDate").Value = ""
+            firstRow.Cells("colDate").Value = "—"
             firstRow.Cells("colSharh").Value = "گردش و مانده حساب قبلی"
             firstRow.Cells("colDebit").Value = If(priorDebit = 0D, "0", priorDebit.ToString("#,##0"))
             firstRow.Cells("colCredit").Value = If(priorCredit = 0D, "0", priorCredit.ToString("#,##0"))
@@ -952,24 +952,38 @@ Namespace Negar.Forms
             If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
             Dim col = dgvLedger.Columns(e.ColumnIndex)
             If col.Name = "colGoToDoc" Then
-                Dim cell = dgvLedger.Rows(e.RowIndex).Cells(e.ColumnIndex)
-                If TypeOf cell Is DataGridViewButtonCell Then
-                    Dim tagVal = dgvLedger.Rows(e.RowIndex).Tag
-                    If tagVal IsNot Nothing AndAlso (tagVal.ToString() = "Header" OrElse tagVal.ToString() = "Summary") Then
-                        Return
-                    End If
+                OpenVoucherFromRow(e.RowIndex)
+            End If
+        End Sub
 
-                    If chkAggregate.Checked Then
-                        MessageBox.Show("لطفا تیک تجمیع سطرهای هم سطح با کد یکسان در یک سند را بردارید و مجددا این دکمه را بزنید", "توجه", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        Return
-                    End If
+        Private Sub DgvLedger_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvLedger.CellDoubleClick
+            If e.RowIndex < 0 OrElse e.ColumnIndex < 0 Then Return
+            OpenVoucherFromRow(e.RowIndex)
+        End Sub
 
-                    Dim tag = TryCast(dgvLedger.Rows(e.RowIndex).Tag, RowTagInfo)
-                    If tag IsNot Nothing Then
-                        _returnTargetEntryID = tag.EntryID
-                        _returnTargetLineNumber = tag.LineNumber
-                        RaiseEvent EditDocumentRequested(tag.EntryID, tag.LineNumber)
-                    End If
+        Private Sub OpenVoucherFromRow(rowIndex As Integer)
+            If rowIndex < 0 OrElse rowIndex >= dgvLedger.Rows.Count Then Return
+            Dim tagVal = dgvLedger.Rows(rowIndex).Tag
+            If tagVal IsNot Nothing AndAlso (tagVal.ToString() = "Header" OrElse tagVal.ToString() = "Summary") Then
+                Return
+            End If
+
+            If chkAggregate.Checked Then
+                MessageBox.Show("لطفاً تیک تجمیع سطرهای هم سطح با کد یکسان در یک سند را بردارید و مجدداً روی این ردیف کلیک کنید", "توجه", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            Dim tag = TryCast(dgvLedger.Rows(rowIndex).Tag, RowTagInfo)
+            If tag IsNot Nothing Then
+                _returnTargetEntryID = tag.EntryID
+                _returnTargetLineNumber = tag.LineNumber
+                RaiseEvent EditDocumentRequested(tag.EntryID, tag.LineNumber)
+            Else
+                Dim tupleTag = TryCast(dgvLedger.Rows(rowIndex).Tag, Tuple(Of Integer, Integer?))
+                If tupleTag IsNot Nothing Then
+                    _returnTargetEntryID = tupleTag.Item1
+                    _returnTargetLineNumber = tupleTag.Item2
+                    RaiseEvent EditDocumentRequested(tupleTag.Item1, tupleTag.Item2)
                 End If
             End If
         End Sub

@@ -48,3 +48,9 @@ Desktop.ini
 
 # Temporary Excel/CSV reports
 *.csv
+
+# Installed tools & downloads
+DBeaver/
+PostgreSQL16/
+*.zip
+*.exe

@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -434,7 +434,7 @@ Namespace Negar.Forms
             Me.colGoToDoc.Name = "colGoToDoc"
             Me.colGoToDoc.ReadOnly = True
             Me.colGoToDoc.Text = "رفتن به سند"
-            Me.colGoToDoc.UseColumnTextForButtonValue = True
+            Me.colGoToDoc.UseColumnTextForButtonValue = False
             Me.colGoToDoc.Width = 95
             '
             'colRefNo
