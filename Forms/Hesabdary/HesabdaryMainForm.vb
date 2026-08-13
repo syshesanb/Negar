@@ -30,11 +30,24 @@ Namespace Negar.Forms
                 LoadAllTabs()
             End If
 
-            Me.WindowState = FormWindowState.Normal
-            Me.WindowState = FormWindowState.Maximized
+            If Me.WindowState <> FormWindowState.Maximized Then
+                Me.WindowState = FormWindowState.Maximized
+            End If
             Me.BringToFront()
             Me.Activate()
             Negar.Business.IradLogger.Log("HesabdaryMainForm_Load", $"Load finish. WindowState={Me.WindowState}, Size={Me.Size.Width}x{Me.Size.Height}, Visible={Me.Visible}")
+        End Sub
+
+        Private Sub HesabdaryMainForm_Resize(sender As Object, e As EventArgs) Handles MyBase.Resize
+            Negar.Business.IradLogger.Log("HesabdaryMainForm_Resize", $"WindowState={Me.WindowState}, Bounds={Me.Bounds.Width}x{Me.Bounds.Height}")
+        End Sub
+
+        Private Sub HesabdaryMainForm_VisibleChanged(sender As Object, e As EventArgs) Handles MyBase.VisibleChanged
+            Negar.Business.IradLogger.Log("HesabdaryMainForm_VisibleChanged", $"Visible={Me.Visible}, WindowState={Me.WindowState}, Bounds={Me.Bounds.Width}x{Me.Bounds.Height}")
+        End Sub
+
+        Private Sub HesabdaryMainForm_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
+            Negar.Business.IradLogger.Log("HesabdaryMainForm_Activated", $"Form activated. Visible={Me.Visible}, WindowState={Me.WindowState}, Bounds={Me.Bounds.Width}x{Me.Bounds.Height}")
         End Sub
 
         Private ReadOnly service As New AccountingService()
