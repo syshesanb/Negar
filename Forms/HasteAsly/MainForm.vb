@@ -580,8 +580,23 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub OpenChild(child As Form)
-            child.StartPosition = FormStartPosition.CenterParent
-            child.Show(Me)
+            If child Is Nothing Then Return
+            Try
+                child.MdiParent = Me
+                child.WindowState = FormWindowState.Maximized
+                flpDashboard.SendToBack()
+                AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
+                child.Show()
+            Catch ex As Exception
+                child.StartPosition = FormStartPosition.CenterParent
+                child.Show(Me)
+            End Try
+        End Sub
+
+        Private Sub ChildForm_FormClosed(sender As Object, e As FormClosedEventArgs)
+            If Me.MdiChildren Is Nothing OrElse Me.MdiChildren.Length <= 1 Then
+                flpDashboard.BringToFront()
+            End If
         End Sub
 
         Private Sub MiUsers_Click(sender As Object, e As EventArgs) Handles miUsers.Click

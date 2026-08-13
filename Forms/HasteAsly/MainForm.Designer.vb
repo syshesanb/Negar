@@ -1269,6 +1269,7 @@ Namespace Negar.Forms
             Me.RightToLeftLayout = True
             Me.StartPosition = FormStartPosition.CenterScreen
             Me.Text = "سیستم یکپارچه مالی، حسابداری، انبارداری و خرید و فروش"
+            Me.IsMdiContainer = True
             Me.WindowState = FormWindowState.Maximized
 
             Me.mainMenu.ResumeLayout(False)
