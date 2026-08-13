@@ -22,10 +22,10 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub HesabdaryMainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Negar.Business.IradLogger.Log("HesabdaryMainForm_Load", $"Load start. WindowState={Me.WindowState}, Size={Me.Size.Width}x{Me.Size.Height}, Visible={Me.Visible}")
             Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             Negar.Business.ThemeHelper.AppendStatusBar(Me)
             Me.WindowState = FormWindowState.Maximized
-            ctrlPersonnel.Init(2)
             If LicenseManager.UsageMode = LicenseUsageMode.Designtime Then Return
 
             If Not SessionContext.CurrentCompanyID.HasValue Then
@@ -48,6 +48,7 @@ Namespace Negar.Forms
             Me.WindowState = FormWindowState.Maximized
             Me.BringToFront()
             Me.Activate()
+            Negar.Business.IradLogger.Log("HesabdaryMainForm_Load", $"Load finish. WindowState={Me.WindowState}, Size={Me.Size.Width}x{Me.Size.Height}, Visible={Me.Visible}")
         End Sub
 
         Private ReadOnly service As New AccountingService()

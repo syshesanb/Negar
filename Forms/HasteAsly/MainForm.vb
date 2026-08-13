@@ -84,6 +84,8 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Negar.Business.IradLogger.Clear()
+            Negar.Business.IradLogger.Log("MainForm_Load", $"MainForm loaded. Bounds: {Me.Bounds.Width}x{Me.Bounds.Height}, WindowState: {Me.WindowState}")
             Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             AppIconHelper.ApplyAppIcon(Me)
             UpdateStatusBar()
@@ -623,6 +625,7 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub BtnHomeTab_Click(sender As Object, e As EventArgs)
+            Negar.Business.IradLogger.Log("BtnHomeTab_Click", "Home Dashboard tab clicked")
             SetActiveTabVisual(Nothing)
         End Sub
 
@@ -647,6 +650,7 @@ Namespace Negar.Forms
 
             _openFormTabs(child) = btnTab
             flpFormTabs.Controls.Add(btnTab)
+            Negar.Business.IradLogger.Log("AddFormTab", $"Tab created for form: {child.GetType().Name}, Title: '{child.Text}', TotalOpenTabs: {_openFormTabs.Count}")
         End Sub
 
         Private Sub FormTab_Click(sender As Object, e As EventArgs)
@@ -655,9 +659,12 @@ Namespace Negar.Forms
             Dim child = TryCast(btn.Tag, Form)
             If child Is Nothing Then Return
 
+            Negar.Business.IradLogger.Log("FormTab_Click", $"Tab clicked for form: {child.GetType().Name}, Title: '{child.Text}'")
+
             ' Check if clicked on close icon area (in RTL, ✕ is at the left edge X < 25)
             Dim mousePos = btn.PointToClient(Cursor.Position)
             If mousePos.X < 25 Then
+                Negar.Business.IradLogger.Log("FormTab_Click", $"Close icon (X) clicked for form: {child.GetType().Name}. Closing form.")
                 child.Close()
                 Return
             End If
@@ -667,6 +674,8 @@ Namespace Negar.Forms
 
         Private Sub RemoveFormTab(child As Form)
             If child Is Nothing Then Return
+            Negar.Business.IradLogger.Log("RemoveFormTab", $"Removing tab for form: {child.GetType().Name}")
+
             If _openFormTabs.ContainsKey(child) Then
                 Dim btn = _openFormTabs(child)
                 flpFormTabs.Controls.Remove(btn)
@@ -692,6 +701,9 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub SetActiveTabVisual(activeChild As Form)
+            Dim activeName = If(activeChild IsNot Nothing, activeChild.GetType().Name, "HOME_DASHBOARD")
+            Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Setting Active Tab: {activeName}, MdiChildrenCount: {If(Me.MdiChildren IsNot Nothing, Me.MdiChildren.Length, 0)}")
+
             ' 1. Dashboard Visibility
             If activeChild Is Nothing Then
                 flpDashboard.Visible = True
@@ -721,13 +733,16 @@ Namespace Negar.Forms
                         If f Is activeChild Then
                             f.Visible = True
                             If f.WindowState <> FormWindowState.Maximized Then
+                                Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Re-maximizing active child: {f.GetType().Name} (was {f.WindowState})")
                                 f.WindowState = FormWindowState.Normal
                                 f.WindowState = FormWindowState.Maximized
                             End If
                             f.BringToFront()
                             f.Activate()
+                            Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Active child state: {f.GetType().Name}, Visible={f.Visible}, WindowState={f.WindowState}, Size={f.Size.Width}x{f.Size.Height}")
                         Else
                             f.Visible = False
+                            Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Hiding inactive child: {f.GetType().Name}")
                         End If
                     End If
                 Next
@@ -753,10 +768,13 @@ Namespace Negar.Forms
 
         Private Sub OpenChild(child As Form)
             If child Is Nothing Then Return
+            Negar.Business.IradLogger.Log("OpenChild", $"OpenChild requested for form: {child.GetType().Name}, Text='{child.Text}'")
+
             Try
                 ' If form of same type is already open, activate its existing window and tab!
                 For Each existingForm As Form In Me.MdiChildren
                     If existingForm.GetType() Is child.GetType() Then
+                        Negar.Business.IradLogger.Log("OpenChild", $"Form {child.GetType().Name} already open. Activating existing instance.")
                         SetActiveTabVisual(existingForm)
                         child.Dispose()
                         Return
@@ -767,9 +785,11 @@ Namespace Negar.Forms
                 child.WindowState = FormWindowState.Maximized
                 AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
                 child.Show()
+                Negar.Business.IradLogger.Log("OpenChild", $"Form {child.GetType().Name} shown inside MDI Parent. WindowState={child.WindowState}, Visible={child.Visible}, Size={child.Size.Width}x{child.Size.Height}")
                 AddFormTab(child)
                 SetActiveTabVisual(child)
             Catch ex As Exception
+                Negar.Business.IradLogger.Log("OpenChild", $"Exception opening form {child.GetType().Name}: {ex.Message}")
                 child.StartPosition = FormStartPosition.CenterParent
                 child.Show(Me)
             End Try
@@ -778,6 +798,7 @@ Namespace Negar.Forms
         Private Sub ChildForm_FormClosed(sender As Object, e As FormClosedEventArgs)
             Dim child = TryCast(sender, Form)
             If child IsNot Nothing Then
+                Negar.Business.IradLogger.Log("ChildForm_FormClosed", $"FormClosed event for form: {child.GetType().Name}")
                 RemoveFormTab(child)
             End If
         End Sub
