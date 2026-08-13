@@ -728,8 +728,10 @@ Namespace Negar.Forms
             ' 3. MDI Child Form Activation & Maximized Window Management
             If Me.MdiChildren IsNot Nothing Then
                 For Each f As Form In Me.MdiChildren
-                    If f IsNot Nothing AndAlso Not f.IsDisposed AndAlso f IsNot activeChild Then
-                        f.SendToBack()
+                    If f IsNot Nothing AndAlso Not f.IsDisposed Then
+                        If f IsNot activeChild Then
+                            f.Visible = False
+                        End If
                     End If
                 Next
 
