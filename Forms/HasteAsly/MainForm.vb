@@ -87,6 +87,19 @@ Namespace Negar.Forms
             _shortcutFilter = New GlobalShortcutFilter(Me)
             Application.AddMessageFilter(_shortcutFilter)
             LoadRandomBackgroundImage()
+            UpdateSidebarBounds()
+        End Sub
+
+        Private Sub UpdateSidebarBounds()
+            If pnlSidebarContainer IsNot Nothing AndAlso status IsNot Nothing Then
+                pnlSidebarContainer.Location = New Point(0, 0)
+                pnlSidebarContainer.Height = Math.Max(100, Me.ClientSize.Height - status.Height)
+                pnlSidebarContainer.BringToFront()
+            End If
+        End Sub
+
+        Private Sub MainForm_ResizeOrLayout(sender As Object, e As EventArgs) Handles MyBase.Resize, MyBase.Layout
+            UpdateSidebarBounds()
         End Sub
 
         Private Sub MainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
@@ -587,6 +600,7 @@ Namespace Negar.Forms
                 flpDashboard.SendToBack()
                 AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
                 child.Show()
+                UpdateSidebarBounds()
             Catch ex As Exception
                 child.StartPosition = FormStartPosition.CenterParent
                 child.Show(Me)
@@ -1400,6 +1414,7 @@ Namespace Negar.Forms
                 currentWidth = Math.Max(_targetWidth, currentWidth - stepVal)
             End If
             pnlSidebarContainer.Width = currentWidth
+            UpdateSidebarBounds()
 
             If currentWidth = _targetWidth Then
                 menuTransitionTimer.Stop()
