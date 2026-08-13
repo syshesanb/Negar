@@ -1624,14 +1624,14 @@ Namespace Negar.Forms
 
                 Case "miCompanyFiscalYears" : LblCompany_DoubleClick(sender, e)
 
-                Case "miAccountingMain" : OpenAccountingMainForm(sender, e)
-                Case "miReportsAccounting" : OpenAccountingReportsForm(sender, e)
+                Case "miAccountingMain" : MiAccountingMain_Click(sender, e)
+                Case "miReportsAccounting" : MiReportsAccounting_Click(sender, e)
 
-                Case "miTradeMini" : OpenAnbarMiniForm(sender, e)
-                Case "miTradeMedium" : OpenAnbarMediumForm(sender, e)
-                Case "miTradeBig" : OpenAnbarBigForm(sender, e)
-                Case "miTradeWarehouseMain" : OpenTradeWarehouseMainForm(sender, e)
-                Case "miReportsTrade" : OpenTradeWarehouseReportsForm(sender, e)
+                Case "miTradeMini" : MiTradeMini_Click(sender, e)
+                Case "miTradeMedium" : MiTradeMedium_Click(sender, e)
+                Case "miTradeBig" : MiTradeBig_Click(sender, e)
+                Case "miTradeWarehouseMain" : MiTradeWarehouseMain_Click(sender, e)
+                Case "miReportsTrade" : MiReportsTrade_Click(sender, e)
 
                 Case "miPayrollMain", "miPayrollReports" : OpenPayrollMainForm(sender, e)
                 Case "miAmvalMain", "miAmvalReports" : OpenAmvalMainForm(sender, e)
