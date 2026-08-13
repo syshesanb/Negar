@@ -720,7 +720,10 @@ Namespace Negar.Forms
                     If f IsNot Nothing AndAlso Not f.IsDisposed Then
                         If f Is activeChild Then
                             f.Visible = True
-                            f.WindowState = FormWindowState.Maximized
+                            If f.WindowState <> FormWindowState.Maximized Then
+                                f.WindowState = FormWindowState.Normal
+                                f.WindowState = FormWindowState.Maximized
+                            End If
                             f.BringToFront()
                             f.Activate()
                         Else

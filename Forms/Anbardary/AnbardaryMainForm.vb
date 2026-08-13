@@ -58,6 +58,10 @@ Namespace Negar.Forms
                 progress.UpdateProgress(100, "اتمام بارگذاری ماژول انبارداری")
             End Using
 
+            Me.WindowState = FormWindowState.Maximized
+            Me.BringToFront()
+            Me.Activate()
+
             ' بررسی چک‌های نزدیک سررسید (۷ روز آینده)
             CheckUpcomingChecksAlert()
         End Sub

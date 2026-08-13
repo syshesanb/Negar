@@ -45,6 +45,9 @@ Namespace Negar.Forms
             End If
 
             LoadAllTabs()
+            Me.WindowState = FormWindowState.Maximized
+            Me.BringToFront()
+            Me.Activate()
         End Sub
 
         Private ReadOnly service As New AccountingService()
