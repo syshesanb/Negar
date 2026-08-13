@@ -30,9 +30,8 @@ Namespace Negar.Forms
                 LoadAllTabs()
             End If
 
-            If Me.WindowState <> FormWindowState.Maximized Then
-                Me.WindowState = FormWindowState.Maximized
-            End If
+            Me.WindowState = FormWindowState.Normal
+            Me.WindowState = FormWindowState.Maximized
             Me.BringToFront()
             Me.Activate()
             Negar.Business.IradLogger.Log("HesabdaryMainForm_Load", $"Load finish. WindowState={Me.WindowState}, Size={Me.Size.Width}x{Me.Size.Height}, Visible={Me.Visible}")

@@ -90,18 +90,13 @@ Namespace Negar.Forms
 
         ''' <summary>نمایش فرم با مرکزیابی نسبت به پنجره والد</summary>
         Public Sub ShowAndCenter(owner As Form)
-            Dim parentForm As Form = owner
-            If owner IsNot Nothing AndAlso owner.IsMdiChild AndAlso owner.MdiParent IsNot Nothing Then
-                parentForm = owner.MdiParent
-            End If
-
+            Me.StartPosition = FormStartPosition.CenterScreen
             If owner IsNot Nothing AndAlso owner.Visible Then
-                Me.StartPosition = FormStartPosition.Manual
                 Dim x = owner.Left + (owner.Width - Me.Width) \ 2
                 Dim y = owner.Top + (owner.Height - Me.Height) \ 2
                 Me.Location = New Point(Math.Max(0, x), Math.Max(0, y))
             End If
-            Me.Show(parentForm)
+            Me.Show()
         End Sub
 
         ''' <summary>به‌روزرسانی نوار پیشرفت و متن وضعیت</summary>
