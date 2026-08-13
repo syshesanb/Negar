@@ -28,6 +28,10 @@ Namespace Negar.Forms
         Private Const CollapsedWidth As Integer = 28
         Private _targetWidth As Integer = ExpandedWidth
 
+        ' Open Forms Tab Manager
+        Private ReadOnly _openFormTabs As New Dictionary(Of Form, Button)()
+        Private _btnHomeTab As Button
+
         Private Class GlobalShortcutFilter
             Implements IMessageFilter
 
@@ -87,6 +91,7 @@ Namespace Negar.Forms
             _shortcutFilter = New GlobalShortcutFilter(Me)
             Application.AddMessageFilter(_shortcutFilter)
             LoadRandomBackgroundImage()
+            InitOpenFormsTabBar()
             BuildAccordionTree()
             UpdateSidebarBounds()
         End Sub
@@ -593,14 +598,162 @@ Namespace Negar.Forms
             UpdateClock()
         End Sub
 
+        Private Sub InitOpenFormsTabBar()
+            If flpFormTabs Is Nothing Then Return
+            flpFormTabs.SuspendLayout()
+            flpFormTabs.Controls.Clear()
+            _openFormTabs.Clear()
+
+            _btnHomeTab = New Button()
+            _btnHomeTab.Text = "🏠 داشبورد اصلی"
+            _btnHomeTab.AutoSize = True
+            _btnHomeTab.Height = 30
+            _btnHomeTab.FlatStyle = FlatStyle.Flat
+            _btnHomeTab.FlatAppearance.BorderSize = 1
+            _btnHomeTab.FlatAppearance.BorderColor = Color.FromArgb(180, 200, 225)
+            _btnHomeTab.BackColor = Color.FromArgb(41, 128, 185)
+            _btnHomeTab.ForeColor = Color.White
+            _btnHomeTab.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+            _btnHomeTab.Cursor = Cursors.Hand
+            _btnHomeTab.Margin = New Padding(2, 1, 2, 1)
+
+            AddHandler _btnHomeTab.Click, AddressOf BtnHomeTab_Click
+            flpFormTabs.Controls.Add(_btnHomeTab)
+            flpFormTabs.ResumeLayout()
+        End Sub
+
+        Private Sub BtnHomeTab_Click(sender As Object, e As EventArgs)
+            flpDashboard.BringToFront()
+            SetActiveTabVisual(Nothing)
+            UpdateSidebarBounds()
+        End Sub
+
+        Private Sub AddFormTab(child As Form)
+            If child Is Nothing OrElse _openFormTabs.ContainsKey(child) Then Return
+
+            Dim btnTab As New Button()
+            btnTab.Text = child.Text & "   ✕"
+            btnTab.Tag = child
+            btnTab.AutoSize = True
+            btnTab.Height = 30
+            btnTab.FlatStyle = FlatStyle.Flat
+            btnTab.FlatAppearance.BorderSize = 1
+            btnTab.FlatAppearance.BorderColor = Color.FromArgb(180, 200, 225)
+            btnTab.BackColor = Color.FromArgb(240, 244, 250)
+            btnTab.ForeColor = Color.FromArgb(40, 50, 70)
+            btnTab.Font = New Font("Tahoma", 9.0!, FontStyle.Regular)
+            btnTab.Cursor = Cursors.Hand
+            btnTab.Margin = New Padding(2, 1, 2, 1)
+
+            AddHandler btnTab.Click, AddressOf FormTab_Click
+
+            _openFormTabs(child) = btnTab
+            flpFormTabs.Controls.Add(btnTab)
+            SetActiveTabVisual(child)
+        End Sub
+
+        Private Sub FormTab_Click(sender As Object, e As EventArgs)
+            Dim btn = TryCast(sender, Button)
+            If btn Is Nothing Then Return
+            Dim child = TryCast(btn.Tag, Form)
+            If child Is Nothing Then Return
+
+            ' Check if clicked on close icon area (in RTL, ✕ is at the left edge X < 25)
+            Dim mousePos = btn.PointToClient(Cursor.Position)
+            If mousePos.X < 25 Then
+                child.Close()
+                Return
+            End If
+
+            If child.WindowState = FormWindowState.Minimized Then
+                child.WindowState = FormWindowState.Maximized
+            End If
+            child.Activate()
+            child.BringToFront()
+            SetActiveTabVisual(child)
+            UpdateSidebarBounds()
+        End Sub
+
+        Private Sub RemoveFormTab(child As Form)
+            If child Is Nothing Then Return
+            If _openFormTabs.ContainsKey(child) Then
+                Dim btn = _openFormTabs(child)
+                flpFormTabs.Controls.Remove(btn)
+                btn.Dispose()
+                _openFormTabs.Remove(child)
+            End If
+
+            If Me.MdiChildren Is Nothing OrElse Me.MdiChildren.Length <= 1 Then
+                flpDashboard.BringToFront()
+                SetActiveTabVisual(Nothing)
+            Else
+                For Each f As Form In Me.MdiChildren
+                    If f IsNot child AndAlso Not f.IsDisposed Then
+                        If f.WindowState = FormWindowState.Minimized Then
+                            f.WindowState = FormWindowState.Maximized
+                        End If
+                        f.Activate()
+                        f.BringToFront()
+                        SetActiveTabVisual(f)
+                        Exit For
+                    End If
+                Next
+            End If
+            UpdateSidebarBounds()
+        End Sub
+
+        Private Sub SetActiveTabVisual(activeChild As Form)
+            If _btnHomeTab IsNot Nothing Then
+                If activeChild Is Nothing Then
+                    _btnHomeTab.BackColor = Color.FromArgb(41, 128, 185)
+                    _btnHomeTab.ForeColor = Color.White
+                    _btnHomeTab.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+                Else
+                    _btnHomeTab.BackColor = Color.FromArgb(240, 244, 250)
+                    _btnHomeTab.ForeColor = Color.FromArgb(40, 50, 70)
+                    _btnHomeTab.Font = New Font("Tahoma", 9.0!, FontStyle.Regular)
+                End If
+            End If
+
+            For Each kvp In _openFormTabs
+                Dim f = kvp.Key
+                Dim btn = kvp.Value
+                If f Is activeChild Then
+                    btn.BackColor = Color.FromArgb(41, 128, 185)
+                    btn.ForeColor = Color.White
+                    btn.Font = New Font("Tahoma", 9.0!, FontStyle.Bold)
+                Else
+                    btn.BackColor = Color.FromArgb(240, 244, 250)
+                    btn.ForeColor = Color.FromArgb(40, 50, 70)
+                    btn.Font = New Font("Tahoma", 9.0!, FontStyle.Regular)
+                End If
+            Next
+        End Sub
+
         Private Sub OpenChild(child As Form)
             If child Is Nothing Then Return
             Try
+                ' If form of same type is already open, activate its existing window and tab!
+                For Each existingForm As Form In Me.MdiChildren
+                    If existingForm.GetType() Is child.GetType() Then
+                        If existingForm.WindowState = FormWindowState.Minimized Then
+                            existingForm.WindowState = FormWindowState.Maximized
+                        End If
+                        existingForm.Activate()
+                        existingForm.BringToFront()
+                        SetActiveTabVisual(existingForm)
+                        UpdateSidebarBounds()
+                        child.Dispose()
+                        Return
+                    End If
+                Next
+
                 child.MdiParent = Me
                 child.WindowState = FormWindowState.Maximized
                 flpDashboard.SendToBack()
                 AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
                 child.Show()
+                AddFormTab(child)
                 UpdateSidebarBounds()
             Catch ex As Exception
                 child.StartPosition = FormStartPosition.CenterParent
@@ -609,8 +762,9 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub ChildForm_FormClosed(sender As Object, e As FormClosedEventArgs)
-            If Me.MdiChildren Is Nothing OrElse Me.MdiChildren.Length <= 1 Then
-                flpDashboard.BringToFront()
+            Dim child = TryCast(sender, Form)
+            If child IsNot Nothing Then
+                RemoveFormTab(child)
             End If
         End Sub
 

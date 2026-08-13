@@ -15,8 +15,10 @@ Namespace Negar.Forms
 
         Private components As IContainer
 
-        ' Main Top-Level Menus & Accordion Navigation Tree
+        ' Main Top-Level Menus & Accordion Navigation Tree & Open Forms Tab Bar
         Friend WithEvents tvMenu As TreeView
+        Friend WithEvents pnlOpenFormsBar As Panel
+        Friend WithEvents flpFormTabs As FlowLayoutPanel
         Friend WithEvents pnlSidebarContainer As Panel
         Friend WithEvents pnlRightMenuHeader As Panel
         Friend WithEvents pnlRightMenuContent As Panel
@@ -372,6 +374,8 @@ Namespace Negar.Forms
             Me.miUtilCalendar = New ToolStripMenuItem()
 
             Me.tvMenu = New TreeView()
+            Me.pnlOpenFormsBar = New Panel()
+            Me.flpFormTabs = New FlowLayoutPanel()
             Me.pnlSidebarContainer = New Panel()
             Me.pnlRightMenuHeader = New Panel()
             Me.pnlRightMenuContent = New Panel()
@@ -1225,12 +1229,28 @@ Namespace Negar.Forms
             ' flpDashboard
             Me.flpDashboard.AutoScroll = True
             Me.flpDashboard.Dock = DockStyle.Fill
-            Me.flpDashboard.Location = New Point(0, 79)
+            Me.flpDashboard.Location = New Point(0, 117)
             Me.flpDashboard.Name = "flpDashboard"
             Me.flpDashboard.Padding = New Padding(30)
             Me.flpDashboard.RightToLeft = RightToLeft.Yes
-            Me.flpDashboard.Size = New Size(1200, 597)
+            Me.flpDashboard.Size = New Size(1200, 559)
             Me.flpDashboard.TabIndex = 3
+
+            ' pnlOpenFormsBar (Tab Bar for Open Child Forms & Window Switching)
+            Me.pnlOpenFormsBar.BackColor = Color.FromArgb(220, 230, 245)
+            Me.pnlOpenFormsBar.Controls.Add(Me.flpFormTabs)
+            Me.pnlOpenFormsBar.Dock = DockStyle.Top
+            Me.pnlOpenFormsBar.Height = 38
+            Me.pnlOpenFormsBar.Name = "pnlOpenFormsBar"
+            Me.pnlOpenFormsBar.Padding = New Padding(4, 3, 4, 3)
+            Me.pnlOpenFormsBar.RightToLeft = RightToLeft.Yes
+
+            ' flpFormTabs
+            Me.flpFormTabs.AutoScroll = True
+            Me.flpFormTabs.Dock = DockStyle.Fill
+            Me.flpFormTabs.Name = "flpFormTabs"
+            Me.flpFormTabs.RightToLeft = RightToLeft.Yes
+            Me.flpFormTabs.WrapContents = False
 
             ' status
             Me.status.Items.AddRange(New ToolStripItem() {Me.lblUser, Me.lblSep1, Me.lblCompany, Me.lblSep2, Me.lblFiscalYear, Me.lblSpring, Me.lblDateTime})
@@ -1277,6 +1297,7 @@ Namespace Negar.Forms
             Me.AutoScaleMode = AutoScaleMode.Font
             Me.ClientSize = New Size(1200, 700)
             Me.Controls.Add(Me.flpDashboard)
+            Me.Controls.Add(Me.pnlOpenFormsBar)
             Me.Controls.Add(Me.pnlSidebarContainer)
             Me.Controls.Add(Me.status)
             Me.Font = New Font("Tahoma", 9.0!)
