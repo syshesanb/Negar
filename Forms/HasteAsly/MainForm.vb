@@ -727,23 +727,21 @@ Namespace Negar.Forms
 
             ' 3. MDI Child Form Activation & Maximized Window Management
             If Me.MdiChildren IsNot Nothing Then
+                For Each f As Form In Me.MdiChildren
+                    If f IsNot Nothing AndAlso Not f.IsDisposed AndAlso f IsNot activeChild Then
+                        f.SendToBack()
+                    End If
+                Next
+
                 If activeChild IsNot Nothing AndAlso Not activeChild.IsDisposed Then
                     activeChild.Visible = True
-                    activeChild.WindowState = FormWindowState.Normal
-                    activeChild.WindowState = FormWindowState.Maximized
+                    If activeChild.WindowState <> FormWindowState.Maximized Then
+                        activeChild.WindowState = FormWindowState.Maximized
+                    End If
                     activeChild.BringToFront()
                     activeChild.Activate()
                     Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Active child activated: {activeChild.GetType().Name}, Visible={activeChild.Visible}, WindowState={activeChild.WindowState}, Bounds={activeChild.Bounds.Width}x{activeChild.Bounds.Height}")
                 End If
-
-                For Each f As Form In Me.MdiChildren
-                    If f IsNot Nothing AndAlso Not f.IsDisposed Then
-                        If f Is activeChild Then
-                            f.Visible = True
-                        End If
-                        Negar.Business.IradLogger.Log("SetActiveTabVisual", $"  Child form status: {f.GetType().Name}, Visible={f.Visible}, WindowState={f.WindowState}, Bounds={f.Bounds.Width}x{f.Bounds.Height}, IsActive={f Is activeChild}")
-                    End If
-                Next
             End If
 
             ' 4. Form Tab Buttons Visuals

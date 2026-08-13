@@ -1,1 +1,129 @@
-========== IRAD LOG STARTED ==========
+========== IRAD LOG STARTED AT 2026-08-13 20:19:57 ==========
+[2026-08-13 20:19:57.332] [MainForm_Load] MainForm loaded. Bounds: 1382x744, WindowState: Maximized
+[2026-08-13 20:20:09.974] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:20:09.980] [OpenChild] OpenChild requested for form: HesabdaryMainForm, Text='حسابداری'
+[2026-08-13 20:20:09.993] [HesabdaryMainForm_Load] Load start. WindowState=Normal, Size=1336x788, Visible=True
+[2026-08-13 20:20:10.003] [HesabdaryMainForm_Activated] Form activated. Visible=True, WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:20:10.027] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:14.637] [HesabdaryMainForm_Load] Load finish. WindowState=Maximized, Size=136x679, Visible=True
+[2026-08-13 20:20:14.652] [HesabdaryMainForm_VisibleChanged] Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:14.660] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:20:14.719] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:14.742] [OpenChild] Form HesabdaryMainForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=136x679
+[2026-08-13 20:20:14.797] [AddFormTab] Tab created for form: HesabdaryMainForm, Title: 'حسابداری', TotalOpenTabs: 1
+[2026-08-13 20:20:14.801] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 1
+[2026-08-13 20:20:14.868] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:20:14.945] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:14.976] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:14.976] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 20:20:21.865] [BtnHomeTab_Click] Home Dashboard tab clicked
+[2026-08-13 20:20:21.865] [SetActiveTabVisual] Setting Active Tab: HOME_DASHBOARD, MdiChildrenCount: 1
+[2026-08-13 20:20:21.875] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=False
+[2026-08-13 20:20:23.047] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 20:20:23.048] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 1
+[2026-08-13 20:20:23.112] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:20:23.163] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:23.176] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:23.177] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 20:20:25.168] [BtnHomeTab_Click] Home Dashboard tab clicked
+[2026-08-13 20:20:25.169] [SetActiveTabVisual] Setting Active Tab: HOME_DASHBOARD, MdiChildrenCount: 1
+[2026-08-13 20:20:25.177] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=False
+[2026-08-13 20:20:26.310] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 20:20:26.311] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 1
+[2026-08-13 20:20:26.381] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:20:26.432] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:26.447] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:20:26.448] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 20:20:55.072] [OpenChild] OpenChild requested for form: AnbarMiniMainForm, Text='مدیریت فروشگاه و انبار - نسخه مینی (AnbarMini)'
+[2026-08-13 20:20:55.084] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:20:58.365] [OpenChild] Form AnbarMiniMainForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=1378x679
+[2026-08-13 20:20:58.403] [AddFormTab] Tab created for form: AnbarMiniMainForm, Title: 'مدیریت فروشگاه و انبار - نسخه مینی (AnbarMini)', TotalOpenTabs: 2
+[2026-08-13 20:20:58.404] [SetActiveTabVisual] Setting Active Tab: AnbarMiniMainForm, MdiChildrenCount: 2
+[2026-08-13 20:20:58.792] [SetActiveTabVisual] Active child activated: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:20:58.793] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:20:58.794] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:21:13.511] [OpenChild] OpenChild requested for form: PayrollMainForm, Text='سیستم جامع حقوق و دستمزد و کارکرد پرسنل نگار'
+[2026-08-13 20:21:13.960] [OpenChild] Form PayrollMainForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=1378x679
+[2026-08-13 20:21:14.010] [AddFormTab] Tab created for form: PayrollMainForm, Title: 'سیستم جامع حقوق و دستمزد و کارکرد پرسنل نگار', TotalOpenTabs: 3
+[2026-08-13 20:21:14.011] [SetActiveTabVisual] Setting Active Tab: PayrollMainForm, MdiChildrenCount: 3
+[2026-08-13 20:21:14.243] [SetActiveTabVisual] Active child activated: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:21:14.244] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:21:14.245] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:21:14.245] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:21:19.210] [FormTab_Click] Tab clicked for form: AnbarMiniMainForm, Title: 'مدیریت فروشگاه و انبار - نسخه مینی (AnbarMini)'
+[2026-08-13 20:21:19.211] [SetActiveTabVisual] Setting Active Tab: AnbarMiniMainForm, MdiChildrenCount: 3
+[2026-08-13 20:21:19.355] [SetActiveTabVisual] Active child activated: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:21:19.356] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:21:19.356] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:21:19.357] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
+[2026-08-13 20:21:21.918] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 20:21:21.919] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 20:21:21.933] [HesabdaryMainForm_Activated] Form activated. Visible=True, WindowState=Maximized, Bounds=1336x788
+[2026-08-13 20:21:21.944] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:21:22.025] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:21:22.025] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 20:21:22.026] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:21:22.027] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
+[2026-08-13 20:21:29.647] [FormTab_Click] Tab clicked for form: PayrollMainForm, Title: 'سیستم جامع حقوق و دستمزد و کارکرد پرسنل نگار'
+[2026-08-13 20:21:29.647] [SetActiveTabVisual] Setting Active Tab: PayrollMainForm, MdiChildrenCount: 3
+[2026-08-13 20:21:29.706] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:21:29.753] [SetActiveTabVisual] Active child activated: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:21:29.753] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:21:29.754] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:21:29.755] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:21:32.234] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 20:21:32.235] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 20:21:32.253] [HesabdaryMainForm_Activated] Form activated. Visible=True, WindowState=Maximized, Bounds=1336x788
+[2026-08-13 20:21:32.269] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:21:32.312] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:21:32.313] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 20:21:32.314] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:21:32.315] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
+[2026-08-13 20:22:00.766] [FormTab_Click] Tab clicked for form: AnbarMiniMainForm, Title: 'مدیریت فروشگاه و انبار - نسخه مینی (AnbarMini)'
+[2026-08-13 20:22:00.767] [SetActiveTabVisual] Setting Active Tab: AnbarMiniMainForm, MdiChildrenCount: 3
+[2026-08-13 20:22:00.893] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:22:00.962] [SetActiveTabVisual] Active child activated: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:22:00.962] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:22:00.963] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:22:00.964] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
+[2026-08-13 20:22:05.639] [FormTab_Click] Tab clicked for form: PayrollMainForm, Title: 'سیستم جامع حقوق و دستمزد و کارکرد پرسنل نگار'
+[2026-08-13 20:22:05.640] [SetActiveTabVisual] Setting Active Tab: PayrollMainForm, MdiChildrenCount: 3
+[2026-08-13 20:22:05.766] [SetActiveTabVisual] Active child activated: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:22:05.766] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:22:05.767] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:22:05.768] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:22:08.806] [FormTab_Click] Tab clicked for form: AnbarMiniMainForm, Title: 'مدیریت فروشگاه و انبار - نسخه مینی (AnbarMini)'
+[2026-08-13 20:22:08.807] [SetActiveTabVisual] Setting Active Tab: AnbarMiniMainForm, MdiChildrenCount: 3
+[2026-08-13 20:22:08.996] [SetActiveTabVisual] Active child activated: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:22:08.996] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:22:08.997] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:22:08.998] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
+[2026-08-13 20:22:11.009] [FormTab_Click] Tab clicked for form: PayrollMainForm, Title: 'سیستم جامع حقوق و دستمزد و کارکرد پرسنل نگار'
+[2026-08-13 20:22:11.010] [SetActiveTabVisual] Setting Active Tab: PayrollMainForm, MdiChildrenCount: 3
+[2026-08-13 20:22:11.162] [SetActiveTabVisual] Active child activated: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:22:11.163] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:22:11.163] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:22:11.164] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:22:25.680] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 20:22:25.681] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 20:22:25.701] [HesabdaryMainForm_Activated] Form activated. Visible=True, WindowState=Maximized, Bounds=1336x788
+[2026-08-13 20:22:25.717] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:22:25.775] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:22:25.776] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 20:22:25.778] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:22:25.779] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
+[2026-08-13 20:22:41.474] [FormTab_Click] Tab clicked for form: AnbarMiniMainForm, Title: 'مدیریت فروشگاه و انبار - نسخه مینی (AnbarMini)'
+[2026-08-13 20:22:41.474] [SetActiveTabVisual] Setting Active Tab: AnbarMiniMainForm, MdiChildrenCount: 3
+[2026-08-13 20:22:41.609] [HesabdaryMainForm_Resize] WindowState=Normal, Bounds=1336x788
+[2026-08-13 20:22:41.680] [SetActiveTabVisual] Active child activated: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 20:22:41.681] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 20:22:41.682] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 20:22:41.682] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
+[2026-08-13 20:22:52.917] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 20:22:52.918] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 20:22:52.936] [HesabdaryMainForm_Activated] Form activated. Visible=True, WindowState=Maximized, Bounds=1336x788
+[2026-08-13 20:22:52.950] [HesabdaryMainForm_Resize] WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:22:53.066] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 20:22:53.067] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 20:22:53.067] [SetActiveTabVisual]   Child form status: AnbarMiniMainForm, Visible=True, WindowState=Normal, Bounds=1016x689, IsActive=False
+[2026-08-13 20:22:53.068] [SetActiveTabVisual]   Child form status: PayrollMainForm, Visible=True, WindowState=Normal, Bounds=1100x700, IsActive=False
