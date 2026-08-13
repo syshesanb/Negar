@@ -623,6 +623,7 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub BtnHomeTab_Click(sender As Object, e As EventArgs)
+            flpDashboard.Visible = True
             flpDashboard.BringToFront()
             SetActiveTabVisual(Nothing)
             UpdateSidebarBounds()
@@ -665,6 +666,7 @@ Namespace Negar.Forms
                 Return
             End If
 
+            flpDashboard.Visible = False
             If child.WindowState = FormWindowState.Minimized Then
                 child.WindowState = FormWindowState.Maximized
             End If
@@ -684,20 +686,29 @@ Namespace Negar.Forms
             End If
 
             If Me.MdiChildren Is Nothing OrElse Me.MdiChildren.Length <= 1 Then
+                flpDashboard.Visible = True
                 flpDashboard.BringToFront()
                 SetActiveTabVisual(Nothing)
             Else
+                Dim activatedAny As Boolean = False
                 For Each f As Form In Me.MdiChildren
                     If f IsNot child AndAlso Not f.IsDisposed Then
+                        flpDashboard.Visible = False
                         If f.WindowState = FormWindowState.Minimized Then
                             f.WindowState = FormWindowState.Maximized
                         End If
                         f.Activate()
                         f.BringToFront()
                         SetActiveTabVisual(f)
+                        activatedAny = True
                         Exit For
                     End If
                 Next
+                If Not activatedAny Then
+                    flpDashboard.Visible = True
+                    flpDashboard.BringToFront()
+                    SetActiveTabVisual(Nothing)
+                End If
             End If
             UpdateSidebarBounds()
         End Sub
@@ -736,6 +747,7 @@ Namespace Negar.Forms
                 ' If form of same type is already open, activate its existing window and tab!
                 For Each existingForm As Form In Me.MdiChildren
                     If existingForm.GetType() Is child.GetType() Then
+                        flpDashboard.Visible = False
                         If existingForm.WindowState = FormWindowState.Minimized Then
                             existingForm.WindowState = FormWindowState.Maximized
                         End If
@@ -750,7 +762,7 @@ Namespace Negar.Forms
 
                 child.MdiParent = Me
                 child.WindowState = FormWindowState.Maximized
-                flpDashboard.SendToBack()
+                flpDashboard.Visible = False
                 AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
                 child.Show()
                 AddFormTab(child)
@@ -1213,36 +1225,10 @@ Namespace Negar.Forms
             flpDashboard.Controls.Add(btn)
         End Sub
 
-        Private Sub BtnToolSystemMgmt_Click(sender As Object, e As EventArgs) Handles btnToolSystemMgmt.Click
-            ShowDashboardCategory("SystemMgmt")
-        End Sub
-
-        Private Sub BtnToolUserMgmt_Click(sender As Object, e As EventArgs) Handles btnToolUserMgmt.Click
-            ShowDashboardCategory("UserMgmt")
-        End Sub
-
-        Private Sub BtnToolCompanyMgmt_Click(sender As Object, e As EventArgs) Handles btnToolCompanyMgmt.Click
-            ShowDashboardCategory("CompanyMgmt")
-        End Sub
-
-        Private Sub BtnToolAccounting_Click(sender As Object, e As EventArgs) Handles btnToolAccounting.Click
-            ShowDashboardCategory("Accounting")
-        End Sub
-
-        Private Sub BtnToolTradeWarehouse_Click(sender As Object, e As EventArgs) Handles btnToolTradeWarehouse.Click
-            ShowDashboardCategory("TradeWarehouse")
-        End Sub
-
-        Private Sub BtnToolPayroll_Click(sender As Object, e As EventArgs) Handles btnToolPayroll.Click
-            ShowDashboardCategory("Payroll")
-        End Sub
-
         Private Sub OpenPayrollMainForm(sender As Object, e As EventArgs) Handles mPayroll.Click, miPayrollMain.Click, miPayrollReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Payroll.PayrollMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Payroll.PayrollMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول حقوق و دستمزد: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1255,9 +1241,7 @@ Namespace Negar.Forms
         Private Sub OpenAmvalMainForm(sender As Object, e As EventArgs) Handles mAmval.Click, miAmvalMain.Click, miAmvalReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Amval.AmvalMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Amval.AmvalMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول اموال: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1270,9 +1254,7 @@ Namespace Negar.Forms
         Private Sub OpenAutomationMainForm(sender As Object, e As EventArgs) Handles mAutomation.Click, miAutomationMain.Click, miAutomationReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Automation.AutomationMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Automation.AutomationMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول اتوماسیون اداری: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1285,9 +1267,7 @@ Namespace Negar.Forms
         Private Sub OpenCrmMainForm(sender As Object, e As EventArgs) Handles mCrm.Click, miCrmMain.Click, miCrmReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.CRM.CrmMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.CRM.CrmMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول CRM: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1300,9 +1280,7 @@ Namespace Negar.Forms
         Private Sub OpenTreasuryMainForm(sender As Object, e As EventArgs) Handles mTreasury.Click, miTreasuryMain.Click, miTreasuryReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Treasury.TreasuryMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Treasury.TreasuryMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول خزانه‌داری: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1315,9 +1293,7 @@ Namespace Negar.Forms
         Private Sub OpenBudgetingMainForm(sender As Object, e As EventArgs) Handles mBudgeting.Click, miBudgetingMain.Click, miBudgetingReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Budgeting.BudgetMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Budgeting.BudgetMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول بودجه و کنترل هزینه: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1330,9 +1306,7 @@ Namespace Negar.Forms
         Private Sub OpenProductionMainForm(sender As Object, e As EventArgs) Handles mProduction.Click, miProductionMain.Click, miProductionReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Production.ProductionMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Production.ProductionMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول بهای تمام‌شده و تولید: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1345,9 +1319,7 @@ Namespace Negar.Forms
         Private Sub OpenProjectMainForm(sender As Object, e As EventArgs) Handles mProject.Click, miProjectMain.Click, miProjectReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Project.ProjectMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Project.ProjectMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول مدیریت پروژه‌ها و پیمان‌ها: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1360,9 +1332,7 @@ Namespace Negar.Forms
         Private Sub OpenKpiMainForm(sender As Object, e As EventArgs) Handles mKpi.Click, miKpiMain.Click, miKpiReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.KPI.KpiMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.KPI.KpiMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن ماژول ارزیابی عملکرد و پاداش: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1375,9 +1345,7 @@ Namespace Negar.Forms
         Private Sub OpenImportExportMainForm(sender As Object, e As EventArgs) Handles mImportExport.Click, miImportExportMain.Click, miImportExportReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.ImportExport.ImportExportMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.ImportExport.ImportExportMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم بازرگانی خارجی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1390,9 +1358,7 @@ Namespace Negar.Forms
         Private Sub OpenPmMainForm(sender As Object, e As EventArgs) Handles mPm.Click, miPmMain.Click, miPmReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.PM.PmMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.PM.PmMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم مدیریت نگهداری و تعمیرات: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1405,9 +1371,7 @@ Namespace Negar.Forms
         Private Sub OpenLogisticsMainForm(sender As Object, e As EventArgs) Handles mLogistics.Click, miLogisticsMain.Click, miLogisticsReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Logistics.LogisticsMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Logistics.LogisticsMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم لوجستیک و پخش مویرگی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1420,9 +1384,7 @@ Namespace Negar.Forms
         Private Sub OpenSrmMainForm(sender As Object, e As EventArgs) Handles mSrm.Click, miSrmMain.Click, miSrmReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.SRM.SrmMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.SRM.SrmMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم مدیریت تامین‌کنندگان (SRM): " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1435,9 +1397,7 @@ Namespace Negar.Forms
         Private Sub OpenQcMainForm(sender As Object, e As EventArgs) Handles mQc.Click, miQcMain.Click, miQcReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.QC.QcMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.QC.QcMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم کنترل کیفیت و تضمین کیفیت: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1450,9 +1410,7 @@ Namespace Negar.Forms
         Private Sub OpenBiMainForm(sender As Object, e As EventArgs) Handles mBi.Click, miBiMain.Click, miBiReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.BI.BiMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.BI.BiMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم هوش تجاری و داشبورد مدیریتی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1465,9 +1423,7 @@ Namespace Negar.Forms
         Private Sub OpenDmsMainForm(sender As Object, e As EventArgs) Handles mDms.Click, miDmsMain.Click, miDmsReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.DMS.DmsMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.DMS.DmsMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم مدیریت بایگانی دیجیتال: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1480,9 +1436,7 @@ Namespace Negar.Forms
         Private Sub OpenSahamMainForm(sender As Object, e As EventArgs) Handles mSaham.Click, miSahamMain.Click, miSahamReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Saham.SahamMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Saham.SahamMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم امور سهام و سهامداران: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1495,9 +1449,7 @@ Namespace Negar.Forms
         Private Sub OpenApiMainForm(sender As Object, e As EventArgs) Handles mApi.Click, miApiMain.Click, miApiReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.API.ApiMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.API.ApiMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم وب‌سرویس و API: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1510,9 +1462,7 @@ Namespace Negar.Forms
         Private Sub OpenLegalMainForm(sender As Object, e As EventArgs) Handles mLegal.Click, miLegalMain.Click, miLegalReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.Legal.LegalMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.Legal.LegalMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم امور حقوقی و دعاوی: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1525,9 +1475,7 @@ Namespace Negar.Forms
         Private Sub OpenRdMainForm(sender As Object, e As EventArgs) Handles mRd.Click, miRdMain.Click, miRdReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.RD.RdMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.RD.RdMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم تحقیق و توسعه: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -1540,9 +1488,7 @@ Namespace Negar.Forms
         Private Sub OpenVoipMainForm(sender As Object, e As EventArgs) Handles mVoip.Click, miVoipMain.Click, miVoipReports.Click
             Try
                 If Not EnsureCompanyAndFiscalYearSelected() Then Return
-                Using dlg As New Negar.Forms.VoIP.VoipMainForm()
-                    dlg.ShowDialog(Me)
-                End Using
+                OpenChild(New Negar.Forms.VoIP.VoipMainForm())
             Catch ex As Exception
                 MessageBox.Show("خطا در باز کردن سیستم مرکز تلفن هوشمند: " & ex.Message, "خطا", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
