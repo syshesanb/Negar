@@ -1,0 +1,70 @@
+========== IRAD LOG STARTED AT 2026-08-13 18:52:12 ==========
+[2026-08-13 18:52:12.986] [MainForm_Load] MainForm loaded. Bounds: 1382x744, WindowState: Maximized
+[2026-08-13 18:52:22.425] [OpenChild] OpenChild requested for form: UserManagementForm, Text='مدیریت کاربران'
+[2026-08-13 18:52:25.182] [OpenChild] Form UserManagementForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=136x679
+[2026-08-13 18:52:25.204] [AddFormTab] Tab created for form: UserManagementForm, Title: 'مدیریت کاربران', TotalOpenTabs: 1
+[2026-08-13 18:52:25.208] [SetActiveTabVisual] Setting Active Tab: UserManagementForm, MdiChildrenCount: 1
+[2026-08-13 18:52:25.219] [SetActiveTabVisual] Active child state: UserManagementForm, Visible=True, WindowState=Maximized, Size=136x679
+[2026-08-13 18:52:50.199] [OpenChild] OpenChild requested for form: CompanyFiscalYearForm, Text='مدیریت شرکتها و سالهای مالی'
+[2026-08-13 18:52:50.510] [OpenChild] Form CompanyFiscalYearForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=1378x679
+[2026-08-13 18:52:50.547] [AddFormTab] Tab created for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی', TotalOpenTabs: 2
+[2026-08-13 18:52:50.548] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 2
+[2026-08-13 18:52:50.572] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:52:50.573] [SetActiveTabVisual] Active child state: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Size=1378x679
+[2026-08-13 18:52:59.553] [FormTab_Click] Tab clicked for form: UserManagementForm, Title: 'مدیریت کاربران'
+[2026-08-13 18:52:59.554] [SetActiveTabVisual] Setting Active Tab: UserManagementForm, MdiChildrenCount: 2
+[2026-08-13 18:52:59.692] [SetActiveTabVisual] Active child state: UserManagementForm, Visible=True, WindowState=Maximized, Size=136x679
+[2026-08-13 18:52:59.707] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:53:01.931] [FormTab_Click] Tab clicked for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی'
+[2026-08-13 18:53:01.932] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 2
+[2026-08-13 18:53:01.958] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:53:02.082] [SetActiveTabVisual] Re-maximizing active child: CompanyFiscalYearForm (was Normal)
+[2026-08-13 18:53:02.149] [SetActiveTabVisual] Active child state: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Size=1378x679
+[2026-08-13 18:53:04.556] [BtnHomeTab_Click] Home Dashboard tab clicked
+[2026-08-13 18:53:04.557] [SetActiveTabVisual] Setting Active Tab: HOME_DASHBOARD, MdiChildrenCount: 2
+[2026-08-13 18:53:04.569] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:53:04.594] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:53:06.876] [FormTab_Click] Tab clicked for form: UserManagementForm, Title: 'مدیریت کاربران'
+[2026-08-13 18:53:06.876] [SetActiveTabVisual] Setting Active Tab: UserManagementForm, MdiChildrenCount: 2
+[2026-08-13 18:53:06.996] [SetActiveTabVisual] Active child state: UserManagementForm, Visible=True, WindowState=Maximized, Size=136x679
+[2026-08-13 18:53:06.996] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:53:08.779] [FormTab_Click] Tab clicked for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی'
+[2026-08-13 18:53:08.780] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 2
+[2026-08-13 18:53:08.803] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:53:08.997] [SetActiveTabVisual] Active child state: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Size=1316x739
+[2026-08-13 18:53:31.200] [OpenChild] OpenChild requested for form: HesabdaryMainForm, Text='حسابداری'
+[2026-08-13 18:53:31.243] [HesabdaryMainForm_Load] Load start. WindowState=Maximized, Size=136x679, Visible=True
+[2026-08-13 18:53:35.756] [HesabdaryMainForm_Load] Load finish. WindowState=Maximized, Size=136x679, Visible=True
+[2026-08-13 18:53:35.771] [OpenChild] Form HesabdaryMainForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=136x679
+[2026-08-13 18:53:35.806] [AddFormTab] Tab created for form: HesabdaryMainForm, Title: 'حسابداری', TotalOpenTabs: 3
+[2026-08-13 18:53:35.807] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 18:53:35.808] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:53:35.835] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:53:35.836] [SetActiveTabVisual] Active child state: HesabdaryMainForm, Visible=True, WindowState=Maximized, Size=136x679
+[2026-08-13 18:53:43.581] [FormTab_Click] Tab clicked for form: UserManagementForm, Title: 'مدیریت کاربران'
+[2026-08-13 18:53:43.582] [SetActiveTabVisual] Setting Active Tab: UserManagementForm, MdiChildrenCount: 3
+[2026-08-13 18:53:43.725] [SetActiveTabVisual] Active child state: UserManagementForm, Visible=True, WindowState=Maximized, Size=136x679
+[2026-08-13 18:53:43.726] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:53:43.744] [SetActiveTabVisual] Hiding inactive child: HesabdaryMainForm
+[2026-08-13 18:53:46.139] [BtnHomeTab_Click] Home Dashboard tab clicked
+[2026-08-13 18:53:46.139] [SetActiveTabVisual] Setting Active Tab: HOME_DASHBOARD, MdiChildrenCount: 3
+[2026-08-13 18:53:46.169] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:53:46.170] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:53:46.170] [SetActiveTabVisual] Hiding inactive child: HesabdaryMainForm
+[2026-08-13 18:54:52.184] [FormTab_Click] Tab clicked for form: UserManagementForm, Title: 'مدیریت کاربران'
+[2026-08-13 18:54:52.185] [SetActiveTabVisual] Setting Active Tab: UserManagementForm, MdiChildrenCount: 3
+[2026-08-13 18:54:52.327] [SetActiveTabVisual] Active child state: UserManagementForm, Visible=True, WindowState=Maximized, Size=136x679
+[2026-08-13 18:54:52.328] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:54:52.330] [SetActiveTabVisual] Hiding inactive child: HesabdaryMainForm
+[2026-08-13 18:55:04.028] [FormTab_Click] Tab clicked for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی'
+[2026-08-13 18:55:04.029] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 3
+[2026-08-13 18:55:04.053] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:55:04.251] [SetActiveTabVisual] Re-maximizing active child: CompanyFiscalYearForm (was Normal)
+[2026-08-13 18:55:04.286] [SetActiveTabVisual] Active child state: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Size=1378x679
+[2026-08-13 18:55:04.286] [SetActiveTabVisual] Hiding inactive child: HesabdaryMainForm
+[2026-08-13 18:55:18.466] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 18:55:18.466] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 18:55:18.467] [SetActiveTabVisual] Hiding inactive child: UserManagementForm
+[2026-08-13 18:55:18.488] [SetActiveTabVisual] Hiding inactive child: CompanyFiscalYearForm
+[2026-08-13 18:55:18.656] [SetActiveTabVisual] Re-maximizing active child: HesabdaryMainForm (was Normal)
+[2026-08-13 18:55:18.697] [SetActiveTabVisual] Active child state: HesabdaryMainForm, Visible=True, WindowState=Maximized, Size=136x679

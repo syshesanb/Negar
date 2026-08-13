@@ -100,7 +100,8 @@ Namespace Negar.Forms
 
         Private Sub UpdateSidebarBounds()
             If pnlSidebarContainer IsNot Nothing AndAlso status IsNot Nothing Then
-                pnlSidebarContainer.Location = New Point(0, 0)
+                Dim xPos = Math.Max(0, Me.ClientSize.Width - pnlSidebarContainer.Width)
+                pnlSidebarContainer.Location = New Point(xPos, 0)
                 pnlSidebarContainer.Height = Math.Max(100, Me.ClientSize.Height - status.Height)
                 pnlSidebarContainer.BringToFront()
             End If
@@ -732,11 +733,8 @@ Namespace Negar.Forms
                     If f IsNot Nothing AndAlso Not f.IsDisposed Then
                         If f Is activeChild Then
                             f.Visible = True
-                            If f.WindowState <> FormWindowState.Maximized Then
-                                Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Re-maximizing active child: {f.GetType().Name} (was {f.WindowState})")
-                                f.WindowState = FormWindowState.Normal
-                                f.WindowState = FormWindowState.Maximized
-                            End If
+                            f.WindowState = FormWindowState.Normal
+                            f.WindowState = FormWindowState.Maximized
                             f.BringToFront()
                             f.Activate()
                             Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Active child state: {f.GetType().Name}, Visible={f.Visible}, WindowState={f.WindowState}, Size={f.Size.Width}x{f.Size.Height}")
