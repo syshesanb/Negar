@@ -849,9 +849,7 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub MiCompanyFiscalYears_Click(sender As Object, e As EventArgs) Handles miCompanyFiscalYears.Click
-            Dim form As New CompanyFiscalYearForm(Me)
-            form.StartPosition = FormStartPosition.CenterParent
-            form.ShowDialog(Me)
+            OpenChild(New CompanyFiscalYearForm(Me, openOnSelectTab:=True))
             UpdateStatusBar()
         End Sub
 
@@ -1813,16 +1811,12 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub LblCompany_DoubleClick(sender As Object, e As EventArgs) Handles lblCompany.DoubleClick
-            Dim form As New CompanyFiscalYearForm(Me)
-            form.StartPosition = FormStartPosition.CenterParent
-            form.ShowDialog(Me)
+            OpenChild(New CompanyFiscalYearForm(Me, openOnSelectTab:=True))
             UpdateStatusBar()
         End Sub
 
         Private Sub LblFiscalYear_DoubleClick(sender As Object, e As EventArgs) Handles lblFiscalYear.DoubleClick
-            Dim form As New CompanyFiscalYearForm(Me)
-            form.StartPosition = FormStartPosition.CenterParent
-            form.ShowDialog(Me)
+            OpenChild(New CompanyFiscalYearForm(Me, openOnSelectTab:=True))
             UpdateStatusBar()
         End Sub
 
