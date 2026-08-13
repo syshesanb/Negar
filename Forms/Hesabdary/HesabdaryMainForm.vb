@@ -29,22 +29,16 @@ Namespace Negar.Forms
             If LicenseManager.UsageMode = LicenseUsageMode.Designtime Then Return
 
             If Not SessionContext.CurrentCompanyID.HasValue Then
-                MessageBox.Show(
-                    "برای استفاده از ماژول حسابداری، ابتدا باید شرکت و سال مالی جاری را انتخاب کنید." & Environment.NewLine &
-                    "فرم انتخاب شرکت و سال مالی جاری باز می‌شود.",
-                    "شرکت انتخاب نشده", MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-                Dim mainForm = TryCast(Me.Owner, MainForm)
-                Dim cfForm As New CompanyFiscalYearForm(mainForm, openOnSelectTab:=True)
-                cfForm.ShowDialog(Me)
-
-                If Not SessionContext.CurrentCompanyID.HasValue Then
-                    Me.BeginInvoke(Sub() Me.Close())
-                    Return
+                Dim mainForm = TryCast(Me.MdiParent, MainForm)
+                If mainForm IsNot Nothing Then
+                    mainForm.EnsureCompanyAndFiscalYearSelected()
                 End If
             End If
 
-            LoadAllTabs()
+            If SessionContext.CurrentCompanyID.HasValue Then
+                LoadAllTabs()
+            End If
+
             Me.WindowState = FormWindowState.Maximized
             Me.BringToFront()
             Me.Activate()

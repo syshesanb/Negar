@@ -100,8 +100,7 @@ Namespace Negar.Forms
 
         Private Sub UpdateSidebarBounds()
             If pnlSidebarContainer IsNot Nothing AndAlso status IsNot Nothing Then
-                Dim xPos = Math.Max(0, Me.ClientSize.Width - pnlSidebarContainer.Width)
-                pnlSidebarContainer.Location = New Point(xPos, 0)
+                pnlSidebarContainer.Location = New Point(0, 0)
                 pnlSidebarContainer.Height = Math.Max(100, Me.ClientSize.Height - status.Height)
                 pnlSidebarContainer.BringToFront()
             End If
@@ -607,6 +606,18 @@ Namespace Negar.Forms
             flpFormTabs.Controls.Clear()
             _openFormTabs.Clear()
 
+            btnHandle.Text = If(_isMenuExpanded, "✕", "☰")
+            btnHandle.Width = 34
+            btnHandle.Height = 30
+            btnHandle.FlatStyle = FlatStyle.Flat
+            btnHandle.FlatAppearance.BorderSize = 1
+            btnHandle.FlatAppearance.BorderColor = Color.FromArgb(180, 200, 225)
+            btnHandle.BackColor = Color.FromArgb(41, 128, 185)
+            btnHandle.ForeColor = Color.White
+            btnHandle.Font = New Font("Tahoma", 10.0!, FontStyle.Bold)
+            btnHandle.Cursor = Cursors.Hand
+            btnHandle.Margin = New Padding(2, 1, 6, 1)
+
             _btnHomeTab = New Button()
             _btnHomeTab.Text = "🏠 داشبورد اصلی"
             _btnHomeTab.AutoSize = True
@@ -621,6 +632,7 @@ Namespace Negar.Forms
             _btnHomeTab.Margin = New Padding(2, 1, 2, 1)
 
             AddHandler _btnHomeTab.Click, AddressOf BtnHomeTab_Click
+            flpFormTabs.Controls.Add(btnHandle)
             flpFormTabs.Controls.Add(_btnHomeTab)
             flpFormTabs.ResumeLayout()
         End Sub
@@ -1546,9 +1558,9 @@ Namespace Negar.Forms
 
         Private Sub ApplyMenuStateVisuals(expanded As Boolean)
             If expanded Then
-                btnHandle.Text = "❯"
+                btnHandle.Text = "✕"
             Else
-                btnHandle.Text = "❮"
+                btnHandle.Text = "☰"
             End If
         End Sub
 
