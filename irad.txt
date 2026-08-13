@@ -1,1 +1,105 @@
-========== IRAD LOG STARTED ==========
+========== IRAD LOG STARTED AT 2026-08-13 19:52:24 ==========
+[2026-08-13 19:52:24.455] [MainForm_Load] MainForm loaded. Bounds: 1382x744, WindowState: Maximized
+[2026-08-13 19:52:33.299] [OpenChild] OpenChild requested for form: SystemMessagesForm, Text='مدیریت پیام‌های سیستم'
+[2026-08-13 19:52:33.407] [OpenChild] Form SystemMessagesForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=1378x679
+[2026-08-13 19:52:33.446] [AddFormTab] Tab created for form: SystemMessagesForm, Title: 'مدیریت پیام‌های سیستم', TotalOpenTabs: 1
+[2026-08-13 19:52:33.451] [SetActiveTabVisual] Setting Active Tab: SystemMessagesForm, MdiChildrenCount: 1
+[2026-08-13 19:52:33.466] [SetActiveTabVisual] Active child activated: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:52:33.467] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:52:41.338] [OpenChild] OpenChild requested for form: CompanyFiscalYearForm, Text='مدیریت شرکتها و سالهای مالی'
+[2026-08-13 19:52:41.633] [OpenChild] Form CompanyFiscalYearForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=1378x679
+[2026-08-13 19:52:41.666] [AddFormTab] Tab created for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی', TotalOpenTabs: 2
+[2026-08-13 19:52:41.666] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 2
+[2026-08-13 19:52:41.667] [SetActiveTabVisual] Active child activated: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:52:41.668] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:52:41.668] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:53:02.506] [ChildForm_FormClosed] FormClosed event for form: CompanyFiscalYearForm
+[2026-08-13 19:53:02.507] [RemoveFormTab] Removing tab for form: CompanyFiscalYearForm
+[2026-08-13 19:53:02.519] [SetActiveTabVisual] Setting Active Tab: SystemMessagesForm, MdiChildrenCount: 2
+[2026-08-13 19:53:02.630] [SetActiveTabVisual] Active child activated: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:53:02.631] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:53:02.632] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:53:13.582] [OpenChild] OpenChild requested for form: CompanyFiscalYearForm, Text='مدیریت شرکتها و سالهای مالی'
+[2026-08-13 19:53:13.860] [OpenChild] Form CompanyFiscalYearForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=1378x679
+[2026-08-13 19:53:13.885] [AddFormTab] Tab created for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی', TotalOpenTabs: 2
+[2026-08-13 19:53:13.887] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 2
+[2026-08-13 19:53:13.889] [SetActiveTabVisual] Active child activated: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:53:13.889] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:53:13.890] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:53:20.280] [OpenChild] OpenChild requested for form: HesabdaryMainForm, Text='حسابداری'
+[2026-08-13 19:53:20.319] [HesabdaryMainForm_Load] Load start. WindowState=Maximized, Size=136x679, Visible=True
+[2026-08-13 19:53:24.729] [HesabdaryMainForm_Load] Load finish. WindowState=Maximized, Size=136x679, Visible=True
+[2026-08-13 19:53:24.745] [OpenChild] Form HesabdaryMainForm shown inside MDI Parent. WindowState=Maximized, Visible=True, Size=136x679
+[2026-08-13 19:53:24.802] [AddFormTab] Tab created for form: HesabdaryMainForm, Title: 'حسابداری', TotalOpenTabs: 3
+[2026-08-13 19:53:24.803] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 19:53:24.804] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 19:53:24.804] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:53:24.805] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:53:24.806] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 19:54:14.082] [FormTab_Click] Tab clicked for form: SystemMessagesForm, Title: 'مدیریت پیام‌های سیستم'
+[2026-08-13 19:54:14.083] [SetActiveTabVisual] Setting Active Tab: SystemMessagesForm, MdiChildrenCount: 3
+[2026-08-13 19:54:14.211] [SetActiveTabVisual] Active child activated: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:54:14.212] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:54:14.212] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:54:14.214] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 19:54:16.348] [FormTab_Click] Tab clicked for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی'
+[2026-08-13 19:54:16.348] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 3
+[2026-08-13 19:54:16.433] [SetActiveTabVisual] Active child activated: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:54:16.434] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:54:16.435] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:54:16.436] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 19:54:18.973] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 19:54:18.974] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 19:54:19.061] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 19:54:19.062] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:54:19.063] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:54:19.064] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 19:54:45.447] [BtnHomeTab_Click] Home Dashboard tab clicked
+[2026-08-13 19:54:45.447] [SetActiveTabVisual] Setting Active Tab: HOME_DASHBOARD, MdiChildrenCount: 3
+[2026-08-13 19:54:45.464] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:54:45.465] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:54:45.465] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=False
+[2026-08-13 19:54:47.287] [FormTab_Click] Tab clicked for form: SystemMessagesForm, Title: 'مدیریت پیام‌های سیستم'
+[2026-08-13 19:54:47.288] [SetActiveTabVisual] Setting Active Tab: SystemMessagesForm, MdiChildrenCount: 3
+[2026-08-13 19:54:47.435] [SetActiveTabVisual] Active child activated: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:54:47.436] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:54:47.436] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:54:47.437] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 19:54:49.098] [FormTab_Click] Tab clicked for form: CompanyFiscalYearForm, Title: 'مدیریت شرکتها و سالهای مالی'
+[2026-08-13 19:54:49.099] [SetActiveTabVisual] Setting Active Tab: CompanyFiscalYearForm, MdiChildrenCount: 3
+[2026-08-13 19:54:49.209] [SetActiveTabVisual] Active child activated: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:54:49.210] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:54:49.211] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:54:49.212] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 19:54:51.706] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 19:54:51.707] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 3
+[2026-08-13 19:54:51.829] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 19:54:51.830] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:54:51.831] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:54:51.832] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 19:55:12.817] [ChildForm_FormClosed] FormClosed event for form: CompanyFiscalYearForm
+[2026-08-13 19:55:12.818] [RemoveFormTab] Removing tab for form: CompanyFiscalYearForm
+[2026-08-13 19:55:12.831] [SetActiveTabVisual] Setting Active Tab: SystemMessagesForm, MdiChildrenCount: 3
+[2026-08-13 19:55:12.932] [SetActiveTabVisual] Active child activated: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:55:12.933] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:55:12.934] [SetActiveTabVisual]   Child form status: CompanyFiscalYearForm, Visible=True, WindowState=Normal, Bounds=1316x739, IsActive=False
+[2026-08-13 19:55:12.935] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 19:55:15.871] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 19:55:15.872] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 2
+[2026-08-13 19:55:15.929] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 19:55:15.930] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:55:15.931] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True
+[2026-08-13 19:55:33.839] [BtnHomeTab_Click] Home Dashboard tab clicked
+[2026-08-13 19:55:33.840] [SetActiveTabVisual] Setting Active Tab: HOME_DASHBOARD, MdiChildrenCount: 2
+[2026-08-13 19:55:33.852] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:55:33.853] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=False
+[2026-08-13 19:55:34.983] [FormTab_Click] Tab clicked for form: SystemMessagesForm, Title: 'مدیریت پیام‌های سیستم'
+[2026-08-13 19:55:34.984] [SetActiveTabVisual] Setting Active Tab: SystemMessagesForm, MdiChildrenCount: 2
+[2026-08-13 19:55:35.165] [SetActiveTabVisual] Active child activated: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679
+[2026-08-13 19:55:35.165] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Maximized, Bounds=1378x679, IsActive=True
+[2026-08-13 19:55:35.166] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Normal, Bounds=1336x788, IsActive=False
+[2026-08-13 19:55:36.921] [FormTab_Click] Tab clicked for form: HesabdaryMainForm, Title: 'حسابداری'
+[2026-08-13 19:55:36.921] [SetActiveTabVisual] Setting Active Tab: HesabdaryMainForm, MdiChildrenCount: 2
+[2026-08-13 19:55:36.981] [SetActiveTabVisual] Active child activated: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679
+[2026-08-13 19:55:36.982] [SetActiveTabVisual]   Child form status: SystemMessagesForm, Visible=True, WindowState=Normal, Bounds=636x399, IsActive=False
+[2026-08-13 19:55:36.983] [SetActiveTabVisual]   Child form status: HesabdaryMainForm, Visible=True, WindowState=Maximized, Bounds=136x679, IsActive=True

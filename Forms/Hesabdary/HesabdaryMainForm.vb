@@ -39,6 +39,7 @@ Namespace Negar.Forms
                 LoadAllTabs()
             End If
 
+            Me.WindowState = FormWindowState.Normal
             Me.WindowState = FormWindowState.Maximized
             Me.BringToFront()
             Me.Activate()

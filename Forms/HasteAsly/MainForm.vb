@@ -729,9 +729,8 @@ Namespace Negar.Forms
             If Me.MdiChildren IsNot Nothing Then
                 If activeChild IsNot Nothing AndAlso Not activeChild.IsDisposed Then
                     activeChild.Visible = True
-                    If activeChild.WindowState <> FormWindowState.Maximized Then
-                        activeChild.WindowState = FormWindowState.Maximized
-                    End If
+                    activeChild.WindowState = FormWindowState.Normal
+                    activeChild.WindowState = FormWindowState.Maximized
                     activeChild.BringToFront()
                     activeChild.Activate()
                     Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Active child activated: {activeChild.GetType().Name}, Visible={activeChild.Visible}, WindowState={activeChild.WindowState}, Bounds={activeChild.Bounds.Width}x{activeChild.Bounds.Height}")
@@ -741,9 +740,6 @@ Namespace Negar.Forms
                     If f IsNot Nothing AndAlso Not f.IsDisposed Then
                         If f Is activeChild Then
                             f.Visible = True
-                            If f.WindowState <> FormWindowState.Maximized Then
-                                f.WindowState = FormWindowState.Maximized
-                            End If
                         End If
                         Negar.Business.IradLogger.Log("SetActiveTabVisual", $"  Child form status: {f.GetType().Name}, Visible={f.Visible}, WindowState={f.WindowState}, Bounds={f.Bounds.Width}x{f.Bounds.Height}, IsActive={f Is activeChild}")
                     End If
