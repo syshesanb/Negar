@@ -432,6 +432,7 @@ Namespace Negar.Forms
             ' pnlSidebarContainer (Floating Overlay Sidebar Container on Physical Right Side)
             Me.pnlSidebarContainer.BackColor = Color.FromArgb(240, 244, 250)
             Me.pnlSidebarContainer.Controls.Add(Me.pnlRightMenuContent)
+            Me.pnlSidebarContainer.Controls.Add(Me.btnHandle)
             Me.pnlSidebarContainer.Dock = DockStyle.None
             Me.pnlSidebarContainer.Location = New Point(0, 0)
             Me.pnlSidebarContainer.Name = "pnlSidebarContainer"
