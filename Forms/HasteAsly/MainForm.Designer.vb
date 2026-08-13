@@ -16,10 +16,10 @@ Namespace Negar.Forms
         Private components As IContainer
 
         ' Main Top-Level Menus
-        Friend WithEvents pnlRightMenu As Panel
+        Friend WithEvents pnlSidebarContainer As Panel
         Friend WithEvents pnlRightMenuHeader As Panel
         Friend WithEvents pnlRightMenuContent As Panel
-        Friend WithEvents btnMenuToggle As Button
+        Friend WithEvents btnHandle As Button
         Friend WithEvents lblRightMenuTitle As Label
         Friend WithEvents pnlMainMenuContainer As Panel
         Friend WithEvents mainMenu As MenuStrip
@@ -370,10 +370,10 @@ Namespace Negar.Forms
             Me.miUtilNotes = New ToolStripMenuItem()
             Me.miUtilCalendar = New ToolStripMenuItem()
 
-            Me.pnlRightMenu = New Panel()
+            Me.pnlSidebarContainer = New Panel()
             Me.pnlRightMenuHeader = New Panel()
             Me.pnlRightMenuContent = New Panel()
-            Me.btnMenuToggle = New Button()
+            Me.btnHandle = New Button()
             Me.lblRightMenuTitle = New Label()
             Me.pnlToolBar = New Panel()
             Me.tool = New ToolStrip()
@@ -423,57 +423,57 @@ Namespace Negar.Forms
             Me.status.SuspendLayout()
             Me.SuspendLayout()
 
-            ' pnlRightMenu (Collapsible Sidebar Container on Right)
-            Me.pnlRightMenu.BackColor = Color.FromArgb(240, 244, 250)
-            Me.pnlRightMenu.Controls.Add(Me.pnlRightMenuContent)
-            Me.pnlRightMenu.Controls.Add(Me.pnlRightMenuHeader)
-            Me.pnlRightMenu.Dock = DockStyle.Right
-            Me.pnlRightMenu.Location = New Point(940, 0)
-            Me.pnlRightMenu.Name = "pnlRightMenu"
-            Me.pnlRightMenu.RightToLeft = RightToLeft.Yes
-            Me.pnlRightMenu.Size = New Size(260, 676)
-            Me.pnlRightMenu.TabIndex = 0
+            ' pnlSidebarContainer (Sliding Sidebar Container on Physical Right Side)
+            Me.pnlSidebarContainer.BackColor = Color.FromArgb(240, 244, 250)
+            Me.pnlSidebarContainer.Controls.Add(Me.pnlRightMenuContent)
+            Me.pnlSidebarContainer.Controls.Add(Me.btnHandle)
+            Me.pnlSidebarContainer.Dock = DockStyle.Left
+            Me.pnlSidebarContainer.Location = New Point(0, 0)
+            Me.pnlSidebarContainer.Name = "pnlSidebarContainer"
+            Me.pnlSidebarContainer.RightToLeft = RightToLeft.Yes
+            Me.pnlSidebarContainer.Size = New Size(268, 676)
+            Me.pnlSidebarContainer.TabIndex = 0
+
+            ' btnHandle (دستگیره باز و بسته کردن منوی کشویی)
+            Me.btnHandle.BackColor = Color.FromArgb(41, 128, 185)
+            Me.btnHandle.Cursor = Cursors.Hand
+            Me.btnHandle.Dock = DockStyle.Left
+            Me.btnHandle.FlatStyle = FlatStyle.Flat
+            Me.btnHandle.FlatAppearance.BorderSize = 0
+            Me.btnHandle.Font = New Font("Tahoma", 11.0!, FontStyle.Bold)
+            Me.btnHandle.ForeColor = Color.White
+            Me.btnHandle.Name = "btnHandle"
+            Me.btnHandle.Size = New Size(28, 676)
+            Me.btnHandle.TabIndex = 0
+            Me.btnHandle.Text = "❯"
+            Me.btnHandle.UseVisualStyleBackColor = False
+
+            ' pnlRightMenuContent (Content Panel containing Header + Menu + Toolbar)
+            Me.pnlRightMenuContent.AutoScroll = True
+            Me.pnlRightMenuContent.Controls.Add(Me.mainMenu)
+            Me.pnlRightMenuContent.Controls.Add(Me.tool)
+            Me.pnlRightMenuContent.Controls.Add(Me.pnlRightMenuHeader)
+            Me.pnlRightMenuContent.Dock = DockStyle.Fill
+            Me.pnlRightMenuContent.Name = "pnlRightMenuContent"
+            Me.pnlRightMenuContent.RightToLeft = RightToLeft.Yes
 
             ' pnlRightMenuHeader
             Me.pnlRightMenuHeader.BackColor = Color.FromArgb(220, 230, 245)
             Me.pnlRightMenuHeader.Controls.Add(Me.lblRightMenuTitle)
-            Me.pnlRightMenuHeader.Controls.Add(Me.btnMenuToggle)
             Me.pnlRightMenuHeader.Dock = DockStyle.Top
-            Me.pnlRightMenuHeader.Height = 44
+            Me.pnlRightMenuHeader.Height = 40
             Me.pnlRightMenuHeader.Name = "pnlRightMenuHeader"
             Me.pnlRightMenuHeader.Padding = New Padding(4)
-
-            ' btnMenuToggle (گیره / دکمه باز و بستن کشویی)
-            Me.btnMenuToggle.BackColor = Color.FromArgb(52, 152, 219)
-            Me.btnMenuToggle.Cursor = Cursors.Hand
-            Me.btnMenuToggle.FlatStyle = FlatStyle.Flat
-            Me.btnMenuToggle.FlatAppearance.BorderSize = 0
-            Me.btnMenuToggle.Font = New Font("Tahoma", 10.0!, FontStyle.Bold)
-            Me.btnMenuToggle.ForeColor = Color.White
-            Me.btnMenuToggle.Location = New Point(4, 4)
-            Me.btnMenuToggle.Name = "btnMenuToggle"
-            Me.btnMenuToggle.Size = New Size(36, 36)
-            Me.btnMenuToggle.TabIndex = 0
-            Me.btnMenuToggle.Text = "»"
-            Me.btnMenuToggle.UseVisualStyleBackColor = False
 
             ' lblRightMenuTitle
             Me.lblRightMenuTitle.Dock = DockStyle.Fill
             Me.lblRightMenuTitle.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
             Me.lblRightMenuTitle.ForeColor = Color.FromArgb(30, 60, 100)
-            Me.lblRightMenuTitle.Location = New Point(44, 4)
+            Me.lblRightMenuTitle.Location = New Point(4, 4)
             Me.lblRightMenuTitle.Name = "lblRightMenuTitle"
-            Me.lblRightMenuTitle.Size = New Size(212, 36)
+            Me.lblRightMenuTitle.Size = New Size(232, 32)
             Me.lblRightMenuTitle.Text = "منوی سیستم نگار"
-            Me.lblRightMenuTitle.TextAlign = ContentAlignment.MiddleRight
-
-            ' pnlRightMenuContent
-            Me.pnlRightMenuContent.AutoScroll = True
-            Me.pnlRightMenuContent.Controls.Add(Me.mainMenu)
-            Me.pnlRightMenuContent.Controls.Add(Me.tool)
-            Me.pnlRightMenuContent.Dock = DockStyle.Fill
-            Me.pnlRightMenuContent.Name = "pnlRightMenuContent"
-            Me.pnlRightMenuContent.RightToLeft = RightToLeft.Yes
+            Me.lblRightMenuTitle.TextAlign = ContentAlignment.MiddleCenter
 
             ' mainMenu
             Me.mainMenu.AutoSize = True
@@ -1260,7 +1260,7 @@ Namespace Negar.Forms
             Me.AutoScaleMode = AutoScaleMode.Font
             Me.ClientSize = New Size(1200, 700)
             Me.Controls.Add(Me.flpDashboard)
-            Me.Controls.Add(Me.pnlRightMenu)
+            Me.Controls.Add(Me.pnlSidebarContainer)
             Me.Controls.Add(Me.status)
             Me.Font = New Font("Tahoma", 9.0!)
             Me.MainMenuStrip = Me.mainMenu

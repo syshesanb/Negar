@@ -21,11 +21,11 @@ Namespace Negar.Forms
         Private _shortcutFilter As GlobalShortcutFilter
         Private ReadOnly _spawnedCalcProcesses As New List(Of Process)()
 
-        ' Collapsible Right Sidebar Menu Logic
+        ' Collapsible Right Sidebar Menu Logic with Handle Knob
         Private WithEvents menuTransitionTimer As New Timer() With {.Interval = 15}
         Private _isMenuExpanded As Boolean = True
-        Private Const ExpandedWidth As Integer = 260
-        Private Const CollapsedWidth As Integer = 45
+        Private Const ExpandedWidth As Integer = 268
+        Private Const CollapsedWidth As Integer = 28
         Private _targetWidth As Integer = ExpandedWidth
 
         Private Class GlobalShortcutFilter
@@ -1385,21 +1385,21 @@ Namespace Negar.Forms
             ShowDashboardCategory("Utilities")
         End Sub
 
-        Private Sub BtnMenuToggle_Click(sender As Object, e As EventArgs) Handles btnMenuToggle.Click
+        Private Sub BtnHandle_Click(sender As Object, e As EventArgs) Handles btnHandle.Click
             _isMenuExpanded = Not _isMenuExpanded
             _targetWidth = If(_isMenuExpanded, ExpandedWidth, CollapsedWidth)
             menuTransitionTimer.Start()
         End Sub
 
         Private Sub MenuTransitionTimer_Tick(sender As Object, e As EventArgs) Handles menuTransitionTimer.Tick
-            Dim currentWidth = pnlRightMenu.Width
+            Dim currentWidth = pnlSidebarContainer.Width
             Dim stepVal = 30
             If currentWidth < _targetWidth Then
                 currentWidth = Math.Min(_targetWidth, currentWidth + stepVal)
             ElseIf currentWidth > _targetWidth Then
                 currentWidth = Math.Max(_targetWidth, currentWidth - stepVal)
             End If
-            pnlRightMenu.Width = currentWidth
+            pnlSidebarContainer.Width = currentWidth
 
             If currentWidth = _targetWidth Then
                 menuTransitionTimer.Stop()
@@ -1409,19 +1409,9 @@ Namespace Negar.Forms
 
         Private Sub ApplyMenuStateVisuals(expanded As Boolean)
             If expanded Then
-                btnMenuToggle.Text = "»"
-                lblRightMenuTitle.Visible = True
-                mainMenu.Visible = True
-                For Each item As ToolStripItem In tool.Items
-                    item.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText
-                Next
+                btnHandle.Text = "❯"
             Else
-                btnMenuToggle.Text = "«"
-                lblRightMenuTitle.Visible = False
-                mainMenu.Visible = False
-                For Each item As ToolStripItem In tool.Items
-                    item.DisplayStyle = ToolStripItemDisplayStyle.Image
-                Next
+                btnHandle.Text = "❮"
             End If
         End Sub
 
