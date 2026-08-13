@@ -87,6 +87,7 @@ Namespace Negar.Forms
             _shortcutFilter = New GlobalShortcutFilter(Me)
             Application.AddMessageFilter(_shortcutFilter)
             LoadRandomBackgroundImage()
+            BuildAccordionTree()
             UpdateSidebarBounds()
         End Sub
 
@@ -1428,6 +1429,240 @@ Namespace Negar.Forms
             Else
                 btnHandle.Text = "❮"
             End If
+        End Sub
+
+        Private Sub BuildAccordionTree()
+            tvMenu.Nodes.Clear()
+
+            ' 1. سیستم
+            Dim nSys = tvMenu.Nodes.Add("nSys", "⚙️ سیستم")
+            nSys.Nodes.Add("miSettingsMessages", "📩 مدیریت پیام‌ها")
+            nSys.Nodes.Add("miSettingsThemes", "🎨 مدیریت تم‌های برنامه")
+            nSys.Nodes.Add("miBackupData", "💾 پشتیبان‌گیری اطلاعات")
+            nSys.Nodes.Add("miRestoreData", "🔄 بازیابی اطلاعات")
+            nSys.Nodes.Add("miCreateRelease", "📦 ایجاد نسخه قابل انتشار")
+            nSys.Nodes.Add("miCreateUpdate", "🆙 ایجاد بسته به‌روزرسانی")
+            nSys.Nodes.Add("miExportDecryptedDb", "🔍 خروجی دیتابیس (بازرسی)")
+            nSys.Nodes.Add("miLock", "🔒 قفل موقت برنامه")
+            nSys.Nodes.Add("miAbout", "ℹ️ درباره...")
+            nSys.Nodes.Add("miContact", "📞 ارتباط با ما")
+            nSys.Nodes.Add("miExit", "🚪 خروج")
+
+            ' 2. کاربران
+            Dim nUsers = tvMenu.Nodes.Add("nUsers", "👥 کاربران")
+            nUsers.Nodes.Add("miUsers", "👤 مدیریت کاربران سیستم")
+            nUsers.Nodes.Add("miBasicUsers", "👥 مدیریت کاربران پایه")
+            nUsers.Nodes.Add("miChangeProfile", "🔑 تغییر مشخصات کاربر جاری")
+            nUsers.Nodes.Add("miSwitchUser", "🔄 تغییر کاربر سیستم")
+
+            ' 3. شرکت‌ها و سال‌های مالی
+            Dim nComp = tvMenu.Nodes.Add("nComp", "🏢 شرکت‌ها و سال‌های مالی")
+            nComp.Nodes.Add("miCompanyFiscalYears", "🏢 مدیریت شرکت‌ها و سال‌های مالی")
+
+            ' 4. حسابداری
+            Dim nAcc = tvMenu.Nodes.Add("nAcc", "🧮 حسابداری")
+            nAcc.Nodes.Add("miAccountingMain", "🧮 سیستم جامع حسابداری مالی")
+            nAcc.Nodes.Add("miReportsAccounting", "📑 دفاتر و گزارشات حسابداری")
+
+            ' 5. خرید و فروش و انبارداری
+            Dim nTrade = tvMenu.Nodes.Add("nTrade", "📦 خرید و فروش و انبارداری")
+            nTrade.Nodes.Add("miTradeMini", "📦 سیستم انبارداری همراه (اصناف)")
+            nTrade.Nodes.Add("miTradeMedium", "📦 سیستم انبارداری شرکتی (متوسط)")
+            nTrade.Nodes.Add("miTradeBig", "📦 سیستم انبارداری سازمان‌های بزرگ")
+            nTrade.Nodes.Add("miTradeWarehouseMain", "🛒 سیستم جامع خرید و فروش و انبارداری")
+            nTrade.Nodes.Add("miReportsTrade", "📊 گزارشات انبارداری و خریدوفروش")
+
+            ' 6. حقوق و دستمزد
+            Dim nPay = tvMenu.Nodes.Add("nPay", "💳 حقوق و دستمزد")
+            nPay.Nodes.Add("miPayrollMain", "💳 سیستم جامع حقوق و دستمزد")
+            nPay.Nodes.Add("miPayrollReports", "📊 گزارشات حقوق و دستمزد")
+
+            ' 7. اموال و دارایی ثابت
+            Dim nAmval = tvMenu.Nodes.Add("nAmval", "🏛️ اموال و دارایی‌های ثابت")
+            nAmval.Nodes.Add("miAmvalMain", "🏛️ سیستم مدیریت اموال و دارایی ثابت")
+            nAmval.Nodes.Add("miAmvalReports", "📊 گزارشات اموال و استهلاک")
+
+            ' 8. اتوماسیون اداری
+            Dim nAuto = tvMenu.Nodes.Add("nAuto", "📨 اتوماسیون اداری")
+            nAuto.Nodes.Add("miAutomationMain", "📨 سیستم اتوماسیون اداری")
+            nAuto.Nodes.Add("miAutomationReports", "📊 گزارشات اتوماسیون اداری")
+
+            ' 9. باشگاه مشتریان (CRM)
+            Dim nCrm = tvMenu.Nodes.Add("nCrm", "🤝 باشگاه مشتریان (CRM)")
+            nCrm.Nodes.Add("miCrmMain", "🤝 سیستم مدیریت ارتباط با مشتریان")
+            nCrm.Nodes.Add("miCrmReports", "📊 گزارشات باشگاه مشتریان")
+
+            ' 10. خزانه‌داری
+            Dim nTreasury = tvMenu.Nodes.Add("nTreasury", "💰 خزانه‌داری")
+            nTreasury.Nodes.Add("miTreasuryMain", "💰 سیستم خزانه‌داری و صندوق/بانک")
+            nTreasury.Nodes.Add("miTreasuryReports", "📊 گزارشات خزانه‌داری")
+
+            ' 11. بودجه و هزینه
+            Dim nBudget = tvMenu.Nodes.Add("nBudget", "📈 بودجه و هزینه")
+            nBudget.Nodes.Add("miBudgetingMain", "📈 سیستم بودجه‌ریزی و کنترل هزینه‌ها")
+            nBudget.Nodes.Add("miBudgetingReports", "📊 گزارشات بودجه و انحرافات")
+
+            ' 12. تولید و بهای تمام شده
+            Dim nProd = tvMenu.Nodes.Add("nProd", "🏭 تولید و بهای تمام‌شده")
+            nProd.Nodes.Add("miProductionMain", "🏭 سیستم بهای تمام‌شده و تولید")
+            nProd.Nodes.Add("miProductionReports", "📊 گزارشات تولید و بهای تمام‌شده")
+
+            ' 13. پروژه‌ها و پیمان‌ها
+            Dim nProj = tvMenu.Nodes.Add("nProj", "🏗️ پروژه‌ها و پیمان‌ها")
+            nProj.Nodes.Add("miProjectMain", "🏗️ سیستم مدیریت پروژه‌ها و پیمان‌ها")
+            nProj.Nodes.Add("miProjectReports", "📊 گزارشات پروژه‌ها")
+
+            ' 14. ارزیابی عملکرد و پاداش (KPI)
+            Dim nKpi = tvMenu.Nodes.Add("nKpi", "🎯 ارزیابی عملکرد و پاداش")
+            nKpi.Nodes.Add("miKpiMain", "🎯 سیستم ارزیابی عملکرد و شایستگی")
+            nKpi.Nodes.Add("miKpiReports", "📊 گزارشات شاخص‌های کلیدی عملکرد")
+
+            ' 15. بازرگانی خارجی
+            Dim nImp = tvMenu.Nodes.Add("nImp", "🌐 بازرگانی خارجی")
+            nImp.Nodes.Add("miImportExportMain", "🌐 سیستم بازرگانی خارجی")
+            nImp.Nodes.Add("miImportExportReports", "📊 گزارشات بازرگانی خارجی")
+
+            ' 16. نگهداری و تعمیرات (PM)
+            Dim nPm = tvMenu.Nodes.Add("nPm", "🛠️ نگهداری و تعمیرات")
+            nPm.Nodes.Add("miPmMain", "🛠️ سیستم نگهداری و تعمیرات پیشگیرانه")
+            nPm.Nodes.Add("miPmReports", "📊 گزارشات نت و توقفات")
+
+            ' 17. لوجستیک و پخش
+            Dim nLog = tvMenu.Nodes.Add("nLog", "🚛 لوجستیک و پخش")
+            nLog.Nodes.Add("miLogisticsMain", "🚛 سیستم لوجستیک و پخش مویرگی")
+            nLog.Nodes.Add("miLogisticsReports", "📊 گزارشات لوجستیک")
+
+            ' 18. مدیریت تامین‌کنندگان (SRM)
+            Dim nSrm = tvMenu.Nodes.Add("nSrm", "🤝 مدیریت تامین‌کنندگان")
+            nSrm.Nodes.Add("miSrmMain", "🤝 سیستم ارزیابی تامین‌کنندگان")
+            nSrm.Nodes.Add("miSrmReports", "📊 گزارشات تامین‌کنندگان")
+
+            ' 19. کنترل و تضمین کیفیت (QC)
+            Dim nQc = tvMenu.Nodes.Add("nQc", "🛡️ کنترل و تضمین کیفیت")
+            nQc.Nodes.Add("miQcMain", "🛡️ سیستم کنترل کیفیت آزمایشگاهی")
+            nQc.Nodes.Add("miQcReports", "📊 گزارشات کیفیت")
+
+            ' 20. هوش تجاری و داشبورد (BI)
+            Dim nBi = tvMenu.Nodes.Add("nBi", "📊 هوش تجاری و داشبورد")
+            nBi.Nodes.Add("miBiMain", "📊 سیستم هوش تجاری و تحلیل‌های مدیریتی")
+            nBi.Nodes.Add("miBiReports", "📈 گزارشات و تحلیل‌های BI")
+
+            ' 21. بایگانی و آرشیو اسناد (DMS)
+            Dim nDms = tvMenu.Nodes.Add("nDms", "📂 بایگانی و آرشیو اسناد")
+            nDms.Nodes.Add("miDmsMain", "📂 سیستم مدیریت بایگانی اسناد")
+            nDms.Nodes.Add("miDmsReports", "📊 گزارشات بایگانی اسناد")
+
+            ' 22. امور سهام و سهامداران
+            Dim nSaham = tvMenu.Nodes.Add("nSaham", "📜 امور سهام و سهامداران")
+            nSaham.Nodes.Add("miSahamMain", "📜 سیستم مدیریت امور سهام")
+            nSaham.Nodes.Add("miSahamReports", "📊 گزارشات سهامداران")
+
+            ' 23. وب‌سرویس و API
+            Dim nApi = tvMenu.Nodes.Add("nApi", "🔌 وب‌سرویس و API")
+            nApi.Nodes.Add("miApiMain", "🔌 سیستم مدیریت وب‌سرویس و API")
+            nApi.Nodes.Add("miApiReports", "📊 لاگ‌ها و گزارشات وب‌سرویس")
+
+            ' 24. امور حقوقی و دعاوی
+            Dim nLegal = tvMenu.Nodes.Add("nLegal", "⚖️ امور حقوقی و دعاوی")
+            nLegal.Nodes.Add("miLegalMain", "⚖️ سیستم مدیریت امور حقوقی")
+            nLegal.Nodes.Add("miLegalReports", "📊 گزارشات حقوقی و قراردادها")
+
+            ' 25. تحقیق و توسعه (R&D)
+            Dim nRd = tvMenu.Nodes.Add("nRd", "🧪 تحقیق و توسعه")
+            nRd.Nodes.Add("miRdMain", "🧪 سیستم جامع تحقیق و توسعه")
+            nRd.Nodes.Add("miRdReports", "📊 گزارشات R&D")
+
+            ' 26. مرکز تلفن هوشمند (VoIP)
+            Dim nVoip = tvMenu.Nodes.Add("nVoip", "📞 مرکز تلفن هوشمند")
+            nVoip.Nodes.Add("miVoipMain", "📞 سیستم مدیریت مرکز تلفن")
+            nVoip.Nodes.Add("miVoipReports", "📊 لاگ‌ها و گزارشات VoIP")
+
+            ' 27. پوسته‌های مشاغل
+            Dim nShell = tvMenu.Nodes.Add("nShell", "🏠 پوسته‌های مشاغل")
+            nShell.Nodes.Add("miShellGeneral", "🏬 پوسته عمومی و بازرگانی")
+            nShell.Nodes.Add("miShellRetail", "🏪 پوسته فروشگاهی و اصناف")
+            nShell.Nodes.Add("miShellServices", "🏢 پوسته خدماتی و شرکتی")
+
+            ' 28. امکانات و ابزارها
+            Dim nUtil = tvMenu.Nodes.Add("nUtil", "🧰 امکانات و ابزارها")
+            nUtil.Nodes.Add("miUtilCalculator", "🧮 ماشین حساب سیستم")
+            nUtil.Nodes.Add("miUtilNotes", "📝 یادداشت‌های من")
+            nUtil.Nodes.Add("miUtilCalendar", "📅 تقویم و رویدادنما")
+        End Sub
+
+        Private Sub TvMenu_NodeMouseClick(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvMenu.NodeMouseClick
+            If e.Node Is Nothing Then Return
+
+            ' Parent category node -> expand / collapse top-to-bottom
+            If e.Node.Nodes.Count > 0 Then
+                If e.Node.IsExpanded Then
+                    e.Node.Collapse()
+                Else
+                    e.Node.Expand()
+                End If
+                Return
+            End If
+
+            ' Leaf menu node -> execute module action
+            Select Case e.Node.Name
+                Case "miSettingsMessages" : MiSettingsMessages_Click(sender, e)
+                Case "miSettingsThemes" : MiSettingsThemes_Click(sender, e)
+                Case "miBackupData" : MiBackupData_Click(sender, e)
+                Case "miRestoreData" : MiRestoreData_Click(sender, e)
+                Case "miCreateRelease" : MiCreateRelease_Click(sender, e)
+                Case "miCreateUpdate" : MiCreateUpdate_Click(sender, e)
+                Case "miExportDecryptedDb" : MiExportDecryptedDb_Click(sender, e)
+                Case "miLock" : LockApplication()
+                Case "miAbout" : MiAbout_Click(sender, e)
+                Case "miContact" : MiContact_Click(sender, e)
+                Case "miExit" : MiExit_Click(sender, e)
+
+                Case "miUsers" : MiUsers_Click(sender, e)
+                Case "miBasicUsers" : MiBasicUsers_Click(sender, e)
+                Case "miChangeProfile" : MiChangeProfile_Click(sender, e)
+                Case "miSwitchUser" : MiSwitchUser_Click(sender, e)
+
+                Case "miCompanyFiscalYears" : LblCompany_DoubleClick(sender, e)
+
+                Case "miAccountingMain" : OpenAccountingMainForm(sender, e)
+                Case "miReportsAccounting" : OpenAccountingReportsForm(sender, e)
+
+                Case "miTradeMini" : OpenAnbarMiniForm(sender, e)
+                Case "miTradeMedium" : OpenAnbarMediumForm(sender, e)
+                Case "miTradeBig" : OpenAnbarBigForm(sender, e)
+                Case "miTradeWarehouseMain" : OpenTradeWarehouseMainForm(sender, e)
+                Case "miReportsTrade" : OpenTradeWarehouseReportsForm(sender, e)
+
+                Case "miPayrollMain", "miPayrollReports" : OpenPayrollMainForm(sender, e)
+                Case "miAmvalMain", "miAmvalReports" : OpenAmvalMainForm(sender, e)
+                Case "miAutomationMain", "miAutomationReports" : OpenAutomationMainForm(sender, e)
+                Case "miCrmMain", "miCrmReports" : OpenCrmMainForm(sender, e)
+                Case "miTreasuryMain", "miTreasuryReports" : OpenTreasuryMainForm(sender, e)
+                Case "miBudgetingMain", "miBudgetingReports" : OpenBudgetingMainForm(sender, e)
+                Case "miProductionMain", "miProductionReports" : OpenProductionMainForm(sender, e)
+                Case "miProjectMain", "miProjectReports" : OpenProjectMainForm(sender, e)
+                Case "miKpiMain", "miKpiReports" : OpenKpiMainForm(sender, e)
+                Case "miImportExportMain", "miImportExportReports" : OpenImportExportMainForm(sender, e)
+                Case "miPmMain", "miPmReports" : OpenPmMainForm(sender, e)
+                Case "miLogisticsMain", "miLogisticsReports" : OpenLogisticsMainForm(sender, e)
+                Case "miSrmMain", "miSrmReports" : OpenSrmMainForm(sender, e)
+                Case "miQcMain", "miQcReports" : OpenQcMainForm(sender, e)
+                Case "miBiMain", "miBiReports" : OpenBiMainForm(sender, e)
+                Case "miDmsMain", "miDmsReports" : OpenDmsMainForm(sender, e)
+                Case "miSahamMain", "miSahamReports" : OpenSahamMainForm(sender, e)
+                Case "miApiMain", "miApiReports" : OpenApiMainForm(sender, e)
+                Case "miLegalMain", "miLegalReports" : OpenLegalMainForm(sender, e)
+                Case "miRdMain", "miRdReports" : OpenRdMainForm(sender, e)
+                Case "miVoipMain", "miVoipReports" : OpenVoipMainForm(sender, e)
+
+                Case "miShellGeneral" : MiShellGeneral_Click(sender, e)
+                Case "miShellRetail" : MiShellRetail_Click(sender, e)
+                Case "miShellServices" : MiShellServices_Click(sender, e)
+
+                Case "miUtilCalculator" : MiUtilCalculator_Click(sender, e)
+                Case "miUtilNotes" : MiUtilNotes_Click(sender, e)
+                Case "miUtilCalendar" : MiUtilCalendar_Click(sender, e)
+            End Select
         End Sub
 
         Private Sub PnlRightMenuContent_MouseWheel(sender As Object, e As MouseEventArgs) Handles pnlRightMenuContent.MouseWheel, mainMenu.MouseWheel, tool.MouseWheel

@@ -15,7 +15,8 @@ Namespace Negar.Forms
 
         Private components As IContainer
 
-        ' Main Top-Level Menus
+        ' Main Top-Level Menus & Accordion Navigation Tree
+        Friend WithEvents tvMenu As TreeView
         Friend WithEvents pnlSidebarContainer As Panel
         Friend WithEvents pnlRightMenuHeader As Panel
         Friend WithEvents pnlRightMenuContent As Panel
@@ -370,6 +371,7 @@ Namespace Negar.Forms
             Me.miUtilNotes = New ToolStripMenuItem()
             Me.miUtilCalendar = New ToolStripMenuItem()
 
+            Me.tvMenu = New TreeView()
             Me.pnlSidebarContainer = New Panel()
             Me.pnlRightMenuHeader = New Panel()
             Me.pnlRightMenuContent = New Panel()
@@ -448,14 +450,29 @@ Namespace Negar.Forms
             Me.btnHandle.Text = "❯"
             Me.btnHandle.UseVisualStyleBackColor = False
 
-            ' pnlRightMenuContent (Content Panel containing Header + Menu + Toolbar)
-            Me.pnlRightMenuContent.AutoScroll = True
-            Me.pnlRightMenuContent.Controls.Add(Me.mainMenu)
-            Me.pnlRightMenuContent.Controls.Add(Me.tool)
+            ' pnlRightMenuContent (Content Panel containing Header + Accordion Tree View)
+            Me.pnlRightMenuContent.Controls.Add(Me.tvMenu)
             Me.pnlRightMenuContent.Controls.Add(Me.pnlRightMenuHeader)
             Me.pnlRightMenuContent.Dock = DockStyle.Fill
             Me.pnlRightMenuContent.Name = "pnlRightMenuContent"
             Me.pnlRightMenuContent.RightToLeft = RightToLeft.Yes
+
+            ' tvMenu (Accordion Vertical Collapsible Navigation Tree)
+            Me.tvMenu.BackColor = Color.FromArgb(240, 244, 250)
+            Me.tvMenu.BorderStyle = BorderStyle.None
+            Me.tvMenu.Dock = DockStyle.Fill
+            Me.tvMenu.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
+            Me.tvMenu.ForeColor = Color.FromArgb(30, 60, 100)
+            Me.tvMenu.ItemHeight = 34
+            Me.tvMenu.Location = New Point(0, 40)
+            Me.tvMenu.Name = "tvMenu"
+            Me.tvMenu.RightToLeft = RightToLeft.Yes
+            Me.tvMenu.RightToLeftLayout = True
+            Me.tvMenu.ShowLines = False
+            Me.tvMenu.ShowPlusMinus = True
+            Me.tvMenu.ShowRootLines = False
+            Me.tvMenu.FullRowSelect = True
+            Me.tvMenu.TabIndex = 0
 
             ' pnlRightMenuHeader
             Me.pnlRightMenuHeader.BackColor = Color.FromArgb(220, 230, 245)
