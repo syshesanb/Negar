@@ -1033,7 +1033,9 @@ Namespace Negar.Forms
                     End If
             End Select
 
+            flpDashboard.BringToFront()
             flpDashboard.ResumeLayout()
+            UpdateSidebarBounds()
         End Sub
 
         Private Sub AddDashButton(text As String, onClick As EventHandler, Optional iconType As String = "")
@@ -1593,13 +1595,47 @@ Namespace Negar.Forms
         Private Sub TvMenu_NodeMouseClick(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvMenu.NodeMouseClick
             If e.Node Is Nothing Then Return
 
-            ' Parent category node -> expand / collapse top-to-bottom
+            ' Parent category node -> expand / collapse top-to-bottom AND show buttons on Dashboard Panel (flpDashboard)
             If e.Node.Nodes.Count > 0 Then
                 If e.Node.IsExpanded Then
                     e.Node.Collapse()
                 Else
                     e.Node.Expand()
                 End If
+
+                ' Display category buttons in Dashboard Panel (flpDashboard) on Parent Form
+                Select Case e.Node.Name
+                    Case "nSys" : ShowDashboardCategory("SystemMgmt")
+                    Case "nUsers" : ShowDashboardCategory("UserMgmt")
+                    Case "nComp" : ShowDashboardCategory("CompanyMgmt")
+                    Case "nAcc" : ShowDashboardCategory("Accounting")
+                    Case "nTrade" : ShowDashboardCategory("TradeWarehouse")
+                    Case "nPay" : ShowDashboardCategory("Payroll")
+                    Case "nAmval" : ShowDashboardCategory("Amval")
+                    Case "nAuto" : ShowDashboardCategory("Automation")
+                    Case "nCrm" : ShowDashboardCategory("Crm")
+                    Case "nTreasury" : ShowDashboardCategory("Treasury")
+                    Case "nBudget" : ShowDashboardCategory("Budgeting")
+                    Case "nProd" : ShowDashboardCategory("Production")
+                    Case "nProj" : ShowDashboardCategory("Project")
+                    Case "nKpi" : ShowDashboardCategory("Kpi")
+                    Case "nImp" : ShowDashboardCategory("ImportExport")
+                    Case "nPm" : ShowDashboardCategory("Pm")
+                    Case "nLog" : ShowDashboardCategory("Logistics")
+                    Case "nSrm" : ShowDashboardCategory("Srm")
+                    Case "nQc" : ShowDashboardCategory("Qc")
+                    Case "nBi" : ShowDashboardCategory("Bi")
+                    Case "nDms" : ShowDashboardCategory("Dms")
+                    Case "nSaham" : ShowDashboardCategory("Saham")
+                    Case "nApi" : ShowDashboardCategory("Api")
+                    Case "nLegal" : ShowDashboardCategory("Legal")
+                    Case "nRd" : ShowDashboardCategory("Rd")
+                    Case "nVoip" : ShowDashboardCategory("Voip")
+                    Case "nShell" : ShowDashboardCategory("BusinessShells")
+                    Case "nUtil" : ShowDashboardCategory("Utilities")
+                End Select
+
+                UpdateSidebarBounds()
                 Return
             End If
 
