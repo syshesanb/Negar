@@ -16,6 +16,11 @@ Namespace Negar.Forms
         Private components As IContainer
 
         ' Main Top-Level Menus
+        Friend WithEvents pnlRightMenu As Panel
+        Friend WithEvents pnlRightMenuHeader As Panel
+        Friend WithEvents pnlRightMenuContent As Panel
+        Friend WithEvents btnMenuToggle As Button
+        Friend WithEvents lblRightMenuTitle As Label
         Friend WithEvents pnlMainMenuContainer As Panel
         Friend WithEvents mainMenu As MenuStrip
         Friend WithEvents mSystemMgmt As ToolStripMenuItem
@@ -365,6 +370,11 @@ Namespace Negar.Forms
             Me.miUtilNotes = New ToolStripMenuItem()
             Me.miUtilCalendar = New ToolStripMenuItem()
 
+            Me.pnlRightMenu = New Panel()
+            Me.pnlRightMenuHeader = New Panel()
+            Me.pnlRightMenuContent = New Panel()
+            Me.btnMenuToggle = New Button()
+            Me.lblRightMenuTitle = New Label()
             Me.pnlToolBar = New Panel()
             Me.tool = New ToolStrip()
             Me.btnToolSystemMgmt = New ToolStripButton()
@@ -413,20 +423,63 @@ Namespace Negar.Forms
             Me.status.SuspendLayout()
             Me.SuspendLayout()
 
-            ' pnlMainMenuContainer (Scrollable Container for Top MenuStrip)
-            Me.pnlMainMenuContainer.AutoScroll = True
-            Me.pnlMainMenuContainer.Dock = DockStyle.Top
-            Me.pnlMainMenuContainer.Height = 44
-            Me.pnlMainMenuContainer.Location = New Point(0, 0)
-            Me.pnlMainMenuContainer.Name = "pnlMainMenuContainer"
-            Me.pnlMainMenuContainer.RightToLeft = RightToLeft.Yes
-            Me.pnlMainMenuContainer.TabIndex = 1
-            Me.pnlMainMenuContainer.Controls.Add(Me.mainMenu)
+            ' pnlRightMenu (Collapsible Sidebar Container on Right)
+            Me.pnlRightMenu.BackColor = Color.FromArgb(240, 244, 250)
+            Me.pnlRightMenu.Controls.Add(Me.pnlRightMenuContent)
+            Me.pnlRightMenu.Controls.Add(Me.pnlRightMenuHeader)
+            Me.pnlRightMenu.Dock = DockStyle.Right
+            Me.pnlRightMenu.Location = New Point(940, 0)
+            Me.pnlRightMenu.Name = "pnlRightMenu"
+            Me.pnlRightMenu.RightToLeft = RightToLeft.Yes
+            Me.pnlRightMenu.Size = New Size(260, 676)
+            Me.pnlRightMenu.TabIndex = 0
+
+            ' pnlRightMenuHeader
+            Me.pnlRightMenuHeader.BackColor = Color.FromArgb(220, 230, 245)
+            Me.pnlRightMenuHeader.Controls.Add(Me.lblRightMenuTitle)
+            Me.pnlRightMenuHeader.Controls.Add(Me.btnMenuToggle)
+            Me.pnlRightMenuHeader.Dock = DockStyle.Top
+            Me.pnlRightMenuHeader.Height = 44
+            Me.pnlRightMenuHeader.Name = "pnlRightMenuHeader"
+            Me.pnlRightMenuHeader.Padding = New Padding(4)
+
+            ' btnMenuToggle (گیره / دکمه باز و بستن کشویی)
+            Me.btnMenuToggle.BackColor = Color.FromArgb(52, 152, 219)
+            Me.btnMenuToggle.Cursor = Cursors.Hand
+            Me.btnMenuToggle.FlatStyle = FlatStyle.Flat
+            Me.btnMenuToggle.FlatAppearance.BorderSize = 0
+            Me.btnMenuToggle.Font = New Font("Tahoma", 10.0!, FontStyle.Bold)
+            Me.btnMenuToggle.ForeColor = Color.White
+            Me.btnMenuToggle.Location = New Point(4, 4)
+            Me.btnMenuToggle.Name = "btnMenuToggle"
+            Me.btnMenuToggle.Size = New Size(36, 36)
+            Me.btnMenuToggle.TabIndex = 0
+            Me.btnMenuToggle.Text = "»"
+            Me.btnMenuToggle.UseVisualStyleBackColor = False
+
+            ' lblRightMenuTitle
+            Me.lblRightMenuTitle.Dock = DockStyle.Fill
+            Me.lblRightMenuTitle.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
+            Me.lblRightMenuTitle.ForeColor = Color.FromArgb(30, 60, 100)
+            Me.lblRightMenuTitle.Location = New Point(44, 4)
+            Me.lblRightMenuTitle.Name = "lblRightMenuTitle"
+            Me.lblRightMenuTitle.Size = New Size(212, 36)
+            Me.lblRightMenuTitle.Text = "منوی سیستم نگار"
+            Me.lblRightMenuTitle.TextAlign = ContentAlignment.MiddleRight
+
+            ' pnlRightMenuContent
+            Me.pnlRightMenuContent.AutoScroll = True
+            Me.pnlRightMenuContent.Controls.Add(Me.mainMenu)
+            Me.pnlRightMenuContent.Controls.Add(Me.tool)
+            Me.pnlRightMenuContent.Dock = DockStyle.Fill
+            Me.pnlRightMenuContent.Name = "pnlRightMenuContent"
+            Me.pnlRightMenuContent.RightToLeft = RightToLeft.Yes
 
             ' mainMenu
             Me.mainMenu.AutoSize = True
             Me.mainMenu.CanOverflow = True
-            Me.mainMenu.Dock = DockStyle.None
+            Me.mainMenu.Dock = DockStyle.Top
+            Me.mainMenu.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow
             Me.mainMenu.Font = New Font("Tahoma", 9.0!)
             Me.mainMenu.Items.AddRange(New ToolStripItem() {Me.mSystemMgmt, Me.mUserMgmt, Me.mCompanyMgmt, Me.mAccounting, Me.mTradeWarehouse, Me.mPayroll, Me.mAmval, Me.mAutomation, Me.mCrm, Me.mTreasury, Me.mBudgeting, Me.mProduction, Me.mProject, Me.mKpi, Me.mImportExport, Me.mPm, Me.mLogistics, Me.mSrm, Me.mQc, Me.mBi, Me.mDms, Me.mSaham, Me.mApi, Me.mLegal, Me.mRd, Me.mVoip, Me.mBusinessShells, Me.mUtilities})
             Me.mainMenu.Location = New Point(0, 0)
@@ -967,20 +1020,18 @@ Namespace Negar.Forms
 
             ' tool (ToolStrip Toolbar for Top-Level Main Menu Titles)
             Me.tool.AutoSize = True
-            Me.tool.Dock = DockStyle.None
+            ' tool
+            Me.tool.AutoSize = True
+            Me.tool.Dock = DockStyle.Top
+            Me.tool.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow
+            Me.tool.GripStyle = ToolStripGripStyle.Hidden
             Me.tool.Font = New Font("Tahoma", 9.5!, FontStyle.Bold)
-            Me.tool.ImageScalingSize = New Size(28, 28)
+            Me.tool.ImageScalingSize = New Size(24, 24)
             Me.tool.Items.AddRange(New ToolStripItem() {Me.btnToolSystemMgmt, Me.btnToolUserMgmt, Me.btnToolCompanyMgmt, Me.btnToolAccounting, Me.btnToolTradeWarehouse, Me.btnToolPayroll, Me.btnToolAmval, Me.btnToolAutomation, Me.btnToolCrm, Me.btnToolTreasury, Me.btnToolBudgeting, Me.btnToolProduction, Me.btnToolProject, Me.btnToolKpi, Me.btnToolImportExport, Me.btnToolPm, Me.btnToolLogistics, Me.btnToolSrm, Me.btnToolQc, Me.btnToolBi, Me.btnToolDms, Me.btnToolSaham, Me.btnToolApi, Me.btnToolLegal, Me.btnToolRd, Me.btnToolVoip, Me.btnToolBusinessShells, Me.btnToolUtilities})
-
-            ' pnlToolBar (Scrollable Container for Dashboard Category Buttons Toolbar)
-            Me.pnlToolBar.AutoScroll = True
-            Me.pnlToolBar.Dock = DockStyle.Top
-            Me.pnlToolBar.Height = 60
-            Me.pnlToolBar.Location = New Point(0, 24)
-            Me.pnlToolBar.Name = "pnlToolBar"
-            Me.pnlToolBar.RightToLeft = RightToLeft.Yes
-            Me.pnlToolBar.TabIndex = 0
-            Me.pnlToolBar.Controls.Add(Me.tool)
+            Me.tool.Location = New Point(0, 0)
+            Me.tool.Name = "tool"
+            Me.tool.RightToLeft = RightToLeft.Yes
+            Me.tool.TabIndex = 0
 
             ' btnToolPayroll
             Me.btnToolPayroll.Margin = New Padding(4, 2, 4, 2)
@@ -1209,9 +1260,8 @@ Namespace Negar.Forms
             Me.AutoScaleMode = AutoScaleMode.Font
             Me.ClientSize = New Size(1200, 700)
             Me.Controls.Add(Me.flpDashboard)
+            Me.Controls.Add(Me.pnlRightMenu)
             Me.Controls.Add(Me.status)
-            Me.Controls.Add(Me.pnlToolBar)
-            Me.Controls.Add(Me.pnlMainMenuContainer)
             Me.Font = New Font("Tahoma", 9.0!)
             Me.MainMenuStrip = Me.mainMenu
             Me.Name = "MainForm"

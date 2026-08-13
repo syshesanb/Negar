@@ -21,6 +21,13 @@ Namespace Negar.Forms
         Private _shortcutFilter As GlobalShortcutFilter
         Private ReadOnly _spawnedCalcProcesses As New List(Of Process)()
 
+        ' Collapsible Right Sidebar Menu Logic
+        Private WithEvents menuTransitionTimer As New Timer() With {.Interval = 15}
+        Private _isMenuExpanded As Boolean = True
+        Private Const ExpandedWidth As Integer = 260
+        Private Const CollapsedWidth As Integer = 45
+        Private _targetWidth As Integer = ExpandedWidth
+
         Private Class GlobalShortcutFilter
             Implements IMessageFilter
 
@@ -1363,22 +1370,52 @@ Namespace Negar.Forms
             ShowDashboardCategory("Utilities")
         End Sub
 
-        Private Sub PnlToolBar_MouseWheel(sender As Object, e As MouseEventArgs) Handles pnlToolBar.MouseWheel
-            Try
-                Dim newX = pnlToolBar.HorizontalScroll.Value - e.Delta
-                If newX < 0 Then newX = 0
-                If newX > pnlToolBar.HorizontalScroll.Maximum Then newX = pnlToolBar.HorizontalScroll.Maximum
-                pnlToolBar.HorizontalScroll.Value = newX
-            Catch ex As Exception
-            End Try
+        Private Sub BtnMenuToggle_Click(sender As Object, e As EventArgs) Handles btnMenuToggle.Click
+            _isMenuExpanded = Not _isMenuExpanded
+            _targetWidth = If(_isMenuExpanded, ExpandedWidth, CollapsedWidth)
+            menuTransitionTimer.Start()
         End Sub
 
-        Private Sub PnlMainMenuContainer_MouseWheel(sender As Object, e As MouseEventArgs) Handles pnlMainMenuContainer.MouseWheel, mainMenu.MouseWheel
+        Private Sub MenuTransitionTimer_Tick(sender As Object, e As EventArgs) Handles menuTransitionTimer.Tick
+            Dim currentWidth = pnlRightMenu.Width
+            Dim stepVal = 30
+            If currentWidth < _targetWidth Then
+                currentWidth = Math.Min(_targetWidth, currentWidth + stepVal)
+            ElseIf currentWidth > _targetWidth Then
+                currentWidth = Math.Max(_targetWidth, currentWidth - stepVal)
+            End If
+            pnlRightMenu.Width = currentWidth
+
+            If currentWidth = _targetWidth Then
+                menuTransitionTimer.Stop()
+                ApplyMenuStateVisuals(_isMenuExpanded)
+            End If
+        End Sub
+
+        Private Sub ApplyMenuStateVisuals(expanded As Boolean)
+            If expanded Then
+                btnMenuToggle.Text = "»"
+                lblRightMenuTitle.Visible = True
+                mainMenu.Visible = True
+                For Each item As ToolStripItem In tool.Items
+                    item.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText
+                Next
+            Else
+                btnMenuToggle.Text = "«"
+                lblRightMenuTitle.Visible = False
+                mainMenu.Visible = False
+                For Each item As ToolStripItem In tool.Items
+                    item.DisplayStyle = ToolStripItemDisplayStyle.Image
+                Next
+            End If
+        End Sub
+
+        Private Sub PnlRightMenuContent_MouseWheel(sender As Object, e As MouseEventArgs) Handles pnlRightMenuContent.MouseWheel, mainMenu.MouseWheel, tool.MouseWheel
             Try
-                Dim newX = pnlMainMenuContainer.HorizontalScroll.Value - e.Delta
-                If newX < 0 Then newX = 0
-                If newX > pnlMainMenuContainer.HorizontalScroll.Maximum Then newX = pnlMainMenuContainer.HorizontalScroll.Maximum
-                pnlMainMenuContainer.HorizontalScroll.Value = newX
+                Dim newY = pnlRightMenuContent.VerticalScroll.Value - e.Delta
+                If newY < 0 Then newY = 0
+                If newY > pnlRightMenuContent.VerticalScroll.Maximum Then newY = pnlRightMenuContent.VerticalScroll.Maximum
+                pnlRightMenuContent.VerticalScroll.Value = newY
             Catch ex As Exception
             End Try
         End Sub
