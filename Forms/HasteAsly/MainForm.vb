@@ -623,10 +623,7 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub BtnHomeTab_Click(sender As Object, e As EventArgs)
-            flpDashboard.Visible = True
-            flpDashboard.BringToFront()
             SetActiveTabVisual(Nothing)
-            UpdateSidebarBounds()
         End Sub
 
         Private Sub AddFormTab(child As Form)
@@ -650,7 +647,6 @@ Namespace Negar.Forms
 
             _openFormTabs(child) = btnTab
             flpFormTabs.Controls.Add(btnTab)
-            SetActiveTabVisual(child)
         End Sub
 
         Private Sub FormTab_Click(sender As Object, e As EventArgs)
@@ -666,14 +662,7 @@ Namespace Negar.Forms
                 Return
             End If
 
-            flpDashboard.Visible = False
-            If child.WindowState = FormWindowState.Minimized Then
-                child.WindowState = FormWindowState.Maximized
-            End If
-            child.Activate()
-            child.BringToFront()
             SetActiveTabVisual(child)
-            UpdateSidebarBounds()
         End Sub
 
         Private Sub RemoveFormTab(child As Form)
@@ -686,34 +675,32 @@ Namespace Negar.Forms
             End If
 
             If Me.MdiChildren Is Nothing OrElse Me.MdiChildren.Length <= 1 Then
-                flpDashboard.Visible = True
-                flpDashboard.BringToFront()
                 SetActiveTabVisual(Nothing)
             Else
                 Dim activatedAny As Boolean = False
                 For Each f As Form In Me.MdiChildren
                     If f IsNot child AndAlso Not f.IsDisposed Then
-                        flpDashboard.Visible = False
-                        If f.WindowState = FormWindowState.Minimized Then
-                            f.WindowState = FormWindowState.Maximized
-                        End If
-                        f.Activate()
-                        f.BringToFront()
                         SetActiveTabVisual(f)
                         activatedAny = True
                         Exit For
                     End If
                 Next
                 If Not activatedAny Then
-                    flpDashboard.Visible = True
-                    flpDashboard.BringToFront()
                     SetActiveTabVisual(Nothing)
                 End If
             End If
-            UpdateSidebarBounds()
         End Sub
 
         Private Sub SetActiveTabVisual(activeChild As Form)
+            ' 1. Dashboard Visibility
+            If activeChild Is Nothing Then
+                flpDashboard.Visible = True
+                flpDashboard.BringToFront()
+            Else
+                flpDashboard.Visible = False
+            End If
+
+            ' 2. Home Tab Button Visuals
             If _btnHomeTab IsNot Nothing Then
                 If activeChild Is Nothing Then
                     _btnHomeTab.BackColor = Color.FromArgb(41, 128, 185)
@@ -726,6 +713,24 @@ Namespace Negar.Forms
                 End If
             End If
 
+            ' 3. Strict MDI Child Form Visibility & Maximized Window Management
+            ' Hide all inactive MDI forms so they cannot leak into other tabs as floating windows or gray boxes!
+            If Me.MdiChildren IsNot Nothing Then
+                For Each f As Form In Me.MdiChildren
+                    If f IsNot Nothing AndAlso Not f.IsDisposed Then
+                        If f Is activeChild Then
+                            f.Visible = True
+                            f.WindowState = FormWindowState.Maximized
+                            f.BringToFront()
+                            f.Activate()
+                        Else
+                            f.Visible = False
+                        End If
+                    End If
+                Next
+            End If
+
+            ' 4. Form Tab Buttons Visuals
             For Each kvp In _openFormTabs
                 Dim f = kvp.Key
                 Dim btn = kvp.Value
@@ -739,6 +744,8 @@ Namespace Negar.Forms
                     btn.Font = New Font("Tahoma", 9.0!, FontStyle.Regular)
                 End If
             Next
+
+            UpdateSidebarBounds()
         End Sub
 
         Private Sub OpenChild(child As Form)
@@ -747,26 +754,17 @@ Namespace Negar.Forms
                 ' If form of same type is already open, activate its existing window and tab!
                 For Each existingForm As Form In Me.MdiChildren
                     If existingForm.GetType() Is child.GetType() Then
-                        flpDashboard.Visible = False
-                        If existingForm.WindowState = FormWindowState.Minimized Then
-                            existingForm.WindowState = FormWindowState.Maximized
-                        End If
-                        existingForm.Activate()
-                        existingForm.BringToFront()
                         SetActiveTabVisual(existingForm)
-                        UpdateSidebarBounds()
                         child.Dispose()
                         Return
                     End If
                 Next
 
                 child.MdiParent = Me
-                child.WindowState = FormWindowState.Maximized
-                flpDashboard.Visible = False
                 AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
                 child.Show()
                 AddFormTab(child)
-                UpdateSidebarBounds()
+                SetActiveTabVisual(child)
             Catch ex As Exception
                 child.StartPosition = FormStartPosition.CenterParent
                 child.Show(Me)
