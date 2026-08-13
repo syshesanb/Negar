@@ -764,6 +764,7 @@ Namespace Negar.Forms
                 Next
 
                 child.MdiParent = Me
+                child.WindowState = FormWindowState.Maximized
                 AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
                 child.Show()
                 AddFormTab(child)

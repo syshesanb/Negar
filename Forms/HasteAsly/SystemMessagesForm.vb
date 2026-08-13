@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -16,6 +16,7 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub SystemMessagesForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Me.WindowState = FormWindowState.Maximized
             txtAboutText.Text = service.GetSettingValue("AboutText", "")
             txtContactText.Text = service.GetSettingValue("ContactText", "")
         End Sub

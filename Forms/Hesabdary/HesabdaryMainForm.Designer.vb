@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System.ComponentModel
@@ -298,7 +298,6 @@ Namespace Negar.Forms
             Me.tabReports.Size = New Size(1312, 722)
             Me.tabReports.Text = "طراحی گزارشات دلخواه"
             Me.tabReports.UseVisualStyleBackColor = True
-            Me.tabs.Controls.Add(Me.tabPersonnel)
             Me.tabs.Controls.Add(Me.tabSettings)
             Me.tabs.Controls.Add(Me.tabAccounts)
             Me.tabs.Controls.Add(Me.tabShenavar)

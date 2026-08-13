@@ -1,4 +1,4 @@
-﻿Option Strict Off
+Option Strict Off
 Option Explicit On
 
 Imports System
@@ -21,6 +21,7 @@ Namespace Negar.Forms
         End Sub
 
         Private Sub UserManagementForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Me.WindowState = FormWindowState.Maximized
             Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             If LicenseManager.UsageMode = LicenseUsageMode.Designtime Then
                 Return

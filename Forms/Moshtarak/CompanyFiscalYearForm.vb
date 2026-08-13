@@ -103,6 +103,7 @@ Namespace Negar.Forms
 
         Private Sub CompanyFiscalYearForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
             Negar.Business.ThemeHelper.ApplyFormTheme(Me)
+            Me.WindowState = FormWindowState.Maximized
             If Me.dgvCompanies IsNot Nothing Then Me.dgvCompanies.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvFiscalYears IsNot Nothing Then Me.dgvFiscalYears.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)
             If Me.dgvSelectCompanies IsNot Nothing Then Me.dgvSelectCompanies.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(242, 248, 255)

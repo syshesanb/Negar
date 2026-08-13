@@ -14,6 +14,7 @@ Namespace Negar.Forms.Anbardary.AnbarMini
         End Sub
 
         Private Sub AnbarMiniMainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+            Me.WindowState = FormWindowState.Maximized
             ThemeHelper.ApplyEditionTheme(Me, AppEdition.Mini)
             ApplySecurity()
 

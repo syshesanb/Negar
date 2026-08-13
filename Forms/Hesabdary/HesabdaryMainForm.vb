@@ -71,7 +71,6 @@ Namespace Negar.Forms
                 progress.UpdateProgress(10, "بارگذاری سرفصل حساب‌ها...")
 
                 tabs.TabPages.Clear()
-                tabs.TabPages.Add(tabPersonnel)
                 tabs.TabPages.Add(tabSettings)
                 tabs.TabPages.Add(tabAccounts)
                 tabs.TabPages.Add(tabShenavar)
