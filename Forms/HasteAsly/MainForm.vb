@@ -725,22 +725,27 @@ Namespace Negar.Forms
                 End If
             End If
 
-            ' 3. Strict MDI Child Form Visibility & Maximized Window Management
-            ' Hide all inactive MDI forms so they cannot leak into other tabs as floating windows or gray boxes!
+            ' 3. MDI Child Form Activation & Maximized Window Management
             If Me.MdiChildren IsNot Nothing Then
+                If activeChild IsNot Nothing AndAlso Not activeChild.IsDisposed Then
+                    activeChild.Visible = True
+                    If activeChild.WindowState <> FormWindowState.Maximized Then
+                        activeChild.WindowState = FormWindowState.Maximized
+                    End If
+                    activeChild.BringToFront()
+                    activeChild.Activate()
+                    Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Active child activated: {activeChild.GetType().Name}, Visible={activeChild.Visible}, WindowState={activeChild.WindowState}, Bounds={activeChild.Bounds.Width}x{activeChild.Bounds.Height}")
+                End If
+
                 For Each f As Form In Me.MdiChildren
                     If f IsNot Nothing AndAlso Not f.IsDisposed Then
                         If f Is activeChild Then
                             f.Visible = True
-                            f.WindowState = FormWindowState.Normal
-                            f.WindowState = FormWindowState.Maximized
-                            f.BringToFront()
-                            f.Activate()
-                            Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Active child state: {f.GetType().Name}, Visible={f.Visible}, WindowState={f.WindowState}, Size={f.Size.Width}x{f.Size.Height}")
-                        Else
-                            f.Visible = False
-                            Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Hiding inactive child: {f.GetType().Name}")
+                            If f.WindowState <> FormWindowState.Maximized Then
+                                f.WindowState = FormWindowState.Maximized
+                            End If
                         End If
+                        Negar.Business.IradLogger.Log("SetActiveTabVisual", $"  Child form status: {f.GetType().Name}, Visible={f.Visible}, WindowState={f.WindowState}, Bounds={f.Bounds.Width}x{f.Bounds.Height}, IsActive={f Is activeChild}")
                     End If
                 Next
             End If

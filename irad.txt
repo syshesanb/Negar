@@ -1,2 +1,1 @@
-========== IRAD LOG STARTED AT 2026-08-13 19:16:39 ==========
-[2026-08-13 19:16:39.703] [MainForm_Load] MainForm loaded. Bounds: 1382x744, WindowState: Maximized
+========== IRAD LOG STARTED ==========
