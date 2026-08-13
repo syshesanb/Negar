@@ -26,15 +26,6 @@ Namespace Negar.Forms
             Negar.Business.ThemeHelper.ApplyFormTheme(Me)
             Negar.Business.ThemeHelper.AppendStatusBar(Me)
             Me.WindowState = FormWindowState.Maximized
-            If LicenseManager.UsageMode = LicenseUsageMode.Designtime Then Return
-
-            If Not SessionContext.CurrentCompanyID.HasValue Then
-                Dim mainForm = TryCast(Me.MdiParent, MainForm)
-                If mainForm IsNot Nothing Then
-                    mainForm.EnsureCompanyAndFiscalYearSelected()
-                End If
-            End If
-
             If SessionContext.CurrentCompanyID.HasValue Then
                 LoadAllTabs()
             End If
