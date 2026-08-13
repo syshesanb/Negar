@@ -729,9 +729,8 @@ Namespace Negar.Forms
             If Me.MdiChildren IsNot Nothing Then
                 If activeChild IsNot Nothing AndAlso Not activeChild.IsDisposed Then
                     activeChild.Visible = True
-                    If activeChild.WindowState <> FormWindowState.Maximized Then
-                        activeChild.WindowState = FormWindowState.Maximized
-                    End If
+                    activeChild.WindowState = FormWindowState.Normal
+                    activeChild.WindowState = FormWindowState.Maximized
                     activeChild.BringToFront()
                     activeChild.Activate()
                     Negar.Business.IradLogger.Log("SetActiveTabVisual", $"Active child activated: {activeChild.GetType().Name}, Visible={activeChild.Visible}, WindowState={activeChild.WindowState}, Bounds={activeChild.Bounds.Width}x{activeChild.Bounds.Height}")
@@ -781,9 +780,13 @@ Namespace Negar.Forms
                 Next
 
                 child.MdiParent = Me
-                child.WindowState = FormWindowState.Maximized
                 AddHandler child.FormClosed, AddressOf ChildForm_FormClosed
                 child.Show()
+                child.WindowState = FormWindowState.Normal
+                child.WindowState = FormWindowState.Maximized
+                child.BringToFront()
+                child.Activate()
+
                 Negar.Business.IradLogger.Log("OpenChild", $"Form {child.GetType().Name} shown inside MDI Parent. WindowState={child.WindowState}, Visible={child.Visible}, Size={child.Size.Width}x{child.Size.Height}")
                 AddFormTab(child)
                 SetActiveTabVisual(child)
